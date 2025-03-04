@@ -32,10 +32,25 @@ def main():
     the_chatbot = ChatbotTaskyto(chatbot_url)
 
     # Track the full conversation history
+    """
+    "content": "You are an Explorer AI tasked with learning about another chatbot you're interacting with. Ask questions to understand its capabilities, limitations, knowledge domains, and personality. Be curious and investigative while maintaining a natural conversation flow. Take note of how it responds and adapt your questions accordingly. Your goal is to build a comprehensive understanding of what the other chatbot does and how it operates."
+    """
     conversation_history = [
         {
             "role": "system",
-            "content": "You are an Explorer AI tasked with learning about another chatbot you're interacting with. Ask questions to understand its capabilities, limitations, knowledge domains, and personality. Be curious and investigative while maintaining a natural conversation flow. Take note of how it responds and adapt your questions accordingly. Your goal is to build a comprehensive understanding of what the other chatbot does and how it operates."
+            "content": """You are an Explorer AI tasked with learning about another chatbot you're interacting with.
+
+IMPORTANT GUIDELINES:
+1. Ask ONE simple question at a time - the chatbot gets confused by multiple questions
+2. Keep your messages short and direct
+3. When the chatbot indicates it didn't understand, simplify your language further
+4. Follow the chatbot's conversation flow and adapt to its capabilities
+5. Gradually probe its functionality by trying basic interactions first, then building complexity
+6. If the chatbot seems to have a specific domain or purpose, explore within that framework
+7. Take note of any patterns in what confuses the chatbot and avoid those patterns
+
+Your goal remains to understand its capabilities, limitations, knowledge domains, and personality, but do so with simpler, more direct interactions.
+""",
         }
     ]
 
@@ -45,13 +60,14 @@ def main():
 
     # Force start asking
     conversation_history.append({"role": "user", "content": taskyto_message})
-    conversation_history.append({
-        "role": "assistant",
-        "content": "Hello! What are your functionalities?"
-    })
+    conversation_history.append(
+        {"role": "assistant", "content": "Hello! What are your functionalities?"}
+    )
 
     # Send this first Explorer message to the chatbot
-    is_ok, taskyto_message = the_chatbot.execute_with_input(conversation_history[-1]["content"])
+    is_ok, taskyto_message = the_chatbot.execute_with_input(
+        conversation_history[-1]["content"]
+    )
     print(f"\nExplorer: {conversation_history[-1]['content']}")
     print(f"\nChatbot: {taskyto_message}")
 
