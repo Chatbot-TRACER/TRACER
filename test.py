@@ -36,7 +36,7 @@ def main():
 
     print("Starting")
     is_ok, taskyto_message = the_chatbot.execute_starter_chatbot()
-    print(f"\nPizza Shop: {taskyto_message}")
+    print(f"\nChatbot: {taskyto_message}")
 
     # Main conversation loop
     while True:
@@ -44,35 +44,43 @@ def main():
             # Get input from Taskyto and pass to LangGraph
             user_input = taskyto_message
 
-            # Add the pizza shop message to the conversation history
+            # Add the Chatbot message to the conversation history
             conversation_history.append({"role": "user", "content": user_input})
 
             # Process through LangGraph with full history context
-            customer_response = None
-            for event in graph.stream({"messages": conversation_history}, config=config):
+            explorer_response = None
+            for event in graph.stream(
+                {"messages": conversation_history}, config=config
+            ):
                 for value in event.values():
                     latest_message = value["messages"][-1]
-                    customer_response = latest_message.content
-                    print(f"\nCustomer: {customer_response}")
+                    explorer_response = latest_message.content
+                    print(f"\nExplorer: {explorer_response}")
 
-            # Add the customer response to conversation history
-            conversation_history.append({"role": "assistant", "content": customer_response})
+            # Add the explorer response to conversation history
+            conversation_history.append(
+                {"role": "assistant", "content": explorer_response}
+            )
 
-            # Send customer response back to Taskyto
-            if customer_response.lower() in ["quit", "exit", "q"]:
+            # Send explorer response back to Taskyto
+            if explorer_response.lower() in ["quit", "exit", "q"]:
                 print("Goodbye!")
                 break
 
-            is_ok, taskyto_message = the_chatbot.execute_with_input(customer_response)
-            print(f"\nPizza Shop: {taskyto_message}")
+            is_ok, taskyto_message = the_chatbot.execute_with_input(explorer_response)
+            print(f"\nChatbot: {taskyto_message}")
 
             if taskyto_message.lower() in ["quit", "exit", "q"]:
                 print("Goodbye!")
                 break
 
+        except KeyboardInterrupt:
+            print("\nReceived keyboard interrupt. Exiting...")
+            break
         except Exception as e:
             print(f"Error encountered: {e}")
             break
+
 
 if __name__ == "__main__":
     main()
