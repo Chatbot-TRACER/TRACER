@@ -32,7 +32,12 @@ def main():
     the_chatbot = ChatbotTaskyto(chatbot_url)
 
     # Track the full conversation history
-    conversation_history = []
+    conversation_history = [
+        {
+            "role": "system",
+            "content": "You are an Explorer AI tasked with learning about another chatbot you're interacting with. Ask questions to understand its capabilities, limitations, knowledge domains, and personality. Be curious and investigative while maintaining a natural conversation flow. Take note of how it responds and adapt your questions accordingly. Your goal is to build a comprehensive understanding of what the other chatbot does and how it operates."
+        }
+    ]
 
     print("Starting")
     is_ok, taskyto_message = the_chatbot.execute_starter_chatbot()
