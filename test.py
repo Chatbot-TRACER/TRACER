@@ -43,6 +43,18 @@ def main():
     is_ok, taskyto_message = the_chatbot.execute_starter_chatbot()
     print(f"\nChatbot: {taskyto_message}")
 
+    # Force start asking
+    conversation_history.append({"role": "user", "content": taskyto_message})
+    conversation_history.append({
+        "role": "assistant",
+        "content": "Hello! What are your functionalities?"
+    })
+
+    # Send this first Explorer message to the chatbot
+    is_ok, taskyto_message = the_chatbot.execute_with_input(conversation_history[-1]["content"])
+    print(f"\nExplorer: {conversation_history[-1]['content']}")
+    print(f"\nChatbot: {taskyto_message}")
+
     # Main conversation loop
     while True:
         try:
