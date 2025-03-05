@@ -50,13 +50,10 @@ def main():
     max_turns = args.turns
     model_name = args.model
     output_file = args.output
-    # Track discovered functionalities
-    discovered_functionalities = []
+
 
     # Track multiple conversation sessions
     conversation_sessions = []
-    max_sessions = 3
-    max_turns = 15
 
     class State(TypedDict):
         messages: Annotated[list, add_messages]
