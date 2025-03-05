@@ -2,6 +2,7 @@ import sys
 from typing import Annotated
 from langchain_openai import ChatOpenAI
 from typing_extensions import TypedDict
+import argparse  # Add this import
 
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import StateGraph
@@ -9,10 +10,46 @@ from langgraph.graph.message import add_messages
 
 from chatbot_connectors import ChatbotTaskyto
 
+def parse_arguments():
+    """Parse command line arguments"""
+    parser = argparse.ArgumentParser(description="Chatbot Explorer - Discover functionalities of another chatbot")
+
+    parser.add_argument("-s", "--sessions", type=int, default=3,
+                        help="Number of exploration sessions (default: 3)")
+
+    parser.add_argument("-t", "--turns", type=int, default=15,
+                        help="Maximum turns per session (default: 15)")
+
+    parser.add_argument("-u", "--url", type=str, default="http://localhost:5000",
+                        help="URL for the chatbot API (default: http://localhost:5000)")
+
+    parser.add_argument("-m", "--model", type=str, default="gpt-4o-mini",
+                        help="OpenAI model to use (default: gpt-4o-mini)")
+
+    parser.add_argument("-o", "--output", type=str, default="discovered_functionalities.txt",
+                        help="Output file for discovered functionalities (default: discovered_functionalities.txt)")
+
+    return parser.parse_args()
 
 def main():
-    chatbot_url = "http://localhost:5000"
+    # Parse command line arguments
+    args = parse_arguments()
 
+    # Display configuration
+    print("=== Chatbot Explorer Configuration ===")
+    print(f"Chatbot URL: {args.url}")
+    print(f"Exploration sessions: {args.sessions}")
+    print(f"Max turns per session: {args.turns}")
+    print(f"Using model: {args.model}")
+    print(f"Output file: {args.output}")
+    print("====================================")
+
+    # Use the parameters from args
+    chatbot_url = args.url
+    max_sessions = args.sessions
+    max_turns = args.turns
+    model_name = args.model
+    output_file = args.output
     # Track discovered functionalities
     discovered_functionalities = []
 
@@ -28,7 +65,7 @@ def main():
         current_session: int
         sessions_completed: bool
 
-    llm = ChatOpenAI(model="gpt-4o-mini")
+    llm = ChatOpenAI(model=model_name)
 
     # This node will talk with the other chatbot
     def explorer(state: State):
@@ -255,10 +292,10 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
         print(f"{i}. {func}")
 
     # Save results
-    with open("discovered_functionalities.txt", "w") as f:
+    with open(output_file, "w") as f:
         for func in result["discovered_functionalities"]:
             f.write(f"{func}\n")
-    print("\nFunctionalities saved to 'discovered_functionalities.txt'")
+    print(f"\nFunctionalities saved to '{output_file}'")
 
 
 if __name__ == "__main__":
