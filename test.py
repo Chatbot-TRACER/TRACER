@@ -10,26 +10,55 @@ from langgraph.graph.message import add_messages
 
 from chatbot_connectors import ChatbotTaskyto
 
+
 def parse_arguments():
     """Parse command line arguments"""
-    parser = argparse.ArgumentParser(description="Chatbot Explorer - Discover functionalities of another chatbot")
+    parser = argparse.ArgumentParser(
+        description="Chatbot Explorer - Discover functionalities of another chatbot"
+    )
 
-    parser.add_argument("-s", "--sessions", type=int, default=3,
-                        help="Number of exploration sessions (default: 3)")
+    parser.add_argument(
+        "-s",
+        "--sessions",
+        type=int,
+        default=3,
+        help="Number of exploration sessions (default: 3)",
+    )
 
-    parser.add_argument("-t", "--turns", type=int, default=15,
-                        help="Maximum turns per session (default: 15)")
+    parser.add_argument(
+        "-t",
+        "--turns",
+        type=int,
+        default=15,
+        help="Maximum turns per session (default: 15)",
+    )
 
-    parser.add_argument("-u", "--url", type=str, default="http://localhost:5000",
-                        help="URL for the chatbot API (default: http://localhost:5000)")
+    parser.add_argument(
+        "-u",
+        "--url",
+        type=str,
+        default="http://localhost:5000",
+        help="URL for the chatbot API (default: http://localhost:5000)",
+    )
 
-    parser.add_argument("-m", "--model", type=str, default="gpt-4o-mini",
-                        help="OpenAI model to use (default: gpt-4o-mini)")
+    parser.add_argument(
+        "-m",
+        "--model",
+        type=str,
+        default="gpt-4o-mini",
+        help="OpenAI model to use (default: gpt-4o-mini)",
+    )
 
-    parser.add_argument("-o", "--output", type=str, default="discovered_functionalities.txt",
-                        help="Output file for discovered functionalities (default: discovered_functionalities.txt)")
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        default="discovered_functionalities.txt",
+        help="Output file for discovered functionalities (default: discovered_functionalities.txt)",
+    )
 
     return parser.parse_args()
+
 
 def main():
     # Parse command line arguments
@@ -51,7 +80,6 @@ def main():
     model_name = args.model
     output_file = args.output
 
-
     # Track multiple conversation sessions
     conversation_sessions = []
 
@@ -59,22 +87,24 @@ def main():
         messages: Annotated[list, add_messages]
         conversation_history: list
         discovered_functionalities: list
+        discovered_limitations: list
         current_session: int
-        sessions_completed: bool
+        # Bool field that determines if the exploration phase is completed
+        exploration_finished: bool
 
     llm = ChatOpenAI(model=model_name)
 
-    # This node will talk with the other chatbot
+    # This node will talk with the other chatbot and figure out its functionalities
     def explorer(state: State):
         # Only process if we're in exploration phase
-        if not state["sessions_completed"]:
+        if not state["exploration_finished"]:
             return {"messages": [llm.invoke(state["messages"])], "explored": True}
         # If not just return the messages
         return {"messages": state["messages"]}
 
     # This node will analyze the functionalities with a given conversation
     def analyzer(state: State):
-        if state["sessions_completed"]:
+        if state["exploration_finished"]:
             # Create prompt for analyzer
             analyzer_prompt = f"""
             You are a Functionality Analyzer tasked with extracting a comprehensive list of functionalities from conversation histories.
@@ -102,21 +132,26 @@ def main():
             """
 
             analysis_result = llm.invoke(analyzer_prompt)
+            analysis_content = analysis_result.content
+            functionalities = extract_functionalities(analysis_content)
+            limitations = extract_limitations(analysis_content)
+
             return {
                 "messages": state["messages"] + [analysis_result],
-                "discovered_functionalities": extract_functionalities_from_analysis(
-                    analysis_result.content
-                ),
+                "discovered_functionalities": functionalities,
+                "discovered_limitations": limitations,
             }
         return {"messages": state["messages"]}
 
-    # Function to extract structured functionalities from analyzer output
-    def extract_functionalities_from_analysis(analysis_text):
+    def extract_functionalities(analysis_text):
+        """Extract functionalities from the analysis text."""
         functionalities = []
+
         if "## IDENTIFIED FUNCTIONALITIES" in analysis_text:
-            func_section = analysis_text.split("## IDENTIFIED FUNCTIONALITIES")[
-                1
-            ].split("##")[0]
+            func_section = analysis_text.split("## IDENTIFIED FUNCTIONALITIES")[1]
+            if "##" in func_section:
+                func_section = func_section.split("##")[0]
+
             func_lines = [
                 line.strip() for line in func_section.split("\n") if line.strip()
             ]
@@ -128,7 +163,28 @@ def main():
                         func_name = func_parts[0].strip().split(".", 1)[-1].strip()
                         func_desc = func_parts[1].strip()
                         functionalities.append(f"{func_name}: {func_desc}")
+
         return functionalities
+
+    # This function only extracts limitations (keep your existing one)
+    def extract_limitations(analysis_text):
+        """Extract limitations from the analysis text."""
+        limitations = []
+
+        if "## LIMITATIONS" in analysis_text:
+            limit_section = analysis_text.split("## LIMITATIONS")[1]
+            if "##" in limit_section:
+                limit_section = limit_section.split("##")[0]
+
+            limit_lines = [
+                line.strip() for line in limit_section.split("\n") if line.strip()
+            ]
+            for line in limit_lines:
+                if line.startswith("- "):
+                    limitation = line[2:].strip()
+                    limitations.append(limitation)
+
+        return limitations
 
     # Set up the graph
     graph_builder = StateGraph(State)
@@ -186,16 +242,17 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
         first_questions = [
             "Hello! How can you help me?",
             "What are your your functionalities?",
-            "What can you do?"
+            "What can you do?",
         ]
 
-        initial_question = first_questions[session_num] if session_num < len(first_questions) else "Hello! What can you tell me about yourself?"
-
+        initial_question = (
+            first_questions[session_num]
+            if session_num < len(first_questions)
+            else "Hello! What can you tell me about yourself?"
+        )
 
         conversation_history.append({"role": "user", "content": chatbot_message})
-        conversation_history.append(
-            {"role": "assistant", "content": initial_question}
-        )
+        conversation_history.append({"role": "assistant", "content": initial_question})
 
         # Conduct the conversation for this session
         is_ok, chatbot_message = the_chatbot.execute_with_input(
@@ -212,7 +269,9 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
 
             # Exit conditions
             if turn_count >= max_turns:
-                print(f"\nReached maximum turns ({max_turns}). Ending session {session_num + 1}.")
+                print(
+                    f"\nReached maximum turns ({max_turns}). Ending session {session_num + 1}."
+                )
                 break
 
             # Add the chatbot message to the conversation history
@@ -221,12 +280,14 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
             # Process through LangGraph with full history context
             explorer_response = None
             for event in graph.stream(
-                {"messages": conversation_history,
-                "conversation_history": [],
-                "discovered_functionalities": [],
-                "current_session": session_num,
-                "sessions_completed": False},
-                config=config
+                {
+                    "messages": conversation_history,
+                    "conversation_history": [],
+                    "discovered_functionalities": [],
+                    "current_session": session_num,
+                    "exploration_finished": False,
+                },
+                config=config,
             ):
                 for value in event.values():
                     latest_message = value["messages"][-1]
@@ -240,7 +301,9 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
                 break
 
             # Add the explorer response to conversation history
-            conversation_history.append({"role": "assistant", "content": explorer_response})
+            conversation_history.append(
+                {"role": "assistant", "content": explorer_response}
+            )
 
             # Send explorer response back to Chatbot
             is_ok, chatbot_message = the_chatbot.execute_with_input(explorer_response)
@@ -273,26 +336,39 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
         ],
         "conversation_history": conversation_sessions,
         "discovered_functionalities": [],
+        "discovered_limitations": [],
         "current_session": max_sessions,
-        "sessions_completed": True,
+        "exploration_finished": True,
     }
 
-    # Add the config parameter here - this was missing
+    # Execute the analysis
     config = {"configurable": {"thread_id": "analysis_session"}}
-
-    # Run analysis with the config parameter
     result = graph.invoke(analysis_state, config=config)
 
-    # Display results
+    # Display results with error handling for the missing key
     print("\n=== CHATBOT FUNCTIONALITY ANALYSIS ===")
-    for i, func in enumerate(result["discovered_functionalities"], 1):
+    print("\n## FUNCTIONALITIES")
+    for i, func in enumerate(result.get("discovered_functionalities", []), 1):
         print(f"{i}. {func}")
 
-    # Save results
+    print("\n## LIMITATIONS")
+    if "discovered_limitations" in result:
+        for i, limitation in enumerate(result["discovered_limitations"], 1):
+            print(f"{i}. {limitation}")
+    else:
+        print("No limitations discovered.")
+
+    # Save results with error handling
     with open(output_file, "w") as f:
-        for func in result["discovered_functionalities"]:
-            f.write(f"{func}\n")
-    print(f"\nFunctionalities saved to '{output_file}'")
+        f.write("## FUNCTIONALITIES\n")
+        for func in result.get("discovered_functionalities", []):
+            f.write(f"- {func}\n")
+        f.write("\n## LIMITATIONS\n")
+        if "discovered_limitations" in result:
+            for limitation in result["discovered_limitations"]:
+                f.write(f"- {limitation}\n")
+        else:
+            f.write("- No limitations discovered.\n")
 
 
 if __name__ == "__main__":
