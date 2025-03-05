@@ -17,44 +17,50 @@ def parse_arguments():
         description="Chatbot Explorer - Discover functionalities of another chatbot"
     )
 
+    default_sessions = 3
+    default_turns = 8
+    default_url = "http://localhost:5000"
+    default_model = "gpt-4o-mini"
+    default_file = "discovered_functionalities.txt"
+
     parser.add_argument(
         "-s",
         "--sessions",
         type=int,
-        default=3,
-        help="Number of exploration sessions (default: 3)",
+        default=default_sessions,
+        help=f"Number of exploration sessions (default: {default_sessions})",
     )
 
     parser.add_argument(
         "-t",
         "--turns",
         type=int,
-        default=15,
-        help="Maximum turns per session (default: 15)",
+        default=default_turns,
+        help=f"Maximum turns per session (default: {default_turns})",
     )
 
     parser.add_argument(
         "-u",
         "--url",
         type=str,
-        default="http://localhost:5000",
-        help="URL for the chatbot API (default: http://localhost:5000)",
+        default=default_url,
+        help=f"Chatbot URL to explore (default: {default_url})",
     )
 
     parser.add_argument(
         "-m",
         "--model",
         type=str,
-        default="gpt-4o-mini",
-        help="OpenAI model to use (default: gpt-4o-mini)",
+        default=default_model,
+        help=f"OpenAI model to use (default: {default_model})",
     )
 
     parser.add_argument(
         "-o",
         "--output",
         type=str,
-        default="discovered_functionalities.txt",
-        help="Output file for discovered functionalities (default: discovered_functionalities.txt)",
+        default=default_file,
+        help=f"Output file to save discovered functionalities (default: {default_file})",
     )
 
     return parser.parse_args()
