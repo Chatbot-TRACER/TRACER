@@ -97,8 +97,28 @@ def main():
         current_session: int
         # Bool field that determines if the exploration phase is completed
         exploration_finished: bool
+        conversation_goals: list
 
     llm = ChatOpenAI(model=model_name)
+
+    def goal_generator(state: State):
+        """Generate conversation goals based on discovered functionalities"""
+        if state["exploration_finished"] and state["discovered_functionalities"]:
+            print("\n--- Generating conversation goals ---")
+
+            # Generate goals using the existing function
+            profiles_with_goals = generate_user_profiles_and_goals(
+                state["discovered_functionalities"],
+                state["discovered_limitations"],
+                llm
+            )
+
+            # Return updated state with goals
+            return {
+                "messages": state["messages"],
+                "conversation_goals": profiles_with_goals
+            }
+        return {"messages": state["messages"]}
 
     # This node will talk with the other chatbot and figure out its functionalities
     def explorer(state: State):
@@ -197,10 +217,12 @@ def main():
 
     graph_builder.add_node("explorer", explorer)
     graph_builder.add_node("analyzer", analyzer)
+    graph_builder.add_node("goal_generator", goal_generator)
 
     graph_builder.set_entry_point("explorer")
     graph_builder.add_edge("explorer", "analyzer")
-    graph_builder.set_finish_point("analyzer")
+    graph_builder.add_edge("analyzer", "goal_generator")
+    graph_builder.set_finish_point("goal_generator")
     memory = MemorySaver()
     graph = graph_builder.compile(checkpointer=memory)
     config = {"configurable": {"thread_id": "1"}}
@@ -292,6 +314,7 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
                     "discovered_functionalities": [],
                     "current_session": session_num,
                     "exploration_finished": False,
+                    "conversation_goas": [],
                 },
                 config=config,
             ):
@@ -345,6 +368,7 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
         "discovered_limitations": [],
         "current_session": max_sessions,
         "exploration_finished": True,
+        "conversation_goals": [],
     }
 
     # Execute the analysis
@@ -377,24 +401,19 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
             f.write("- No limitations discovered.\n")
 
     # Generate user profiles and goals
-    print("\n--- Generating user profiles and goals ---")
-    user_profiles = generate_user_profiles_and_goals(
-        result.get("discovered_functionalities", []),
-        result.get("discovered_limitations", []),
-        llm,
-    )
-
-    print("\n--- User profiles and goals generated ---")
-
-    for profile in user_profiles:
-        print(f"\nProfile: {profile['name']}")
-        print(f"Description: {profile['description']}")
-        print("\nFunctionalities:")
-        for func in profile["functionalities"]:
-            print(f"- {func}")
-        print("\nGoals:")
-        for goal in profile["goals"]:
-            print(f"- {goal}")
+    print("\n--- User profiles and goals from analysis ---")
+    if "conversation_goals" in result and result["conversation_goals"]:
+        for profile in result["conversation_goals"]:
+            print(f"\nProfile: {profile['name']}")
+            print(f"Description: {profile['description']}")
+            print("\nFunctionalities:")
+            for func in profile["functionalities"]:
+                print(f"- {func}")
+            print("\nGoals:")
+            for goal in profile["goals"]:
+                print(f"- {goal}")
+    else:
+        print("No conversation goals were generated.")
 
 
 def generate_user_profiles_and_goals(
