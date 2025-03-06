@@ -1,0 +1,80 @@
+test_name: "pizza_order_test_custom"
+
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+
+user:
+  language: English
+  role: you have to act as a user ordering a pizza to a pizza shop.
+  context:
+    - personality: personalities/conversational-user.yml
+    - your name is Jon Doe
+  goals:
+    - "a {{size}} custom pizza with {{toppings}}, {{size}}"
+    - "{{cans}} cans of {{drink}}"
+    - how long is going to take the pizza to arrive
+    - how much will it cost
+
+    - size:
+        function: another()
+        type: string
+        data:
+          - small
+          - medium
+          - big
+
+    - toppings:
+        function: random(rand)
+        type: string
+        data:
+          - cheese
+          - mushrooms
+          - pepperoni
+
+    - cans:
+        function: forward(drink)
+        type: int
+        data:
+          min: 1
+          max: 3
+          step: 1
+
+    - drink:
+        function: forward()
+        type: string
+        data:
+          - sprite
+          - coke
+          - Orange Fanta
+          - any(3 alcoholic drinks)
+
+chatbot:
+  is_starter: False
+  fallback: I'm sorry it's a little loud in my pizza shop, can you say that again?
+  output:
+    - price:
+        type: money
+        description: The final price of the pizza order
+    - time:
+        type: time
+        description: how long is going to take the pizza to be ready
+    - order_id:
+        type: str
+        description: my order ID
+
+conversation:
+  number: 2
+  goal_style:
+    steps: 2
+  interaction_style:
+    - random:
+      - make spelling mistakes
+#      - all questions
+#      - long phrases
+#      - change language:
+#          - italian
+#          - portuguese
+#          - chinese
