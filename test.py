@@ -376,6 +376,194 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
         else:
             f.write("- No limitations discovered.\n")
 
+    # Generate user profiles and goals
+    print("\n--- Generating user profiles and goals ---")
+    user_profiles = generate_user_profiles_and_goals(
+        result.get("discovered_functionalities", []),
+        result.get("discovered_limitations", []),
+        llm,
+    )
+
+    print("\n--- User profiles and goals generated ---")
+
+    for profile in user_profiles:
+        print(f"\nProfile: {profile['name']}")
+        print(f"Description: {profile['description']}")
+        print("\nFunctionalities:")
+        for func in profile["functionalities"]:
+            print(f"- {func}")
+        print("\nGoals:")
+        for goal in profile["goals"]:
+            print(f"- {goal}")
+
+
+def generate_user_profiles_and_goals(
+    functionalities, limitations, llm, output_dir="profiles"
+):
+    """
+    Group functionalities into logical user profiles and generate coherent goal sets
+    for individual conversations
+    """
+    # First, create the output directory if it doesn't exist
+    import os
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # Ask the LLM to identify distinct conversation scenarios
+    grouping_prompt = f"""
+    Based on these chatbot functionalities:
+    {", ".join(functionalities)}
+
+    Create 3-5 distinct user profiles, where each profile represents ONE specific conversation scenario.
+
+    IMPORTANT: Each profile should contain goals that make sense to accomplish in a SINGLE conversation.
+    For example, "ordering food and checking delivery time" is ONE conversation scenario, while
+    "filing taxes and asking about community events" would be TWO separate scenarios.
+
+    FORMAT YOUR RESPONSE AS:
+
+    ## PROFILE: [Conversation Scenario Name]
+    DESCRIPTION: [Brief description of this conversation scenario]
+    FUNCTIONALITIES:
+    - [functionality 1 relevant to this scenario]
+    - [functionality 2 relevant to this scenario]
+
+    ## PROFILE: [Another Conversation Scenario Name]
+    DESCRIPTION: [Brief description of this scenario]
+    FUNCTIONALITIES:
+    - [functionality 3 relevant to this scenario]
+    - [functionality 4 relevant to this scenario]
+
+    ... and so on
+    """
+
+    # Get scenario groupings from the LLM
+    profiles_response = llm.invoke(grouping_prompt)
+    profiles_content = profiles_response.content
+
+    # Parse the profiles
+    profile_sections = profiles_content.split("## PROFILE:")
+
+    # Skip the first element if it's empty
+    if not profile_sections[0].strip():
+        profile_sections = profile_sections[1:]
+
+    profiles = []
+
+    # Process each profile section
+    for section in profile_sections:
+        lines = section.strip().split("\n")
+        profile_name = lines[0].strip()
+
+        # Extract description
+        description = ""
+        functionalities_list = []
+
+        description_started = False
+        functionalities_started = False
+
+        for line in lines[1:]:
+            if line.startswith("DESCRIPTION:"):
+                description_started = True
+                description = line[len("DESCRIPTION:") :].strip()
+            elif line.startswith("FUNCTIONALITIES:"):
+                description_started = False
+                functionalities_started = True
+            elif functionalities_started and line.strip().startswith("- "):
+                functionalities_list.append(line.strip()[2:])
+            elif description_started:
+                description += " " + line.strip()
+
+        profiles.append(
+            {
+                "name": profile_name,
+                "description": description,
+                "functionalities": functionalities_list,
+            }
+        )
+
+    # For each profile, generate appropriate goals for a single conversation
+    for profile in profiles:
+        goals_prompt = f"""
+        Generate a set of coherent goals for this conversation scenario:
+
+        CONVERSATION SCENARIO: {profile["name"]}
+        DESCRIPTION: {profile["description"]}
+
+        RELEVANT FUNCTIONALITIES:
+        {", ".join(profile["functionalities"])}
+
+        LIMITATIONS:
+        {", ".join(limitations)}
+
+        Create 2-4 goals that form a NATURAL CONVERSATION FLOW within this single scenario.
+        All goals should logically connect as part of ONE user's interaction.
+
+        Examples of good goal sets:
+
+        Example 1 (Food ordering):
+        - "Order a {{size}} pizza with {{toppings}}"
+        - "Add {{quantity}} {{drink}} to my order"
+        - "Ask about delivery time"
+        - "Get my order total and confirmation number"
+
+        Example 2 (Municipal services):
+        - "Ask about property tax"
+        - "Find out how to pay it"
+
+        Example 3 (City registration):
+        - "Ask how to register as a resident"
+        - "Find out what documents are needed"
+        - "Ask if registration can be done online"
+
+        FORMAT YOUR RESPONSE AS:
+
+        GOALS:
+        - "first goal with {{variable}} if needed"
+        - "second related goal"
+        - "third goal that follows naturally"
+
+        DO NOT include variable definitions - just use {{varname}} placeholders (important, two curly braces to open and two to close).
+        Make sure all goals fit naturally in ONE conversation with the chatbot.
+        """
+
+        # Get goals for this profile
+        goals_response = llm.invoke(goals_prompt)
+        goals_content = goals_response.content
+
+        # Extract just the goals list
+        goals = []
+        if "GOALS:" in goals_content:
+            goals_section = goals_content.split("GOALS:")[1].strip()
+            for line in goals_section.split("\n"):
+                if line.strip().startswith("- "):
+                    # Clean up the goal text (remove quotes and extra spaces)
+                    goal = line.strip()[2:].strip().strip("\"'")
+                    if goal:  # Only add non-empty goals
+                        goals.append(goal)
+
+        profile["goals"] = goals
+
+        # Save to a simple text file
+        filename = f"{profile['name'].lower().replace(' ', '_').replace(',', '').replace('&', 'and')}_profile.txt"
+        filepath = os.path.join(output_dir, filename)
+
+        with open(filepath, "w") as file:
+            file.write(f"# User Profile: {profile['name']}\n")
+            file.write(f"# Description: {profile['description']}\n\n")
+            file.write("# Relevant Functionalities:\n")
+            for func in profile["functionalities"]:
+                file.write(f"# - {func}\n")
+
+            file.write("\n# Goals for a single conversation:\n")
+            for goal in profile["goals"]:
+                file.write(f"- {goal}\n")
+
+        profile["file_path"] = filepath
+
+    return profiles
+
 
 if __name__ == "__main__":
     main()
