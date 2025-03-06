@@ -9,6 +9,7 @@ from langgraph.graph import StateGraph
 from langgraph.graph.message import add_messages
 
 from chatbot_connectors import ChatbotTaskyto
+from chatbot_connectors import ChatbotAdaUam
 
 
 def parse_arguments():
@@ -22,6 +23,7 @@ def parse_arguments():
     default_url = "http://localhost:5000"
     default_model = "gpt-4o-mini"
     default_file = "discovered_functionalities.txt"
+    default_technology = "taskyto"
 
     parser.add_argument(
         "-s",
@@ -32,11 +34,19 @@ def parse_arguments():
     )
 
     parser.add_argument(
-        "-t",
+        "-n",
         "--turns",
         type=int,
         default=default_turns,
         help=f"Maximum turns per session (default: {default_turns})",
+    )
+
+    parser.add_argument(
+        "-t",
+        "--technology",
+        type=str,
+        default=default_technology,
+        help=f"Chatbot technology to use (default: {default_technology})",
     )
 
     parser.add_argument(
@@ -69,15 +79,7 @@ def parse_arguments():
 def main():
     # Parse command line arguments
     args = parse_arguments()
-
-    # Display configuration
-    print("=== Chatbot Explorer Configuration ===")
-    print(f"Chatbot URL: {args.url}")
-    print(f"Exploration sessions: {args.sessions}")
-    print(f"Max turns per session: {args.turns}")
-    print(f"Using model: {args.model}")
-    print(f"Output file: {args.output}")
-    print("====================================")
+    valid_technlogies = ["taskyto", "ada-uam"]
 
     # Use the parameters from args
     chatbot_url = args.url
@@ -85,6 +87,24 @@ def main():
     max_turns = args.turns
     model_name = args.model
     output_file = args.output
+    technology = args.technology
+
+    # Validate the technology argument
+    if args.technology not in valid_technlogies:
+        print(
+            f"Invalid technology: {args.technology}. Must be one of: {valid_technlogies}"
+        )
+        sys.exit(1)
+
+    # Display configuration
+    print("=== Chatbot Explorer Configuration ===")
+    print(f"Chatbot Technology: {args.technology}")
+    print(f"Chatbot URL: {args.url}")
+    print(f"Exploration sessions: {args.sessions}")
+    print(f"Max turns per session: {args.turns}")
+    print(f"Using model: {args.model}")
+    print(f"Output file: {args.output}")
+    print("====================================")
 
     # Track multiple conversation sessions
     conversation_sessions = []
@@ -110,13 +130,13 @@ def main():
             profiles_with_goals = generate_user_profiles_and_goals(
                 state["discovered_functionalities"],
                 state["discovered_limitations"],
-                llm
+                llm,
             )
 
             # Return updated state with goals
             return {
                 "messages": state["messages"],
-                "conversation_goals": profiles_with_goals
+                "conversation_goals": profiles_with_goals,
             }
         return {"messages": state["messages"]}
 
@@ -227,7 +247,11 @@ def main():
     graph = graph_builder.compile(checkpointer=memory)
     config = {"configurable": {"thread_id": "1"}}
 
-    the_chatbot = ChatbotTaskyto(chatbot_url)
+    # Create the chatbot according to the technology
+    if technology == "taskyto":
+        the_chatbot = ChatbotTaskyto(chatbot_url)
+    elif technology == "ada-uam":
+        the_chatbot = ChatbotAdaUam(chatbot_url)
 
     # Session management loop
     for session_num in range(max_sessions):
@@ -263,8 +287,6 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
         ]
 
         print("Starting session")
-        is_ok, chatbot_message = the_chatbot.execute_starter_chatbot()
-        print(f"\nChatbot: {chatbot_message}")
 
         # Some ideas on how to start the conversation
         first_questions = [
@@ -279,15 +301,16 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
             else "Hello! What can you tell me about yourself?"
         )
 
-        conversation_history.append({"role": "user", "content": chatbot_message})
-        conversation_history.append({"role": "assistant", "content": initial_question})
+        # Start with our question instead of waiting for chatbot to start
+        print(f"\nExplorer: {initial_question}")
 
-        # Conduct the conversation for this session
-        is_ok, chatbot_message = the_chatbot.execute_with_input(
-            conversation_history[-1]["content"]
-        )
-        print(f"\nExplorer: {conversation_history[-1]['content']}")
+        # Send our initial question to the chatbot
+        is_ok, chatbot_message = the_chatbot.execute_with_input(initial_question)
         print(f"\nChatbot: {chatbot_message}")
+
+        # Add the initial exchange to conversation history
+        conversation_history.append({"role": "assistant", "content": initial_question})
+        conversation_history.append({"role": "user", "content": chatbot_message})
 
         # Main conversation loop for this session
         turn_count = 0
