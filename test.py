@@ -76,6 +76,32 @@ def parse_arguments():
     return parser.parse_args()
 
 
+def extract_supported_languages(chatbot_response, llm):
+    """Extract supported languages from chatbot response"""
+    language_prompt = f"""
+    Based on the following chatbot response, determine what language(s) the chatbot supports.
+    If the response is in a non-English language, include that language in the list.
+    If the response explicitly mentions supported languages, list those.
+
+    CHATBOT RESPONSE:
+    {chatbot_response}
+
+    FORMAT YOUR RESPONSE AS A COMMA-SEPARATED LIST OF LANGUAGES:
+    [language1, language2, ...]
+
+    RESPONSE:
+    """
+
+    language_result = llm.invoke(language_prompt)
+    languages = language_result.content.strip()
+
+    # Clean up the response - remove brackets, quotes, etc.
+    languages = languages.replace("[", "").replace("]", "")
+    language_list = [lang.strip() for lang in languages.split(",") if lang.strip()]
+
+    return language_list
+
+
 def main():
     # Parse command line arguments
     args = parse_arguments()
@@ -108,6 +134,7 @@ def main():
 
     # Track multiple conversation sessions
     conversation_sessions = []
+    supported_languages = []
 
     class State(TypedDict):
         messages: Annotated[list, add_messages]
@@ -118,6 +145,7 @@ def main():
         # Bool field that determines if the exploration phase is completed
         exploration_finished: bool
         conversation_goals: list
+        supported_languages: list
 
     llm = ChatOpenAI(model=model_name)
 
@@ -131,9 +159,7 @@ def main():
                 state["discovered_functionalities"],
                 state["discovered_limitations"],
                 llm,
-                conversation_history=state[
-                    "conversation_history"
-                ],  # Added conversation history
+                conversation_history=state["conversation_history"],
             )
 
             # Return updated state with goals
@@ -262,20 +288,28 @@ def main():
             f"\n--- Starting Exploration Session {session_num + 1}/{max_sessions} ---"
         )
 
+        # Add language information to the system prompt if available
+        language_instruction = ""
+        if session_num > 0 and supported_languages:
+            language_str = ", ".join(supported_languages)
+            language_instruction = f"\n\nIMPORTANT: The chatbot supports these languages: {language_str}. Adapt your questions accordingly and consider using these languages in your exploration."
+
         # Reset conversation history for this session
         conversation_history = [
             {
                 "role": "system",
                 "content": f"""You are an Explorer AI tasked with learning about another chatbot you're interacting with.
 
-IMPORTANT GUIDELINES:
-1. Ask ONE simple question at a time - the chatbot gets confused by multiple questions
-2. Keep your messages short and direct
-3. When the chatbot indicates it didn't understand, simplify your language further
-4. Follow the chatbot's conversation flow and adapt to its capabilities
+    IMPORTANT GUIDELINES:
+    1. Ask ONE simple question at a time - the chatbot gets confused by multiple questions
+    2. Keep your messages short and direct
+    3. When the chatbot indicates it didn't understand, simplify your language further
+    4. Follow the chatbot's conversation flow and adapt to its capabilities{
+                    language_instruction
+                }
 
-EXPLORATION FOCUS FOR SESSION {session_num + 1}:
-{
+    EXPLORATION FOCUS FOR SESSION {session_num + 1}:
+    {
                     "Explore basic information and general capabilities of the chatbot"
                     if session_num == 0
                     else "Investigate specific services, features, and information retrieval capabilities"
@@ -283,26 +317,51 @@ EXPLORATION FOCUS FOR SESSION {session_num + 1}:
                     else "Test edge cases, complex queries, and discover potential limitations"
                 }
 
-Your goal is to understand the chatbot's capabilities through direct, simple interactions.
-After approximately 10 exchanges, or when you feel you've explored this path thoroughly, say "EXPLORATION COMPLETE".
-""",
+    Your goal is to understand the chatbot's capabilities through direct, simple interactions.
+    After {
+                    max_turns
+                } exchanges, or when you feel you've explored this path thoroughly, say "EXPLORATION COMPLETE".
+    """,
             }
         ]
 
         print("Starting session")
 
-        # Some ideas on how to start the conversation
-        first_questions = [
-            "Hello! How can you help me?",
-            "What are your your functionalities?",
-            "What can you do?",
-        ]
+        # For the first session we want to get the languages avialable
+        if session_num == 0:
+            initial_question = "Hello! What languages do you support or speak?"
+        else:
+            # Now we will use the found language
+            language_str = ", ".join(supported_languages)
 
-        initial_question = (
-            first_questions[session_num]
-            if session_num < len(first_questions)
-            else "Hello! What can you tell me about yourself?"
-        )
+            # Create a prompt for the Explorer to generate an initial question
+            question_prompt = f"""
+            You need to generate an initial question for a conversation with a chatbot.
+
+            INFORMATION:
+            - This is session {session_num + 1} of the exploration
+            - The chatbot supports these languages: {language_str}
+
+            EXPLORATION FOCUS FOR THIS SESSION:
+            {
+                "Investigate specific services, features, and information retrieval capabilities"
+                if session_num == 1
+                else "Test edge cases, complex queries, and discover potential limitations"
+            }
+
+            IMPORTANT:
+            - Keep your question simple and direct - only ask ONE thing
+            - Your response should only contain the question, nothing else
+
+            GENERATE A SIMPLE OPENING QUESTION THAT:
+            1. Is appropriate for starting this exploration session
+            2. Is in the primary supported language of the chatbot
+            3. Helps discover the chatbot's capabilities relevant to this session's focus
+            """
+
+            # Generate the initial question using the Explorer's LLM
+            question_response = llm.invoke(question_prompt)
+            initial_question = question_response.content.strip().strip("\"'")
 
         # Start with our question instead of waiting for chatbot to start
         print(f"\nExplorer: {initial_question}")
@@ -341,6 +400,7 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
                     "current_session": session_num,
                     "exploration_finished": False,
                     "conversation_goas": [],
+                    "supported_languages": supported_languages,
                 },
                 config=config,
             ):
@@ -373,6 +433,11 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
             if chatbot_message.lower() in ["quit", "exit", "q", "bye", "goodbye"]:
                 print("Chatbot ended the conversation. Ending session.")
                 break
+
+        # At the end of the first session get the supported languages
+        if session_num == 0:
+            supported_languages = extract_supported_languages(chatbot_message, llm)
+            print(f"\nDetected supported languages: {supported_languages}")
 
         # After session ends, save the conversation history
         print(f"\nSession {session_num + 1} complete with {turn_count} exchanges")
