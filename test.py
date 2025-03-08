@@ -160,6 +160,7 @@ def main():
                 state["discovered_limitations"],
                 llm,
                 conversation_history=state["conversation_history"],
+                supported_languages=state["supported_languages"],
             )
 
             # Return updated state with goals
@@ -180,6 +181,18 @@ def main():
     # This node will analyze the functionalities with a given conversation
     def analyzer(state: State):
         if state["exploration_finished"]:
+            # Add language prompt
+            language_instruction = ""
+            if state["supported_languages"]:
+                # Select the first language in case of multiple
+                primary_language = state["supported_languages"][0]
+                language_instruction = f"""
+    IMPORTANT LANGUAGE INSTRUCTION:
+    - Write all functionality descriptions and limitations in {primary_language}
+    - KEEP THE HEADINGS (## IDENTIFIED FUNCTIONALITIES, ## LIMITATIONS) IN ENGLISH
+    - MAINTAIN THE NUMBERED FORMAT (1., 2., etc.) with colons
+    - Example: "1. [Functionality name]: [Description in {primary_language}]"
+    """
             # Create prompt for analyzer
             analyzer_prompt = f"""
             You are a Functionality Analyzer tasked with extracting a comprehensive list of functionalities from conversation histories.
@@ -193,6 +206,8 @@ def main():
 
             CONVERSATION HISTORY:
             {state["conversation_history"]}
+
+            {language_instruction}
 
             FORMAT YOUR RESPONSE AS:
             ## IDENTIFIED FUNCTIONALITIES
@@ -460,6 +475,7 @@ def main():
         "current_session": max_sessions,
         "exploration_finished": True,
         "conversation_goals": [],
+        "supported_languages": supported_languages,
     }
 
     # Execute the analysis
@@ -508,7 +524,12 @@ def main():
 
 
 def generate_user_profiles_and_goals(
-    functionalities, limitations, llm, conversation_history=None, output_dir="profiles"
+    functionalities,
+    limitations,
+    llm,
+    conversation_history=None,
+    output_dir="profiles",
+    supported_languages=None,
 ):
     """
     Group functionalities into logical user profiles and generate coherent goal sets
@@ -519,6 +540,35 @@ def generate_user_profiles_and_goals(
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+
+    # Work in the given language with stronger instructions
+    primary_language = ""
+    language_instruction_grouping = ""
+    language_instruction_goals = ""
+
+    if supported_languages and len(supported_languages) > 0:
+        primary_language = supported_languages[0]
+        # More specific instruction with examples that will help the model follow format
+        language_instruction_grouping = f"""
+LANGUAGE REQUIREMENT:
+- Write ALL profile names, descriptions, and functionalities in {primary_language}
+- KEEP ONLY the formatting markers (##, PROFILE:, DESCRIPTION:, FUNCTIONALITIES:) in English
+- Example if the primary language was Spanish:
+  ## PROFILE: [Nombre del escenario en Spanish]
+  DESCRIPTION: [Descripción en Spanish]
+  FUNCTIONALITIES:
+  - [Funcionalidad en Spanish]
+"""
+
+        language_instruction_goals = f"""
+LANGUAGE REQUIREMENT:
+- Write ALL goals in {primary_language}
+- KEEP ONLY the formatting markers (GOALS:) in English
+- Keep variables in {{variable}} format
+- Example in Spanish:
+  GOALS:
+  - "Primer objetivo en Spanish con {{variable}}"
+"""
 
     # Prepare a condensed version of conversation history if available
     conversation_context = ""
@@ -544,6 +594,8 @@ def generate_user_profiles_and_goals(
     {", ".join(limitations)}
 
     {conversation_context}
+
+    {language_instruction_grouping}
 
     Create 3-5 distinct user profiles, where each profile represents ONE specific conversation scenario.
 
@@ -628,6 +680,8 @@ def generate_user_profiles_and_goals(
         {", ".join(limitations)}
 
         {conversation_context}
+
+        {language_instruction_goals}
 
         Create 2-4 goals that form a NATURAL CONVERSATION FLOW within this single scenario.
         All goals should logically connect as part of ONE user's interaction.
