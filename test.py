@@ -126,11 +126,14 @@ def main():
         if state["exploration_finished"] and state["discovered_functionalities"]:
             print("\n--- Generating conversation goals ---")
 
-            # Generate goals using the existing function
+            # Generate goals using the existing function, now with conversation history
             profiles_with_goals = generate_user_profiles_and_goals(
                 state["discovered_functionalities"],
                 state["discovered_limitations"],
                 llm,
+                conversation_history=state[
+                    "conversation_history"
+                ],  # Added conversation history
             )
 
             # Return updated state with goals
@@ -273,11 +276,11 @@ IMPORTANT GUIDELINES:
 
 EXPLORATION FOCUS FOR SESSION {session_num + 1}:
 {
-                    "Ask about ordering process and customization options"
+                    "Explore basic information and general capabilities of the chatbot"
                     if session_num == 0
-                    else "Focus on information retrieval capabilities like hours, prices, etc."
+                    else "Investigate specific services, features, and information retrieval capabilities"
                     if session_num == 1
-                    else "Explore error handling and limitations of the chatbot"
+                    else "Test edge cases, complex queries, and discover potential limitations"
                 }
 
 Your goal is to understand the chatbot's capabilities through direct, simple interactions.
@@ -440,7 +443,7 @@ After approximately 10 exchanges, or when you feel you've explored this path tho
 
 
 def generate_user_profiles_and_goals(
-    functionalities, limitations, llm, output_dir="profiles"
+    functionalities, limitations, llm, conversation_history=None, output_dir="profiles"
 ):
     """
     Group functionalities into logical user profiles and generate coherent goal sets
@@ -452,10 +455,30 @@ def generate_user_profiles_and_goals(
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
+    # Prepare a condensed version of conversation history if available
+    conversation_context = ""
+    if conversation_history:
+        conversation_context = (
+            "Here are some example conversations with the chatbot:\n\n"
+        )
+        for i, session in enumerate(conversation_history, 1):
+            conversation_context += f"--- SESSION {i} ---\n"
+            for turn in session:
+                if turn["role"] == "assistant":  # Explorer
+                    conversation_context += f"Human: {turn['content']}\n"
+                elif turn["role"] == "user":  # Chatbot's response
+                    conversation_context += f"Chatbot: {turn['content']}\n"
+            conversation_context += "\n"
+
     # Ask the LLM to identify distinct conversation scenarios
     grouping_prompt = f"""
     Based on these chatbot functionalities:
     {", ".join(functionalities)}
+
+    And these limitations:
+    {", ".join(limitations)}
+
+    {conversation_context}
 
     Create 3-5 distinct user profiles, where each profile represents ONE specific conversation scenario.
 
@@ -539,6 +562,8 @@ def generate_user_profiles_and_goals(
         LIMITATIONS:
         {", ".join(limitations)}
 
+        {conversation_context}
+
         Create 2-4 goals that form a NATURAL CONVERSATION FLOW within this single scenario.
         All goals should logically connect as part of ONE user's interaction.
 
@@ -566,7 +591,7 @@ def generate_user_profiles_and_goals(
         - "second related goal"
         - "third goal that follows naturally"
 
-        DO NOT include variable definitions - just use {{varname}} placeholders (important, two curly braces to open and two to close).
+        DO NOT include variable definitions - just use {{varname}} placeholders.
         Make sure all goals fit naturally in ONE conversation with the chatbot.
         """
 
