@@ -1,111 +1,13 @@
 import sys
-from typing import Annotated
-from langchain_openai import ChatOpenAI
-from typing_extensions import TypedDict
-import argparse  # Add this import
-
-from langgraph.checkpoint.memory import MemorySaver
-from langgraph.graph import StateGraph
-from langgraph.graph.message import add_messages
-
-from chatbot_connectors import ChatbotTaskyto
-from chatbot_connectors import ChatbotAdaUam
-
-
-def parse_arguments():
-    """Parse command line arguments"""
-    parser = argparse.ArgumentParser(
-        description="Chatbot Explorer - Discover functionalities of another chatbot"
-    )
-
-    default_sessions = 3
-    default_turns = 8
-    default_url = "http://localhost:5000"
-    default_model = "gpt-4o-mini"
-    default_file = "discovered_functionalities.txt"
-    default_technology = "taskyto"
-
-    parser.add_argument(
-        "-s",
-        "--sessions",
-        type=int,
-        default=default_sessions,
-        help=f"Number of exploration sessions (default: {default_sessions})",
-    )
-
-    parser.add_argument(
-        "-n",
-        "--turns",
-        type=int,
-        default=default_turns,
-        help=f"Maximum turns per session (default: {default_turns})",
-    )
-
-    parser.add_argument(
-        "-t",
-        "--technology",
-        type=str,
-        default=default_technology,
-        help=f"Chatbot technology to use (default: {default_technology})",
-    )
-
-    parser.add_argument(
-        "-u",
-        "--url",
-        type=str,
-        default=default_url,
-        help=f"Chatbot URL to explore (default: {default_url})",
-    )
-
-    parser.add_argument(
-        "-m",
-        "--model",
-        type=str,
-        default=default_model,
-        help=f"OpenAI model to use (default: {default_model})",
-    )
-
-    parser.add_argument(
-        "-o",
-        "--output",
-        type=str,
-        default=default_file,
-        help=f"Output file to save discovered functionalities (default: {default_file})",
-    )
-
-    return parser.parse_args()
-
-
-def extract_supported_languages(chatbot_response, llm):
-    """Extract supported languages from chatbot response"""
-    language_prompt = f"""
-    Based on the following chatbot response, determine what language(s) the chatbot supports.
-    If the response is in a non-English language, include that language in the list.
-    If the response explicitly mentions supported languages, list those.
-
-    CHATBOT RESPONSE:
-    {chatbot_response}
-
-    FORMAT YOUR RESPONSE AS A COMMA-SEPARATED LIST OF LANGUAGES:
-    [language1, language2, ...]
-
-    RESPONSE:
-    """
-
-    language_result = llm.invoke(language_prompt)
-    languages = language_result.content.strip()
-
-    # Clean up the response - remove brackets, quotes, etc.
-    languages = languages.replace("[", "").replace("]", "")
-    language_list = [lang.strip() for lang in languages.split(",") if lang.strip()]
-
-    return language_list
+from chatbot_explorer.cli import parse_arguments
+from chatbot_explorer.explorer import ChatbotExplorer, extract_supported_languages
+from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
 
 
 def main():
     # Parse command line arguments
     args = parse_arguments()
-    valid_technlogies = ["taskyto", "ada-uam"]
+    valid_technologies = ["taskyto", "ada-uam"]
 
     # Use the parameters from args
     chatbot_url = args.url
@@ -116,9 +18,9 @@ def main():
     technology = args.technology
 
     # Validate the technology argument
-    if args.technology not in valid_technlogies:
+    if args.technology not in valid_technologies:
         print(
-            f"Invalid technology: {args.technology}. Must be one of: {valid_technlogies}"
+            f"Invalid technology: {args.technology}. Must be one of: {valid_technologies}"
         )
         sys.exit(1)
 
@@ -132,164 +34,12 @@ def main():
     print(f"Output file: {args.output}")
     print("====================================")
 
+    # Initialize explorer
+    explorer = ChatbotExplorer(model_name)
+
     # Track multiple conversation sessions
     conversation_sessions = []
     supported_languages = []
-
-    class State(TypedDict):
-        messages: Annotated[list, add_messages]
-        conversation_history: list
-        discovered_functionalities: list
-        discovered_limitations: list
-        current_session: int
-        # Bool field that determines if the exploration phase is completed
-        exploration_finished: bool
-        conversation_goals: list
-        supported_languages: list
-
-    llm = ChatOpenAI(model=model_name)
-
-    def goal_generator(state: State):
-        """Generate conversation goals based on discovered functionalities"""
-        if state["exploration_finished"] and state["discovered_functionalities"]:
-            print("\n--- Generating conversation goals ---")
-
-            # Generate goals using the existing function, now with conversation history
-            profiles_with_goals = generate_user_profiles_and_goals(
-                state["discovered_functionalities"],
-                state["discovered_limitations"],
-                llm,
-                conversation_history=state["conversation_history"],
-                supported_languages=state["supported_languages"],
-            )
-
-            # Return updated state with goals
-            return {
-                "messages": state["messages"],
-                "conversation_goals": profiles_with_goals,
-            }
-        return {"messages": state["messages"]}
-
-    # This node will talk with the other chatbot and figure out its functionalities
-    def explorer(state: State):
-        # Only process if we're in exploration phase
-        if not state["exploration_finished"]:
-            return {"messages": [llm.invoke(state["messages"])], "explored": True}
-        # If not just return the messages
-        return {"messages": state["messages"]}
-
-    # This node will analyze the functionalities with a given conversation
-    def analyzer(state: State):
-        if state["exploration_finished"]:
-            # Add language prompt
-            language_instruction = ""
-            if state["supported_languages"]:
-                # Select the first language in case of multiple
-                primary_language = state["supported_languages"][0]
-                language_instruction = f"""
-    IMPORTANT LANGUAGE INSTRUCTION:
-    - Write all functionality descriptions and limitations in {primary_language}
-    - KEEP THE HEADINGS (## IDENTIFIED FUNCTIONALITIES, ## LIMITATIONS) IN ENGLISH
-    - MAINTAIN THE NUMBERED FORMAT (1., 2., etc.) with colons
-    - Example: "1. [Functionality name]: [Description in {primary_language}]"
-    """
-            # Create prompt for analyzer
-            analyzer_prompt = f"""
-            You are a Functionality Analyzer tasked with extracting a comprehensive list of functionalities from conversation histories.
-
-            Below are transcripts from {len(state["conversation_history"])} different conversation sessions with the same chatbot.
-
-            Your task is to:
-            1. Extract all distinct functionalities the chatbot appears to have
-            2. Provide a clear, structured list with descriptions
-            3. Note any limitations or constraints you observed
-
-            CONVERSATION HISTORY:
-            {state["conversation_history"]}
-
-            {language_instruction}
-
-            FORMAT YOUR RESPONSE AS:
-            ## IDENTIFIED FUNCTIONALITIES
-            1. [Functionality Name]: [Description]
-            2. [Functionality Name]: [Description]
-            ...
-
-            ## LIMITATIONS
-            - [Limitation 1]
-            - [Limitation 2]
-            ...
-            """
-
-            analysis_result = llm.invoke(analyzer_prompt)
-            analysis_content = analysis_result.content
-            functionalities = extract_functionalities(analysis_content)
-            limitations = extract_limitations(analysis_content)
-
-            return {
-                "messages": state["messages"] + [analysis_result],
-                "discovered_functionalities": functionalities,
-                "discovered_limitations": limitations,
-            }
-        return {"messages": state["messages"]}
-
-    def extract_functionalities(analysis_text):
-        """Extract functionalities from the analysis text."""
-        functionalities = []
-
-        if "## IDENTIFIED FUNCTIONALITIES" in analysis_text:
-            func_section = analysis_text.split("## IDENTIFIED FUNCTIONALITIES")[1]
-            if "##" in func_section:
-                func_section = func_section.split("##")[0]
-
-            func_lines = [
-                line.strip() for line in func_section.split("\n") if line.strip()
-            ]
-            for line in func_lines:
-                if ":" in line and any(char.isdigit() for char in line[:3]):
-                    # Extract functionality from numbered list format
-                    func_parts = line.split(":", 1)
-                    if len(func_parts) > 1:
-                        func_name = func_parts[0].strip().split(".", 1)[-1].strip()
-                        func_desc = func_parts[1].strip()
-                        functionalities.append(f"{func_name}: {func_desc}")
-
-        return functionalities
-
-    # This function only extracts limitations (keep your existing one)
-    def extract_limitations(analysis_text):
-        """Extract limitations from the analysis text."""
-        limitations = []
-
-        if "## LIMITATIONS" in analysis_text:
-            limit_section = analysis_text.split("## LIMITATIONS")[1]
-            if "##" in limit_section:
-                limit_section = limit_section.split("##")[0]
-
-            limit_lines = [
-                line.strip() for line in limit_section.split("\n") if line.strip()
-            ]
-            for line in limit_lines:
-                if line.startswith("- "):
-                    limitation = line[2:].strip()
-                    limitations.append(limitation)
-
-        return limitations
-
-    # Set up the graph
-    graph_builder = StateGraph(State)
-
-    graph_builder.add_node("explorer", explorer)
-    graph_builder.add_node("analyzer", analyzer)
-    graph_builder.add_node("goal_generator", goal_generator)
-
-    graph_builder.set_entry_point("explorer")
-    graph_builder.add_edge("explorer", "analyzer")
-    graph_builder.add_edge("analyzer", "goal_generator")
-    graph_builder.set_finish_point("goal_generator")
-    memory = MemorySaver()
-    graph = graph_builder.compile(checkpointer=memory)
-    config = {"configurable": {"thread_id": "1"}}
 
     # Create the chatbot according to the technology
     if technology == "taskyto":
@@ -342,7 +92,7 @@ def main():
 
         print("Starting session")
 
-        # For the first session we want to get the languages avialable
+        # For the first session we want to get the languages available
         if session_num == 0:
             initial_question = "Hello! What languages do you support or speak?"
         else:
@@ -375,7 +125,7 @@ def main():
             """
 
             # Generate the initial question using the Explorer's LLM
-            question_response = llm.invoke(question_prompt)
+            question_response = explorer.llm.invoke(question_prompt)
             initial_question = question_response.content.strip().strip("\"'")
 
         # Start with our question instead of waiting for chatbot to start
@@ -407,17 +157,16 @@ def main():
 
             # Process through LangGraph with full history context
             explorer_response = None
-            for event in graph.stream(
+            for event in explorer.stream_exploration(
                 {
                     "messages": conversation_history,
                     "conversation_history": [],
                     "discovered_functionalities": [],
                     "current_session": session_num,
                     "exploration_finished": False,
-                    "conversation_goas": [],
+                    "conversation_goals": [],
                     "supported_languages": supported_languages,
-                },
-                config=config,
+                }
             ):
                 for value in event.values():
                     latest_message = value["messages"][-1]
@@ -451,17 +200,17 @@ def main():
 
         # At the end of the first session get the supported languages
         if session_num == 0:
-            supported_languages = extract_supported_languages(chatbot_message, llm)
+            supported_languages = extract_supported_languages(
+                chatbot_message, explorer.llm
+            )
             print(f"\nDetected supported languages: {supported_languages}")
 
         # After session ends, save the conversation history
         print(f"\nSession {session_num + 1} complete with {turn_count} exchanges")
         conversation_sessions.append(conversation_history)
 
-    # Fix the analysis invocation by adding the config parameter
-    print("\n--- All exploration sessions complete. Analyzing results... ---")
-
     # Create state for analysis
+    print("\n--- All exploration sessions complete. Analyzing results... ---")
     analysis_state = {
         "messages": [
             {
@@ -480,7 +229,7 @@ def main():
 
     # Execute the analysis
     config = {"configurable": {"thread_id": "analysis_session"}}
-    result = graph.invoke(analysis_state, config=config)
+    result = explorer.run_exploration(analysis_state, config)
 
     # Display results with error handling for the missing key
     print("\n=== CHATBOT FUNCTIONALITY ANALYSIS ===")
@@ -521,234 +270,6 @@ def main():
                 print(f"- {goal}")
     else:
         print("No conversation goals were generated.")
-
-
-def generate_user_profiles_and_goals(
-    functionalities,
-    limitations,
-    llm,
-    conversation_history=None,
-    output_dir="profiles",
-    supported_languages=None,
-):
-    """
-    Group functionalities into logical user profiles and generate coherent goal sets
-    for individual conversations
-    """
-    # First, create the output directory if it doesn't exist
-    import os
-
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    # Work in the given language with stronger instructions
-    primary_language = ""
-    language_instruction_grouping = ""
-    language_instruction_goals = ""
-
-    if supported_languages and len(supported_languages) > 0:
-        primary_language = supported_languages[0]
-        # More specific instruction with examples that will help the model follow format
-        language_instruction_grouping = f"""
-LANGUAGE REQUIREMENT:
-- Write ALL profile names, descriptions, and functionalities in {primary_language}
-- KEEP ONLY the formatting markers (##, PROFILE:, DESCRIPTION:, FUNCTIONALITIES:) in English
-- Example if the primary language was Spanish:
-  ## PROFILE: [Nombre del escenario en Spanish]
-  DESCRIPTION: [Descripción en Spanish]
-  FUNCTIONALITIES:
-  - [Funcionalidad en Spanish]
-"""
-
-        language_instruction_goals = f"""
-LANGUAGE REQUIREMENT:
-- Write ALL goals in {primary_language}
-- KEEP ONLY the formatting markers (GOALS:) in English
-- Keep variables in {{variable}} format
-- Example in Spanish:
-  GOALS:
-  - "Primer objetivo en Spanish con {{variable}}"
-"""
-
-    # Prepare a condensed version of conversation history if available
-    conversation_context = ""
-    if conversation_history:
-        conversation_context = (
-            "Here are some example conversations with the chatbot:\n\n"
-        )
-        for i, session in enumerate(conversation_history, 1):
-            conversation_context += f"--- SESSION {i} ---\n"
-            for turn in session:
-                if turn["role"] == "assistant":  # Explorer
-                    conversation_context += f"Human: {turn['content']}\n"
-                elif turn["role"] == "user":  # Chatbot's response
-                    conversation_context += f"Chatbot: {turn['content']}\n"
-            conversation_context += "\n"
-
-    # Ask the LLM to identify distinct conversation scenarios
-    grouping_prompt = f"""
-    Based on these chatbot functionalities:
-    {", ".join(functionalities)}
-
-    And these limitations:
-    {", ".join(limitations)}
-
-    {conversation_context}
-
-    {language_instruction_grouping}
-
-    Create 3-5 distinct user profiles, where each profile represents ONE specific conversation scenario.
-
-    IMPORTANT: Each profile should contain goals that make sense to accomplish in a SINGLE conversation.
-    For example, "ordering food and checking delivery time" is ONE conversation scenario, while
-    "filing taxes and asking about community events" would be TWO separate scenarios.
-
-    FORMAT YOUR RESPONSE AS:
-
-    ## PROFILE: [Conversation Scenario Name]
-    DESCRIPTION: [Brief description of this conversation scenario]
-    FUNCTIONALITIES:
-    - [functionality 1 relevant to this scenario]
-    - [functionality 2 relevant to this scenario]
-
-    ## PROFILE: [Another Conversation Scenario Name]
-    DESCRIPTION: [Brief description of this scenario]
-    FUNCTIONALITIES:
-    - [functionality 3 relevant to this scenario]
-    - [functionality 4 relevant to this scenario]
-
-    ... and so on
-    """
-
-    # Get scenario groupings from the LLM
-    profiles_response = llm.invoke(grouping_prompt)
-    profiles_content = profiles_response.content
-
-    # Parse the profiles
-    profile_sections = profiles_content.split("## PROFILE:")
-
-    # Skip the first element if it's empty
-    if not profile_sections[0].strip():
-        profile_sections = profile_sections[1:]
-
-    profiles = []
-
-    # Process each profile section
-    for section in profile_sections:
-        lines = section.strip().split("\n")
-        profile_name = lines[0].strip()
-
-        # Extract description
-        description = ""
-        functionalities_list = []
-
-        description_started = False
-        functionalities_started = False
-
-        for line in lines[1:]:
-            if line.startswith("DESCRIPTION:"):
-                description_started = True
-                description = line[len("DESCRIPTION:") :].strip()
-            elif line.startswith("FUNCTIONALITIES:"):
-                description_started = False
-                functionalities_started = True
-            elif functionalities_started and line.strip().startswith("- "):
-                functionalities_list.append(line.strip()[2:])
-            elif description_started:
-                description += " " + line.strip()
-
-        profiles.append(
-            {
-                "name": profile_name,
-                "description": description,
-                "functionalities": functionalities_list,
-            }
-        )
-
-    # For each profile, generate appropriate goals for a single conversation
-    for profile in profiles:
-        goals_prompt = f"""
-        Generate a set of coherent goals for this conversation scenario:
-
-        CONVERSATION SCENARIO: {profile["name"]}
-        DESCRIPTION: {profile["description"]}
-
-        RELEVANT FUNCTIONALITIES:
-        {", ".join(profile["functionalities"])}
-
-        LIMITATIONS:
-        {", ".join(limitations)}
-
-        {conversation_context}
-
-        {language_instruction_goals}
-
-        Create 2-4 goals that form a NATURAL CONVERSATION FLOW within this single scenario.
-        All goals should logically connect as part of ONE user's interaction.
-
-        Examples of good goal sets:
-
-        Example 1 (Food ordering):
-        - "Order a {{size}} pizza with {{toppings}}"
-        - "Add {{quantity}} {{drink}} to my order"
-        - "Ask about delivery time"
-        - "Get my order total and confirmation number"
-
-        Example 2 (Municipal services):
-        - "Ask about property tax"
-        - "Find out how to pay it"
-
-        Example 3 (City registration):
-        - "Ask how to register as a resident"
-        - "Find out what documents are needed"
-        - "Ask if registration can be done online"
-
-        FORMAT YOUR RESPONSE AS:
-
-        GOALS:
-        - "first goal with {{variable}} if needed"
-        - "second related goal"
-        - "third goal that follows naturally"
-
-        DO NOT include variable definitions - just use {{varname}} placeholders.
-        Make sure all goals fit naturally in ONE conversation with the chatbot.
-        """
-
-        # Get goals for this profile
-        goals_response = llm.invoke(goals_prompt)
-        goals_content = goals_response.content
-
-        # Extract just the goals list
-        goals = []
-        if "GOALS:" in goals_content:
-            goals_section = goals_content.split("GOALS:")[1].strip()
-            for line in goals_section.split("\n"):
-                if line.strip().startswith("- "):
-                    # Clean up the goal text (remove quotes and extra spaces)
-                    goal = line.strip()[2:].strip().strip("\"'")
-                    if goal:  # Only add non-empty goals
-                        goals.append(goal)
-
-        profile["goals"] = goals
-
-        # Save to a simple text file
-        filename = f"{profile['name'].lower().replace(' ', '_').replace(',', '').replace('&', 'and')}_profile.txt"
-        filepath = os.path.join(output_dir, filename)
-
-        with open(filepath, "w") as file:
-            file.write(f"# User Profile: {profile['name']}\n")
-            file.write(f"# Description: {profile['description']}\n\n")
-            file.write("# Relevant Functionalities:\n")
-            for func in profile["functionalities"]:
-                file.write(f"# - {func}\n")
-
-            file.write("\n# Goals for a single conversation:\n")
-            for goal in profile["goals"]:
-                file.write(f"- {goal}\n")
-
-        profile["file_path"] = filepath
-
-    return profiles
 
 
 if __name__ == "__main__":
