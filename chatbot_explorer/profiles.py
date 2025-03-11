@@ -74,19 +74,20 @@ LANGUAGE REQUIREMENT:
     Based on these chatbot functionalities:
     {", ".join(functionalities)}
 
-    And these limitations:
-    {", ".join(limitations)}
-
     {conversation_context}
 
     {language_instruction_grouping}
 
     Create {suggested_profiles} distinct user profiles, where each profile represents ONE specific conversation scenario.
-    Try to cover all the important functionality groups without overlap between profiles.
+    IMPORTANT: Focus ONLY on user tasks and objectives.
+    Do NOT let limitations drive the profile categorization – they are only to be kept in mind for refining goals.
+    For example, if the functionalities are related to the CAU, the profiles should distinguish between tasks like:
+      - Asking for office hours,
+      - Opening a service ticket,
+      - Requesting information about specific services.
+    Do not mix in chatbot internal limitations (e.g., "supports only Spanish" or "handles complex questions").
 
-    IMPORTANT: Each profile should contain goals that make sense to accomplish in a SINGLE conversation.
-    For example, "ordering food and checking delivery time" is ONE conversation scenario, while
-    "filing taxes and asking about community events" would be TWO separate scenarios.
+    Try to cover all the important functionality groups without overlap between profiles.
 
     FORMAT YOUR RESPONSE AS:
 
@@ -112,18 +113,15 @@ LANGUAGE REQUIREMENT:
     # Parse the profiles
     profile_sections = profiles_content.split("## PROFILE:")
 
-    # Skip the first element if it's empty
     if not profile_sections[0].strip():
         profile_sections = profile_sections[1:]
 
     profiles = []
 
-    # Process each profile section
     for section in profile_sections:
         lines = section.strip().split("\n")
         profile_name = lines[0].strip()
 
-        # Extract description
         description = ""
         functionalities_list = []
 
@@ -150,10 +148,10 @@ LANGUAGE REQUIREMENT:
             }
         )
 
-    # For each profile, generate appropriate goals for a single conversation
+    # For each profile, generate user-centric goals
     for profile in profiles:
         goals_prompt = f"""
-        Generate a set of coherent goals for this conversation scenario:
+        Generate a set of coherent **user-centric** goals for this conversation scenario:
 
         CONVERSATION SCENARIO: {profile["name"]}
         DESCRIPTION: {profile["description"]}
@@ -161,15 +159,24 @@ LANGUAGE REQUIREMENT:
         RELEVANT FUNCTIONALITIES:
         {", ".join(profile["functionalities"])}
 
-        LIMITATIONS:
+        LIMITATIONS (keep in mind only; do NOT let these drive the goals):
         {", ".join(limitations)}
 
         {conversation_context}
 
         {language_instruction_goals}
 
-        Create 2-4 goals that form a NATURAL CONVERSATION FLOW within this single scenario.
-        All goals should logically connect as part of ONE user's interaction.
+        ABOUT VARIABLES:
+        - Only use {{variable}} where the user might provide different values each time (e.g. {{date}}, {{amount}}, {{phone_number}}, {{dog_breed}})
+        - These are purely placeholders for possible user input. For example, {{phone_number}} does not mean we must always request a phone number; it’s just a potential input that could vary.
+        - Do NOT put fixed names like "Centro de Atención a Usuarios" or "CAU" inside {{ }} (they are not interchangeable).
+        - Variables must be legitimate parameters the user could change (e.g., different dates, amounts, or IDs).
+
+        IMPORTANT: Your goals must be concrete tasks that a user wants to accomplish, such as opening a ticket, scheduling an appointment, or asking how to pay taxes. Do NOT include goals that reference internal chatbot characteristics or limitations
+        (for instance, "ask about chatbot limitations" or "use long sentences").
+
+        Create 2-4 goals that focus strictly on what the user intends to achieve with the chatbot.
+        Avoid vague or indirect objectives like "consultar las limitaciones del chatbot" or "solicitar ejemplos sobre el CAU."
 
         Examples of good goal sets:
 
@@ -191,32 +198,28 @@ LANGUAGE REQUIREMENT:
         FORMAT YOUR RESPONSE AS:
 
         GOALS:
-        - "first goal with {{variable}} if needed"
+        - "first user-centric goal with {{variable}} if needed"
         - "second related goal"
         - "third goal that follows naturally"
 
-        DO NOT include variable definitions - just use {{varname}} placeholders.
-        Make sure all goals fit naturally in ONE conversation with the chatbot.
+        DO NOT include any definitions for variables - just use {{varname}} placeholders.
+        Make sure all goals fit naturally in ONE conversation with the chatbot, and remain strictly focused on user tasks.
         """
 
-        # Get goals for this profile
         goals_response = llm.invoke(goals_prompt)
         goals_content = goals_response.content
 
-        # Extract just the goals list
         goals = []
         if "GOALS:" in goals_content:
             goals_section = goals_content.split("GOALS:")[1].strip()
             for line in goals_section.split("\n"):
                 if line.strip().startswith("- "):
-                    # Clean up the goal text (remove quotes and extra spaces)
                     goal = line.strip()[2:].strip().strip("\"'")
-                    if goal:  # Only add non-empty goals
+                    if goal:
                         goals.append(goal)
 
         profile["goals"] = goals
 
-        # Save to a simple text file
         filename = f"{profile['name'].lower().replace(' ', '_').replace(',', '').replace('&', 'and')}_profile.txt"
         filepath = os.path.join(output_dir, filename)
 
@@ -226,11 +229,8 @@ LANGUAGE REQUIREMENT:
             file.write("# Relevant Functionalities:\n")
             for func in profile["functionalities"]:
                 file.write(f"# - {func}\n")
-
             file.write("\n# Goals for a single conversation:\n")
             for goal in profile["goals"]:
                 file.write(f"- {goal}\n")
-
-        profile["file_path"] = filepath
 
     return profiles
