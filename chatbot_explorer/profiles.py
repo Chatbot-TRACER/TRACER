@@ -1,4 +1,11 @@
+import re
 import os
+
+
+def ensure_double_curly(text):
+    # This pattern finds any {something} that is not already wrapped in double braces.
+    pattern = re.compile(r"(?<!\{)\{([^{}]+)\}(?!\})")
+    return pattern.sub(r"{{\1}}", text)
 
 
 def generate_user_profiles_and_goals(
@@ -216,6 +223,7 @@ LANGUAGE REQUIREMENT:
                 if line.strip().startswith("- "):
                     goal = line.strip()[2:].strip().strip("\"'")
                     if goal:
+                        goal = ensure_double_curly(goal)
                         goals.append(goal)
 
         profile["goals"] = goals
