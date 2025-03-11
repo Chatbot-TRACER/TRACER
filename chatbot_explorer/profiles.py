@@ -62,6 +62,14 @@ LANGUAGE REQUIREMENT:
             conversation_context += "\n"
 
     # Ask the LLM to identify distinct conversation scenarios
+    # Calculate an appropriate number of profiles based on functionality count
+    num_functionalities = len(functionalities)
+    min_profiles = 3
+    max_profiles = 10
+
+    suggested_profiles = max(min_profiles, min(max_profiles, num_functionalities))
+
+    # Update the grouping prompt to use the calculated number
     grouping_prompt = f"""
     Based on these chatbot functionalities:
     {", ".join(functionalities)}
@@ -73,7 +81,8 @@ LANGUAGE REQUIREMENT:
 
     {language_instruction_grouping}
 
-    Create 3-5 distinct user profiles, where each profile represents ONE specific conversation scenario.
+    Create {suggested_profiles} distinct user profiles, where each profile represents ONE specific conversation scenario.
+    Try to cover all the important functionality groups without overlap between profiles.
 
     IMPORTANT: Each profile should contain goals that make sense to accomplish in a SINGLE conversation.
     For example, "ordering food and checking delivery time" is ONE conversation scenario, while
