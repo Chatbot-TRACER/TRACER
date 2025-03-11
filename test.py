@@ -1,4 +1,6 @@
 import sys
+import yaml
+import os
 from chatbot_explorer.cli import parse_arguments
 from chatbot_explorer.explorer import ChatbotExplorer, extract_supported_languages
 from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
@@ -258,16 +260,48 @@ def main():
 
     # Generate user profiles and goals
     print("\n--- User profiles and goals from analysis ---")
-    if "conversation_goals" in result and result["conversation_goals"]:
-        for profile in result["conversation_goals"]:
-            print(f"\nProfile: {profile['name']}")
-            print(f"Description: {profile['description']}")
-            print("\nFunctionalities:")
-            for func in profile["functionalities"]:
-                print(f"- {func}")
-            print("\nGoals:")
-            for goal in profile["goals"]:
-                print(f"- {goal}")
+    profiles_list = result.get("conversation_goals", [])
+    supported_languages = result.get("supported_languages", [])
+
+    primary_language = supported_languages[0] if supported_languages else "English"
+
+    if profiles_list:
+        output_dir = "profiles"
+        os.makedirs(output_dir, exist_ok=True)
+        for profile in profiles_list:
+            profile_yaml = {
+                "test_name": profile["name"],
+                "llm": {
+                    "temperature": 0.8,
+                    "model": "gpt-4o-mini",
+                    "format": {"type": "text"},
+                },
+                "user": {
+                    "language": primary_language,
+                    "role": "you have to act as a user ordering a pizza to a pizza shop.",
+                    "context": [
+                        "personality: personalities/conversational-user.yml",
+                        f"Scenario Description: {profile['description']}",
+                    ],
+                    "goals": profile["goals"],
+                },
+            }
+
+            filename = (
+                profile["name"]
+                .lower()
+                .replace(" ", "_")
+                .replace(",", "")
+                .replace("&", "and")
+                + ".yaml"
+            )
+            filepath = os.path.join(output_dir, filename)
+
+            with open(filepath, "w", encoding="utf-8") as yf:
+                yaml.dump(profile_yaml, yf, sort_keys=False, allow_unicode=True)
+
+        print(f"Profiles saved in {output_dir}")
+
     else:
         print("No conversation goals were generated.")
 

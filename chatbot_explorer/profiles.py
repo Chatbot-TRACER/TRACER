@@ -20,9 +20,6 @@ def generate_user_profiles_and_goals(
     Group functionalities into logical user profiles and generate coherent goal sets
     for individual conversations
     """
-    # First, create the output directory if it doesn't exist
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
 
     # Work in the given language with stronger instructions
     primary_language = ""
@@ -227,18 +224,5 @@ LANGUAGE REQUIREMENT:
                         goals.append(goal)
 
         profile["goals"] = goals
-
-        filename = f"{profile['name'].lower().replace(' ', '_').replace(',', '').replace('&', 'and')}_profile.txt"
-        filepath = os.path.join(output_dir, filename)
-
-        with open(filepath, "w") as file:
-            file.write(f"# User Profile: {profile['name']}\n")
-            file.write(f"# Description: {profile['description']}\n\n")
-            file.write("# Relevant Functionalities:\n")
-            for func in profile["functionalities"]:
-                file.write(f"# - {func}\n")
-            file.write("\n# Goals for a single conversation:\n")
-            for goal in profile["goals"]:
-                file.write(f"- {goal}\n")
 
     return profiles
