@@ -96,13 +96,13 @@ LANGUAGE REQUIREMENT:
     FORMAT YOUR RESPONSE AS:
 
     ## PROFILE: [Conversation Scenario Name]
-    DESCRIPTION: [Brief description of this conversation scenario]
+    ROLE: [Write a prompt for the user simulator, e.g. "you have to act as a user ordering a pizza to a pizza shop."]
     FUNCTIONALITIES:
     - [functionality 1 relevant to this scenario]
     - [functionality 2 relevant to this scenario]
 
     ## PROFILE: [Another Conversation Scenario Name]
-    DESCRIPTION: [Brief description of this scenario]
+    ROLE: [Write a prompt for the user simulator, e.g. "you have to act as a user ordering a pizza to a pizza shop."]
     FUNCTIONALITIES:
     - [functionality 3 relevant to this scenario]
     - [functionality 4 relevant to this scenario]
@@ -126,28 +126,29 @@ LANGUAGE REQUIREMENT:
         lines = section.strip().split("\n")
         profile_name = lines[0].strip()
 
-        description = ""
+        role = ""
         functionalities_list = []
 
-        description_started = False
-        functionalities_started = False
+        role_started = False
+        func_started = False
 
         for line in lines[1:]:
-            if line.startswith("DESCRIPTION:"):
-                description_started = True
-                description = line[len("DESCRIPTION:") :].strip()
+            if line.startswith("ROLE:"):
+                role_started = True
+                role = line[len("ROLE:") :].strip()
+                func_started = False
             elif line.startswith("FUNCTIONALITIES:"):
-                description_started = False
-                functionalities_started = True
-            elif functionalities_started and line.strip().startswith("- "):
-                functionalities_list.append(line.strip()[2:])
-            elif description_started:
-                description += " " + line.strip()
+                role_started = False
+                func_started = True
+            elif func_started and line.strip().startswith("- "):
+                functionalities_list.append(line.strip()[2:].strip())
+            elif role_started:
+                role += " " + line.strip()
 
         profiles.append(
             {
                 "name": profile_name,
-                "description": description,
+                "role": role.strip(),
                 "functionalities": functionalities_list,
             }
         )
@@ -158,7 +159,7 @@ LANGUAGE REQUIREMENT:
         Generate a set of coherent **user-centric** goals for this conversation scenario:
 
         CONVERSATION SCENARIO: {profile["name"]}
-        DESCRIPTION: {profile["description"]}
+        ROLE: {profile["role"]}
 
         RELEVANT FUNCTIONALITIES:
         {", ".join(profile["functionalities"])}

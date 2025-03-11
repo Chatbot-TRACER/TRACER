@@ -278,10 +278,9 @@ def main():
                 },
                 "user": {
                     "language": primary_language,
-                    "role": "you have to act as a user ordering a pizza to a pizza shop.",
+                    "role": profile["role"],
                     "context": [
                         "personality: personalities/conversational-user.yml",
-                        f"Scenario Description: {profile['description']}",
                     ],
                     "goals": profile["goals"],
                 },
