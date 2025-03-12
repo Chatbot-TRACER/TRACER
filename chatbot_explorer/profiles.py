@@ -59,6 +59,8 @@ def generate_variable_definitions(profiles, llm, supported_languages=None):
            - forward(): iterates through each sample one by one
            - forward(other_var): iterates and nests with other_var
 
+        Do not nest functions, things like random(another(3)) are NOT VALID
+
         2. Choose the most appropriate TYPE from:
            - string: for text values
            - int: for whole numbers
