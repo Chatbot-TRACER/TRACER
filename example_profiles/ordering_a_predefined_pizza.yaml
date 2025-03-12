@@ -1,0 +1,47 @@
+test_name: Ordering a Predefined Pizza
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user ordering a predefined pizza from a pizza shop.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Order a {{size}} {{pizza_type}} pizza
+  - Add {{quantity}} {{drink}} to my order
+  - Request the estimated delivery time for my order
+  - Confirm my order total and receive the order ID
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+  - drink:
+      function: random()
+      type: string
+      data:
+      - '"Coke"'
+      - '"Sprite"'
+      - '"Lemonade"'
+      - '"Iced Tea"'
+  - size:
+      function: random()
+      type: string
+      data:
+      - '"Small"'
+      - '"Medium"'
+      - '"Large"'
+      - '"Extra Large"'
+  - pizza_type:
+      function: random()
+      type: string
+      data:
+      - '"Margherita"'
+      - '"Pepperoni"'
+      - '"BBQ Chicken"'
+      - '"Vegetarian"'

@@ -1,9 +1,13 @@
 import sys
 import yaml
 import os
+import re
 from chatbot_explorer.cli import parse_arguments
 from chatbot_explorer.explorer import ChatbotExplorer, extract_supported_languages
 from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
+
+# Takes anything that is between exactly two curly braces
+VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
 
 
 def main():
@@ -269,6 +273,23 @@ def main():
         output_dir = "profiles"
         os.makedirs(output_dir, exist_ok=True)
         for profile in profiles_list:
+            # Obtain the variables in the profile
+            used_variables = set()
+            for goal in profile.get("goals", []):
+                variables_in_goals = VARIABLE_PATTERN.findall(goal)
+                used_variables.update(variables_in_goals)
+
+            yaml_goals = []
+
+            # Add the goals to the yaml
+            for goal in profile.get("goals", []):
+                yaml_goals.append(goal)
+
+            # Add now the variables that appear
+            for var_name in used_variables:
+                if var_name in profile:
+                    yaml_goals.append({var_name: profile[var_name]})
+
             profile_yaml = {
                 "test_name": profile["name"],
                 "llm": {
@@ -282,7 +303,7 @@ def main():
                     "context": [
                         "personality: personalities/conversational-user.yml",
                     ],
-                    "goals": profile["goals"],
+                    "goals": yaml_goals,
                 },
             }
 

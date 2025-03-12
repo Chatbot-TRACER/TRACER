@@ -1,0 +1,48 @@
+test_name: Order Summary and Confirmation
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user confirming your previous pizza order and gathering
+    details.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Confirm my order for a {{size}} pizza with {{toppings}} and {{quantity}} {{drink}}
+  - Request the total cost and delivery time for my order
+  - Ask for the pickup location and unique order ID associated with my order
+  - quantity:
+      function: default()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+  - toppings:
+      function: random(another(3))
+      type: string
+      data:
+      - '"Pepperoni"'
+      - '"Mushrooms"'
+      - '"Onions"'
+      - '"Green Peppers"'
+      - '"Olives"'
+  - size:
+      function: random()
+      type: string
+      data:
+      - '"Small"'
+      - '"Medium"'
+      - '"Large"'
+      - '"Extra Large"'
+  - drink:
+      function: random()
+      type: string
+      data:
+      - '"Cola"'
+      - '"Sprite"'
+      - '"Lemonade"'
+      - '"Iced Tea"'

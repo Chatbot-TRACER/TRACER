@@ -1,11 +1,179 @@
 import re
 import os
 
+VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
+
 
 def ensure_double_curly(text):
     # This pattern finds any {something} that is not already wrapped in double braces.
     pattern = re.compile(r"(?<!\{)\{([^{}]+)\}(?!\})")
     return pattern.sub(r"{{\1}}", text)
+
+
+def generate_variable_definitions(profiles, llm, supported_languages=None):
+    """
+    Extract variables from goals and generate appropriate definitions
+    using an LLM to determine type, function and data values.
+    """
+
+    # Work in the given language for consistency
+    primary_language = ""
+    language_instruction = ""
+
+    if supported_languages and len(supported_languages) > 0:
+        primary_language = supported_languages[0]
+        language_instruction = f"Follow these language instructions: Generate examples in {primary_language} where appropriate."
+
+    # Process each profile to find variables and generate definitions
+    for profile in profiles:
+        # Extract all variables from the goals
+        all_variables = set()
+        for goal in profile.get("goals", []):
+            variables = VARIABLE_PATTERN.findall(goal)
+            all_variables.update(variables)
+
+        if not all_variables:
+            continue
+
+        # Generate definitions for all discovered variables
+        vars_prompt = f"""
+        I need to define variable parameters for a user simulator that interacts with a chatbot.
+
+        USER PROFILE: {profile["name"]}
+        ROLE: {profile["role"]}
+
+        GOALS:
+        {chr(10).join(f"- {goal}" for goal in profile["goals"])}
+
+        {language_instruction}
+
+        For each variable I listed below, provide a definition following these guidelines:
+
+        1. Choose the most appropriate FUNCTION from:
+           - default(): assigns all data in the list to the variable
+           - random(): picks one random sample from the list
+           - random(X): picks X random samples from the list
+           - random(rand): picks a random number of random samples
+           - another(): picks different samples without repetition
+           - another(X): picks X different samples without repetition
+           - forward(): iterates through each sample one by one
+           - forward(other_var): iterates and nests with other_var
+
+        2. Choose the most appropriate TYPE from:
+           - string: for text values
+           - int: for whole numbers
+           - float: for decimal numbers
+
+        3. IMPORTANT: Provide DATA in the correct format:
+           - For string variables: use a list of 3-5 realistic string values
+           - For int variables: ALWAYS use the min/max/step format like this:
+             min: 1
+             max: 10
+             step: 1
+           - For float variables: ALWAYS use the min/max/step format OR linspace like this:
+             min: 1.0
+             max: 5.0
+             step: 0.5
+             OR
+             min: 1.0
+             max: 5.0
+             linspace: 5
+
+        VARIABLES TO DEFINE:
+        {", ".join(sorted(all_variables))}
+
+        FORMAT YOUR RESPONSE FOR STRING VARIABLES AS:
+        VARIABLE: variable_name
+        FUNCTION: function_name()
+        TYPE: string
+        DATA:
+        - "value1"
+        - "value2"
+        - "value3"
+
+        FORMAT YOUR RESPONSE FOR NUMERIC VARIABLES AS:
+        VARIABLE: variable_name
+        FUNCTION: function_name()
+        TYPE: int/float
+        DATA:
+        min: 1
+        max: 10
+        step: 1
+
+        PROVIDE DEFINITIONS FOR ALL VARIABLES, one after another.
+        Remember: ALL numeric variables (int/float) MUST use the min/max/step format, NOT a list of values.
+        """
+
+        # Get definitions from the LLM
+        definitions_response = llm.invoke(vars_prompt)
+        definitions_content = definitions_response.content
+
+        # Parse the definitions
+        current_var = None
+        current_def = {}
+        stage = None
+
+        for line in definitions_content.split("\n"):
+            line = line.strip()
+
+            if not line:
+                continue
+
+            if line.startswith("VARIABLE:"):
+                # Save previous variable if exists
+                if current_var and current_def:
+                    profile[current_var] = current_def
+
+                # Start new variable
+                current_var = line[len("VARIABLE:") :].strip()
+                current_def = {}
+                stage = None
+
+            elif line.startswith("FUNCTION:"):
+                current_def["function"] = line[len("FUNCTION:") :].strip()
+
+            elif line.startswith("TYPE:"):
+                current_def["type"] = line[len("TYPE:") :].strip()
+
+            elif line.startswith("DATA:"):
+                current_def["data"] = []
+                stage = "data"
+
+            elif stage == "data":
+                if line.startswith("- "):
+                    # List item
+                    value = line[2:].strip()
+                    # Convert int/float strings to appropriate type
+                    if current_def.get("type") == "int" and value.isdigit():
+                        value = int(value)
+                    elif current_def.get("type") == "float":
+                        value = float(value)
+                    current_def["data"].append(value)
+                elif ":" in line:
+                    # min/max/step format
+                    if (
+                        isinstance(current_def["data"], list)
+                        and not current_def["data"]
+                    ):
+                        current_def["data"] = {}
+                    key, value = line.split(":", 1)
+                    key = key.strip()
+                    try:
+                        value = (
+                            int(value.strip())
+                            if current_def.get("type") == "int"
+                            else float(value.strip())
+                        )
+                        if isinstance(current_def["data"], dict):
+                            current_def["data"][key] = value
+                    except ValueError:
+                        pass
+
+        # Save the last variable
+        if current_var and current_def:
+            profile[current_var] = current_def
+
+    return profiles
 
 
 def generate_user_profiles_and_goals(
@@ -235,5 +403,8 @@ LANGUAGE REQUIREMENT:
                         goals.append(goal)
 
         profile["goals"] = goals
+
+    # Generate values for the variables
+    profiles = generate_variable_definitions(profiles, llm, supported_languages)
 
     return profiles
