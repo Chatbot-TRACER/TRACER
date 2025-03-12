@@ -65,7 +65,7 @@ def generate_variable_definitions(profiles, llm, supported_languages=None):
            - float: for decimal numbers
 
         3. IMPORTANT: Provide DATA in the correct format:
-           - For string variables: use a list of 3-5 realistic string values
+           - For string variables: use a list of realistic string values, the length of the list should be at least 3 items and at most 10 items, use the amount of data that makes sense for the variable
            - For int variables: ALWAYS use the min/max/step format like this:
              min: 1
              max: 10
@@ -87,9 +87,9 @@ def generate_variable_definitions(profiles, llm, supported_languages=None):
         FUNCTION: function_name()
         TYPE: string
         DATA:
-        - "value1"
-        - "value2"
-        - "value3"
+        - value1
+        - value2
+        - value3
 
         FORMAT YOUR RESPONSE FOR NUMERIC VARIABLES AS:
         VARIABLE: variable_name
