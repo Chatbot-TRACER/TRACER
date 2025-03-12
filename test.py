@@ -110,13 +110,6 @@ def main():
         else:
             language_str = ", ".join(supported_languages)
 
-            # Define the question focus
-            question_focus = ""
-            if session_num == 1:
-                question_focus = "Investigate specific services, features, and information retrieval capabilities"
-            else:
-                question_focus = "Test edge cases, complex queries, and discover potential limitations"
-
             # Create a prompt for the Explorer to generate an initial question
             question_prompt = f"""
             You need to generate an initial question for a conversation with a chatbot.
@@ -126,7 +119,7 @@ def main():
             - The chatbot supports these languages: {language_str}
 
             EXPLORATION FOCUS FOR THIS SESSION:
-            {question_focus}
+            {session_focus}
 
             IMPORTANT:
             - Keep your question simple and direct - only ask ONE thing
