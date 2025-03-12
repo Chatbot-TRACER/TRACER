@@ -65,45 +65,57 @@ def main():
             language_str = ", ".join(supported_languages)
             language_instruction = f"\n\nIMPORTANT: The chatbot supports these languages: {language_str}. Adapt your questions accordingly and consider using these languages in your exploration."
 
+        # Define the focus for this session
+        if session_num == 0:
+            session_focus = (
+                "Explore basic information and general capabilities of the chatbot"
+            )
+        elif session_num == 1:
+            session_focus = "Investigate specific services, features, and information retrieval capabilities"
+        else:
+            session_focus = (
+                "Test edge cases, complex queries, and discover potential limitations"
+            )
+
+        # Create the system prompt
+        system_content = f"""You are an Explorer AI tasked with learning about another chatbot you're interacting with.
+
+        IMPORTANT GUIDELINES:
+        1. Ask ONE simple question at a time - the chatbot gets confused by multiple questions
+        2. Keep your messages short and direct
+        3. When the chatbot indicates it didn't understand, simplify your language further
+        4. Follow the chatbot's conversation flow and adapt to its capabilities{language_instruction}
+
+        EXPLORATION FOCUS FOR SESSION {session_num + 1}:
+        {session_focus}
+
+        Your goal is to understand the chatbot's capabilities through direct, simple interactions.
+        After {max_turns} exchanges, or when you feel you've explored this path thoroughly, say "EXPLORATION COMPLETE".
+        """
+
         # Reset conversation history for this session
         conversation_history = [
             {
                 "role": "system",
-                "content": f"""You are an Explorer AI tasked with learning about another chatbot you're interacting with.
-
-    IMPORTANT GUIDELINES:
-    1. Ask ONE simple question at a time - the chatbot gets confused by multiple questions
-    2. Keep your messages short and direct
-    3. When the chatbot indicates it didn't understand, simplify your language further
-    4. Follow the chatbot's conversation flow and adapt to its capabilities{
-                    language_instruction
-                }
-
-    EXPLORATION FOCUS FOR SESSION {session_num + 1}:
-    {
-                    "Explore basic information and general capabilities of the chatbot"
-                    if session_num == 0
-                    else "Investigate specific services, features, and information retrieval capabilities"
-                    if session_num == 1
-                    else "Test edge cases, complex queries, and discover potential limitations"
-                }
-
-    Your goal is to understand the chatbot's capabilities through direct, simple interactions.
-    After {
-                    max_turns
-                } exchanges, or when you feel you've explored this path thoroughly, say "EXPLORATION COMPLETE".
-    """,
+                "content": system_content,
             }
         ]
 
         print("Starting session")
 
-        # For the first session we want to get the languages available
+        # Generate the initial question
+        initial_question = ""
         if session_num == 0:
             initial_question = "Hello! What languages do you support or speak?"
         else:
-            # Now we will use the found language
             language_str = ", ".join(supported_languages)
+
+            # Define the question focus
+            question_focus = ""
+            if session_num == 1:
+                question_focus = "Investigate specific services, features, and information retrieval capabilities"
+            else:
+                question_focus = "Test edge cases, complex queries, and discover potential limitations"
 
             # Create a prompt for the Explorer to generate an initial question
             question_prompt = f"""
@@ -114,11 +126,7 @@ def main():
             - The chatbot supports these languages: {language_str}
 
             EXPLORATION FOCUS FOR THIS SESSION:
-            {
-                "Investigate specific services, features, and information retrieval capabilities"
-                if session_num == 1
-                else "Test edge cases, complex queries, and discover potential limitations"
-            }
+            {question_focus}
 
             IMPORTANT:
             - Keep your question simple and direct - only ask ONE thing
