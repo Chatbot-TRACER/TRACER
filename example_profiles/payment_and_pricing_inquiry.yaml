@@ -1,0 +1,16 @@
+test_name: Payment and Pricing Inquiry
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user interested in understanding the payment options
+    and total price of an order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Inquire about the price of a {{size}} {{pizza_type}} pizza
+  - Ask for the total cost of my order, including {{quantity}} {{drink}} options
+  - Request payment options available for my order

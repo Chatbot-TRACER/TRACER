@@ -1,0 +1,16 @@
+test_name: Location and Pickup Inquiry
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to find out where to pick up the pizza
+    order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Ask for the pickup location of my pizza order
+  - Inquire about the operating hours for pizza pickup
+  - Confirm if I can pick up multiple pizzas at once

@@ -1,0 +1,17 @@
+test_name: Confirmation of an Order
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who needs to confirm the details of their pizza
+    order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Confirm my pizza order for a {{size}} pizza with {{toppings}}
+  - Clarify the number of {{drink}} I would like to order
+  - Request the total cost of my order
+  - Ask for the expected pickup time for my order

@@ -1,0 +1,16 @@
+test_name: Inquiry About Menu Costs
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user asking for the prices of specific pizzas on the
+    menu.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Ask for the price of a medium {{pizza_type}} pizza
+  - Inquire about the cost of a large {{pizza_type}} pizza
+  - Request the total cost for a {{size}} {{pizza_type}} pizza and {{quantity}} {{drink}}
