@@ -1,0 +1,24 @@
+test_name: Confirming Existing Order Details
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user verifying the details of your existing pizza order
+    including total cost and pickup time.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Confirm the details of my pizza order with order ID {{order_id}}
+  - Check the total cost of my current order
+  - Verify the pickup time for my pizza order
+  - Ask for the pickup location address
+  - order_id:
+      function: random()
+      type: string
+      data:
+      - PZ123456
+      - PZ987654
+      - PZ654321

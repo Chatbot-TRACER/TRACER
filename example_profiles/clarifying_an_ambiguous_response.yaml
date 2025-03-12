@@ -1,4 +1,4 @@
-test_name: Ordering a Predefined Pizza
+test_name: Clarifying an Ambiguous Response
 llm:
   temperature: 0.8
   model: gpt-4o-mini
@@ -6,14 +6,15 @@ llm:
     type: text
 user:
   language: English
-  role: You have to act as a user ordering a predefined pizza to a pizza shop.
+  role: You have to act as a user who responded ambiguously and needs clarification
+    to proceed with ordering a pizza.
   context:
   - 'personality: personalities/conversational-user.yml'
   goals:
   - Order a {{size}} {{pizza_type}} pizza
   - Add {{quantity}} {{drink}} to my order
-  - Confirm the total cost of my order
-  - Ask about the estimated pickup time
+  - Ask what the total cost of my order is
+  - Inquire about the pickup location and hours
   - quantity:
       function: default()
       type: int
@@ -28,22 +29,20 @@ user:
       - small
       - medium
       - large
-      - extra-large
+      - extra large
   - drink:
       function: random()
       type: string
       data:
-      - soda
-      - water
-      - iced tea
+      - cola
       - lemonade
-      - juice
+      - iced tea
   - pizza_type:
       function: random()
       type: string
       data:
-      - Margherita
-      - Pepperoni
-      - BBQ Chicken
-      - Veggie
-      - Hawaiian
+      - pepperoni
+      - margherita
+      - vegetarian
+      - hawaiian
+      - meat lovers

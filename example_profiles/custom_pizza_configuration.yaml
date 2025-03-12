@@ -1,0 +1,52 @@
+test_name: Custom Pizza Configuration
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user creating a custom pizza order with specific toppings
+    at a pizza shop.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Order a {{size}} custom pizza with {{toppings}}
+  - Add {{quantity}} {{drink}} to my order
+  - Confirm the order pickup time
+  - Inquire about the shop hours for picking up orders
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+  - toppings:
+      function: random(3)
+      type: string
+      data:
+      - pepperoni
+      - mushrooms
+      - onions
+      - green peppers
+      - olives
+      - sausage
+      - basil
+  - size:
+      function: random()
+      type: string
+      data:
+      - small
+      - medium
+      - large
+      - extra-large
+  - drink:
+      function: random()
+      type: string
+      data:
+      - soda
+      - juice
+      - water
+      - lemonade
+      - iced tea
