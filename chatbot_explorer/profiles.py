@@ -83,8 +83,14 @@ LANGUAGE REQUIREMENT:
     {language_instruction_grouping}
 
     Create {suggested_profiles} distinct user profiles, where each profile represents ONE specific conversation scenario.
-    IMPORTANT: Focus ONLY on user tasks and objectives.
-    Do NOT let limitations drive the profile categorization – they are only to be kept in mind for refining goals.
+
+    EXTREMELY IMPORTANT RESTRICTIONS:
+    1. Create ONLY profiles for realistic end users with PRACTICAL GOALS
+    2. NEVER create profiles about users asking about chatbot capabilities or limitations
+    3. NEVER create profiles where the user is trying to test or evaluate the chatbot
+    4. Focus ONLY on real-world user tasks and objectives
+    5. The profiles should be genuine use cases, not meta-conversations about the chatbot itself
+
     For example, if the functionalities are related to the CAU, the profiles should distinguish between tasks like:
       - Asking for office hours,
       - Opening a service ticket,
@@ -177,8 +183,12 @@ LANGUAGE REQUIREMENT:
         - Do NOT put fixed names like "Centro de Atención a Usuarios" or "CAU" inside {{ }} (they are not interchangeable).
         - Variables must be legitimate parameters the user could change (e.g., different dates, amounts, or IDs).
 
-        IMPORTANT: Your goals must be concrete tasks that a user wants to accomplish, such as opening a ticket, scheduling an appointment, or asking how to pay taxes. Do NOT include goals that reference internal chatbot characteristics or limitations
-        (for instance, "ask about chatbot limitations" or "use long sentences").
+        EXTREMELY IMPORTANT RESTRICTIONS:
+        1. NEVER create goals about asking for chatbot limitations or capabilities
+        2. NEVER create goals about testing the chatbot's understanding or knowledge
+        3. NEVER include meta-goals like "find out what the chatbot can do"
+        4. Goals MUST be about actual tasks a real user would want to accomplish
+        5. Focus on practical, realistic user tasks ONLY
 
         Create 2-4 goals that focus strictly on what the user intends to achieve with the chatbot.
         Avoid vague or indirect objectives like "consultar las limitaciones del chatbot" or "solicitar ejemplos sobre el CAU."
