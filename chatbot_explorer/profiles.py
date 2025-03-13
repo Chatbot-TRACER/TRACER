@@ -49,17 +49,22 @@ def generate_variable_definitions(profiles, llm, supported_languages=None):
 
         For each variable I listed below, provide a definition following these guidelines:
 
-        1. Choose the most appropriate FUNCTION from:
-           - default(): assigns all data in the list to the variable
-           - random(): picks one random sample from the list
-           - random(X): picks X random samples from the list
+        1. Choose ONE appropriate FUNCTION from:
+           - default(): assigns ALL data in the list to the variable
+           - random(): picks ONE random sample from the list
+           - random(X): picks X random samples where X is LESS THAN the total number of items
            - random(rand): picks a random number of random samples
-           - another(): picks different samples without repetition
+           - another(): picks different samples without repetition each time
            - another(X): picks X different samples without repetition
            - forward(): iterates through each sample one by one
            - forward(other_var): iterates and nests with other_var
 
-        Do not nest functions, things like random(another(3)) are NOT VALID
+        IMPORTANT FUNCTION RESTRICTIONS:
+        - DO NOT nest functions (e.g., random(another(3)) is INVALID)
+        - DO NOT use random(X) where X equals the total number of items (use default() instead)
+        - Use forward() for systematic iteration through all values in order
+        - Use random() for picking just one value each time (but there could be repetition)
+        - Use another() when you want different values on subsequent uses
 
         2. Choose the most appropriate TYPE from:
            - string: for text values
