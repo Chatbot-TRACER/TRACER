@@ -1,0 +1,36 @@
+test_name: Group Order for Pizza
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user looking to place a pizza order for a small gathering
+    but can only order one at a time.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Order a {{size}} pizza with {{toppings}}
+  - Ask for drink options to add to my order
+  - Place a new pizza order if I made a mistake in my previous order
+  - toppings:
+      function: random(3)
+      type: string
+      data:
+      - Pepperoni
+      - Mushrooms
+      - Onions
+      - Sausage
+      - Bacon
+      - Extra cheese
+      - Black olives
+      - Green peppers
+      - Pineapple
+  - size:
+      function: random()
+      type: string
+      data:
+      - Small
+      - Medium
+      - Large

@@ -1,0 +1,37 @@
+test_name: Ordering Additional Pizzas
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user placing a new pizza order after a mistake in the
+    previous order submission.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Order a {{size}} pizza with {{toppings}}
+  - Place an additional order for a {{size}} pizza with {{toppings}}
+  - Confirm the total cost of my new pizza order
+  - Provide my contact information for delivery
+  - toppings:
+      function: random(another(3))
+      type: string
+      data:
+      - pepperoni
+      - mushrooms
+      - onions
+      - sausage
+      - extra cheese
+      - black olives
+      - green peppers
+      - pineapple
+  - size:
+      function: random()
+      type: string
+      data:
+      - small
+      - medium
+      - large
+      - extra large

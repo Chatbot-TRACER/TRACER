@@ -1,0 +1,17 @@
+test_name: Resolución de problemas comunes
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúa como un usuario que tiene un problema común y busca orientación sobre
+    cómo puede ser resuelto en el CAU.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Preguntar sobre el procedimiento para obtener el NIA necesario para la matrícula
+  - Solicitar información sobre los trámites para inscribirse en un programa de máster
+  - Consultar si hay requisitos adicionales para matricularse como estudiante internacional
+  - Pedir detalles sobre los horarios de atención del CAU para resolver dudas

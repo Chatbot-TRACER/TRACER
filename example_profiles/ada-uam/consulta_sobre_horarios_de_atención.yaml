@@ -1,0 +1,17 @@
+test_name: Consulta sobre horarios de atención
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúa como un usuario que desea saber los horarios de atención del Centro
+    de Atención a Usuarios de Tecnologías de la Información de la UAM.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Consultar los horarios de atención del Centro de Atención a Usuarios de Tecnologías
+    de la Información de la UAM
+  - Preguntar sobre los servicios específicos que ofrece el CAU
+  - Obtener información sobre cómo contactar al CAU para resolver un problema

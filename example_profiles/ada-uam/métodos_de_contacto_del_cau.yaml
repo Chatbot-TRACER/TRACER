@@ -1,0 +1,17 @@
+test_name: Métodos de contacto del CAU
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúa como un usuario que necesita conocer las diferentes maneras de contactar
+    al Centro de Atención a Usuarios de Tecnologías de la Información de la UAM.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Preguntar por los métodos de contacto disponibles para el CAU
+  - Solicitar información sobre el horario de atención del CAU
+  - Consultar qué tipo de problemas puede resolver el CAU
+  - Pedir ejemplos de servicios ofrecidos por el CAU

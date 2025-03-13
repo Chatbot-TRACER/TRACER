@@ -1,0 +1,17 @@
+test_name: Acceso a recursos de biblioteca
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúa como un estudiante que quiere saber cómo acceder a los recursos de la
+    biblioteca de la UAM utilizando su ID-UAM.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Preguntar cómo acceder a los recursos de la biblioteca con mi ID-UAM
+  - Solicitar información sobre el carné de la biblioteca y su uso
+  - Consultar sobre el préstamo y devolución de libros en la biblioteca de la UAM
+  - Obtener detalles sobre las bases de datos a las que puedo acceder como estudiante
