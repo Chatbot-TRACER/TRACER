@@ -35,6 +35,10 @@ def generate_variable_definitions(profiles, llm, supported_languages=None):
         if not all_variables:
             continue
 
+        goals_text = ""
+        for goal in profile["goals"]:
+            goals_text += f"- {goal}\n"
+
         # Generate definitions for all discovered variables
         vars_prompt = f"""
         I need to define variable parameters for a user simulator that interacts with a chatbot.
@@ -43,7 +47,7 @@ def generate_variable_definitions(profiles, llm, supported_languages=None):
         ROLE: {profile["role"]}
 
         GOALS:
-        {chr(10).join(f"- {goal}" for goal in profile["goals"])}
+        {goals_text}
 
         {language_instruction}
 
