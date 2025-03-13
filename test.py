@@ -53,6 +53,9 @@ def main():
     elif technology == "ada-uam":
         the_chatbot = ChatbotAdaUam(chatbot_url)
 
+    # We store them to try and expand
+    discovered_functionalities = []
+
     # Session management loop
     for session_num in range(max_sessions):
         print(
@@ -65,17 +68,46 @@ def main():
             language_str = ", ".join(supported_languages)
             language_instruction = f"\n\nIMPORTANT: The chatbot supports these languages: {language_str}. Adapt your questions accordingly and consider using these languages in your exploration."
 
-        # Define the focus for this session
-        if session_num == 0:
+        primary_language = (
+            supported_languages[0]
+            if supported_languages and len(supported_languages) > 0
+            else "English"
+        )
+
+        total_sessions = max_sessions
+        # We can divide things into 5 phases
+        exploration_phase = (session_num * 5) // total_sessions
+
+        # Build context from previous discoveries
+        discovery_context = ""
+        if session_num > 0 and discovered_functionalities:
+            # Limit to 5 most recent discoveries to keep prompts manageable
+            recent_discoveries = discovered_functionalities[-5:]
+            discovery_context = f"\n\nPreviously discovered features/topics: {', '.join(recent_discoveries)}"
+
+        # Define session focus based on exploration phase
+        if exploration_phase == 0:
+            # First 20% Basic information and capabilities
             session_focus = (
                 "Explore basic information and general capabilities of the chatbot"
             )
-        elif session_num == 1:
-            session_focus = "Investigate specific services, features, and information retrieval capabilities"
+        elif exploration_phase == 1:
+            # Next 20% General services building on what we know
+            session_focus = f"Investigate general services and features of the chatbot{discovery_context}"
+        elif exploration_phase == 2:
+            # Next 20% Dig deeper into specific features
+            session_focus = f"Explore more details about specific features we've discovered{discovery_context}"
+        elif exploration_phase == 3:
+            # Next 20% Advanced usage of discovered features
+            session_focus = f"Investigate advanced usage scenarios for these features{discovery_context}"
         else:
-            session_focus = (
-                "Test edge cases, complex queries, and discover potential limitations"
-            )
+            # Final 20% Mix of new discovery and some edge cases
+            if session_num % 2 == 0:
+                session_focus = (
+                    "Discover any additional features or services we might have missed"
+                )
+            else:
+                session_focus = f"Test specific scenarios related to these features{discovery_context}"
 
         # Create the system prompt
         system_content = f"""You are an Explorer AI tasked with learning about another chatbot you're interacting with.
@@ -117,6 +149,8 @@ def main():
             INFORMATION:
             - This is session {session_num + 1} of the exploration
             - The chatbot supports these languages: {language_str}
+            - Primary language: {primary_language}
+            {discovery_context}
 
             EXPLORATION FOCUS FOR THIS SESSION:
             {session_focus}
@@ -124,11 +158,15 @@ def main():
             IMPORTANT:
             - Keep your question simple and direct - only ask ONE thing
             - Your response should only contain the question, nothing else
+            - AVOID simply asking about limitations
+            - If we have previous discoveries, build upon them rather than repeating basic questions
+            - Make your question specific enough to learn new information
 
             GENERATE A SIMPLE OPENING QUESTION THAT:
             1. Is appropriate for starting this exploration session
-            2. Is in the primary supported language of the chatbot
-            3. Helps discover the chatbot's capabilities relevant to this session's focus
+            2. Is in the primary supported language of the chatbot ({primary_language})
+            3. Helps discover more details about chatbot capabilities
+            4. Follows a logical exploration path based on what we already know
             """
 
             # Generate the initial question using the Explorer's LLM
@@ -211,6 +249,46 @@ def main():
                 chatbot_message, explorer.llm
             )
             print(f"\nDetected supported languages: {supported_languages}")
+
+        # Extract key topics discovered in this session
+        def format_conversation(messages):
+            """Format conversation history into a readable string"""
+            formatted = []
+            for msg in messages:
+                if msg["role"] in ["assistant", "user"]:
+                    # The explorer is the "Human" and the chatbot is "Chatbot"
+                    sender = "Human" if msg["role"] == "assistant" else "Chatbot"
+                    formatted.append(f"{sender}: {msg['content']}")
+            return "\n".join(formatted)
+
+        session_topics_prompt = f"""
+        Review this conversation and identify 2-3 key features or capabilities of the chatbot that were discovered.
+        List ONLY the features as short phrases (3-5 words each). Don't include explanations or commentary.
+
+        CONVERSATION:
+        {format_conversation(conversation_history)}
+
+        FORMAT YOUR RESPONSE EXACTLY LIKE THIS:
+        FEATURE: [feature 1]
+        FEATURE: [feature 2]
+        FEATURE: [feature 3]
+        """
+
+        topics_response = explorer.llm.invoke(session_topics_prompt)
+
+        # Simple extraction of features using the structured format
+        new_topics = []
+        for line in topics_response.content.strip().split("\n"):
+            if line.startswith("FEATURE:"):
+                topic = line[len("FEATURE:") :].strip()
+                if topic and len(topic) > 3:
+                    new_topics.append(topic)
+
+        # Add unique topics to our tracking
+        for topic in new_topics:
+            if topic not in discovered_functionalities:
+                discovered_functionalities.append(topic)
+                print(f"New functionality discovered: {topic}")
 
         # After session ends, save the conversation history
         print(f"\nSession {session_num + 1} complete with {turn_count} exchanges")
