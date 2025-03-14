@@ -5,7 +5,7 @@ import re
 import json
 from chatbot_explorer.cli import parse_arguments
 from chatbot_explorer.explorer import ChatbotExplorer
-from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
+from src.chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
 from chatbot_explorer.session import run_exploration_session
 
 # Takes anything that is between exactly two curly braces
