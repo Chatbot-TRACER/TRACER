@@ -6,6 +6,8 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import StateGraph
 from langgraph.graph.message import add_messages
 
+from .profiles import generate_user_profiles_and_goals
+
 
 class State(TypedDict):
     """State for the LangGraph flow"""
@@ -60,12 +62,12 @@ class ChatbotExplorer:
             if state["supported_languages"]:
                 primary_language = state["supported_languages"][0]
                 language_instruction = f"""
-IMPORTANT LANGUAGE INSTRUCTION:
-- Write all functionality descriptions and limitations in {primary_language}
-- KEEP THE HEADINGS (## IDENTIFIED FUNCTIONALITIES, ## LIMITATIONS) IN ENGLISH
-- MAINTAIN THE NUMBERED FORMAT (1., 2., etc.) with colons
-- Example: "1. [Functionality name]: [Description in {primary_language}]"
-"""
+                IMPORTANT LANGUAGE INSTRUCTION:
+                - Write all functionality descriptions and limitations in {primary_language}
+                - KEEP THE HEADINGS (## IDENTIFIED FUNCTIONALITIES, ## LIMITATIONS) IN ENGLISH
+                - MAINTAIN THE NUMBERED FORMAT (1., 2., etc.) with colons
+                - Example: "1. [Functionality name]: [Description in {primary_language}]"
+                """
             analyzer_prompt = f"""
             You are a Functionality Analyzer tasked with extracting a comprehensive list of functionalities from conversation histories.
 
@@ -107,7 +109,6 @@ IMPORTANT LANGUAGE INSTRUCTION:
 
     def _goal_generator_node(self, state: State):
         """Node for generating conversation goals based on discovered functionalities."""
-        from .profiles import generate_user_profiles_and_goals
 
         if state["exploration_finished"] and state["discovered_functionalities"]:
             print("\n--- Generating conversation goals ---")
@@ -179,29 +180,3 @@ IMPORTANT LANGUAGE INSTRUCTION:
         if config is None:
             config = {"configurable": {"thread_id": "1"}}
         return self.graph.stream(state, config=config)
-
-
-def extract_supported_languages(chatbot_response, llm):
-    """Extract supported languages from chatbot response"""
-    language_prompt = f"""
-    Based on the following chatbot response, determine what language(s) the chatbot supports.
-    If the response is in a non-English language, include that language in the list.
-    If the response explicitly mentions supported languages, list those.
-
-    CHATBOT RESPONSE:
-    {chatbot_response}
-
-    FORMAT YOUR RESPONSE AS A COMMA-SEPARATED LIST OF LANGUAGES:
-    [language1, language2, ...]
-
-    RESPONSE:
-    """
-
-    language_result = llm.invoke(language_prompt)
-    languages = language_result.content.strip()
-
-    # Clean up the response - remove brackets, quotes, etc.
-    languages = languages.replace("[", "").replace("]", "")
-    language_list = [lang.strip() for lang in languages.split(",") if lang.strip()]
-
-    return language_list
