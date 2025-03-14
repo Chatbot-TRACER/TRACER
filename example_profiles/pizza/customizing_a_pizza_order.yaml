@@ -1,0 +1,36 @@
+test_name: Customizing a Pizza Order
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to customize a pizza by choosing toppings
+    and ingredients.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Customize a pizza with {{toppings}} and {{size}}
+  - Get the total cost of my custom pizza order
+  - Place an order for a custom pizza to pick up at the shop
+  - size:
+      function: random()
+      type: string
+      data:
+      - Small
+      - Medium
+      - Large
+      - Extra Large
+  - toppings:
+      function: another(3)
+      type: string
+      data:
+      - Pepperoni
+      - Mushrooms
+      - Onions
+      - Sausage
+      - Green Peppers
+      - Black Olives
+      - Pineapple
+      - Spinach

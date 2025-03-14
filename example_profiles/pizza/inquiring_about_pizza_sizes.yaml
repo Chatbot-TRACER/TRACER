@@ -1,0 +1,25 @@
+test_name: Inquiring About Pizza Sizes
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to inquire about the sizes available for
+    pizzas before placing an order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Inquire about the available pizza sizes for ordering
+  - Choose a pizza size of {{size}} for my order
+  - Ask about the total cost of my order with {{size}} pizza
+  - Find out how long the order will take to be ready
+  - size:
+      function: random()
+      type: string
+      data:
+      - Small
+      - Medium
+      - Large
+      - Extra Large

@@ -1,0 +1,16 @@
+test_name: Estimating Order Preparation Time
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to know the estimated time for their pizza
+    order to be ready.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Ask for the estimated time for my pizza order to be ready
+  - Get the total cost of my pizza and drink order
+  - Inquire about the options available for pizza size

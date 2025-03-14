@@ -1,0 +1,31 @@
+test_name: Learning About Loyalty Programs and Offers
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who is interested in finding out about any loyalty
+    programs or special offers when ordering pizza.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Inquire about any loyalty programs available for pizza orders
+  - Check if there are any current special offers or promotions for ordering pizza
+  - Get a total cost for my pizza order with {{size}} and {{quantity}} drinks
+  - size:
+      function: random()
+      type: string
+      data:
+      - Small
+      - Medium
+      - Large
+      - Extra Large
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
