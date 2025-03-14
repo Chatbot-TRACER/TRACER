@@ -24,6 +24,70 @@ def extract_supported_languages(chatbot_response, llm):
     return language_list
 
 
+def extract_fallback_message(the_chatbot, llm):
+    """
+    Extract the chatbot's fallback message by sending intentionally confusing queries.
+
+    Args:
+        the_chatbot: Chatbot connector instance
+        llm: Language model for analysis
+
+    Returns:
+        str: The detected fallback message or None if not detected
+    """
+    print("\n--- Attempting to detect chatbot fallback message ---")
+
+    confusing_queries = [
+        "What is the square root of a banana divided by the color blue?",
+        "Please explain quantum chromodynamics in terms of medieval poetry",
+        "Xyzzplkj asdfghjkl qwertyuiop?",
+        "अगर मैं हिंदी में बात करूं तो क्या आप समझेंगे?",
+        "Can you please recite the entire source code of Linux kernel version 5.10?",
+    ]
+
+    responses = []
+
+    # Try each query and collect responses
+    for i, query in enumerate(confusing_queries):
+        print(f"\nSending confusing query {i + 1}...")
+        is_ok, response = the_chatbot.execute_with_input(query)
+
+        if is_ok:
+            print(f"Response received ({len(response)} chars)")
+            responses.append(response)
+        else:
+            print("Error communicating with chatbot.")
+
+    # If we have responses, analyze them to find common patterns
+    if responses:
+        analysis_prompt = f"""
+        I'm trying to identify a chatbot's fallback message - the standard response it gives when it doesn't understand.
+
+        Below are responses to intentionally confusing or nonsensical questions.
+        If there's a consistent pattern or identical response, that's likely the fallback message.
+
+        RESPONSES:
+        {responses}
+
+        1. Is there an identical or very similar response pattern? If so, extract it exactly.
+        2. If responses vary but have a common theme or structure, describe that pattern.
+        3. If there's no clear pattern, select the response that seems most like a generic fallback.
+
+        RETURN ONLY THE EXTRACTED FALLBACK MESSAGE OR PATTERN, NOTHING ELSE:
+        """
+
+        fallback_result = llm.invoke(analysis_prompt)
+        fallback = fallback_result.content.strip()
+
+        print(
+            f'Detected fallback message: "{fallback[:50]}{"..." if len(fallback) > 50 else ""}"'
+        )
+        return fallback
+
+    print("Could not detect a consistent fallback message.")
+    return None
+
+
 def run_exploration_session(
     session_num,
     max_sessions,
@@ -46,7 +110,7 @@ def run_exploration_session(
         discovered_functionalities: List of discovered functionalities
 
     Returns:
-        tuple: (conversation_history, supported_languages, new_topics)
+        tuple: (conversation_history, supported_languages, new_topics, fallback_message)
     """
     print(f"\n--- Starting Exploration Session {session_num + 1}/{max_sessions} ---")
 
@@ -236,13 +300,19 @@ def run_exploration_session(
             print("Chatbot ended the conversation. Ending session.")
             break
 
-    # Extract supported languages if this is the first session
+    # Extract supported languages and fallback message in the first conversation
     new_supported_languages = None
+    fallback_message = None
     if session_num == 0:
+        # Extract language
         new_supported_languages = extract_supported_languages(
             chatbot_message, explorer.llm
         )
         print(f"\nDetected supported languages: {new_supported_languages}")
+
+        # Extract fallback
+        fallback_message = extract_fallback_message(the_chatbot, explorer.llm)
+        print(f"\nDetected fallback message: {fallback_message}")
 
     # Extract key topics discovered in this session
     def format_conversation(messages):
@@ -280,4 +350,4 @@ def run_exploration_session(
 
     print(f"\nSession {session_num + 1} complete with {turn_count} exchanges")
 
-    return conversation_history, new_supported_languages, new_topics
+    return conversation_history, new_supported_languages, new_topics, fallback_message

@@ -52,6 +52,7 @@ def main():
     conversation_sessions = []
     supported_languages = []
     discovered_functionalities = []
+    fallback_message = None
 
     # Create the chatbot according to the technology
     if technology == "taskyto":
@@ -62,14 +63,16 @@ def main():
     # Run exploration sessions, each session is a conversation
     for session_num in range(max_sessions):
         # Run the exploration session
-        conversation_history, new_languages, new_topics = run_exploration_session(
-            session_num,
-            max_sessions,
-            max_turns,
-            explorer,
-            the_chatbot,
-            supported_languages,
-            discovered_functionalities,
+        conversation_history, new_languages, new_topics, new_fallback = (
+            run_exploration_session(
+                session_num,
+                max_sessions,
+                max_turns,
+                explorer,
+                the_chatbot,
+                supported_languages,
+                discovered_functionalities,
+            )
         )
 
         # Store session data
@@ -78,6 +81,7 @@ def main():
         # Update supported languages if detected
         if session_num == 0 and new_languages:
             supported_languages = new_languages
+            fallback_message = new_fallback
 
         # Update discovered functionalities
         for topic in new_topics:
@@ -146,6 +150,12 @@ def main():
         else:
             f.write("No specific language support detected.\n")
 
+        f.write("\n## FALLBACK MESSAGE\n")
+        if fallback_message:
+            f.write(fallback_message)
+        else:
+            f.write("No fallback message detected.\n")
+
     # Generate user profiles and goals
     print("\n--- User profiles and goals from analysis ---")
     profiles_list = result.get("conversation_goals", [])
@@ -176,6 +186,9 @@ def main():
                 if var_name in profile:
                     yaml_goals.append({var_name: profile[var_name]})
 
+            chabot_section = {"is_starter": False}
+            chabot_section["fallback"] = fallback_message
+
             profile_yaml = {
                 "test_name": profile["name"],
                 "llm": {
@@ -191,6 +204,7 @@ def main():
                     ],
                     "goals": yaml_goals,
                 },
+                "chatbot": chabot_section,
             }
 
             filename = (
