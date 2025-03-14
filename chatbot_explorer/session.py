@@ -28,6 +28,9 @@ def extract_fallback_message(the_chatbot, llm):
     """
     Extract the chatbot's fallback message by sending intentionally confusing queries.
 
+    This function makes separate chatbot calls that are NOT part of the main
+    conversation history and won't be included in analysis.
+
     Args:
         the_chatbot: Chatbot connector instance
         llm: Language model for analysis
@@ -35,7 +38,9 @@ def extract_fallback_message(the_chatbot, llm):
     Returns:
         str: The detected fallback message or None if not detected
     """
-    print("\n--- Attempting to detect chatbot fallback message ---")
+    print(
+        "\n--- Attempting to detect chatbot fallback message (won't be included in analysis) ---"
+    )
 
     confusing_queries = [
         "What is the square root of a banana divided by the color blue?",
@@ -304,15 +309,15 @@ def run_exploration_session(
     new_supported_languages = None
     fallback_message = None
     if session_num == 0:
+        # Extract fallback (this doesnt get added to the conversation that gets analyzed)
+        fallback_message = extract_fallback_message(the_chatbot, explorer.llm)
+        print(f"\nDetected fallback message: {fallback_message}")
+
         # Extract language
         new_supported_languages = extract_supported_languages(
             chatbot_message, explorer.llm
         )
         print(f"\nDetected supported languages: {new_supported_languages}")
-
-        # Extract fallback
-        fallback_message = extract_fallback_message(the_chatbot, explorer.llm)
-        print(f"\nDetected fallback message: {fallback_message}")
 
     # Extract key topics discovered in this session
     def format_conversation(messages):
