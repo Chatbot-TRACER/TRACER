@@ -1,3 +1,5 @@
+"""Module to generate the goals and their variables"""
+
 import re
 import os
 
