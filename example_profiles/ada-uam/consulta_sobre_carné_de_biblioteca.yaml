@@ -1,4 +1,4 @@
-test_name: Información sobre servicios del CAU
+test_name: Consulta sobre carné de biblioteca
 llm:
   temperature: 0.8
   model: gpt-4o-mini
@@ -6,15 +6,14 @@ llm:
     type: text
 user:
   language: Spanish
-  role: Debes actuar como un estudiante que necesita información sobre los distintos
-    servicios que ofrece el Centro de Atención a Usuarios (CAU).
+  role: Debes actuar como un estudiante que pregunta sobre el procedimiento para obtener
+    o renovar su carné de biblioteca de la UAM.
   context:
   - 'personality: personalities/conversational-user.yml'
   goals:
-  - Consultar el catálogo de servicios disponibles en el CAU
-  - Pedir información específica sobre los horarios de atención del CAU
-  - Solicitar detalles sobre el proceso para instalar y configurar la VPN
-  - Preguntar cómo acceder a los servicios de la biblioteca usando el ID-UAM
+  - Preguntar sobre el procedimiento para obtener mi carné de biblioteca
+  - Consultar cómo puedo renovar mi carné de biblioteca
+  - Solicitar información sobre los recursos disponibles en la biblioteca con mi carné
 chatbot:
   is_starter: false
   fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,

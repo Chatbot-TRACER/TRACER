@@ -1,0 +1,26 @@
+test_name: Acceso a servicios bibliotecarios
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Debes actuar como un alumno que quiere saber cómo acceder a los recursos de
+    la Biblioteca UAM utilizando su ID-UAM.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  goals:
+  - Preguntar cómo acceder a los recursos de la Biblioteca UAM utilizando mi ID-UAM
+  - Solicitar información sobre el proceso de préstamo y devolución de libros en la
+    biblioteca
+  - Consultar si mi colectivo tiene acceso a ciertos recursos y qué pasos seguir para
+    acceder a ellos
+  - Pedir detalles sobre las bases de datos y otros recursos disponibles a través
+    de la Biblioteca UAM
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>

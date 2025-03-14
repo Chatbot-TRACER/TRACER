@@ -1,4 +1,4 @@
-test_name: Información sobre servicios del CAU
+test_name: Consulta sobre préstamo de libros
 llm:
   temperature: 0.8
   model: gpt-4o-mini
@@ -6,15 +6,15 @@ llm:
     type: text
 user:
   language: Spanish
-  role: Debes actuar como un estudiante que necesita información sobre los distintos
-    servicios que ofrece el Centro de Atención a Usuarios (CAU).
+  role: Debes actuar como un estudiante de la UAM que necesita detalles sobre cómo
+    realizar préstamos de libros en la biblioteca.
   context:
   - 'personality: personalities/conversational-user.yml'
   goals:
-  - Consultar el catálogo de servicios disponibles en el CAU
-  - Pedir información específica sobre los horarios de atención del CAU
-  - Solicitar detalles sobre el proceso para instalar y configurar la VPN
-  - Preguntar cómo acceder a los servicios de la biblioteca usando el ID-UAM
+  - Consultar cómo realizar un préstamo de libros en la biblioteca
+  - Preguntar sobre los requisitos para utilizar el ID-UAM en la biblioteca
+  - Solicitar información sobre los horarios de atención de la biblioteca
+  - Pedir detalles sobre los recursos disponibles a través del ID-UAM
 chatbot:
   is_starter: false
   fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
