@@ -6,8 +6,8 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import StateGraph
 from langgraph.graph.message import add_messages
 
-from .profiles import generate_user_profiles_and_goals
-from .analyzer import analyze_conversations
+from .nodes.goals_node import generate_user_profiles_and_goals
+from .nodes.analyzer_node import analyze_conversations
 
 
 class State(TypedDict):
