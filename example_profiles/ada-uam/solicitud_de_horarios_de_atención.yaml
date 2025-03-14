@@ -1,0 +1,28 @@
+test_name: Solicitud de Horarios de Atención
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúa como un usuario que necesita conocer los horarios de atención del Centro
+    de Atención a Usuarios de Tecnologías de la Información de la UAM.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Tienes una consulta urgente sobre un problema técnico y necesitas asistencia lo
+    antes posible.
+  - Has escuchado que el horario de atención del centro ha cambiado recientemente
+    y quieres confirmarlo.
+  - Te gustaría saber si se requiere algún documento específico para recibir atención
+    presencial en el centro.
+  goals:
+  - Solicitar los horarios de atención del Centro de Atención a Usuarios
+  - Pedir información sobre los métodos de contacto disponibles
+  - Consultar si hay atención presencial y sus requisitos
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>

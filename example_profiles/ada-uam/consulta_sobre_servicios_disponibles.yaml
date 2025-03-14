@@ -1,0 +1,46 @@
+test_name: Consulta sobre Servicios Disponibles
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúa como un usuario que desea saber qué servicios ofrece el Centro de Atención
+    a Usuarios de Tecnologías de la Información.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Tienes problemas para acceder a tu cuenta de correo institucional y necesitas
+    restablecer la contraseña urgentemente para enviar un informe importante.
+  - Has escuchado de otros compañeros que el Centro de Atención a Usuarios ofrece
+    una variedad de servicios útiles para resolver problemas técnicos.
+  - Quisieras conocer el horario de atención del centro, ya que planeas visitarlo
+    después de tus clases.
+  goals:
+  - Consultar los servicios ofrecidos por el Centro de Atención a Usuarios
+  - Pedir información sobre cómo restablecer mi contraseña para acceder a {{service}}
+  - Solicitar ayuda con problemas técnicos específicos como {{technical_issue}}
+  - Preguntar sobre el horario de atención del Centro de Atención a Usuarios
+  - service:
+      function: random()
+      type: string
+      data:
+      - Soporte Técnico
+      - Asesoramiento en Software
+      - Gestión de Cuentas
+      - Capacitación en Herramientas Digitales
+  - technical_issue:
+      function: another(3)
+      type: string
+      data:
+      - Problemas de Conexión a Internet
+      - Error al Iniciar Sesión
+      - Fallos en la Instalación de Software
+      - Problemas con la Impresora
+      - Dificultades en el Acceso a Recursos en Línea
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>

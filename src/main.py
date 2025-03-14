@@ -189,6 +189,16 @@ def main():
             chabot_section = {"is_starter": False}
             chabot_section["fallback"] = fallback_message
 
+            user_context = ["personality: personalities/conversational-user.yml"]
+
+            context = profile.get("context", [])
+            # In case there is only one context
+            if isinstance(context, str):
+                user_context.append(context)
+            else:
+                for ctx_item in context:
+                    user_context.append(ctx_item)
+
             profile_yaml = {
                 "test_name": profile["name"],
                 "llm": {
@@ -199,9 +209,7 @@ def main():
                 "user": {
                     "language": primary_language,
                     "role": profile["role"],
-                    "context": [
-                        "personality: personalities/conversational-user.yml",
-                    ],
+                    "context": user_context,
                     "goals": yaml_goals,
                 },
                 "chatbot": chabot_section,

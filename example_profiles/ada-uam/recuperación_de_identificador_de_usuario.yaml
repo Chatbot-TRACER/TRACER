@@ -1,0 +1,35 @@
+test_name: Recuperación de Identificador de Usuario
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúa como un usuario que ha olvidado su identificador de usuario y necesita
+    ayuda para recuperarlo.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Olvidaste tu identificador de usuario porque no lo has utilizado en varios meses
+    y has cambiado tu teléfono.
+  - Intentaste recuperar tu contraseña la semana pasada, pero no tuviste éxito debido
+    a problemas con el código de activación.
+  - Tu jefe te ha presionado para que accedas a Teams y colabores en un proyecto urgente,
+    lo que aumenta tu frustración por no poder entrar.
+  goals:
+  - Recuperar mi identificador de usuario utilizando mi DNI o {{email}}
+  - Cambiar mi contraseña usando el código de activación que obtenga
+  - Solicitar asistencia técnica si tengo problemas con servicios como Teams
+  - email:
+      function: random()
+      type: string
+      data:
+      - usuario1@example.com
+      - usuario2@example.com
+      - usuario3@example.com
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>

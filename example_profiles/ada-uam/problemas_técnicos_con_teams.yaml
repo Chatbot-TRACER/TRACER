@@ -1,0 +1,35 @@
+test_name: Problemas Técnicos con TEAMS
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúa como un usuario que tiene dificultades para iniciar sesión en TEAMS
+    y necesita asistencia.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has intentado restablecer tu contraseña varias veces, pero no has recibido el
+    correo de confirmación de cambio.
+  - Necesitas acceder a un archivo importante para una presentación que es mañana
+    por la mañana.
+  - Recientemente, un compañero de trabajo tuvo problemas similares y pudo resolverlos
+    rápidamente contactando al Centro de Atención a Usuarios.
+  goals:
+  - Solicitar asistencia para restablecer mi contraseña de {{service_name}}
+  - Preguntar sobre los pasos a seguir si no puedo acceder a TEAMS
+  - Consultar qué servicios adicionales ofrece el Centro de Atención a Usuarios
+  - service_name:
+      function: random()
+      type: string
+      data:
+      - '"TEAMS"'
+      - '"Microsoft Teams"'
+      - '"Microsoft"'
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>

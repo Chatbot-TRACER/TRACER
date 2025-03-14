@@ -1,0 +1,35 @@
+test_name: Restablecimiento de Contraseña
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúa como un usuario que ha olvidado su contraseña y necesita instrucciones
+    para restablecerla.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has intentado restablecer tu contraseña varias veces sin éxito y ya te sientes
+    frustrado.
+  - No recuerdas el correo electrónico con el que te registraste, lo que dificulta
+    la verificación de identidad.
+  - Necesitas acceder a una plataforma importante para un proyecto escolar que tiene
+    una fecha de entrega mañana.
+  goals:
+  - Solicitar instrucciones para restablecer mi contraseña utilizando mi {{identificador_usuario}}
+  - Obtener el código de activación necesario para cambiar mi contraseña
+  - Preguntar cómo reestablecer mi contraseña si no recuerdo mi identificador de usuario
+  - identificador_usuario:
+      function: random()
+      type: string
+      data:
+      - usuario123
+      - usuario456
+      - usuario789
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
