@@ -2,6 +2,7 @@ import sys
 import yaml
 import os
 import re
+import json
 from chatbot_explorer.cli import parse_arguments
 from chatbot_explorer.explorer import ChatbotExplorer
 from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
@@ -21,7 +22,7 @@ def main():
     max_sessions = args.sessions
     max_turns = args.turns
     model_name = args.model
-    output_file = args.output
+    output_dir = args.output
     technology = args.technology
 
     # Validate the technology argument
@@ -38,8 +39,11 @@ def main():
     print(f"Exploration sessions: {args.sessions}")
     print(f"Max turns per session: {args.turns}")
     print(f"Using model: {args.model}")
-    print(f"Output file: {args.output}")
+    print(f"Output directory: {args.output}")
     print("====================================")
+
+    # Create output directory if it doesn't exist
+    os.makedirs(output_dir, exist_ok=True)
 
     # Initialize explorer
     explorer = ChatbotExplorer(model_name)
@@ -120,17 +124,27 @@ def main():
     else:
         print("No limitations discovered.")
 
-    # Save results with error handling
-    with open(output_file, "w") as f:
+    # Save functionalities as a text file in the output directory
+    with open(os.path.join(output_dir, "report.txt"), "w", encoding="utf-8") as f:
+        f.write("=== CHATBOT FUNCTIONALITY ANALYSIS ===\n\n")
+
         f.write("## FUNCTIONALITIES\n")
-        for func in result.get("discovered_functionalities", []):
-            f.write(f"- {func}\n")
+        for i, func in enumerate(result.get("discovered_functionalities", []), 1):
+            f.write(f"{i}. {func}\n")
+
         f.write("\n## LIMITATIONS\n")
-        if "discovered_limitations" in result:
-            for limitation in result["discovered_limitations"]:
-                f.write(f"- {limitation}\n")
+        if "discovered_limitations" in result and result["discovered_limitations"]:
+            for i, limitation in enumerate(result["discovered_limitations"], 1):
+                f.write(f"{i}. {limitation}\n")
         else:
-            f.write("- No limitations discovered.\n")
+            f.write("No limitations discovered.\n")
+
+        f.write("\n## SUPPORTED LANGUAGES\n")
+        if supported_languages:
+            for i, lang in enumerate(supported_languages, 1):
+                f.write(f"{i}. {lang}\n")
+        else:
+            f.write("No specific language support detected.\n")
 
     # Generate user profiles and goals
     print("\n--- User profiles and goals from analysis ---")
@@ -140,8 +154,10 @@ def main():
     primary_language = supported_languages[0] if supported_languages else "English"
 
     if profiles_list:
-        output_dir = "profiles"
-        os.makedirs(output_dir, exist_ok=True)
+        # Create profiles directory inside the output directory
+        profiles_dir = os.path.join(output_dir, "profiles")
+        os.makedirs(profiles_dir, exist_ok=True)
+
         for profile in profiles_list:
             # Obtain the variables in the profile
             used_variables = set()
@@ -185,15 +201,17 @@ def main():
                 .replace("&", "and")
                 + ".yaml"
             )
-            filepath = os.path.join(output_dir, filename)
+            filepath = os.path.join(profiles_dir, filename)
 
             with open(filepath, "w", encoding="utf-8") as yf:
                 yaml.dump(profile_yaml, yf, sort_keys=False, allow_unicode=True)
 
-        print(f"Profiles saved in {output_dir}")
+        print(f"Profiles saved in {profiles_dir}")
 
     else:
         print("No conversation goals were generated.")
+
+    print(f"\nAll results saved to directory: {output_dir}")
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ def parse_arguments():
     default_turns = 8
     default_url = "http://localhost:5000"
     default_model = "gpt-4o-mini"
-    default_file = "discovered_functionalities.txt"
+    default_output_dir = "output"
     default_technology = "taskyto"
 
     parser.add_argument(
@@ -58,8 +58,8 @@ def parse_arguments():
         "-o",
         "--output",
         type=str,
-        default=default_file,
-        help=f"Output file to save discovered functionalities (default: {default_file})",
+        default=default_output_dir,
+        help=f"Output directory for results and profiles (default: {default_output_dir})",
     )
 
     return parser.parse_args()
