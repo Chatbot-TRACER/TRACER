@@ -7,6 +7,9 @@ from chatbot_explorer.cli import parse_arguments
 from chatbot_explorer.explorer import ChatbotExplorer
 from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
 from chatbot_explorer.session import run_exploration_session
+from chatbot_explorer.nodes.conversation_parameters_node import (
+    generate_conversation_parameters,
+)
 
 # Takes anything that is between exactly two curly braces
 VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
@@ -202,6 +205,11 @@ def main():
                 for ctx_item in context:
                     user_context.append(ctx_item)
 
+            # Conversation section
+            conversation_section = {}
+            if "conversation" in profile:
+                conversation_section = profile["conversation"]
+
             profile_yaml = {
                 "test_name": profile["name"],
                 "llm": {
@@ -216,6 +224,7 @@ def main():
                     "goals": yaml_goals,
                 },
                 "chatbot": chabot_section,
+                "conversation": conversation_section,
             }
 
             filename = (

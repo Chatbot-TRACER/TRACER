@@ -8,6 +8,7 @@ from langgraph.graph.message import add_messages
 
 from .nodes.goals_node import generate_user_profiles_and_goals
 from .nodes.analyzer_node import analyze_conversations
+from .nodes.conversation_parameters_node import generate_conversation_parameters
 
 
 class State(TypedDict):
@@ -40,12 +41,14 @@ class ChatbotExplorer:
         graph_builder.add_node("explorer", self._explorer_node)
         graph_builder.add_node("analyzer", self._analyzer_node)
         graph_builder.add_node("goal_generator", self._goal_generator_node)
+        graph_builder.add_node("conversation_params", self._conversation_params_node)
 
         # Add edges
         graph_builder.set_entry_point("explorer")
         graph_builder.add_edge("explorer", "analyzer")
         graph_builder.add_edge("analyzer", "goal_generator")
-        graph_builder.set_finish_point("goal_generator")
+        graph_builder.add_edge("goal_generator", "conversation_params")
+        graph_builder.set_finish_point("conversation_params")
 
         return graph_builder.compile(checkpointer=self.memory)
 
@@ -86,6 +89,24 @@ class ChatbotExplorer:
             return {
                 "messages": state["messages"],
                 "conversation_goals": profiles_with_goals,
+            }
+        return {"messages": state["messages"]}
+
+    def _conversation_params_node(self, state: State):
+        """Node for generating conversation parameters for profiles."""
+        if state["exploration_finished"] and state["conversation_goals"]:
+            print("\n--- Generating conversation parameters ---")
+
+            profiles_with_params = generate_conversation_parameters(
+                state["conversation_goals"],
+                state["discovered_functionalities"],
+                self.llm,
+                supported_languages=state["supported_languages"],
+            )
+
+            return {
+                "messages": state["messages"],
+                "conversation_goals": profiles_with_params,
             }
         return {"messages": state["messages"]}
 
