@@ -156,6 +156,13 @@ def generate_variable_definitions(profiles, llm, supported_languages=None):
                 if line.startswith("- "):
                     # List item
                     value = line[2:].strip()
+
+                    # Strip extra quotes if present
+                    if value.startswith('"') and value.endswith('"'):
+                        value = value[1:-1]
+                    elif value.startswith("'") and value.endswith("'"):
+                        value = value[1:-1]
+
                     # Convert int/float strings to appropriate type
                     if current_def.get("type") == "int" and value.isdigit():
                         value = int(value)
