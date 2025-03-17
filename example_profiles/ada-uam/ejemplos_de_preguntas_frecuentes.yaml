@@ -1,0 +1,46 @@
+test_name: Ejemplos de Preguntas Frecuentes
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Tienes que actuar como un usuario que busca ejemplos de preguntas para formular
+    al Centro de Atención a Usuarios durante una consulta.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has tenido problemas previos para obtener información clara del Centro de Atención
+    a Usuarios y buscas hacer preguntas más efectivas esta vez.
+  - Estás intentando programar una cita para recibir asistencia en un tema urgente
+    relacionado con tu cuenta.
+  - Te han comentado que el horario de atención del Centro de Atención a Usuarios
+    puede ser confuso, así que deseas confirmarlo antes de llamar.
+  goals:
+  - Pedir ejemplos de preguntas comunes que se pueden hacer al Centro de Atención
+    a Usuarios
+  - Consultar sobre el horario de atención del Centro de Atención a Usuarios
+  - Solicitar información sobre cómo programar una cita para recibir asistencia
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - ejemplos_preguntas_frecuentes:
+      type: str
+      description: Lista de ejemplos de preguntas comunes que se pueden hacer al Centro
+        de Atención a Usuarios.
+  - horario_atencion:
+      type: str
+      description: Información sobre el horario de atención del Centro de Atención
+        a Usuarios.
+  - procedimiento_programar_cita:
+      type: str
+      description: Instrucciones sobre cómo programar una cita para recibir asistencia
+        en el Centro de Atención a Usuarios.
+  - medios_contacto:
+      type: str
+      description: Detalles sobre cómo contactar al Centro de Atención a Usuarios,
+        incluyendo correo electrónico, teléfono y atención presencial.

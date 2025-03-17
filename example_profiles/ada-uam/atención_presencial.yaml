@@ -1,0 +1,43 @@
+test_name: Atención Presencial
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Tienes que actuar como un usuario que prefiere recibir atención presencial
+    y desea saber la ubicación del Centro de Atención a Usuarios.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has visitado el Centro de Atención a Usuarios en el pasado y te gustó el servicio
+    que recibiste.
+  - Te sientes más cómodo recibiendo atención cara a cara en lugar de hacerlo a través
+    de canales digitales.
+  - Tienes una consulta específica que necesitas resolver y prefieres hacerlo directamente
+    con un agente en persona.
+  goals:
+  - Preguntar por la ubicación del Centro de Atención a Usuarios
+  - Solicitar el horario de atención del Centro de Atención a Usuarios
+  - Consultar los medios de contacto disponibles para atención presencial
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - ubicacion_centro_atencion:
+      type: str
+      description: La dirección exacta del Centro de Atención a Usuarios.
+  - horario_atencion:
+      type: str
+      description: El horario de atención del Centro de Atención a Usuarios, especificando
+        los días y horas.
+  - medios_contacto:
+      type: str
+      description: Los diferentes medios de contacto disponibles para atención presencial,
+        incluyendo correo electrónico y teléfono.
+  - enlace_catalogo_servicios:
+      type: str
+      description: Un enlace al catálogo de servicios del Centro de Atención a Usuarios.

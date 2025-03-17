@@ -1,0 +1,49 @@
+test_name: Consulta de Horarios
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Tienes que actuar como un usuario que necesita conocer los horarios de atención
+    del Centro de Atención a Usuarios para organizar su visita.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Tienes una reunión programada para la próxima semana y necesitas asegurarte de
+    que puedes visitar el Centro de Atención a Usuarios antes de eso.
+  - Has escuchado de otros usuarios que el servicio es muy útil, por lo que deseas
+    aprovechar la visita para resolver varias consultas.
+  - Estás preocupado porque el fin de semana hay una celebración local y quieres saber
+    si el horario de atención cambiará para esos días.
+  goals:
+  - Solicitar los horarios de atención del Centro de Atención a Usuarios para planificar
+    mi visita
+  - Preguntar sobre los métodos de contacto disponibles para el Centro de Atención
+    a Usuarios
+  - Consultar si hay horarios especiales durante feriados o períodos de suspensión
+    de actividad laboral
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - horarios_atencion:
+      type: string
+      description: Representa los horarios de atención del Centro de Atención a Usuarios,
+        tanto para consultas telefónicas, remotas como presenciales.
+  - medios_contacto:
+      type: string
+      description: Contiene información sobre los métodos de contacto disponibles,
+        incluyendo correo electrónico, teléfono y atención presencial para el Centro
+        de Atención a Usuarios.
+  - horarios_especiales:
+      type: string
+      description: Indica si existen horarios especiales durante feriados o períodos
+        de suspensión de actividad laboral para el Centro de Atención a Usuarios.
+  - enlace_catalogo_servicios:
+      type: string
+      description: Proporciona el enlace al catálogo de servicios del Centro de Atención
+        a Usuarios.

@@ -1,0 +1,47 @@
+test_name: Programación de Citas
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Tienes que actuar como un usuario que quiere programar una cita para asistencia
+    técnica y necesita información sobre la disponibilidad.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has tenido problemas con tu computadora y necesitas asistencia técnica lo más
+    pronto posible.
+  - El horario de atención del servicio técnico es de 9 a 18 horas, y quieres asegurarte
+    de que hay disponibilidad en esa franja horaria.
+  - Te gustaría conocer los métodos de contacto para concertar la cita, ya que prefieres
+    usar la aplicación móvil en lugar de llamar.
+  goals:
+  - Consultar disponibilidad para programar una cita para asistencia técnica en el
+    horario de atención
+  - Pedir información sobre los métodos de contacto disponibles para concertar la
+    cita
+  - Solicitar detalles sobre los servicios específicos ofrecidos durante la cita
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - disponibilidad_horarios:
+      type: str
+      description: Información sobre los horarios de atención del centro para programar
+        citas de asistencia técnica.
+  - metodos_contacto:
+      type: str
+      description: Detalles sobre los métodos de contacto disponibles para concertar
+        una cita, como correo electrónico, teléfono y atención presencial.
+  - servicios_ofrecidos:
+      type: str
+      description: Descripción de los servicios específicos que se ofrecen durante
+        la cita de asistencia técnica.
+  - enlace_catalogo_servicios:
+      type: str
+      description: Proporciona un enlace al catálogo de servicios del centro para
+        que el usuario pueda consultar la lista completa de servicios disponibles.

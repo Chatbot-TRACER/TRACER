@@ -1,0 +1,55 @@
+test_name: Solicitud de Información sobre Servicios
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Tienes que actuar como un usuario que busca entender qué servicios específicos
+    están disponibles en el catálogo del Centro de Atención a Usuarios.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Recientemente escuchaste a un amigo mencionar que el Centro de Atención a Usuarios
+    ofrece un servicio de asesoría legal muy útil.
+  - Te gustaría conocer el horario de atención porque planeas llamar durante tu almuerzo.
+  - Estás buscando ayuda para programar una cita, ya que necesitas asistencia personalizada
+    para resolver un problema específico.
+  goals:
+  - Consultar el catálogo de servicios y pedir información sobre un servicio específico
+    relacionado con {{tema}}
+  - Preguntar sobre el horario de atención para contactar al Centro de Atención a
+    Usuarios
+  - Solicitar información sobre cómo hacer una cita para recibir asistencia
+  - tema:
+      function: random()
+      type: string
+      data:
+      - atención al cliente
+      - servicios de facturación
+      - soporte técnico
+      - servicios de internet
+      - asesoría en productos
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - enlace_catálogo_servicios:
+      type: str
+      description: Enlace al catálogo de servicios del Centro de Atención a Usuarios
+        que permite al usuario consultar los servicios disponibles.
+  - horarios_atención:
+      type: str
+      description: Información sobre los horarios de atención del Centro de Atención
+        a Usuarios, incluyendo detalles sobre consultas telefónicas y atención presencial.
+  - información_contacto:
+      type: str
+      description: Detalles sobre cómo contactar al Centro de Atención a Usuarios,
+        incluyendo correo electrónico, teléfono y opciones de contacto presencial.
+  - procedimiento_cita:
+      type: str
+      description: Descripción del procedimiento para hacer una cita para recibir
+        asistencia en el Centro de Atención a Usuarios.
