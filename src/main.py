@@ -189,6 +189,9 @@ def main():
             chabot_section = {"is_starter": False}
             chabot_section["fallback"] = fallback_message
 
+            if "outputs" in profile:
+                chabot_section["output"] = profile["outputs"]
+
             user_context = ["personality: personalities/conversational-user.yml"]
 
             context = profile.get("context", [])
