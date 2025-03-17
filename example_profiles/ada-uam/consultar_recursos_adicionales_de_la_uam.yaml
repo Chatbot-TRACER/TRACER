@@ -1,0 +1,55 @@
+test_name: Consultar recursos adicionales de la UAM
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un estudiante que busca más recursos para sus estudios y desea obtener
+    información sobre las bibliotecas y sus servicios asociados.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has escuchado de otros estudiantes que la biblioteca de la UAM tiene una amplia
+    colección de libros y recursos digitales disponibles para ayudar en sus investigaciones.
+  - Estás preparando un proyecto importante para la clase de Historia y necesitas
+    acceder a fuentes académicas específicas que sólo se encuentran en la biblioteca.
+  - Recientemente te informaron que la biblioteca ofrece talleres sobre cómo usar
+    sus recursos electrónicos, lo que te gustaría explorar.
+  goals:
+  - Consultar los servicios disponibles en la biblioteca de la UAM
+  - Preguntar sobre el horario de atención de la biblioteca
+  - Solicitar información sobre el acceso a recursos digitales con mi ID-UAM
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - servicios_disponibles:
+      type: str
+      description: Una lista de los servicios ofrecidos por la biblioteca de la UAM
+        que el chatbot informa al usuario.
+  - horario_atencion:
+      type: str
+      description: Los horarios de atención de la biblioteca de la UAM que el chatbot
+        proporciona al usuario.
+  - acceso_recursos_digitales:
+      type: str
+      description: Información sobre cómo acceder a los recursos digitales utilizando
+        el ID-UAM, según lo indicado por el chatbot.
+  - metodo_contacto:
+      type: str
+      description: Detalles sobre los métodos de contacto disponibles para comunicarse
+        con el Centro de Atención a Usuarios, que el chatbot ofrece al usuario.
+conversation:
+  number: 2
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 30
+  interaction_style:
+  - long phrases
+  - single question

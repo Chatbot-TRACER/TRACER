@@ -1,23 +1,25 @@
 === CHATBOT FUNCTIONALITY ANALYSIS ===
 
 ## FUNCTIONALITIES
-1. Order Predefined Pizzas: The chatbot can assist customers in ordering specific types of pizzas, including but not limited to Margarita, Carbonara, Marinera, Hawaiian, Four cheese, and Vegetarian.
-2. Custom Pizza Selection: Users can customize their own pizzas by choosing ingredients, allowing for personalized orders.
-3. Order Drinks: The chatbot supports ordering drinks such as Sprite, Coke, and Water, providing prices for these beverages.
-4. Combined Orders: Customers have the option to order both pizzas and drinks together in a single transaction.
-5. Answer Questions about Menu: The chatbot can answer questions regarding the menu, including types of pizzas, prices of pizzas and drinks, and how to place an order.
-6. Provide Location Information: The chatbot provides the location of the store, facilitating customers in finding where to collect their orders.
-7. Opening Hours Information: The chatbot can inform users about the store's opening hours.
-8. Order Preparation Time Estimates: It offers estimates on how long it takes to prepare orders, generally around 15 minutes per pizza depending on the workload.
+1. Pizza Ordering: The chatbot assists users in ordering predefined pizzas and allows customization of pizzas with chosen ingredients.
+2. Drink Options: Users can inquire about and order drinks, including Sprite, Coke, and Water, along with their prices.
+3. Price Calculation: The chatbot provides detailed pricing for pizzas based on size and type, including custom options.
+4. Preparation Time Estimation: It provides users with an estimated preparation time for their orders, usually around 15 minutes per pizza.
+5. Opening Hours Inquiry: The chatbot shares information about the establishment's opening hours.
+6. Location Information: Users can ask for the physical location of the shop where they can collect their orders.
+7. Payment Inquiry: The chatbot allows users to ask about payment options, although it sometimes struggles to convey this effectively.
+8. Order Confirmation: Users can inquire whether they can confirm their orders before picking them up.
+9. Clarification and Rephrasing: When the chatbot does not understand a question, it prompts the user for rephrasing or simplification of their queries.
 
 ## LIMITATIONS
-1. The chatbot only operates in English, limiting accessibility for speakers of other languages.
-2. The chatbot primarily deals with specific queries regarding pizzas and drinks; it does not address broader inquiries outside this scope.
-3. There is a lack of information regarding payment methods, promotions, or dietary customizations; the chatbot frequently states it does not know the answers to related inquiries.
-4. Limited engagement with advanced customization options for dietary needs; responses indicating adjustments for such requirements are vague.
+1. The chatbot frequently fails to understand complex or multi-faceted questions, prompting requests for rephrasing.
+2. It does not provide delivery services; customers have to pick up their orders at the store.
+3. There is inconsistent information regarding the maximum number of pizzas that can be ordered at once.
+4. The chatbot displays a limited vocabulary and phrasing options, affecting its ability to understand various user questions.
+5. The chatbot has confirmed support only for English, restricting interactions in other languages.
 
 ## SUPPORTED LANGUAGES
 1. English
 
 ## FALLBACK MESSAGE
-"I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks."
+"I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE"

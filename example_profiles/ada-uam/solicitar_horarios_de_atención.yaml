@@ -1,0 +1,54 @@
+test_name: Solicitar horarios de atención
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un estudiante de la UAM que necesita saber los horarios de atención del
+    Centro de Atención a Usuarios para planificar una visita.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Estás preparando la documentación necesaria para inscribirte en cursos y necesitas
+    clarificar los horarios de atención del Centro.
+  - Has escuchado que algunos estudiantes tienen dudas sobre los servicios que ofrece
+    el Centro de Atención a Usuarios.
+  - Te gustaría asegurarte de que puedes contactar al Centro en caso de necesitar
+    más información antes de tu visita.
+  goals:
+  - Solicitar el horario de atención del Centro de Atención a Usuarios
+  - Preguntar sobre los métodos de contacto disponibles para comunicarme con el Centro
+  - Consultar qué servicios específicos ofrece el Centro de Atención a Usuarios
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - horario_atencion:
+      type: str
+      description: Los horarios de atención del Centro de Atención a Usuarios que
+        proporciona el chatbot.
+  - metodos_contacto:
+      type: str
+      description: Los métodos de contacto disponibles (como correo electrónico y
+        teléfono) que el chatbot menciona para comunicarse con el Centro de Atención
+        a Usuarios.
+  - servicios_ofrecidos:
+      type: str
+      description: Una descripción de los servicios específicos que ofrece el Centro
+        de Atención a Usuarios según la información proporcionada por el chatbot.
+  - enlace_catalogo_servicios:
+      type: str
+      description: Un enlace proporcionado por el chatbot para acceder al catálogo
+        de servicios de Tecnologías de la Información de la UAM.
+conversation:
+  number: 2
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 30
+  interaction_style: single question

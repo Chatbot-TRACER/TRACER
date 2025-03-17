@@ -1,0 +1,54 @@
+test_name: Solicitar información sobre la biblioteca
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un usuario que necesita información sobre cómo utilizar los recursos
+    de la biblioteca de la UAM, incluyendo préstamos y acceso a bases de datos.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has visitado la biblioteca antes, pero nunca has solicitado un préstamo de libros.
+  - Tu compañero de clase te recomendó que aproveches los recursos en línea de la
+    biblioteca para tus investigaciones.
+  - Sabes que la biblioteca tiene horarios flexibles, pero quieres confirmar los horarios
+    exactos para planificar tu visita.
+  goals:
+  - Solicitar información sobre el proceso de préstamo de libros en la biblioteca
+  - Preguntar sobre el acceso a bases de datos utilizando el ID-UAM
+  - Consultar los horarios de atención de la biblioteca
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - horarios_atencion:
+      type: str
+      description: Los horarios de atención de la biblioteca proporcionados por el
+        chatbot.
+  - proceso_prestamo:
+      type: str
+      description: Información sobre el proceso de préstamo de libros en la biblioteca
+        según lo indicado por el chatbot.
+  - acceso_bases_datos:
+      type: str
+      description: Detalles sobre cómo acceder a las bases de datos utilizando el
+        ID-UAM, tal como lo menciona el chatbot.
+  - metodos_contacto:
+      type: str
+      description: Los diferentes métodos de contacto ofrecidos por el chatbot para
+        comunicarse con el Centro de Atención a Usuarios.
+conversation:
+  number: 2
+  max_cost: 1.2
+  goal_style:
+    all_answered:
+      export: false
+      limit: 30
+  interaction_style:
+  - single question
+  - long phrases
