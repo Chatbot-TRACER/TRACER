@@ -1,0 +1,74 @@
+test_name: Language-Specific Song Finder
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You are a user who prefers listening to music in a specific language. You
+    want the chatbot to recommend songs and artists based on that language and your
+    preferred genre.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You primarily enjoy listening to Spanish pop music and are looking for the latest
+    hits in that genre.
+  - You've recently discovered several Latin artists on social media and want to explore
+    more of their music.
+  - You often create playlists for your weekends and want recommendations that would
+    enhance your social gatherings.
+  goals:
+  - Recommend songs in {{language}} that fit the {{genre}} I like
+  - Suggest new artists who perform in {{language}} and fall under the {{genre}} category
+  - Provide a list of popular playlists featuring {{language}} songs in {{genre}}
+  - genre:
+      function: random()
+      type: string
+      data:
+      - Pop
+      - Rock
+      - Jazz
+      - Reggae
+      - Hip-Hop
+  - language:
+      function: default()
+      type: string
+      data:
+      - English
+      - Spanish
+      - French
+      - German
+      - Italian
+      - Portuguese
+chatbot:
+  is_starter: false
+  fallback: 'hey? I can recommend you some musics. You just need to tell me what genre
+    of music you like, and the language of the song.`\nFor troubleshooting, visit:
+    https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - song_recommendations:
+      type: list
+      description: A list of song titles suggested by the chatbot that are in the
+        specified language and fit the user's preferred genre.
+  - artist_discoveries:
+      type: list
+      description: A list of new artists recommended by the chatbot who perform in
+        the user's specified language and genre.
+  - popular_playlists:
+      type: list
+      description: A list of popular playlists mentioned by the chatbot that feature
+        songs in the specified language and genre.
+  - genre_specific_language:
+      type: str
+      description: The specific genre and language combination that the chatbot confirms
+        it is using to provide recommendations.
+conversation:
+  number: sample(0.3)
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 30
+  interaction_style:
+  - single question
+  - long phrases

@@ -1,0 +1,55 @@
+test_name: New Artist Discovery
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You are an avid music listener looking to discover new and emerging artists.
+    You want recommendations based on your existing music preferences to find someone
+    new to enjoy.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You frequently listen to indie pop artists like Phoebe Bridgers and Sufjan Stevens,
+    and you want to explore new music in that genre.
+  - You're particularly interested in discovering female artists who are gaining popularity
+    in the music scene.
+  - You often use platforms like Spotify and Bandcamp to find and stream new music,
+    appreciating tailored playlists and recommendations.
+  goals:
+  - Request recommendations for new artists in the {{music genre}} genre
+  - Ask for similar artists to {{favorite artist}}
+  - Inquire about emerging artists in the {{music genre}} category
+chatbot:
+  is_starter: false
+  fallback: 'hey? I can recommend you some musics. You just need to tell me what genre
+    of music you like, and the language of the song.`\nFor troubleshooting, visit:
+    https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - recommended_artists:
+      type: list
+      description: A list of new or emerging artists recommended by the chatbot based
+        on the user's music preferences.
+  - similar_artists:
+      type: list
+      description: A collection of artists that are similar to the user-specified
+        artist, as suggested by the chatbot.
+  - genre_specific_artists:
+      type: list
+      description: Newly discovered artists within the specific genre requested by
+        the user, as provided by the chatbot.
+  - emerging_artists:
+      type: list
+      description: A list of emerging artists highlighted by the chatbot in response
+        to the user's inquiry about recent talents in a given category.
+conversation:
+  number: sample(0.3)
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 30
+  interaction_style:
+  - single question
+  - long phrases

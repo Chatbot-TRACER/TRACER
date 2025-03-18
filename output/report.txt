@@ -1,25 +1,20 @@
 === CHATBOT FUNCTIONALITY ANALYSIS ===
 
 ## FUNCTIONALITIES
-1. Pizza Ordering: The chatbot assists users in ordering predefined pizzas and allows customization of pizzas with chosen ingredients.
-2. Drink Options: Users can inquire about and order drinks, including Sprite, Coke, and Water, along with their prices.
-3. Price Calculation: The chatbot provides detailed pricing for pizzas based on size and type, including custom options.
-4. Preparation Time Estimation: It provides users with an estimated preparation time for their orders, usually around 15 minutes per pizza.
-5. Opening Hours Inquiry: The chatbot shares information about the establishment's opening hours.
-6. Location Information: Users can ask for the physical location of the shop where they can collect their orders.
-7. Payment Inquiry: The chatbot allows users to ask about payment options, although it sometimes struggles to convey this effectively.
-8. Order Confirmation: Users can inquire whether they can confirm their orders before picking them up.
-9. Clarification and Rephrasing: When the chatbot does not understand a question, it prompts the user for rephrasing or simplification of their queries.
+1. Music Genre Recommendations: The chatbot can recommend music based on the user's preferred genre.
+2. Language-specific Song Suggestions: The chatbot offers song recommendations tailored to the specified language, dependent on user input regarding genre and language.
+3. Artist Discovery Assistance: The chatbot can help users find new artists based on their music preferences.
+4. Playlist Creation: The chatbot may assist in creating playlists, potentially based on selected genres and user preferences, though this functionality requires further exploration.
+5. Mood-based Song Suggestions: The chatbot can possibly suggest songs that align with the user's current mood.
 
 ## LIMITATIONS
-1. The chatbot frequently fails to understand complex or multi-faceted questions, prompting requests for rephrasing.
-2. It does not provide delivery services; customers have to pick up their orders at the store.
-3. There is inconsistent information regarding the maximum number of pizzas that can be ordered at once.
-4. The chatbot displays a limited vocabulary and phrasing options, affecting its ability to understand various user questions.
-5. The chatbot has confirmed support only for English, restricting interactions in other languages.
+1. The chatbot supports only English language, which may restrict user accessibility who are non-English speakers.
+2. The chatbot seems to get confused with multiple questions and requires questions to be kept short and direct.
+3. User responses in the transcripts appear repetitive, which could indicate that the chatbot struggles to engage in a more dynamic conversation flow.
+4. The exploration of advanced features suggests there may be additional capabilities, but these have not been fully tested or confirmed in the interactions.
 
 ## SUPPORTED LANGUAGES
 1. English
 
 ## FALLBACK MESSAGE
-"I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE"
+hey? I can recommend you some musics. You just need to tell me what genre of music you like, and the language of the song.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE

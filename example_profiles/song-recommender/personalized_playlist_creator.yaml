@@ -1,0 +1,82 @@
+test_name: Personalized Playlist Creator
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You are looking to create a personalized playlist for an upcoming event. You
+    want the chatbot to assist you in curating a playlist based on your selected genres
+    and preferences.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You are organizing a birthday party for your friend and want the playlist to reflect
+    their favorite pop and indie rock genres.
+  - You recently attended a wedding where the DJ played a mix of upbeat electronic
+    music and classic hits, which inspired your playlist ideas.
+  - You prefer songs that have a lively tempo to keep the energy high during the event
+    and are open to discovering new artists within those genres.
+  goals:
+  - Create a playlist with songs from the {{genre}} genre
+  - Get song recommendations based on my {{mood}} for the event
+  - Include songs in {{language}} in my personalized playlist
+  - mood:
+      function: another(4)
+      type: string
+      data:
+      - Happy
+      - Relaxed
+      - Energetic
+      - Melancholic
+      - Romantic
+  - genre:
+      function: default()
+      type: string
+      data:
+      - Pop
+      - Rock
+      - Jazz
+      - Electronic
+      - Hip Hop
+  - language:
+      function: random(3)
+      type: string
+      data:
+      - English
+      - Spanish
+      - French
+      - German
+      - Mandarin
+chatbot:
+  is_starter: false
+  fallback: 'hey? I can recommend you some musics. You just need to tell me what genre
+    of music you like, and the language of the song.`\nFor troubleshooting, visit:
+    https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - playlist_genres:
+      type: list
+      description: The specific genres of music that the chatbot includes in the personalized
+        playlist based on user preferences.
+  - song_recommendations:
+      type: list
+      description: The songs suggested by the chatbot for the playlist, taking into
+        account the specified genres and user preferences.
+  - mood_suggestions:
+      type: list
+      description: Songs or artists recommended by the chatbot that align with the
+        user's current mood as specified during the conversation.
+  - artist_discovery:
+      type: list
+      description: New artists mentioned by the chatbot that match the user's music
+        preferences and may be included in the playlist.
+conversation:
+  number: sample(0.4)
+  max_cost: 1.2
+  goal_style:
+    all_answered:
+      export: false
+      limit: 30
+  interaction_style:
+  - long phrases
+  - change your mind
