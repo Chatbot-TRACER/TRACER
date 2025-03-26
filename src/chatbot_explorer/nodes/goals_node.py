@@ -323,7 +323,7 @@ def generate_outputs(profiles, functionalities, llm, supported_languages=None):
 
         outputs_prompt = f"""
         Identify 2-4 key pieces of INFORMATION THE CHATBOT WILL PROVIDE that should be extracted from its responses.
-        These outputs are what a human would validate after the conversation to verify if the chatbot gave correct information.
+        These outputs help the tester validate data from the conversation once it is finished.
 
         CONVERSATION SCENARIO: {profile["name"]}
         USER ROLE: {profile["role"]}
@@ -334,6 +334,11 @@ def generate_outputs(profiles, functionalities, llm, supported_languages=None):
         {", ".join(functionalities[:5] if functionalities else ["Unknown"])}
 
         {language_instruction}
+
+        PURPOSE OF OUTPUTS:
+        The tester needs to extract specific data points from the chatbot's responses to validate
+        the consistency and performance of the chatbot. These outputs represent information
+        that should appear in the chatbot's messages.
 
         EXTREMELY IMPORTANT:
         - Outputs must be information THE CHATBOT GIVES TO THE USER, not what the user inputs
@@ -353,10 +358,15 @@ def generate_outputs(profiles, functionalities, llm, supported_languages=None):
 
         For each output:
         1. Give it a SHORT, descriptive name (use underscores instead of spaces)
-        2. Assign an appropriate type (str, int, float, money, date, time, etc.)
-        3. Write a brief description of what this output represents
+        2. Assign an appropriate type from the following options:
+           - str: For text data (names, descriptions, IDs)
+           - int: For whole numbers
+           - float: For decimal numbers
+           - date: For calendar dates
+           - time: For time values
+        3. Write a brief description of what this output represents and how to find it in the chatbot's responses
 
-        FORMAT YOUR RESPONSE EXACTLY LIKE THIS:
+        THE OUTPUT STRUCTURE MUST FOLLOW THIS FORMAT:
         OUTPUT: output_name_1
         TYPE: output_type_1
         DESCRIPTION: brief description of what to extract from chatbot responses
