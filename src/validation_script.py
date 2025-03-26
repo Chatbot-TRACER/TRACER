@@ -20,12 +20,17 @@ class YamlValidator:
             "conversation",
             "chatbot",
         ]
+        # These are mandatory, if they are not present, the validation will fail
         self.required_nested = {
-            #"llm": ["model", "temperature", "format"],
+            # "llm": ["model", "temperature", "format"],
             "llm.format": ["type"],
             "user": ["role", "context", "goals"],
             "chatbot": ["is_starter", "fallback", "output"],
             "conversation": ["number", "goal_style", "interaction_style"],
+        }
+        # While these are not mandatory, but they are only allowed keywords
+        self.allowed_fields = {
+            "llm": ["model", "temperature", "format"],
         }
         self.valid_formats = ["text", "speech"]
         self.valid_goal_functions = ["default()", "random()", "another()", "forward()"]
@@ -125,10 +130,66 @@ class YamlValidator:
             if "conversation" in data:
                 errors.extend(self._validate_conversation_section(data["conversation"]))
 
+            if "user" in data and "conversation" in data:
+                errors.extend(
+                    self._validate_conversation_variable_dependencies(
+                        data["user"], data["conversation"]
+                    )
+                )
+
             return errors
 
         except yaml.YAMLError as e:
             return [ValidationError(f"Invalid YAML syntax: {str(e)}", "/")]
+
+    def _validate_conversation_variable_dependencies(
+        self, user: Dict, conversation: Dict
+    ) -> List[ValidationError]:
+        """Validate that sample() or all_combinations is only used when there are nested forwards."""
+        errors = []
+
+        # Check if conversation.number is using sample() or all_combinations
+        using_combinations = False
+        if "number" in conversation:
+            num = conversation["number"]
+            if isinstance(num, str):
+                if num == "all_combinations" or (
+                    isinstance(num, str) and num.startswith("sample(")
+                ):
+                    using_combinations = True
+
+        # If using combinations, check for nested forwards
+        if using_combinations:
+            has_nested_forwards = False
+
+            # Find all forwards in the user goals
+            if "goals" in user and isinstance(user["goals"], list):
+                for goal in user["goals"]:
+                    if isinstance(goal, dict) and len(goal) == 1:
+                        var_name = list(goal.keys())[0]
+                        var_def = goal[var_name]
+
+                        if isinstance(var_def, dict) and "function" in var_def:
+                            func = var_def["function"]
+                            # Check if this is a forward function referring to another variable
+                            if (
+                                func.startswith("forward(")
+                                and func.endswith(")")
+                                and func != "forward()"
+                            ):
+                                has_nested_forwards = True
+                                break
+
+            # If using combinations but no nested forwards, show an error
+            if not has_nested_forwards:
+                errors.append(
+                    ValidationError(
+                        "Using 'all_combinations' or 'sample()' requires at least one variable with nested forward() dependency",
+                        "/conversation/number",
+                    )
+                )
+
+        return errors
 
     def _validate_required_fields(self, data: Dict) -> List[ValidationError]:
         """Validate that all required fields are present."""
@@ -163,6 +224,16 @@ class YamlValidator:
     def _validate_llm_section(self, llm: Dict) -> List[ValidationError]:
         """Validate LLM section configuration."""
         errors = []
+
+        # Check for unexpected fields in the llm section
+        for field in llm:
+            if field not in self.allowed_fields["llm"]:
+                errors.append(
+                    ValidationError(
+                        f"Unexpected field '{field}' in llm section. Did you mean one of: {', '.join(self.allowed_fields['llm'])}?",
+                        f"/llm/{field}",
+                    )
+                )
 
         # Check that temperature is a number between 0 and 1
         if "temperature" in llm:
@@ -269,18 +340,61 @@ class YamlValidator:
                     )
                 )
             else:
-                # First pass: collect all defined variables
-                defined_variables = set()
-                for goal in user["goals"]:
+                # First pass: collect all defined variables and their functions
+                defined_variables = {}
+                for i, goal in enumerate(user["goals"]):
                     if isinstance(goal, dict) and len(goal) == 1:
                         var_name = list(goal.keys())[0]
-                        defined_variables.add(var_name)
+                        var_def = goal[var_name]
+
+                        if isinstance(var_def, dict) and "function" in var_def:
+                            defined_variables[var_name] = {
+                                "function": var_def["function"],
+                                "index": i,
+                            }
+                        else:
+                            defined_variables[var_name] = {"function": None, "index": i}
 
                 # Second pass: validate all goals (strings and variable definitions)
                 for i, goal in enumerate(user["goals"]):
                     # Goals can be either strings (prompts) or dictionaries (variables)
                     if isinstance(goal, str):
-                        # Check if the string contains variable placeholders
+                        # First find and validate all properly formatted variables
+                        valid_vars = re.findall(r"{{(\w+)}}", goal)
+
+                        # Then check if there are any other curly braces in the string
+                        # This will catch orphaned braces, mismatched braces, or incorrect formatting
+                        clean_goal = goal
+                        for var in valid_vars:
+                            # Remove all properly formatted variables from string
+                            clean_goal = clean_goal.replace(f"{{{{{var}}}}}", "")
+
+                        # Now if there are any remaining curly braces, they are invalid
+                        if "{" in clean_goal or "}" in clean_goal:
+                            # Find the first instance of the remaining invalid brace pattern
+                            invalid_pattern = re.search(r"[^{]*[{}]+[^}]*", clean_goal)
+                            if invalid_pattern:
+                                pattern_text = invalid_pattern.group(0).strip()
+                                errors.append(
+                                    ValidationError(
+                                        f"Invalid use of curly braces: '{pattern_text}'. "
+                                        f"Curly braces can only be used for variables with exactly two opening and two closing braces: '{{{{variable}}}}'. "
+                                        f"Variables must be single words without spaces.",
+                                        f"/user/goals/{i}",
+                                    )
+                                )
+
+                        # Check if properly formatted variables are defined (as before)
+                        for var in valid_vars:
+                            if var not in defined_variables:
+                                errors.append(
+                                    ValidationError(
+                                        f"Variable '{var}' used in goal but not defined",
+                                        f"/user/goals/{i}",
+                                    )
+                                )
+
+                        # Then check properly formatted variables are defined
                         var_placeholders = re.findall(r"{{(\w+)}}", goal)
                         for var in var_placeholders:
                             # Make sure variables used are defined somewhere in the goals
@@ -416,7 +530,12 @@ class YamlValidator:
                                             )
                                         )
                                     # Check that min is smaller than max
-                                    if "min" in data and "max" in data and data["min"] is not None and data["max"] is not None:
+                                    if (
+                                        "min" in data
+                                        and "max" in data
+                                        and data["min"] is not None
+                                        and data["max"] is not None
+                                    ):
                                         if data["min"] >= data["max"]:
                                             errors.append(
                                                 ValidationError(
@@ -522,6 +641,76 @@ class YamlValidator:
                                 f"/user/goals/{i}",
                             )
                         )
+
+            # Third pass: validate forward dependencies
+            forward_dependencies = {}
+            for var_name, var_info in defined_variables.items():
+                # Skip if the variable doesn't have a function defined
+                if not var_info["function"]:
+                    continue
+
+                func = var_info["function"]
+                # Check if this is a forward function with a variable reference
+                if (
+                    func.startswith("forward(")
+                    and func.endswith(")")
+                    and func != "forward()"
+                ):
+                    # Extract the referenced variable name
+                    referenced_var = func[len("forward(") : -1].strip()
+                    if referenced_var:
+                        forward_dependencies[var_name] = referenced_var
+
+            # Validate each forward dependency chain
+            for var_name, referenced_var in forward_dependencies.items():
+                # Skip if the referenced variable doesn't exist (already caught in other validations)
+                if referenced_var not in defined_variables:
+                    continue
+
+                # Check if the referenced variable also uses forward
+                ref_function = defined_variables[referenced_var]["function"]
+                if ref_function and not ref_function.startswith("forward("):
+                    errors.append(
+                        ValidationError(
+                            f"Variable '{referenced_var}' is referenced by forward() but doesn't use forward() itself",
+                            f"/user/goals/{defined_variables[referenced_var]['index']}/{referenced_var}/function",
+                        )
+                    )
+
+            # Detect circular dependencies
+            def detect_cycle(node, visited, path, cycles):
+                visited[node] = True
+                path.append(node)
+
+                if node in forward_dependencies:
+                    next_node = forward_dependencies[node]
+                    if next_node in path:
+                        # Found a cycle, extract the cycle path
+                        cycle_start = path.index(next_node)
+                        cycle_path = path[cycle_start:] + [next_node]
+                        cycles.append(" → ".join(cycle_path))
+                    elif next_node not in visited or not visited[next_node]:
+                        detect_cycle(next_node, visited, path, cycles)
+
+                path.pop()
+
+            # Find all cycles in the dependencies
+            visited = {var: False for var in defined_variables}
+            cycles = []
+
+            for var in forward_dependencies:
+                if not visited[var]:
+                    detect_cycle(var, visited, [], cycles)
+
+            # Report any cycles found
+            if cycles:
+                cycle_descriptions = "; ".join(cycles)
+                errors.append(
+                    ValidationError(
+                        f"Circular forward dependencies detected: {cycle_descriptions}. Forward references must form a directed acyclic graph.",
+                        "/user/goals",
+                    )
+                )
 
         return errors
 
@@ -967,48 +1156,63 @@ if __name__ == "__main__":
 
     # Example YAML content
     yaml_content = """
-test_name: "academic_helper"
+test_name: "pizza_order_test_all"
 
 llm:
   temperature: 0.8
   model: gpt-4o-mini
 #  format:
 #    type: speech
+#    config: asr_configuration/default_asr_config.yml
 
 user:
-  language: Spanish
-  role: you have to act as a student talking to a chatbot from a university web page
+  language: English
+  role: you have to act as a user ordering a pizza to a pizza shop.
   context:
+    - personality: personalities/conversational-user.yml
     - your name is Jon Doe
   goals:
-    - What undergraduate studies are offered at the EPS?
-    - where are the regulations of the TFM
-    - to clarify any of the regulations in the provided information
+    - "a {{size}} custom pizza with toppings, {{size}}"
+    - how long is going to take the pizza to arrive
+    - how much will it cost
+
+    - size:
+        function: forward(toppings)
+        type: string
+        data:
+          - small
+          - medium
+          - big
+
+    - toppings:
+        function: forward()
+        type: string
+        data:
+          - cheese
+          - mushrooms
+          - pepperoni
 
 chatbot:
   is_starter: False
-  fallback: Perdona, pero no te he entendido, ¿puedes repetirlo?
+  fallback: I'm sorry it's a little loud in my pizza shop, can you say that again?
   output:
+    - price:
+        type: money
+        description: The final price of the pizza order
+    - time:
+        type: time
+        description: how long is going to take the pizza to be ready
     - order_id:
         type: str
-        description: the link to the TFM regulations
+        description: my order ID
 
 conversation:
-  number: 1
-#  max_cost: 1
+  number: all_combinations
   goal_style:
-    steps: 3
-#    max_cost: 0.0001
+    steps: 2
   interaction_style:
-    - default
-#    - random:
-#      - make spelling mistakes
-#      - all questions
-#      - long phrases
-#      - change language:
-#          - italian
-#          - portuguese
-#          - chinese
+    - random:
+      - make spelling mistakes
     """
     print("Starting...")
 
