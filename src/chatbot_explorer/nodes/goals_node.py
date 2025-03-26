@@ -12,7 +12,9 @@ def ensure_double_curly(text):
     return pattern.sub(r"{{\1}}", text)
 
 
-def generate_variable_definitions(profiles, llm, supported_languages=None):
+def generate_variable_definitions(
+    profiles, llm, supported_languages=None, max_retries=3
+):
     """
     Extract variables from goals and generate appropriate definitions
     using an LLM to determine type, function and data values.
@@ -41,157 +43,194 @@ def generate_variable_definitions(profiles, llm, supported_languages=None):
         for goal in profile["goals"]:
             goals_text += f"- {goal}\n"
 
-        # Generate definitions for all discovered variables
-        vars_prompt = f"""
-        I need to define variable parameters for a user simulator that interacts with a chatbot.
+        # First pass: generate definitions for all discovered variables
+        vars_to_define = all_variables
+        retry_count = 0
 
-        USER PROFILE: {profile["name"]}
-        ROLE: {profile["role"]}
+        while vars_to_define and retry_count < max_retries:
+            # Generate the prompt with current variables to define
+            vars_prompt = f"""
+            I need to define variable parameters for a user simulator that interacts with a chatbot.
 
-        GOALS:
-        {goals_text}
+            USER PROFILE: {profile["name"]}
+            ROLE: {profile["role"]}
 
-        {language_instruction}
+            GOALS:
+            {goals_text}
 
-        For each variable I listed below, provide a definition following these guidelines:
+            {language_instruction}
 
-        1. Choose ONE appropriate FUNCTION from:
-           - default(): assigns ALL data in the list to the variable
-           - random(): picks ONE random sample from the list
-           - random(X): picks X random samples where X is LESS THAN the total number of items
-           - random(rand): picks a random number of random samples
-           - another(): picks different samples without repetition each time
-           - another(X): picks X different samples without repetition
-           - forward(): iterates through each sample one by one
-           - forward(other_var): iterates and nests with other_var
+            For each variable I listed below, provide a definition following these guidelines:
 
-        IMPORTANT FUNCTION RESTRICTIONS:
-        - DO NOT nest functions (e.g., random(another(3)) is INVALID)
-        - DO NOT use random(X) where X equals the total number of items (use default() instead)
-        - Use forward() for systematic iteration through all values in order
-        - Use random() for picking just one value each time (but there could be repetition)
-        - Use another() when you want different values on subsequent uses
+            1. Choose ONE appropriate FUNCTION from:
+               - default(): assigns ALL data in the list to the variable
+               - random(): picks ONE random sample from the list
+               - random(X): picks X random samples where X is LESS THAN the total number of items
+               - random(rand): picks a random number of random samples
+               - another(): picks different samples without repetition each time
+               - another(X): picks X different samples without repetition
+               - forward(): iterates through each sample one by one
+               - forward(other_var): iterates and nests with other_var
 
-        2. Choose the most appropriate TYPE from:
-           - string: for text values
-           - int: for whole numbers
-           - float: for decimal numbers
+            IMPORTANT FUNCTION RESTRICTIONS:
+            - DO NOT nest functions (e.g., random(another(3)) is INVALID)
+            - DO NOT use random(X) where X equals the total number of items (use default() instead)
+            - Use forward() for systematic iteration through all values in order
+            - Use random() for picking just one value each time (but there could be repetition)
+            - Use another() when you want different values on subsequent uses
 
-        3. IMPORTANT: Provide DATA in the correct format:
-           - For string variables: use a list of realistic string values, the length of the list should be at least 3 items and at most 10 items, use the amount of data that makes sense for the variable
-           - For int variables: ALWAYS use the min/max/step format like this:
-             min: 1
-             max: 10
-             step: 1
-           - For float variables: ALWAYS use the min/max/step format OR linspace like this:
-             min: 1.0
-             max: 5.0
-             step: 0.5
-             OR
-             min: 1.0
-             max: 5.0
-             linspace: 5
+            2. Choose the most appropriate TYPE from:
+               - string: for text values
+               - int: for whole numbers
+               - float: for decimal numbers
 
-        VARIABLES TO DEFINE:
-        {", ".join(sorted(all_variables))}
+            3. IMPORTANT: Provide DATA in the correct format:
+               - For string variables: use a list of realistic string values, the length of the list should be at least 3 items and at most 10 items, use the amount of data that makes sense for the variable
+               - For int variables: ALWAYS use the min/max/step format like this:
+                 min: 1
+                 max: 10
+                 step: 1
+               - For float variables: ALWAYS use the min/max/step format OR linspace like this:
+                 min: 1.0
+                 max: 5.0
+                 step: 0.5
+                 OR
+                 min: 1.0
+                 max: 5.0
+                 linspace: 5
 
-        FORMAT YOUR RESPONSE FOR STRING VARIABLES AS:
-        VARIABLE: variable_name
-        FUNCTION: function_name()
-        TYPE: string
-        DATA:
-        - value1
-        - value2
-        - value3
+            VARIABLES TO DEFINE:
+            {", ".join(sorted(vars_to_define))}
 
-        FORMAT YOUR RESPONSE FOR NUMERIC VARIABLES AS:
-        VARIABLE: variable_name
-        FUNCTION: function_name()
-        TYPE: int/float
-        DATA:
-        min: 1
-        max: 10
-        step: 1
+            FORMAT YOUR RESPONSE FOR STRING VARIABLES AS:
+            VARIABLE: variable_name
+            FUNCTION: function_name()
+            TYPE: string
+            DATA:
+            - value1
+            - value2
+            - value3
 
-        PROVIDE DEFINITIONS FOR ALL VARIABLES, one after another.
-        Remember: ALL numeric variables (int/float) MUST use the min/max/step format, NOT a list of values.
-        """
+            FORMAT YOUR RESPONSE FOR NUMERIC VARIABLES AS:
+            VARIABLE: variable_name
+            FUNCTION: function_name()
+            TYPE: int/float
+            DATA:
+            min: 1
+            max: 10
+            step: 1
 
-        # Get definitions from the LLM
-        definitions_response = llm.invoke(vars_prompt)
-        definitions_content = definitions_response.content
+            PROVIDE DEFINITIONS FOR ALL VARIABLES, one after another.
+            Remember: ALL numeric variables (int/float) MUST use the min/max/step format, NOT a list of values.
+            """
 
-        # Parse the definitions
-        current_var = None
-        current_def = {}
-        stage = None
+            # Get definitions from the LLM
+            definitions_response = llm.invoke(vars_prompt)
+            definitions_content = definitions_response.content
 
-        for line in definitions_content.split("\n"):
-            line = line.strip()
+            # Parse the definitions
+            current_var = None
+            current_def = {}
+            stage = None
 
-            if not line:
-                continue
+            for line in definitions_content.split("\n"):
+                line = line.strip()
 
-            if line.startswith("VARIABLE:"):
-                # Save previous variable if exists
-                if current_var and current_def:
-                    profile[current_var] = current_def
+                if not line:
+                    continue
 
-                # Start new variable
-                current_var = line[len("VARIABLE:") :].strip()
-                current_def = {}
-                stage = None
+                if line.startswith("VARIABLE:"):
+                    # Save previous variable if exists
+                    if current_var and current_def:
+                        profile[current_var] = current_def
 
-            elif line.startswith("FUNCTION:"):
-                current_def["function"] = line[len("FUNCTION:") :].strip()
+                    # Start new variable
+                    current_var = line[len("VARIABLE:") :].strip()
+                    current_def = {}
+                    stage = None
 
-            elif line.startswith("TYPE:"):
-                current_def["type"] = line[len("TYPE:") :].strip()
+                elif line.startswith("FUNCTION:"):
+                    current_def["function"] = line[len("FUNCTION:") :].strip()
 
-            elif line.startswith("DATA:"):
-                current_def["data"] = []
-                stage = "data"
+                elif line.startswith("TYPE:"):
+                    current_def["type"] = line[len("TYPE:") :].strip()
 
-            elif stage == "data":
-                if line.startswith("- "):
-                    # List item
-                    value = line[2:].strip()
+                elif line.startswith("DATA:"):
+                    current_def["data"] = []
+                    stage = "data"
 
-                    # Strip extra quotes if present
-                    if value.startswith('"') and value.endswith('"'):
-                        value = value[1:-1]
-                    elif value.startswith("'") and value.endswith("'"):
-                        value = value[1:-1]
+                elif stage == "data":
+                    if line.startswith("- "):
+                        # List item
+                        value = line[2:].strip()
 
-                    # Convert int/float strings to appropriate type
-                    if current_def.get("type") == "int" and value.isdigit():
-                        value = int(value)
-                    elif current_def.get("type") == "float":
-                        value = float(value)
-                    current_def["data"].append(value)
-                elif ":" in line:
-                    # min/max/step format
-                    if (
-                        isinstance(current_def["data"], list)
-                        and not current_def["data"]
-                    ):
-                        current_def["data"] = {}
-                    key, value = line.split(":", 1)
-                    key = key.strip()
-                    try:
-                        value = (
-                            int(value.strip())
-                            if current_def.get("type") == "int"
-                            else float(value.strip())
-                        )
-                        if isinstance(current_def["data"], dict):
-                            current_def["data"][key] = value
-                    except ValueError:
-                        pass
+                        # Strip extra quotes if present
+                        if value.startswith('"') and value.endswith('"'):
+                            value = value[1:-1]
+                        elif value.startswith("'") and value.endswith("'"):
+                            value = value[1:-1]
 
-        # Save the last variable
-        if current_var and current_def:
-            profile[current_var] = current_def
+                        # Convert int/float strings to appropriate type
+                        if current_def.get("type") == "int" and value.isdigit():
+                            value = int(value)
+                        elif current_def.get("type") == "float":
+                            try:
+                                value = float(value)
+                            except ValueError:
+                                pass
+                        current_def["data"].append(value)
+                    elif ":" in line:
+                        # min/max/step format
+                        if (
+                            isinstance(current_def["data"], list)
+                            and not current_def["data"]
+                        ):
+                            current_def["data"] = {}
+                        key, value = line.split(":", 1)
+                        key = key.strip()
+                        try:
+                            value = (
+                                int(value.strip())
+                                if current_def.get("type") == "int"
+                                else float(value.strip())
+                            )
+                            if isinstance(current_def["data"], dict):
+                                current_def["data"][key] = value
+                        except ValueError:
+                            pass
+
+            # Save the last variable
+            if current_var and current_def:
+                profile[current_var] = current_def
+
+            # Check which variables are still missing
+            missing_vars = set()
+            for var in vars_to_define:
+                if var not in profile or not profile[var]:
+                    missing_vars.add(var)
+
+            # Update vars_to_define for the next iteration
+            vars_to_define = missing_vars
+
+            # If we're retrying, add a stronger instruction
+            if vars_to_define and retry_count > 0:
+                vars_prompt = f"""
+                IMPORTANT: You previously missed defining some variables. Please define ONLY these specific variables:
+                {", ".join(sorted(vars_to_define))}
+
+                These variables appear in the following context:
+                USER PROFILE: {profile["name"]}
+                ROLE: {profile["role"]}
+
+                GOALS:
+                {goals_text}
+
+                {language_instruction}
+
+                Follow the same format and guidelines as before.
+                """
+
+            retry_count += 1
 
     return profiles
 
@@ -336,34 +375,34 @@ def generate_outputs(profiles, functionalities, llm, supported_languages=None):
         current_output = None
         current_data = {}
 
-        for line in outputs_response.content.strip().split('\n'):
+        for line in outputs_response.content.strip().split("\n"):
             line = line.strip()
             if not line:
                 continue
 
-            if line.startswith('OUTPUT:'):
+            if line.startswith("OUTPUT:"):
                 # Save previous output if exists
                 if current_output and current_data:
                     outputs_list.append({current_output: current_data})
 
                 # Start new output
-                current_output = line[len('OUTPUT:'):].strip()
+                current_output = line[len("OUTPUT:") :].strip()
                 # Ensure name has no spaces and is lowercase
-                current_output = current_output.replace(' ', '_').lower()
+                current_output = current_output.replace(" ", "_").lower()
                 current_data = {}
 
-            elif line.startswith('TYPE:'):
-                current_data['type'] = line[len('TYPE:'):].strip()
+            elif line.startswith("TYPE:"):
+                current_data["type"] = line[len("TYPE:") :].strip()
 
-            elif line.startswith('DESCRIPTION:'):
-                current_data['description'] = line[len('DESCRIPTION:'):].strip()
+            elif line.startswith("DESCRIPTION:"):
+                current_data["description"] = line[len("DESCRIPTION:") :].strip()
 
         # Save last output
         if current_output and current_data:
             outputs_list.append({current_output: current_data})
 
         # Store outputs in the profile
-        profile['outputs'] = outputs_list
+        profile["outputs"] = outputs_list
 
     return profiles
 
