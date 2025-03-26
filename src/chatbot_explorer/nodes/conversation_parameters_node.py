@@ -10,7 +10,10 @@ def generate_conversation_parameters(
         # Identify variables and their relationships
         variables = []
         forward_with_dependencies = []
+        has_nested_forwards = False
+        nested_forward_info = ""
 
+        # Get all variables regardless of type
         for var_name, var_def in profile.items():
             if (
                 isinstance(var_def, dict)
@@ -19,15 +22,65 @@ def generate_conversation_parameters(
             ):
                 variables.append(var_name)
 
-                # Identify forward variables with dependencies
-                if (
-                    "forward" in var_def["function"]
-                    and "(" in var_def["function"]
-                    and ")" in var_def["function"]
-                ):
-                    param = var_def["function"].split("(")[1].split(")")[0]
-                    if param and param != "rand" and not param.isdigit():
-                        forward_with_dependencies.append(var_name)
+        # Use the computed forward dependency information from goals_node if available
+        if "has_nested_forwards" in profile:
+            has_nested_forwards = profile["has_nested_forwards"]
+
+            if "forward_dependencies" in profile:
+                forward_dependencies = profile["forward_dependencies"]
+                forward_with_dependencies = list(forward_dependencies.keys())
+
+                # Create detailed nested forward information
+                if has_nested_forwards and "nested_forward_chains" in profile:
+                    nested_chains = profile["nested_forward_chains"]
+                    chain_descriptions = []
+
+                    for chain in nested_chains:
+                        chain_str = " → ".join(chain)
+                        chain_descriptions.append(f"Chain: {chain_str}")
+
+                    if chain_descriptions:
+                        nested_forward_info = (
+                            "\nNested dependency chains detected:\n"
+                            + "\n".join(chain_descriptions)
+                        )
+
+                        # Calculate potential combinations if possible
+                        combinations = 1
+                        for var_name in variables:
+                            var_def = profile.get(var_name, {})
+                            if isinstance(var_def, dict) and "data" in var_def:
+                                data = var_def.get("data", [])
+                                if isinstance(data, list):
+                                    combinations *= len(data)
+                                elif (
+                                    isinstance(data, dict)
+                                    and "min" in data
+                                    and "max" in data
+                                    and "step" in data
+                                ):
+                                    steps = (data["max"] - data["min"]) / data[
+                                        "step"
+                                    ] + 1
+                                    combinations *= int(steps)
+
+                        nested_forward_info += (
+                            f"\nPotential combinations: approximately {combinations}"
+                        )
+            else:
+                # Fallback to current detection method if forward_dependencies isn't available
+                for var_name, var_def in profile.items():
+                    if (
+                        isinstance(var_def, dict)
+                        and "function" in var_def
+                        and "data" in var_def
+                        and "forward" in var_def["function"]
+                        and "(" in var_def["function"]
+                        and ")" in var_def["function"]
+                    ):
+                        param = var_def["function"].split("(")[1].split(")")[0]
+                        if param and param != "rand" and not param.isdigit():
+                            forward_with_dependencies.append(var_name)
 
         # Build profile information for the prompt
         variables_info = ""
@@ -37,8 +90,12 @@ def generate_conversation_parameters(
             )
 
             if forward_with_dependencies:
-                variables_info += f"\n{len(forward_with_dependencies)} variables have nested dependencies: {', '.join(forward_with_dependencies)}"
+                variables_info += f"\n{len(forward_with_dependencies)} variables have dependencies: {', '.join(forward_with_dependencies)}"
                 variables_info += "\nThis creates COMBINATIONS that could be explored with 'all_combinations' or 'sample(X)'."
+
+                if has_nested_forwards:
+                    variables_info += f"\nIMPORTANT: This profile has NESTED FORWARD DEPENDENCIES.{nested_forward_info}"
+                    variables_info += "\nFor profiles with nested dependencies, use 'sample(X)' with X <= 0.3, NEVER use 'all_combinations'."
 
         # Prepare language information
         language_info = ""
