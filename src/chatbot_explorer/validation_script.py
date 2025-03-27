@@ -66,49 +66,6 @@ class YamlValidator:
         """
         errors = []
 
-        # Check for unquoted variables that might cause YAML parsing issues
-        # YAML usually works without "" but if there are braces it needs them
-        lines = yaml_content.split("\n")
-        for i, line in enumerate(lines):
-            # Skip empty lines
-            if not line.strip():
-                continue
-
-            # Skip comment-only lines or remove comment portion of the line
-            if line.strip().startswith("#"):
-                continue
-
-            # Remove comment portion if it exists
-            if "#" in line:
-                line = line.split("#", 1)[0]
-
-            # Now check if remaining line contains braces
-            if "{{" in line and "}}" in line:
-                # Check if the line is inside a proper YAML string (quoted or using |- block style)
-                line_stripped = line.strip()
-                is_quoted = (
-                    (line_stripped.startswith('"') and line_stripped.endswith('"'))
-                    or (line_stripped.startswith("'") and line_stripped.endswith("'"))
-                    or
-                    # These handle common YAML block style indicators
-                    line_stripped.endswith(":")  # Key in a mapping
-                    or line_stripped.startswith("-")  # List item
-                    or ":" in line_stripped  # Key-value inside a mapping
-                )
-
-                # If not properly quoted, it's an error
-                if not is_quoted:
-                    errors.append(
-                        ValidationError(
-                            "Variables with curly braces {{}} must be quoted in YAML",
-                            f"/line/{i + 1}",
-                            i + 1,
-                        )
-                    )
-
-        if errors:
-            return errors
-
         try:
             data = yaml.safe_load(yaml_content)
             if not isinstance(data, dict):
@@ -360,14 +317,36 @@ class YamlValidator:
                     # Goals can be either strings (prompts) or dictionaries (variables)
                     if isinstance(goal, str):
                         # First find and validate all properly formatted variables
-                        valid_vars = re.findall(r"{{(\w+)}}", goal)
+                        # This regex now allows variable placeholders with spaces, e.g., {{asunto específico}}
+                        valid_vars = re.findall(r"{{\s*([^{}]+?)\s*}}", goal)
 
                         # Then check if there are any other curly braces in the string
-                        # This will catch orphaned braces, mismatched braces, or incorrect formatting
-                        clean_goal = goal
+                        # Remove all valid variable placeholders
+                        clean_goal = re.sub(r"{{\s*[^{}]+?\s*}}", "", goal)
+
+                        # Now if there are any remaining curly braces, they are invalid
+                        if "{" in clean_goal or "}" in clean_goal:
+                            # Find the first instance of the remaining invalid brace pattern
+                            invalid_pattern = re.search(r"[^{]*[{}]+[^}]*", clean_goal)
+                            if invalid_pattern:
+                                pattern_text = invalid_pattern.group(0).strip()
+                                errors.append(
+                                    ValidationError(
+                                        f"Invalid use of curly braces: '{pattern_text}'. "
+                                        f"Curly braces can only be used for variable placeholders with exactly two opening and two closing braces, e.g., '{{ variable }}'.",
+                                        f"/user/goals/{i}",
+                                    )
+                                )
+
+                        # Check if properly formatted variables are defined (as before)
                         for var in valid_vars:
-                            # Remove all properly formatted variables from string
-                            clean_goal = clean_goal.replace(f"{{{{{var}}}}}", "")
+                            if var not in defined_variables:
+                                errors.append(
+                                    ValidationError(
+                                        f"Variable '{var}' used in goal but not defined",
+                                        f"/user/goals/{i}",
+                                    )
+                                )
 
                         # Now if there are any remaining curly braces, they are invalid
                         if "{" in clean_goal or "}" in clean_goal:
