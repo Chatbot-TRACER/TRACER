@@ -91,11 +91,10 @@ def generate_conversation_parameters(
 
             if forward_with_dependencies:
                 variables_info += f"\n{len(forward_with_dependencies)} variables have dependencies: {', '.join(forward_with_dependencies)}"
-                variables_info += "\nThis creates COMBINATIONS that could be explored with 'all_combinations' or 'sample(X)'."
 
                 if has_nested_forwards:
+                    variables_info += "\nThis creates COMBINATIONS that could be explored with 'all_combinations' or 'sample(X)'."
                     variables_info += f"\nIMPORTANT: This profile has NESTED FORWARD DEPENDENCIES.{nested_forward_info}"
-                    variables_info += "\nFor profiles with nested dependencies, use 'sample(X)' with X <= 0.3, NEVER use 'all_combinations'."
 
         # Prepare language information
         language_info = ""
@@ -111,6 +110,35 @@ def generate_conversation_parameters(
                 language_lines.append(f"- {lang.lower()}")
             languages_example = "\n".join(language_lines)
 
+        # Select the appropriate prompt based on whether nested forwards exist
+        if has_nested_forwards:
+            # Prompt for profiles WITH nested forward dependencies
+            number_section = """
+            1. NUMBER:
+               Choose ONE option to handle the nested variable combinations:
+               - "all_combinations" to try all possible combinations (ONLY if there are fewer than 5 total combinations)
+               - "sample(X)" where X is a decimal between 0.1 and 0.9 for testing a fraction of the combinations
+
+               RECOMMENDATION:
+               - Use "all_combinations" if the total combinations are less than 5
+               - Use "sample(0.5)" for moderate number of combinations (5-20)
+               - Use "sample(0.2)" for larger number of combinations (more than 20)
+            """
+            # Set defaults for nested forwards
+            default_number = "sample(0.2)"
+        else:
+            # Prompt for profiles WITHOUT nested forward dependencies
+            number_section = """
+            1. NUMBER:
+               Choose a specific number between 2-5 conversations to generate.
+
+               RECOMMENDATION:
+               - 2-3 for simple, straightforward conversations
+               - 4-5 for more complex scenarios with multiple user goals
+            """
+            # Set simple default
+            default_number = 3 if variables else 2
+
         conversation_params_prompt = f"""
         Generate appropriate conversation parameters for this user profile.
 
@@ -120,16 +148,7 @@ def generate_conversation_parameters(
 
         PARAMETERS TO DETERMINE:
 
-        1. NUMBER:
-           Choose ONE option based on the variables detected:
-           - A specific number (2-5) if there are no variables or no nested dependencies
-           - "all_combinations" if there are variables but no nested dependencies AND you want to test ALL combinations
-           - "sample(X)" where X is a decimal between 0.1 and 0.9 for testing a fraction of the combinations
-
-           RECOMMENDATION:
-           - If no variables: use 2-5 conversations (fewer for simple tasks, more for complex ones)
-           - If variables with NO nested dependencies: use all_combinations if there are less than 5 combinations, otherwise use sample(X)
-           - If variables WITH nested dependencies: NEVER use "all_combinations", only use "sample(X)" with X less than 0.5
+        {number_section}
 
         2. MAX_COST:
            - Set a budget limit for all conversations combined, in dollars
@@ -149,7 +168,6 @@ def generate_conversation_parameters(
            - For all_answered: {{"all_answered": {{"limit": 20}}}}
            - For random_steps: {{"random_steps": 12}}
 
-
         4. INTERACTION_STYLE:
            Choose 1-2 appropriate styles based on the user role and scenario:
            - "long phrases": user uses very long phrases to write any query
@@ -167,7 +185,6 @@ def generate_conversation_parameters(
            - Use "single question" for complex conversations, "all questions" for simpler ones
            - Use "random" with a list when you want varied interaction styles
            - Use "change language" when the chatbot supports multiple languages {supported_languages_text}
-
 
            EXAMPLES:
            - Single style: "make spelling mistakes"
@@ -191,18 +208,10 @@ def generate_conversation_parameters(
         params_response = llm.invoke(conversation_params_prompt)
         response_text = params_response.content.strip()
 
-        # Set defaults based on variable types
-        if forward_with_dependencies:
-            default_number = "sample(0.3)"
-        elif variables:
-            default_number = 3 if len(variables) <= 5 else "sample(0.5)"
-        else:
-            default_number = 2
-
-        # Initialize parameters
+        # Initialize parameters with profile-specific defaults
         conversation_params = {
             "number": default_number,
-            "max_cost": 1.0,
+            "max_cost": 1.0 if not has_nested_forwards else 2.0,
             "goal_style": {"steps": 10},
         }
 
@@ -219,17 +228,21 @@ def generate_conversation_parameters(
             value = value.strip()
 
             if key == "number":
-                if value == "all_combinations":
-                    extracted_number = "all_combinations"
-                elif "sample" in value.lower() and "(" in value and ")" in value:
-                    try:
-                        sample_value = float(value.split("(")[1].split(")")[0])
-                        if 0 < sample_value <= 1:
-                            extracted_number = f"sample({sample_value})"
-                    except ValueError:
-                        pass
-                elif value.isdigit():
-                    extracted_number = int(value)
+                if has_nested_forwards:
+                    # Only allow all_combinations and sample for nested forwards
+                    if value == "all_combinations":
+                        extracted_number = "all_combinations"
+                    elif "sample" in value.lower() and "(" in value and ")" in value:
+                        try:
+                            sample_value = float(value.split("(")[1].split(")")[0])
+                            if 0 < sample_value <= 1:
+                                extracted_number = f"sample({sample_value})"
+                        except ValueError:
+                            pass
+                else:
+                    # Only allow specific numbers for non-nested forwards
+                    if value.isdigit():
+                        extracted_number = int(value)
 
             elif key == "max_cost":
                 try:
@@ -270,20 +283,9 @@ def generate_conversation_parameters(
                     if style:
                         interaction_styles.append(style)
 
-        # Validate NUMBER parameter
+        # Apply the extracted number if valid
         if extracted_number is not None:
-            if (
-                not variables
-                and isinstance(extracted_number, str)
-                and "sample" in extracted_number
-            ):
-                # Can't use sample without variables
-                pass  # Keep default_number
-            elif len(variables) > 10 and extracted_number == "all_combinations":
-                # Too many variables for all_combinations
-                conversation_params["number"] = "sample(0.3)"
-            else:
-                conversation_params["number"] = extracted_number
+            conversation_params["number"] = extracted_number
 
         # Add interaction styles
         if len(interaction_styles) == 1:
