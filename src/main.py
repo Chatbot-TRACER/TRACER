@@ -15,6 +15,80 @@ from chatbot_explorer.nodes.conversation_parameters_node import (
 VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
 
 
+def build_profile_yaml(profile, fallback_message, primary_language):
+    """
+    Build the base YAML dictionary for a given profile.
+    """
+    # Collect all variables used by the user goals
+    used_variables = set()
+    for goal in profile.get("goals", []):
+        variables_in_goals = VARIABLE_PATTERN.findall(goal)
+        used_variables.update(variables_in_goals)
+
+    # Combine raw text goals and variable references
+    yaml_goals = list(profile.get("goals", []))
+    for var_name in used_variables:
+        if var_name in profile:
+            yaml_goals.append({var_name: profile[var_name]})
+
+    # Build chatbot section
+    chabot_section = {
+        "is_starter": False,
+        "fallback": fallback_message,
+    }
+    if "outputs" in profile:
+        chabot_section["output"] = profile["outputs"]
+
+    # Build user context
+    user_context = ["personality: personalities/conversational-user.yml"]
+    context = profile.get("context", [])
+    if isinstance(context, str):
+        user_context.append(context)
+    else:
+        for ctx_item in context:
+            user_context.append(ctx_item)
+
+    # Final conversation section
+    conversation_section = profile.get("conversation", {})
+
+    # Return the YAML dictionary
+    return {
+        "test_name": profile["name"],
+        "llm": {
+            "temperature": 0.8,
+            "model": "gpt-4o-mini",
+            "format": {"type": "text"},
+        },
+        "user": {
+            "language": primary_language,
+            "role": profile["role"],
+            "context": user_context,
+            "goals": yaml_goals,
+        },
+        "chatbot": chabot_section,
+        "conversation": conversation_section,
+    }
+
+
+def save_profile_yaml(profiles_dir, profile):
+    """
+    Save the given profile YAML to a file in the specified directory.
+    """
+    # Clean and transform profile name into a filename
+    filename = (
+        profile["test_name"]
+        .lower()
+        .replace(" ", "_")
+        .replace(",", "")
+        .replace("&", "and")
+        + ".yaml"
+    )
+    filepath = os.path.join(profiles_dir, filename)
+
+    with open(filepath, "w", encoding="utf-8") as yf:
+        yaml.dump(profile, yf, sort_keys=False, allow_unicode=True)
+
+
 def main():
     # Parse command line arguments
     args = parse_arguments()
@@ -163,85 +237,21 @@ def main():
     print("\n--- User profiles and goals from analysis ---")
     profiles_list = result.get("conversation_goals", [])
     supported_languages = result.get("supported_languages", [])
-
     primary_language = supported_languages[0] if supported_languages else "English"
 
     if profiles_list:
-        # Create profiles directory inside the output directory
         profiles_dir = os.path.join(output_dir, "profiles")
         os.makedirs(profiles_dir, exist_ok=True)
 
         for profile in profiles_list:
-            # Obtain the variables in the profile
-            used_variables = set()
-            for goal in profile.get("goals", []):
-                variables_in_goals = VARIABLE_PATTERN.findall(goal)
-                used_variables.update(variables_in_goals)
-
-            yaml_goals = []
-
-            # Add the goals to the yaml
-            for goal in profile.get("goals", []):
-                yaml_goals.append(goal)
-
-            # Add now the variables that appear
-            for var_name in used_variables:
-                if var_name in profile:
-                    yaml_goals.append({var_name: profile[var_name]})
-
-            chabot_section = {"is_starter": False}
-            chabot_section["fallback"] = fallback_message
-
-            if "outputs" in profile:
-                chabot_section["output"] = profile["outputs"]
-
-            user_context = ["personality: personalities/conversational-user.yml"]
-
-            context = profile.get("context", [])
-            # In case there is only one context
-            if isinstance(context, str):
-                user_context.append(context)
-            else:
-                for ctx_item in context:
-                    user_context.append(ctx_item)
-
-            # Conversation section
-            conversation_section = {}
-            if "conversation" in profile:
-                conversation_section = profile["conversation"]
-
-            profile_yaml = {
-                "test_name": profile["name"],
-                "llm": {
-                    "temperature": 0.8,
-                    "model": "gpt-4o-mini",
-                    "format": {"type": "text"},
-                },
-                "user": {
-                    "language": primary_language,
-                    "role": profile["role"],
-                    "context": user_context,
-                    "goals": yaml_goals,
-                },
-                "chatbot": chabot_section,
-                "conversation": conversation_section,
-            }
-
-            filename = (
-                profile["name"]
-                .lower()
-                .replace(" ", "_")
-                .replace(",", "")
-                .replace("&", "and")
-                + ".yaml"
+            # Build the YAML structure
+            profile_yaml = build_profile_yaml(
+                profile, fallback_message, primary_language
             )
-            filepath = os.path.join(profiles_dir, filename)
-
-            with open(filepath, "w", encoding="utf-8") as yf:
-                yaml.dump(profile_yaml, yf, sort_keys=False, allow_unicode=True)
+            # Save YAML to file
+            save_profile_yaml(profiles_dir, profile_yaml)
 
         print(f"Profiles saved in {profiles_dir}")
-
     else:
         print("No conversation goals were generated.")
 
