@@ -15,6 +15,56 @@ from chatbot_explorer.nodes.conversation_parameters_node import (
 VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
 
 
+def handle_profiles(result, output_dir, fallback_message):
+    """Generate and save profiles if they exist."""
+    profiles_list = result.get("conversation_goals", [])
+    supported_languages = result.get("supported_languages", [])
+    primary_language = supported_languages[0] if supported_languages else "English"
+
+    if profiles_list:
+        profiles_dir = os.path.join(output_dir, "profiles")
+        os.makedirs(profiles_dir, exist_ok=True)
+
+        for profile in profiles_list:
+            profile_yaml = build_profile_yaml(
+                profile, fallback_message, primary_language
+            )
+            save_profile_yaml(profiles_dir, profile_yaml)
+
+        print(f"Profiles saved in {profiles_dir}")
+    else:
+        print("No conversation goals were generated.")
+
+
+def write_report(output_dir, result, supported_languages, fallback_message):
+    """Write discovered functionalities, limitations, languages, and fallback message to report.txt."""
+    with open(os.path.join(output_dir, "report.txt"), "w", encoding="utf-8") as f:
+        f.write("=== CHATBOT FUNCTIONALITY ANALYSIS ===\n\n")
+
+        f.write("## FUNCTIONALITIES\n")
+        for i, func in enumerate(result.get("discovered_functionalities", []), 1):
+            f.write(f"{i}. {func}\n")
+
+        f.write("\n## LIMITATIONS\n")
+        if "discovered_limitations" in result and result["discovered_limitations"]:
+            for i, limitation in enumerate(result["discovered_limitations"], 1):
+                f.write(f"{i}. {limitation}\n")
+        else:
+            f.write("No limitations discovered.\n")
+
+        f.write("\n## SUPPORTED LANGUAGES\n")
+        if supported_languages:
+            for i, lang in enumerate(supported_languages, 1):
+                f.write(f"{i}. {lang}\n")
+        else:
+            f.write("No specific language support detected.\n")
+
+        f.write("\n## FALLBACK MESSAGE\n")
+        f.write(
+            fallback_message if fallback_message else "No fallback message detected.\n"
+        )
+
+
 def build_profile_yaml(profile, fallback_message, primary_language):
     """
     Build the base YAML dictionary for a given profile.
@@ -206,54 +256,11 @@ def main():
         print("No limitations discovered.")
 
     # Save functionalities as a text file in the output directory
-    with open(os.path.join(output_dir, "report.txt"), "w", encoding="utf-8") as f:
-        f.write("=== CHATBOT FUNCTIONALITY ANALYSIS ===\n\n")
-
-        f.write("## FUNCTIONALITIES\n")
-        for i, func in enumerate(result.get("discovered_functionalities", []), 1):
-            f.write(f"{i}. {func}\n")
-
-        f.write("\n## LIMITATIONS\n")
-        if "discovered_limitations" in result and result["discovered_limitations"]:
-            for i, limitation in enumerate(result["discovered_limitations"], 1):
-                f.write(f"{i}. {limitation}\n")
-        else:
-            f.write("No limitations discovered.\n")
-
-        f.write("\n## SUPPORTED LANGUAGES\n")
-        if supported_languages:
-            for i, lang in enumerate(supported_languages, 1):
-                f.write(f"{i}. {lang}\n")
-        else:
-            f.write("No specific language support detected.\n")
-
-        f.write("\n## FALLBACK MESSAGE\n")
-        if fallback_message:
-            f.write(fallback_message)
-        else:
-            f.write("No fallback message detected.\n")
+    write_report(output_dir, result, supported_languages, fallback_message)
 
     # Generate user profiles and goals
     print("\n--- User profiles and goals from analysis ---")
-    profiles_list = result.get("conversation_goals", [])
-    supported_languages = result.get("supported_languages", [])
-    primary_language = supported_languages[0] if supported_languages else "English"
-
-    if profiles_list:
-        profiles_dir = os.path.join(output_dir, "profiles")
-        os.makedirs(profiles_dir, exist_ok=True)
-
-        for profile in profiles_list:
-            # Build the YAML structure
-            profile_yaml = build_profile_yaml(
-                profile, fallback_message, primary_language
-            )
-            # Save YAML to file
-            save_profile_yaml(profiles_dir, profile_yaml)
-
-        print(f"Profiles saved in {profiles_dir}")
-    else:
-        print("No conversation goals were generated.")
+    handle_profiles(result, output_dir, fallback_message)
 
     print(f"\nAll results saved to directory: {output_dir}")
 
