@@ -204,6 +204,7 @@ def generate_conversation_parameters(
         response_text = params_response.content.strip()
 
         # Initialize parameters with profile-specific defaults
+        # This is to have a value in case the LLM response doesn't provide one
         conversation_params = {
             "number": default_number,
             "max_cost": 1.0 if not has_nested_forwards else 2.0,
@@ -244,7 +245,7 @@ def generate_conversation_parameters(
                         conversation_params["goal_style"] = {"steps": 10}
                     elif value == "all_answered":
                         conversation_params["goal_style"] = {
-                            "all_answered": {"export": False, "limit": 30}
+                            "all_answered": {"export": False, "limit": 15}
                         }
                     elif value == "random_steps":
                         conversation_params["goal_style"] = {"random_steps": 15}
