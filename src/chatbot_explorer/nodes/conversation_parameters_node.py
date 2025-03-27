@@ -267,25 +267,30 @@ def prompt_for_goal_style(
 
     GOAL_STYLE:
     Choose ONE option that best fits this conversation scenario:
-    - "steps": Fixed number of conversation turns between 5-8, use for simple conversations with predictable flow.
-    - "all_answered": Ends when all user goals are addressed (can include "limit" parameters so the conversation length is still capped), use when testing the goals are very different from one another so it will be difficult to reach them or when testing something that looks like a core feature. Set a limit of 10 to 20 steps.
-    - "random_steps": Random number of turns up to a maximum value, use when testing chatbot resilience with varied interaction lengths.
+    - "steps": Fixed number of conversation turns (e.g., 5 to 8).
+    - "all_answered": Ends when all user goals are addressed, with a limit on total turns (e.g., 10 to 20).
+    - "random_steps": Random number of turns up to a maximum value (e.g., 12). Useful to test conversations of different lengths, for example, very short interactions.
 
-    EXAMPLE FORMAT:
-    - For steps: {{"steps": 5}}
-    - For all_answered: {{"all_answered": {{"limit": 10}}}}
-    - For random_steps: {{"random_steps": 12}}
 
     FORMAT YOUR RESPONSE EXACTLY LIKE THIS:
     GOAL_STYLE: type
     GOAL_STYLE_VALUE: value
+
+    EXAMPLE OUTPUTS:
+    GOAL_STYLE: steps
+    GOAL_STYLE_VALUE: 6
+
+    GOAL_STYLE: all_answered
+    GOAL_STYLE_VALUE: 15
     """
 
     response = llm.invoke(prompt)
     response_text = response.content.strip()
 
-    # Default goal style
+    # Default values
     goal_style = {"steps": 11}
+    selected_style = "steps"
+    goal_style_value = 11
 
     # Extract goal style from response
     for line in response_text.split("\n"):
@@ -299,23 +304,30 @@ def prompt_for_goal_style(
 
         if key == "goal_style":
             if value in ["steps", "all_answered", "random_steps"]:
-                if value == "steps":
-                    goal_style = {"steps": 11}
-                elif value == "all_answered":
-                    goal_style = {"all_answered": {"export": False, "limit": 11}}
-                elif value == "random_steps":
-                    goal_style = {"random_steps": 11}
+                selected_style = value
+                # Update the style with the current numeric value (goal_style_value)
+                if selected_style == "steps":
+                    goal_style = {"steps": goal_style_value}
+                elif selected_style == "all_answered":
+                    goal_style = {
+                        "all_answered": {"export": False, "limit": goal_style_value}
+                    }
+                elif selected_style == "random_steps":
+                    goal_style = {"random_steps": goal_style_value}
         elif key == "goal_style_value":
-            if "steps" in goal_style:
-                try:
-                    goal_style = {"steps": int(value)}
-                except ValueError:
-                    pass
-            elif "random_steps" in goal_style:
-                try:
-                    goal_style = {"random_steps": int(value)}
-                except ValueError:
-                    pass
+            try:
+                goal_style_value = int(value)
+                # Update the goal style with the new numeric value
+                if selected_style == "steps":
+                    goal_style = {"steps": goal_style_value}
+                elif selected_style == "all_answered":
+                    goal_style = {
+                        "all_answered": {"export": False, "limit": goal_style_value}
+                    }
+                elif selected_style == "random_steps":
+                    goal_style = {"random_steps": goal_style_value}
+            except ValueError:
+                pass
 
     return goal_style
 
