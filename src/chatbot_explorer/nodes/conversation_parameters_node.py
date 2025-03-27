@@ -222,7 +222,6 @@ def generate_conversation_parameters(
             value = value.strip()
 
             if key == "number":
-                # For nested forwards allow fixed number, all_combinations, or sample(X)
                 if value == "all_combinations":
                     extracted_number = "all_combinations"
                 elif "sample" in value.lower() and "(" in value and ")" in value:
@@ -273,11 +272,7 @@ def generate_conversation_parameters(
         if extracted_number is not None:
             conversation_params["number"] = extracted_number
         if interaction_styles:
-            conversation_params["interaction_style"] = (
-                interaction_styles[0]
-                if len(interaction_styles) == 1
-                else interaction_styles
-            )
+            conversation_params["interaction_style"] = interaction_styles
 
         profile["conversation"] = conversation_params
 
