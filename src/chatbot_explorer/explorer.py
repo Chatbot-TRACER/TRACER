@@ -232,7 +232,13 @@ class ChatbotExplorer:
 
                 if not errors:
                     validated_profiles.append(profile)
+                    print("Profile valid, no fixes needed.")
                 else:
+                    # Debug print the errors
+                    print(f"\nValidation errors found ({len(errors)}):")
+                    for e in errors:
+                        print(f"  • {e.path}: {e.message}")
+
                     # Format the errors
                     error_messages = "\n".join(
                         f"- {e.path}: {e.message}" for e in errors
@@ -245,32 +251,61 @@ class ChatbotExplorer:
                         f"Errors:\n{error_messages}\n"
                     )
 
-                    fixed_yaml_str = self.llm.invoke(
-                        [{"role": "user", "content": fix_prompt}]
-                    )
-
-                    # Function to extract code fenced YAML from response
-                    def _extract_yaml(text: str) -> str:
-                        pattern = r"```yaml(.*?)```"
-                        match = re.search(pattern, text, re.DOTALL)
-                        if match:
-                            return match.group(1).strip()
-                        # If none found, fall back to entire text
-                        return text.strip()
+                    # Debug print prompt
+                    print("\nSending fix prompt to LLM...")
 
                     try:
-                        just_yaml = _extract_yaml(fixed_yaml_str)
-                        fixed_profile = yaml.safe_load(just_yaml)
-                        re_errors = validator.validate(just_yaml)
-                        if not re_errors:
-                            validated_profiles.append(fixed_profile)
-                        else:
+                        fixed_yaml_str = self.llm.invoke(
+                            [{"role": "user", "content": fix_prompt}]
+                        )
+
+                        # Debug print LLM response
+                        print("\nLLM responded with:")
+                        print("---START LLM RESPONSE---")
+                        print(
+                            fixed_yaml_str.content
+                            if hasattr(fixed_yaml_str, "content")
+                            else fixed_yaml_str
+                        )
+                        print("---END LLM RESPONSE---")
+
+                        # Function to extract code fenced YAML from response
+                        def _extract_yaml(text: str) -> str:
+                            if hasattr(text, "content"):
+                                text = text.content
+                            pattern = r"```yaml(.*?)```"
+                            match = re.search(pattern, text, re.DOTALL)
+                            if match:
+                                return match.group(1).strip()
+                            # If none found, fall back to entire text
+                            return text.strip()
+
+                        try:
+                            just_yaml = _extract_yaml(fixed_yaml_str)
+                            print("\nExtracted YAML:")
+                            print("---START EXTRACTED YAML---")
+                            print(just_yaml)
+                            print("---END EXTRACTED YAML---")
+
+                            fixed_profile = yaml.safe_load(just_yaml)
+                            re_errors = validator.validate(just_yaml)
+                            if not re_errors:
+                                print("Fixed successfully!")
+                                validated_profiles.append(fixed_profile)
+                            else:
+                                print("LLM didn't fix all errors:")
+                                for e in re_errors:
+                                    print(f"  • {e.path}: {e.message}")
+                                print("Using original profile.")
+                                validated_profiles.append(profile)
+                        except Exception as e:
                             print(
-                                "Could not fix YAML automatically. Adding original profile."
+                                f"Failed to parse LLM's YAML. Error: {type(e).__name__}: {str(e)}"
                             )
+                            print("Using the original profile.")
                             validated_profiles.append(profile)
-                    except Exception:
-                        print("Failed to parse LLM's YAML. Using the original profile.")
+                    except Exception as e:
+                        print(f"LLM call failed: {type(e).__name__}: {str(e)}")
                         validated_profiles.append(profile)
 
             return {
