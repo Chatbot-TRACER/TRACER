@@ -1,6 +1,9 @@
 from typing import Annotated, Dict, List, Any
 from langchain_openai import ChatOpenAI
 from typing_extensions import TypedDict
+import os
+import re
+import yaml
 
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import StateGraph
@@ -9,6 +12,9 @@ from langgraph.graph.message import add_messages
 from .nodes.goals_node import generate_user_profiles_and_goals
 from .nodes.analyzer_node import analyze_conversations
 from .nodes.conversation_parameters_node import generate_conversation_parameters
+
+# Takes anything that is between exactly two curly braces
+VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
 
 
 class State(TypedDict):
@@ -22,6 +28,8 @@ class State(TypedDict):
     exploration_finished: bool
     conversation_goals: list
     supported_languages: list
+    built_profiles: list
+    fallback_message: str
 
 
 class ChatbotExplorer:
@@ -42,13 +50,16 @@ class ChatbotExplorer:
         graph_builder.add_node("analyzer", self._analyzer_node)
         graph_builder.add_node("goal_generator", self._goal_generator_node)
         graph_builder.add_node("conversation_params", self._conversation_params_node)
+        graph_builder.add_node("profile_builder", self._build_profiles_node)
 
         # Add edges
         graph_builder.set_entry_point("explorer")
         graph_builder.add_edge("explorer", "analyzer")
         graph_builder.add_edge("analyzer", "goal_generator")
         graph_builder.add_edge("goal_generator", "conversation_params")
-        graph_builder.set_finish_point("conversation_params")
+        graph_builder.add_edge("conversation_params", "profile_builder")
+
+        graph_builder.set_finish_point("profile_builder")
 
         return graph_builder.compile(checkpointer=self.memory)
 
@@ -110,6 +121,35 @@ class ChatbotExplorer:
             }
         return {"messages": state["messages"]}
 
+    def _build_profiles_node(self, state: State):
+        """Node that builds YAML profiles and stores them in the state."""
+        if state["exploration_finished"] and state["conversation_goals"]:
+            print("\n--- Building user profiles ---")
+            built_profiles = []
+
+            # Get fallback message from state or use default
+            fallback_message = state.get(
+                "fallback_message", "I'm sorry, I don't understand."
+            )
+
+            # Get primary language from supported languages or default to English
+            primary_language = "English"
+            if (
+                state.get("supported_languages")
+                and len(state["supported_languages"]) > 0
+            ):
+                primary_language = state["supported_languages"][0]
+
+            for profile in state["conversation_goals"]:
+                profile_yaml = self._build_profile_yaml(
+                    profile,
+                    fallback_message=fallback_message,
+                    primary_language=primary_language,
+                )
+                built_profiles.append(profile_yaml)
+            return {"messages": state["messages"], "built_profiles": built_profiles}
+        return {"messages": state["messages"]}
+
     def run_exploration(self, state: Dict[str, Any], config: Dict[str, Any] = None):
         """Run graph with the given state and config."""
         if config is None:
@@ -121,3 +161,57 @@ class ChatbotExplorer:
         if config is None:
             config = {"configurable": {"thread_id": "1"}}
         return self.graph.stream(state, config=config)
+
+    def _build_profile_yaml(self, profile, fallback_message, primary_language):
+        """
+        Build the base YAML dictionary for a given profile.
+        """
+        # Collect all variables used by the user goals
+        used_variables = set()
+        for goal in profile.get("goals", []):
+            variables_in_goals = VARIABLE_PATTERN.findall(goal)
+            used_variables.update(variables_in_goals)
+
+        # Combine raw text goals and variable references
+        yaml_goals = list(profile.get("goals", []))
+        for var_name in used_variables:
+            if var_name in profile:
+                yaml_goals.append({var_name: profile[var_name]})
+
+        # Build chatbot section
+        chabot_section = {
+            "is_starter": False,
+            "fallback": fallback_message,
+        }
+        if "outputs" in profile:
+            chabot_section["output"] = profile["outputs"]
+
+        # Build user context
+        user_context = ["personality: personalities/conversational-user.yml"]
+        context = profile.get("context", [])
+        if isinstance(context, str):
+            user_context.append(context)
+        else:
+            for ctx_item in context:
+                user_context.append(ctx_item)
+
+        # Final conversation section
+        conversation_section = profile.get("conversation", {})
+
+        # Return the YAML dictionary
+        return {
+            "test_name": profile["name"],
+            "llm": {
+                "temperature": 0.8,
+                "model": "gpt-4o-mini",
+                "format": {"type": "text"},
+            },
+            "user": {
+                "language": primary_language,
+                "role": profile["role"],
+                "context": user_context,
+                "goals": yaml_goals,
+            },
+            "chatbot": chabot_section,
+            "conversation": conversation_section,
+        }
