@@ -13,6 +13,8 @@ from .nodes.goals_node import generate_user_profiles_and_goals
 from .nodes.analyzer_node import analyze_conversations
 from .nodes.conversation_parameters_node import generate_conversation_parameters
 
+from .validation_script import YamlValidator
+
 # Takes anything that is between exactly two curly braces
 VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
 
@@ -51,6 +53,7 @@ class ChatbotExplorer:
         graph_builder.add_node("goal_generator", self._goal_generator_node)
         graph_builder.add_node("conversation_params", self._conversation_params_node)
         graph_builder.add_node("profile_builder", self._build_profiles_node)
+        graph_builder.add_node("profile_validator", self._validate_profiles_node)
 
         # Add edges
         graph_builder.set_entry_point("explorer")
@@ -58,8 +61,8 @@ class ChatbotExplorer:
         graph_builder.add_edge("analyzer", "goal_generator")
         graph_builder.add_edge("goal_generator", "conversation_params")
         graph_builder.add_edge("conversation_params", "profile_builder")
-
-        graph_builder.set_finish_point("profile_builder")
+        graph_builder.add_edge("profile_builder", "profile_validator")
+        graph_builder.set_finish_point("profile_validator")
 
         return graph_builder.compile(checkpointer=self.memory)
 
@@ -215,3 +218,63 @@ class ChatbotExplorer:
             "chatbot": chabot_section,
             "conversation": conversation_section,
         }
+
+    def _validate_profiles_node(self, state: State):
+        """Node that validates the built profiles and, if needed, asks the LLM to fix them."""
+        if state["exploration_finished"] and state.get("built_profiles"):
+            print("\n--- Validating user profiles ---")
+            validator = YamlValidator()
+            validated_profiles = []
+
+            for profile in state["built_profiles"]:
+                yaml_content = yaml.dump(profile, sort_keys=False, allow_unicode=True)
+                errors = validator.validate(yaml_content)
+
+                if not errors:
+                    validated_profiles.append(profile)
+                else:
+                    # Format the errors
+                    error_messages = "\n".join(
+                        f"- {e.path}: {e.message}" for e in errors
+                    )
+                    fix_prompt = (
+                        "Please fix the following YAML and output only valid YAML "
+                        "enclosed in triple backticks (```yaml ... ```). "
+                        "Do not add extra commentary:\n\n"
+                        f"```yaml\n{yaml_content}\n```\n\n"
+                        f"Errors:\n{error_messages}\n"
+                    )
+
+                    fixed_yaml_str = self.llm.invoke(
+                        [{"role": "user", "content": fix_prompt}]
+                    )
+
+                    # Function to extract code fenced YAML from response
+                    def _extract_yaml(text: str) -> str:
+                        pattern = r"```yaml(.*?)```"
+                        match = re.search(pattern, text, re.DOTALL)
+                        if match:
+                            return match.group(1).strip()
+                        # If none found, fall back to entire text
+                        return text.strip()
+
+                    try:
+                        just_yaml = _extract_yaml(fixed_yaml_str)
+                        fixed_profile = yaml.safe_load(just_yaml)
+                        re_errors = validator.validate(just_yaml)
+                        if not re_errors:
+                            validated_profiles.append(fixed_profile)
+                        else:
+                            print(
+                                "Could not fix YAML automatically. Adding original profile."
+                            )
+                            validated_profiles.append(profile)
+                    except Exception:
+                        print("Failed to parse LLM's YAML. Using the original profile.")
+                        validated_profiles.append(profile)
+
+            return {
+                "messages": state["messages"],
+                "built_profiles": validated_profiles,
+            }
+        return {"messages": state["messages"]}
