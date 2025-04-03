@@ -16,18 +16,23 @@ The system follows a three-phase approach:
 
 ## Architecture
 
-The Lang Graph's structure is:
+The LangGraph structure is:
 
-`[Entry] → explorer_node → analyzer_node → goal_generator_node → [Finish]`
+```
+[Entry] → explorer_node → analyzer_node → goal_generator_node → conversation_params_node → profile_builder_node → profile_validator_node → [Finish]
+```
 
 - `explorer_node`: Conducts conversations with the target chatbot
 - `analyzer_node`: Processes conversation data to extract features and limitations
 - `goal_generator_node`: Creates user profiles and conversation goals
+- `conversation_params_node`: Generates conversational parameters for profiles
+- `profile_builder_node`: Builds structured YAML profiles
+- `profile_validator_node`: Pass the profile through a validator and fix any possible issues
 
 ## Usage
 
 ```bash
-python test.py [-h] [-s SESSIONS] [-n TURNS] [-t TECHNOLOGY] [-u URL] [-m MODEL] [-o OUTPUT]
+python main.py [-h] [-s SESSIONS] [-n TURNS] [-t TECHNOLOGY] [-u URL] [-m MODEL] [-o OUTPUT]
 ```
 
 ### Arguments
@@ -48,7 +53,12 @@ All the arguments are optional.
 
 ### Output
 
-The system generates:
+The system generates YAML profiles in the specified output directory.
 
-- A text file with the discovered functionalities, limitations and language of the chatbot
-- A list of YAML profiles ready to be used in the user-simulation
+These profiles are ready to be used in Sensei.
+
+### Example
+
+```bash
+python main.py -t ada-aum -s 5 -n 5
+```
