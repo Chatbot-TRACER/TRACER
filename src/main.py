@@ -7,9 +7,6 @@ from chatbot_explorer.cli import parse_arguments
 from chatbot_explorer.explorer import ChatbotExplorer
 from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
 from chatbot_explorer.session import run_exploration_session
-from chatbot_explorer.nodes.conversation_parameters_node import (
-    generate_conversation_parameters,
-)
 
 
 def write_report(output_dir, result, supported_languages, fallback_message):
@@ -145,28 +142,23 @@ def main():
     config = {"configurable": {"thread_id": "analysis_session"}}
     result = explorer.run_exploration(analysis_state, config)
 
-    # Display results with error handling for the missing key
-    print("\n=== CHATBOT FUNCTIONALITY ANALYSIS ===")
-    print("\n## FUNCTIONALITIES")
-    for i, func in enumerate(result.get("discovered_functionalities", []), 1):
-        print(f"{i}. {func}")
+    # Display brief summary of what was discovered
+    print("\n=== Analysis Complete ===")
+    print(f"Found {len(result.get('discovered_functionalities', []))} functionalities")
+    print(f"Found {len(result.get('discovered_limitations', []))} limitations")
+    print(
+        f"Supported languages: {', '.join(supported_languages) if supported_languages else 'None detected'}"
+    )
 
-    print("\n## LIMITATIONS")
-    if "discovered_limitations" in result:
-        for i, limitation in enumerate(result["discovered_limitations"], 1):
-            print(f"{i}. {limitation}")
-    else:
-        print("No limitations discovered.")
-
-    # Save functionalities as a text file in the output directory
-    write_report(output_dir, result, supported_languages, fallback_message)
-
-    # Now save profiles from the built_profiles in result
+    # Save profiles from the built_profiles in result
     built_profiles = result.get("built_profiles", [])
     if built_profiles:
-        print("\n--- Saving built user profiles to disk ---")
-        profiles_dir = os.path.join(output_dir, "profiles")
+        print(f"\n--- Saving {len(built_profiles)} user profiles to disk ---")
+
+        # If output_dir is directly specified, use it as the profile directory
+        profiles_dir = output_dir
         os.makedirs(profiles_dir, exist_ok=True)
+
         for profile in built_profiles:
             filename = (
                 profile["test_name"]
@@ -179,8 +171,9 @@ def main():
             filepath = os.path.join(profiles_dir, filename)
             with open(filepath, "w", encoding="utf-8") as yf:
                 yaml.dump(profile, yf, sort_keys=False, allow_unicode=True)
+            print(f"  Saved profile: {filename}")
 
-    print(f"\nAll results saved to directory: {output_dir}")
+    print(f"\nAll profiles saved to: {output_dir}")
 
 
 if __name__ == "__main__":
