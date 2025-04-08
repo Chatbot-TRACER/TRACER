@@ -271,10 +271,46 @@ class ChatbotExplorer:
                         def _extract_yaml(text: str) -> str:
                             if hasattr(text, "content"):
                                 text = text.content
-                            pattern = r"```yaml(.*?)```"
-                            match = re.search(pattern, text, re.DOTALL)
-                            if match:
-                                return match.group(1).strip()
+
+                            # different patterns to extract YAML
+                            yaml_patterns = [
+                                r"```\s*yaml\s*(.*?)```",
+                                r"```\s*YAML\s*(.*?)```",
+                                r"```(.*?)```",
+                                r"`{3,}(.*?)`{3,}",
+                            ]
+
+                            for pattern in yaml_patterns:
+                                match = re.search(pattern, text, re.DOTALL)
+                                if match:
+                                    extracted = match.group(1).strip()
+                                    # Basic validation: extracted content should have some structure
+                                    if ":" in extracted and len(extracted) > 10:
+                                        return extracted
+
+                            # If we got here, try to find any YAML-like content
+                            # Look for beginning of what appears to be YAML content
+                            if (
+                                "test_name:" in text
+                                or "user:" in text
+                                or "chatbot:" in text
+                            ):
+                                # Try to extract what looks like YAML even without code fences
+                                lines = text.strip().split("\n")
+                                # Skip any non-YAML looking lines at the beginning
+                                while lines and not any(
+                                    keyword in lines[0]
+                                    for keyword in [
+                                        "test_name:",
+                                        "user:",
+                                        "chatbot:",
+                                        "llm:",
+                                    ]
+                                ):
+                                    lines.pop(0)
+                                return "\n".join(lines)
+
+                            # Last resort: return the whole response stripped
                             return text.strip()
 
                         try:
