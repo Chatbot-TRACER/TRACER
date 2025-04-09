@@ -1,4 +1,4 @@
-from typing import Annotated, Dict, List, Any
+from typing import Annotated, Dict, List, Any, Optional
 from langchain_openai import ChatOpenAI
 from typing_extensions import TypedDict
 import os
@@ -19,12 +19,38 @@ from .validation_script import YamlValidator
 VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
 
 
+class FunctionalityNode:
+    """
+    Represents a discovered chatbot functionality
+    """
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        parameters: Optional[List[Dict[str, Any]]] = None,
+        parent: Optional["FunctionalityNode"] = None,
+    ):
+        self.name: str = name
+        self.description: str = description
+        self.parameters: List[Dict[str, Any]] = (
+            parameters if parameters is not None else []
+        )
+        self.parent: Optional["FunctionalityNode"] = parent
+        self.children: List["FunctionalityNode"] = []
+
+    def add_child(self, child_node: "FunctionalityNode"):
+        """Adds a child node to this node"""
+        child_node.parent = self
+        self.children.append(child_node)
+
+
 class State(TypedDict):
     """State for the LangGraph flow"""
 
     messages: Annotated[list, add_messages]
     conversation_history: list
-    discovered_functionalities: list
+    discovered_functionalities: List[FunctionalityNode]
     discovered_limitations: list
     current_session: int
     exploration_finished: bool
