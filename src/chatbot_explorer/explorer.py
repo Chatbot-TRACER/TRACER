@@ -15,34 +15,10 @@ from .nodes.conversation_parameters_node import generate_conversation_parameters
 
 from .validation_script import YamlValidator
 
+from .functionality_node import FunctionalityNode
+
 # Takes anything that is between exactly two curly braces
 VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
-
-
-class FunctionalityNode:
-    """
-    Represents a discovered chatbot functionality
-    """
-
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        parameters: Optional[List[Dict[str, Any]]] = None,
-        parent: Optional["FunctionalityNode"] = None,
-    ):
-        self.name: str = name
-        self.description: str = description
-        self.parameters: List[Dict[str, Any]] = (
-            parameters if parameters is not None else []
-        )
-        self.parent: Optional["FunctionalityNode"] = parent
-        self.children: List["FunctionalityNode"] = []
-
-    def add_child(self, child_node: "FunctionalityNode"):
-        """Adds a child node to this node"""
-        child_node.parent = self
-        self.children.append(child_node)
 
 
 class State(TypedDict):
@@ -98,39 +74,104 @@ class ChatbotExplorer:
             return {"messages": [self.llm.invoke(state["messages"])], "explored": True}
         return {"messages": state["messages"]}
 
-    def _analyzer_node(self, state: State):
-        """Analyzer node for processing chatbot responses."""
-        if state["exploration_finished"]:
-            # Use the analyzer module for analysis
-            analysis_result = analyze_conversations(
-                state["conversation_history"], state["supported_languages"], self.llm
+    def _analyzer_node(self, state: State) -> State:
+        """
+        Analyzer node: Calls the analyzer module to get structured FunctionalityNodes
+        and limitations, then updates the state.
+        """
+        if not state.get("exploration_finished", False):
+            print("Skipping analysis node: Exploration not finished.")
+            return state
+
+        print("\n--- Analyzing conversations (using updated analyzer module) ---")
+
+        if not state.get("conversation_history"):
+            print("Warning: Cannot analyze, conversation_history is missing.")
+            return {
+                **state,
+                "discovered_functionalities": [],
+                "discovered_limitations": [],
+            }
+
+        try:
+            analysis_output = analyze_conversations(
+                state["conversation_history"],
+                state.get("supported_languages", []),
+                self.llm,
+            )
+            print(
+                f" -> Analysis complete. Found {len(analysis_output.get('functionalities', []))} functionalities (as nodes) and {len(analysis_output.get('limitations', []))} limitations."
             )
 
+        except Exception as e:
+            print(f"Error during conversation analysis call: {e}")
             return {
-                "messages": state["messages"] + [analysis_result["analysis_result"]],
-                "discovered_functionalities": analysis_result["functionalities"],
-                "discovered_limitations": analysis_result["limitations"],
+                **state,
+                "discovered_functionalities": [],
+                "discovered_limitations": [],
             }
-        return {"messages": state["messages"]}
 
-    def _goal_generator_node(self, state: State):
-        """Node for generating conversation goals based on discovered functionalities."""
-        if state["exploration_finished"] and state["discovered_functionalities"]:
+        # Convert FunctionalityNode objects to dict before storing
+        functionality_dicts = [
+            func.to_dict() for func in analysis_output.get("functionalities", [])
+        ]
+
+        # Prepare the output state dictionary
+        output_state = {**state}
+        output_state["messages"] = state.get("messages", []) + [
+            analysis_output.get("analysis_result", "Analysis log missing.")
+        ]
+        # Store dicts instead of raw FunctionalityNode objects
+        output_state["discovered_functionalities"] = functionality_dicts
+        output_state["discovered_limitations"] = analysis_output.get("limitations", [])
+
+        return output_state
+
+    def _goal_generator_node(self, state: State) -> State:
+        if state.get("exploration_finished", False) and state.get(
+            "discovered_functionalities"
+        ):
             print("\n--- Generating conversation goals ---")
 
-            profiles_with_goals = generate_user_profiles_and_goals(
-                state["discovered_functionalities"],
-                state["discovered_limitations"],
-                self.llm,
-                conversation_history=state["conversation_history"],
-                supported_languages=state["supported_languages"],
+            # Convert list of dicts into descriptions
+            functionality_dicts: List[Dict[str, Any]] = state[
+                "discovered_functionalities"
+            ]
+            functionality_descriptions: List[str] = [
+                func["description"]
+                for func in functionality_dicts
+                if "description" in func
+            ]
+
+            if not functionality_descriptions:
+                print(
+                    "   Warning: No descriptions found in functionalities to generate goals."
+                )
+                return state
+
+            print(
+                f" -> Preparing {len(functionality_descriptions)} descriptions for goal generation prompt."
             )
 
-            return {
-                "messages": state["messages"],
-                "conversation_goals": profiles_with_goals,
-            }
-        return {"messages": state["messages"]}
+            try:
+                profiles_with_goals = generate_user_profiles_and_goals(
+                    functionality_descriptions,
+                    state.get("discovered_limitations", []),
+                    self.llm,
+                    conversation_history=state.get("conversation_history", []),
+                    supported_languages=state.get("supported_languages", []),
+                )
+                print(f" -> Generated {len(profiles_with_goals)} profiles with goals.")
+                return {**state, "conversation_goals": profiles_with_goals}
+
+            except Exception as e:
+                print(f"Error during goal generation: {e}")
+                return {**state, "conversation_goals": []}
+
+        elif state.get("exploration_finished", False):
+            print("\n--- Skipping goal generation: No functionalities discovered. ---")
+
+        return state
 
     def _conversation_params_node(self, state: State):
         """Node for generating conversation parameters for profiles."""

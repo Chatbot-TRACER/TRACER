@@ -1,7 +1,8 @@
 """Analyzer module for extracting information from chatbot conversations."""
 
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Optional
 from langchain_openai import ChatOpenAI
+from ..functionality_node import FunctionalityNode
 
 
 def format_conversation(messages):
@@ -16,8 +17,10 @@ def format_conversation(messages):
 
 
 def extract_functionalities(analysis_text):
-    """Extract functionalities from the analysis text."""
-    functionalities = []
+    """
+    Extract functionalities from the analysis text and return them as FunctionalityNode objects.
+    """
+    functionality_nodes: List[FunctionalityNode] = []
 
     if "## IDENTIFIED FUNCTIONALITIES" in analysis_text:
         func_section = analysis_text.split("## IDENTIFIED FUNCTIONALITIES")[1]
@@ -25,16 +28,50 @@ def extract_functionalities(analysis_text):
             func_section = func_section.split("##")[0]
 
         func_lines = [line.strip() for line in func_section.split("\n") if line.strip()]
-        for line in func_lines:
-            if ":" in line and any(char.isdigit() for char in line[:3]):
-                # Extract functionality from numbered list format
-                func_parts = line.split(":", 1)
-                if len(func_parts) > 1:
-                    func_name = func_parts[0].strip().split(".", 1)[-1].strip()
-                    func_desc = func_parts[1].strip()
-                    functionalities.append(f"{func_name}: {func_desc}")
 
-    return functionalities
+        print(
+            f"   [analyzer] Found {len(func_lines)} lines in Functionalities section."
+        )
+
+        for idx, line in enumerate(func_lines):
+            # Check for the expected format (e.g., "1. Name: Description")
+            if ":" in line and any(char.isdigit() for char in line.split(".")[0]):
+                try:
+                    # Split name and description
+                    parts = line.split(":", 1)
+                    name_part = parts[0]
+                    description = parts[1].strip() if len(parts) > 1 else ""
+
+                    # Extract name after the number and dot
+                    name_raw = name_part.split(".", 1)[-1].strip()
+
+                    # Sanitize name for use as an identifier
+                    node_name = name_raw.lower().replace(" ", "_")
+
+                    if not node_name:
+                        node_name = f"unnamed_functionality_{idx}"
+                        print(
+                            f"   [analyzer] Warning: Generated generic name '{node_name}' for item: {line}"
+                        )
+
+                    # Create FunctionalityNode instance
+                    node = FunctionalityNode(name=node_name, description=description)
+                    functionality_nodes.append(node)
+                    # print(f"   [analyzer] Created Node: {node!r}")
+
+                except Exception as e:
+                    print(
+                        f"   [analyzer] Error processing functionality line '{line}': {e}"
+                    )
+            else:
+                print(
+                    f"   [analyzer] Skipping line, doesn't match expected format: '{line}'"
+                )  # Debug print
+
+    print(
+        f"   [analyzer] Extracted {len(functionality_nodes)} FunctionalityNodes."
+    )  # Debug print
+    return functionality_nodes
 
 
 def extract_limitations(analysis_text):
@@ -111,8 +148,12 @@ def extract_topics_from_session(conversation_history, llm):
     return new_topics
 
 
-def analyze_conversations(conversation_history, supported_languages, llm):
-    """Analyze conversation histories to extract functionalities and limitations."""
+def analyze_conversations(
+    conversation_history, supported_languages, llm
+) -> Dict[str, Any]:
+    """
+    Analyze conversation histories to extract functionalities (as FunctionalityNodes) and limitations.
+    """
     # Add language prompt
     language_instruction = ""
     if supported_languages:
@@ -155,11 +196,11 @@ def analyze_conversations(conversation_history, supported_languages, llm):
     analysis_content = analysis_result.content
 
     # Extract functionalities and limitations
-    functionalities = extract_functionalities(analysis_content)
+    functionalities_nodes = extract_functionalities(analysis_content)
     limitations = extract_limitations(analysis_content)
 
     return {
         "analysis_result": analysis_result,
-        "functionalities": functionalities,
+        "functionalities": functionalities_nodes,
         "limitations": limitations,
     }
