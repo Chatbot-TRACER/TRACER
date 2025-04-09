@@ -7,6 +7,7 @@ from chatbot_explorer.cli import parse_arguments
 from chatbot_explorer.explorer import ChatbotExplorer
 from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
 from chatbot_explorer.session import run_exploration_session
+from chatbot_explorer.functionality_node import FunctionalityNode
 
 
 def write_report(output_dir, result, supported_languages, fallback_message):
@@ -16,7 +17,10 @@ def write_report(output_dir, result, supported_languages, fallback_message):
 
         f.write("## FUNCTIONALITIES\n")
         for i, func in enumerate(result.get("discovered_functionalities", []), 1):
-            f.write(f"{i}. {func}\n")
+            if isinstance(func, FunctionalityNode):
+                f.write(f"{i}. {func.name} => {func.description}\n")
+            else:
+                f.write(f"{i}. {func}\n")
 
         f.write("\n## LIMITATIONS\n")
         if "discovered_limitations" in result and result["discovered_limitations"]:
@@ -174,6 +178,14 @@ def main():
             print(f"  Saved profile: {filename}")
 
     print(f"\nAll profiles saved to: {output_dir}")
+
+    print("\n--- Writing report to disk ---")
+    write_report(
+        output_dir,
+        result,
+        supported_languages,
+        fallback_message,
+    )
 
 
 if __name__ == "__main__":
