@@ -102,6 +102,7 @@ def generate_graph_image(
     )
 
     processed_nodes: Set[str] = set()
+    processed_edges: Set[tuple[str, str]] = set()
 
     def add_nodes_edges(graph: graphviz.Digraph, node_dict: Dict[str, Any], depth=0):
         """Recursive helper to add nodes and edges with enhanced styling."""
@@ -173,7 +174,12 @@ def generate_graph_image(
                 child_name = child_dict.get("name")
                 if child_name:
                     add_nodes_edges(graph, child_dict, depth + 1)
-                    graph.edge(node_name, child_name)
+
+                    # Check if this edge already exists before adding it
+                    edge_key = (node_name, child_name)
+                    if edge_key not in processed_edges:
+                        graph.edge(node_name, child_name)
+                        processed_edges.add(edge_key)
         else:
             print(
                 f"WARN in graph: Expected 'children' for node '{node_name}' to be a list, found {type(children)}"
