@@ -3,6 +3,7 @@
 from typing import List, Dict, Any, Tuple, Optional
 from langchain_openai import ChatOpenAI
 from ..functionality_node import FunctionalityNode
+import re
 
 
 def format_conversation(messages):
@@ -22,51 +23,68 @@ def extract_functionalities(analysis_text):
     """
     functionality_nodes: List[FunctionalityNode] = []
 
-    if "## IDENTIFIED FUNCTIONALITIES" in analysis_text:
-        func_section = analysis_text.split("## IDENTIFIED FUNCTIONALITIES")[1]
-        if "##" in func_section:
-            func_section = func_section.split("##")[0]
+    # Regex to capture Name, Description, and Parameters
+    # Example line: 1. Order Pizza: Select pizza type. (Parameters: pizza_type, size)
+    # Example line: 2. Check Status: Get ticket status. (Parameters: None)
+    pattern = re.compile(
+        r"^\s*\d+\.\s*(.+?):\s*(.*?)\.\s*\(\s*Parameters:\s*(.+?)\s*\)\s*$",
+        re.MULTILINE,
+    )
 
-        func_lines = [line.strip() for line in func_section.split("\n") if line.strip()]
+    if "## IDENTIFIED FUNCTIONALITIES" in analysis_text:
+        func_section = analysis_text.split("## IDENTIFIED FUNCTIONALITIES", 1)[1]
+        if "##" in func_section:
+            func_section = func_section.split("##", 1)[0]
+
+        print(f"   [analyzer] Parsing Functionalities section for actions/params...")
+
+        matches = pattern.finditer(func_section)
+        count = 0
+        for idx, match in enumerate(matches):
+            count += 1
+            try:
+                name_raw = match.group(1).strip()
+                description = match.group(2).strip()
+                params_str = match.group(3).strip()
+
+                # Sanitize name
+                node_name = name_raw.lower().replace(" ", "_")
+                # Remove non-alphanumeric characters
+                node_name = re.sub(
+                    r"\W+", "", node_name
+                )
+                if not node_name:
+                    node_name = f"unnamed_functionality_{idx}"
+
+                # Parse parameters
+                parameters = []
+                if params_str.lower() != "none":
+                    # Simple split, assumes comma separation
+                    # More robust parsing might be needed
+                    param_names = [
+                        p.strip() for p in params_str.split(",") if p.strip()
+                    ]
+                    parameters = [
+                        {"name": p, "type": "string", "description": f"Parameter {p}"}
+                        for p in param_names
+                    ]  # Basic param structure
+
+                node = FunctionalityNode(
+                    name=node_name, description=description, parameters=parameters
+                )
+                functionality_nodes.append(node)
+                # print(f"   [analyzer] Created Node: {node!r} with params: {parameters}")
+
+            except Exception as e:
+                print(
+                    f"   [analyzer] Error processing functionality match {idx}: {match.group(0)} - Error: {e}"
+                )
 
         print(
-            f"   [analyzer] Found {len(func_lines)} lines in Functionalities section."
+            f"   [analyzer] Extracted {len(functionality_nodes)} FunctionalityNodes with parameters."
         )
-
-        for idx, line in enumerate(func_lines):
-            # Check for the expected format (e.g., "1. Name: Description")
-            if ":" in line and any(char.isdigit() for char in line.split(".")[0]):
-                try:
-                    # Split name and description
-                    parts = line.split(":", 1)
-                    name_part = parts[0]
-                    description = parts[1].strip() if len(parts) > 1 else ""
-
-                    # Extract name after the number and dot
-                    name_raw = name_part.split(".", 1)[-1].strip()
-
-                    # Sanitize name for use as an identifier
-                    node_name = name_raw.lower().replace(" ", "_")
-
-                    if not node_name:
-                        node_name = f"unnamed_functionality_{idx}"
-                        print(
-                            f"   [analyzer] Warning: Generated generic name '{node_name}' for item: {line}"
-                        )
-
-                    # Create FunctionalityNode instance
-                    node = FunctionalityNode(name=node_name, description=description)
-                    functionality_nodes.append(node)
-                    # print(f"   [analyzer] Created Node: {node!r}")
-
-                except Exception as e:
-                    print(
-                        f"   [analyzer] Error processing functionality line '{line}': {e}"
-                    )
-            else:
-                print(
-                    f"   [analyzer] Skipping line, doesn't match expected format: '{line}'"
-                )  # Debug print
+    else:
+        print("   [analyzer] '## IDENTIFIED FUNCTIONALITIES' section not found.")
 
     print(
         f"   [analyzer] Extracted {len(functionality_nodes)} FunctionalityNodes."
@@ -171,9 +189,10 @@ def analyze_conversations(
     Below are transcripts from {len(conversation_history)} different conversation sessions with the same chatbot.
 
     Your task is to:
-    1. Extract all distinct functionalities the chatbot appears to have
-    2. Provide a clear, structured list with descriptions
-    3. Note any limitations or constraints you observed
+    1. Identify the distinct ACTIONS or TASK STEPS the chatbot can perform.
+    2. For each action/step, provide a clear description.
+    3. For each action/step, list any specific PARAMETERS or information the user needs to provide (e.g., 'pizza size', 'ticket ID', 'department name'). If no parameters are needed, state 'None'.
+    4. Note any general limitations or constraints observed.
 
     CONVERSATION HISTORY:
     {conversation_history}
@@ -182,8 +201,8 @@ def analyze_conversations(
 
     FORMAT YOUR RESPONSE AS:
     ## IDENTIFIED FUNCTIONALITIES
-    1. [Functionality Name]: [Description]
-    2. [Functionality Name]: [Description]
+    1. [Action/Step Name]: [Description]. (Parameters: [param1, param2 | None])
+    2. [Action/Step Name]: [Description]. (Parameters: [param1, param2 | None])
     ...
 
     ## LIMITATIONS

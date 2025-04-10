@@ -4,6 +4,7 @@ from typing_extensions import TypedDict
 import os
 import re
 import yaml
+import json
 
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import StateGraph
@@ -52,6 +53,7 @@ class ChatbotExplorer:
         # Add nodes
         graph_builder.add_node("explorer", self._explorer_node)
         graph_builder.add_node("analyzer", self._analyzer_node)
+        graph_builder.add_node("structure_builder", self._structure_builder_node)
         graph_builder.add_node("goal_generator", self._goal_generator_node)
         graph_builder.add_node("conversation_params", self._conversation_params_node)
         graph_builder.add_node("profile_builder", self._build_profiles_node)
@@ -60,7 +62,8 @@ class ChatbotExplorer:
         # Add edges
         graph_builder.set_entry_point("explorer")
         graph_builder.add_edge("explorer", "analyzer")
-        graph_builder.add_edge("analyzer", "goal_generator")
+        graph_builder.add_edge("analyzer", "structure_builder")
+        graph_builder.add_edge("structure_builder", "goal_generator")
         graph_builder.add_edge("goal_generator", "conversation_params")
         graph_builder.add_edge("conversation_params", "profile_builder")
         graph_builder.add_edge("profile_builder", "profile_validator")
@@ -131,26 +134,34 @@ class ChatbotExplorer:
         if state.get("exploration_finished", False) and state.get(
             "discovered_functionalities"
         ):
-            print("\n--- Generating conversation goals ---")
+            print("\n--- Generating conversation goals from structured data ---")
 
-            # Convert list of dicts into descriptions
-            functionality_dicts: List[Dict[str, Any]] = state[
+            structured_root_dicts: List[Dict[str, Any]] = state[
                 "discovered_functionalities"
             ]
-            functionality_descriptions: List[str] = [
-                func["description"]
-                for func in functionality_dicts
-                if "description" in func
-            ]
+
+            # --- Helper function to recursively get all descriptions ---
+            def get_all_descriptions(nodes: List[Dict[str, Any]]) -> List[str]:
+                descriptions = []
+                for node in nodes:
+                    # Add description if present
+                    if node.get("description"):
+                        descriptions.append(node["description"])
+                    # Add description of all children
+                    if node.get("children"):
+                        descriptions.extend(get_all_descriptions(node["children"]))
+                return descriptions
+
+            functionality_descriptions = get_all_descriptions(structured_root_dicts)
 
             if not functionality_descriptions:
                 print(
-                    "   Warning: No descriptions found in functionalities to generate goals."
+                    "   Warning: No descriptions found in structured functionalities."
                 )
                 return state
 
             print(
-                f" -> Preparing {len(functionality_descriptions)} descriptions for goal generation prompt."
+                f" -> Preparing {len(functionality_descriptions)} descriptions (from structure) for goal generation."
             )
 
             try:
@@ -178,11 +189,27 @@ class ChatbotExplorer:
         if state["exploration_finished"] and state["conversation_goals"]:
             print("\n--- Generating conversation parameters ---")
 
+            # The state["discovered_functionalities"] now contains the structured dicts
+            structured_root_dicts = state.get("discovered_functionalities", [])
+
+            # Flattening to pass info similar to before the dictionaries
+            def get_all_func_info(nodes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+                all_info = []
+                for node in nodes:
+                    # Add current node info (without children for flat list)
+                    info = {k: v for k, v in node.items() if k != "children"}
+                    all_info.append(info)
+                    if node.get("children"):
+                        all_info.extend(get_all_func_info(node["children"]))
+                return all_info
+
+            flat_func_info = get_all_func_info(structured_root_dicts)
+
             profiles_with_params = generate_conversation_parameters(
                 state["conversation_goals"],
-                state["discovered_functionalities"],
+                flat_func_info,  # Pass the flat list of info dicts
                 self.llm,
-                supported_languages=state["supported_languages"],
+                supported_languages=state.get("supported_languages", []),
             )
 
             return {
@@ -405,3 +432,159 @@ class ChatbotExplorer:
                 "built_profiles": validated_profiles,
             }
         return {"messages": state["messages"]}
+
+    def _structure_builder_node(self, state: State) -> State:
+        """
+        Analyzes the flat list of functionalities and conversation history
+        to build a structured workflow graph (represented as nested dicts).
+        """
+        if not state.get("exploration_finished", False):
+            print("Skipping structure builder: Exploration not finished.")
+            return state
+
+        print("\n--- Building Workflow Structure ---")
+        flat_functionality_dicts = state.get("discovered_functionalities", [])
+        conversation_history = state.get("conversation_history", [])
+
+        if not flat_functionality_dicts:
+            print("   Skipping structure building: No initial functionalities found.")
+            # Keep functionalities as an empty list
+            return {**state, "discovered_functionalities": []}
+
+        # Prepare input for the structuring LLM call
+        func_list_str = "\n".join(
+            [
+                f"- Name: {f.get('name', 'N/A')}\n  Description: {f.get('description', 'N/A')}\n  Parameters: {', '.join(p.get('name', '?') for p in f.get('parameters', [])) or 'None'}"
+                for f in flat_functionality_dicts
+            ]
+        )
+
+        structuring_prompt = f"""
+    You are a Workflow Analyzer. Your task is to analyze a list of discovered chatbot functionalities (actions/steps) and conversation transcripts to determine the likely workflows or sequences a user follows.
+
+    Input Functionalities:
+    {func_list_str}
+
+    Conversation History Snippets:
+    {str(conversation_history)[:3000]} # Include a portion of the history for context
+
+    Based on the functionalities and conversations, determine the dependencies and sequences. Structure the output as a JSON list of nodes, where each node represents a functionality and includes its parent(s).
+
+    Rules:
+    - Represent the workflow as a directed acyclic graph (DAG).
+    - A node can have zero or more parents. Root nodes have zero parents.
+    - Use the 'name' field from the input functionalities as the primary identifier.
+    - The output MUST be a valid JSON list.
+
+    Output Format Example:
+    [
+    {{
+        "name": "functionality_name_1",
+        "description": "Description from input...",
+        "parameters": [{{"name": "param1", ...}}, ...],
+        "parent_names": [] // Root node
+    }},
+    {{
+        "name": "functionality_name_2",
+        "description": "Description from input...",
+        "parameters": [...],
+        "parent_names": ["functionality_name_1"] // Depends on func_1
+    }},
+    {{
+        "name": "functionality_name_3",
+        "description": "Description from input...",
+        "parameters": [...],
+        "parent_names": ["functionality_name_1"] // Also depends on func_1 (branch)
+    }},
+    {{
+        "name": "functionality_name_4",
+        "description": "Description from input...",
+        "parameters": [...],
+        "parent_names": ["functionality_name_2", "functionality_name_3"] // Depends on func_2 OR func_3 (merge)
+    }}
+    ]
+
+    Generate the JSON list representing the workflow structure based ONLY on the provided functionalities and conversation context:
+    """
+        try:
+            print("   Asking LLM to determine workflow structure...")
+            response = self.llm.invoke(structuring_prompt)
+            response_content = response.content
+
+            # --- Extract JSON from LLM response ---
+            # Simple extraction assuming JSON is between ```json ... ``` or is the whole content
+            json_match = re.search(r"```json\s*([\s\S]+?)\s*```", response_content)
+            if json_match:
+                json_str = json_match.group(1)
+            else:
+                # Assume the whole content is JSON if no code fences
+                json_str = response_content.strip()
+
+            print("   Parsing workflow structure from LLM response...")
+            structured_nodes_info = json.loads(json_str)
+            if not isinstance(structured_nodes_info, list):
+                raise ValueError("LLM response is not a JSON list.")
+
+            # --- Rebuild Node Dicts with Hierarchy ---
+            # Create a map of nodes by name for easy lookup
+            nodes_map: Dict[str, Dict[str, Any]] = {
+                node_info["name"]: node_info
+                for node_info in structured_nodes_info
+                if "name" in node_info
+            }
+            # Clear existing children and add based on parent_names
+            for node_info in nodes_map.values():
+                node_info["children"] = []  # Reset children list
+
+            root_nodes_dicts = []
+            processed_nodes = set()
+
+            # Add children based on parent_names
+            for node_name, node_info in nodes_map.items():
+                parent_names = node_info.get("parent_names", [])
+                if not parent_names:
+                    # If no parents, it's potentially a root node (will verify later)
+                    pass  # Handled in the next loop
+                else:
+                    for parent_name in parent_names:
+                        if parent_name in nodes_map:
+                            parent_node_info = nodes_map[parent_name]
+                            # Add current node's dict as a child to parent's dict
+                            # Avoid adding duplicates if structure is complex
+                            if node_info not in parent_node_info.get("children", []):
+                                parent_node_info.setdefault("children", []).append(
+                                    node_info
+                                )
+                        else:
+                            print(
+                                f"   Warning: Parent '{parent_name}' listed for node '{node_name}' not found in nodes map."
+                            )
+
+            # Identify true root nodes (those not listed as children anywhere)
+            all_child_names = set()
+            for node_info in nodes_map.values():
+                for child_info in node_info.get("children", []):
+                    all_child_names.add(child_info["name"])
+
+            root_nodes_dicts = [
+                node_info
+                for node_name, node_info in nodes_map.items()
+                if node_name not in all_child_names
+            ]
+
+            print(f"   Built structure with {len(root_nodes_dicts)} root node(s).")
+            # Optional: Print structure for debugging
+            # print(json.dumps(root_nodes_dicts, indent=2))
+
+            # Update state with the structured list of dictionaries
+            return {**state, "discovered_functionalities": root_nodes_dicts}
+
+        except json.JSONDecodeError as e:
+            print(f"   Error: Failed to decode JSON from LLM response: {e}")
+            print(f"   LLM Response Content:\n{response_content}")
+            # Keep the flat list if structuring fails
+            return state
+        except Exception as e:
+            print(f"   Error during structure building: {e}")
+            # Keep the flat list if structuring fails
+            return state

@@ -8,19 +8,57 @@ from chatbot_explorer.explorer import ChatbotExplorer
 from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
 from chatbot_explorer.session import run_exploration_session
 from chatbot_explorer.functionality_node import FunctionalityNode
+from typing import List, Dict, Any
+
+
+def print_structured_functionalities(f, nodes: List[Dict[str, Any]], indent: str = ""):
+    """
+    Helper function to recursively print the structured functionalities.
+    """
+    for node in nodes:
+        param_str_list = [p.get("name", "?") for p in node.get("parameters", [])]
+        param_str = f" (Params: {', '.join(param_str_list)})" if param_str_list else ""
+        f.write(
+            f"{indent}- {node.get('name', 'N/A')}: {node.get('description', 'N/A')}{param_str}\n"
+        )
+        if node.get("children"):
+            print_structured_functionalities(f, node["children"], indent + "  ")
 
 
 def write_report(output_dir, result, supported_languages, fallback_message):
-    """Write discovered functionalities, limitations, languages, and fallback message to report.txt."""
+    """
+    Write discovered functionalities (structured), limitations, languages, and fallback message.
+    """
     with open(os.path.join(output_dir, "report.txt"), "w", encoding="utf-8") as f:
         f.write("=== CHATBOT FUNCTIONALITY ANALYSIS ===\n\n")
 
-        f.write("## FUNCTIONALITIES\n")
-        for i, func in enumerate(result.get("discovered_functionalities", []), 1):
-            if isinstance(func, FunctionalityNode):
-                f.write(f"{i}. {func.name} => {func.description}\n")
+        f.write("## FUNCTIONALITIES (Workflow Structure)\n")
+        # result['discovered_functionalities'] is now List[Dict[str, Any]] representing the roots
+        structured_functionalities = result.get("discovered_functionalities", [])
+
+        if structured_functionalities:
+            # Check if it looks like our structured dicts
+            if isinstance(structured_functionalities, list) and (
+                not structured_functionalities
+                or isinstance(structured_functionalities[0], dict)
+            ):
+                print_structured_functionalities(f, structured_functionalities)
             else:
-                f.write(f"{i}. {func}\n")
+                f.write("Functionality structure not in expected dictionary format.\n")
+                f.write(
+                    f"Raw data:\n{json.dumps(structured_functionalities, indent=2)}\n"
+                )  # Print raw data
+        else:
+            f.write("No functionalities structure discovered.\n")
+
+        # Add a raw JSON dump for detailed inspection
+        f.write("\n## FUNCTIONALITIES (Raw JSON Structure)\n")
+        if structured_functionalities:
+            f.write(
+                json.dumps(structured_functionalities, indent=2, ensure_ascii=False)
+            )
+        else:
+            f.write("N/A\n")
 
         f.write("\n## LIMITATIONS\n")
         if "discovered_limitations" in result and result["discovered_limitations"]:

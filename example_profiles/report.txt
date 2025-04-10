@@ -1,0 +1,178 @@
+=== CHATBOT FUNCTIONALITY ANALYSIS ===
+
+## FUNCTIONALITIES (Workflow Structure)
+- list_pizza_options: The chatbot provides a list of available pizza types
+  - order_pizza: The chatbot assists users in placing orders for predefined or custom pizzas (Params: pizza type, pizza size)
+    - custom_pizza_options: Users can customize their pizza by selecting specific ingredients (Params: ingredients)
+    - multiple_pizza_orders: Users can place larger orders that include multiple pizzas and drinks (Params: pizza types, drink types)
+- list_drink_options: The chatbot offers a list of available drinks
+  - order_drinks: The chatbot helps users order drinks to accompany their pizzas (Params: drink type)
+    - multiple_pizza_orders: Users can place larger orders that include multiple pizzas and drinks (Params: pizza types, drink types)
+- opening_hours_information: The chatbot shares the operating hours of the service
+- delivery_time_estimation: The chatbot provides an estimate of how long it takes to deliver an order
+- crust_options_information: The chatbot informs users about various crust options for pizzas
+- sauce_options_information: The chatbot provides details on different sauces available for pizzas
+- special_menu_items: The chatbot informs users about unique or special items available on the menu
+
+## FUNCTIONALITIES (Raw JSON Structure)
+[
+  {
+    "name": "list_pizza_options",
+    "description": "The chatbot provides a list of available pizza types",
+    "parameters": [],
+    "parent_names": [],
+    "children": [
+      {
+        "name": "order_pizza",
+        "description": "The chatbot assists users in placing orders for predefined or custom pizzas",
+        "parameters": [
+          {
+            "name": "pizza type",
+            "options": [
+              "Margarita",
+              "Carbonara",
+              "Marinera",
+              "Hawaiian",
+              "Four cheese",
+              "Vegetarian",
+              "Custom"
+            ]
+          },
+          {
+            "name": "pizza size",
+            "options": [
+              "small",
+              "medium",
+              "large"
+            ]
+          }
+        ],
+        "parent_names": [
+          "list_pizza_options"
+        ],
+        "children": [
+          {
+            "name": "custom_pizza_options",
+            "description": "Users can customize their pizza by selecting specific ingredients",
+            "parameters": [
+              {
+                "name": "ingredients",
+                "options": "user must specify"
+              }
+            ],
+            "parent_names": [
+              "order_pizza"
+            ],
+            "children": []
+          },
+          {
+            "name": "multiple_pizza_orders",
+            "description": "Users can place larger orders that include multiple pizzas and drinks",
+            "parameters": [
+              {
+                "name": "pizza types",
+                "options": "user must specify"
+              },
+              {
+                "name": "drink types",
+                "options": "user must specify"
+              }
+            ],
+            "parent_names": [
+              "order_pizza",
+              "order_drinks"
+            ],
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "list_drink_options",
+    "description": "The chatbot offers a list of available drinks",
+    "parameters": [],
+    "parent_names": [],
+    "children": [
+      {
+        "name": "order_drinks",
+        "description": "The chatbot helps users order drinks to accompany their pizzas",
+        "parameters": [
+          {
+            "name": "drink type",
+            "options": "user must specify"
+          }
+        ],
+        "parent_names": [
+          "list_drink_options"
+        ],
+        "children": [
+          {
+            "name": "multiple_pizza_orders",
+            "description": "Users can place larger orders that include multiple pizzas and drinks",
+            "parameters": [
+              {
+                "name": "pizza types",
+                "options": "user must specify"
+              },
+              {
+                "name": "drink types",
+                "options": "user must specify"
+              }
+            ],
+            "parent_names": [
+              "order_pizza",
+              "order_drinks"
+            ],
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "opening_hours_information",
+    "description": "The chatbot shares the operating hours of the service",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "delivery_time_estimation",
+    "description": "The chatbot provides an estimate of how long it takes to deliver an order",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "crust_options_information",
+    "description": "The chatbot informs users about various crust options for pizzas",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "sauce_options_information",
+    "description": "The chatbot provides details on different sauces available for pizzas",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "special_menu_items",
+    "description": "The chatbot informs users about unique or special items available on the menu",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  }
+]
+## LIMITATIONS
+1. The chatbot often struggles with complex questions or requests, indicating the need for simple, direct queries.
+2. There is a reliance on user input for providing options, which can result in confusion if the user does not specify their preferences.
+3. The chatbot may confuse or misunderstand questions if they are not phrased simply.
+
+## SUPPORTED LANGUAGES
+1. English
+
+## FALLBACK MESSAGE
+"I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE "
