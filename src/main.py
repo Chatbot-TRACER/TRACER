@@ -70,12 +70,12 @@ def generate_graph_image(
     # Set global graph attributes for better aesthetics
     dot.attr(
         rankdir="LR",
-        bgcolor="#ffffff",
-        fontname="Helvetica",
+        bgcolor="#ffffff",  # Can be changed to transparent
+        fontname="Helvetica Neue, Helvetica, Arial, sans-serif",
         fontsize="12",
         pad="0.5",
-        nodesep="0.7",
-        ranksep="1.0",
+        nodesep="0.6",
+        ranksep="1.2",
         splines="curved",
         overlap="false",
     )
@@ -85,21 +85,19 @@ def generate_graph_image(
         "node",
         shape="rectangle",
         style="filled,rounded",
-        fillcolor="#e6f3ff:#c2e0ff",  # Gradient fill
-        gradientangle="270",
-        color="#4a86e8",
-        fontname="Helvetica",
-        fontsize="11",
-        margin="0.2,0.1",  # Horizontal,vertical margin
-        penwidth="1.5",
+        fontname="Helvetica Neue, Helvetica, Arial, sans-serif",
+        fontsize="10",
+        margin="0.15,0.1",
+        penwidth="1.0",
+        fontcolor="#333333",
     )
 
     # Set default edge attributes
     dot.attr(
         "edge",
-        color="#4a86e8",
-        penwidth="1.2",
-        arrowsize="0.8",
+        color="#adb5bd",
+        penwidth="1.0",
+        arrowsize="0.7",
     )
 
     processed_nodes: Set[str] = set()
