@@ -71,6 +71,25 @@ class ChatbotExplorer:
 
         return graph_builder.compile(checkpointer=self.memory)
 
+    def _build_profile_generation_graph(self):
+        """Build a graph that skips analysis and structure building (for use with pre-built structures)"""
+        graph_builder = StateGraph(State)
+
+        # Add nodes
+        graph_builder.add_node("goal_generator", self._goal_generator_node)
+        graph_builder.add_node("conversation_params", self._conversation_params_node)
+        graph_builder.add_node("profile_builder", self._build_profiles_node)
+        graph_builder.add_node("profile_validator", self._validate_profiles_node)
+
+        # Add edges
+        graph_builder.set_entry_point("goal_generator")
+        graph_builder.add_edge("goal_generator", "conversation_params")
+        graph_builder.add_edge("conversation_params", "profile_builder")
+        graph_builder.add_edge("profile_builder", "profile_validator")
+        graph_builder.set_finish_point("profile_validator")
+
+        return graph_builder.compile(checkpointer=self.memory)
+
     def _explorer_node(self, state: State):
         """Explorer node for interacting with the target chatbot."""
         if not state["exploration_finished"]:

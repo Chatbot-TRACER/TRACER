@@ -299,8 +299,12 @@ def main():
     # Track multiple conversation sessions
     conversation_sessions = []
     supported_languages = []
-    discovered_functionalities = []
     fallback_message = None
+
+    # Track functionality graph exploration
+    root_nodes = []  # List of root FunctionalityNode objects
+    pending_nodes = []  # Queue of nodes to explore
+    explored_nodes = set()  # Set of explored node names
 
     # Create the chatbot according to the technology
     if technology == "taskyto":
@@ -308,51 +312,103 @@ def main():
     elif technology == "ada-uam":
         the_chatbot = ChatbotAdaUam(chatbot_url)
 
-    # Run exploration sessions, each session is a conversation
-    for session_num in range(max_sessions):
-        # Run the exploration session
-        conversation_history, new_languages, new_topics, new_fallback = (
-            run_exploration_session(
-                session_num,
-                max_sessions,
-                max_turns,
-                explorer,
-                the_chatbot,
-                supported_languages,
-                discovered_functionalities,
-            )
+    # First session: general exploration without focusing on specific functionality
+    print("\n=== Starting general exploration ===")
+    (
+        conversation_history,
+        new_languages,
+        new_nodes,
+        new_fallback,
+        updated_roots,
+        updated_pending,
+        updated_explored,
+    ) = run_exploration_session(
+        0,  # First session
+        max_sessions,
+        max_turns,
+        explorer,
+        the_chatbot,
+        current_node=None,  # No specific focus
+        root_nodes=root_nodes,
+        pending_nodes=pending_nodes,
+        explored_nodes=explored_nodes,
+        supported_languages=supported_languages,
+    )
+
+    # Update tracking variables
+    conversation_sessions.append(conversation_history)
+    if new_languages:
+        supported_languages = new_languages
+    if new_fallback:
+        fallback_message = new_fallback
+    root_nodes = updated_roots
+    pending_nodes = updated_pending
+    explored_nodes = updated_explored
+
+    # Continue with depth-first exploration of discovered functionalities
+    session_num = 1
+    while session_num < max_sessions and pending_nodes:
+        # Get next node to explore
+        current_node = pending_nodes.pop(0)
+
+        # Skip if already explored
+        if current_node.name in explored_nodes:
+            continue
+
+        print(
+            f"\n=== Starting depth-first exploration of '{current_node.name}' ({session_num + 1}/{max_sessions}) ==="
         )
 
-        # Store session data
+        # Run exploration session focused on this functionality
+        (
+            conversation_history,
+            _,
+            new_nodes,
+            _,
+            updated_roots,
+            updated_pending,
+            updated_explored,
+        ) = run_exploration_session(
+            session_num,
+            max_sessions,
+            max_turns,
+            explorer,
+            the_chatbot,
+            current_node=current_node,
+            root_nodes=root_nodes,
+            pending_nodes=pending_nodes,
+            explored_nodes=explored_nodes,
+            supported_languages=supported_languages,
+        )
+
+        # Update tracking
         conversation_sessions.append(conversation_history)
+        root_nodes = updated_roots
+        pending_nodes = updated_pending
+        explored_nodes = updated_explored
 
-        # Update supported languages if detected
-        if session_num == 0 and new_languages:
-            supported_languages = new_languages
-            fallback_message = new_fallback
+        session_num += 1
 
-        # Update discovered functionalities
-        for topic in new_topics:
-            if topic not in discovered_functionalities:
-                discovered_functionalities.append(topic)
-                print(f"New functionality discovered: {topic}")
+    print(f"\n=== Exploration complete ({session_num} sessions) ===")
+    print(f"Discovered {len(root_nodes)} root functionalities")
 
-        # After session ends, save the conversation history
-        print(f"\nSession {session_num + 1} complete")
-        conversation_sessions.append(conversation_history)
+    # Convert FunctionalityNodes to dicts for further processing
+    functionality_dicts = [node.to_dict() for node in root_nodes]
 
-    # Create state for analysis
-    print("\n--- All exploration sessions complete. Analyzing results... ---")
+    # Create state for goal generation, user profiles, etc.
+    print(
+        "\n--- Preparing to generate user profiles based on discovered functionality graph ---"
+    )
     analysis_state = {
         "messages": [
             {
                 "role": "system",
                 "content": "Analyze the conversation histories to identify functionalities",
-            }
+            },
         ],
         "conversation_history": conversation_sessions,
-        "discovered_functionalities": [],
-        "discovered_limitations": [],
+        "discovered_functionalities": functionality_dicts,  # Already structured!
+        "discovered_limitations": [],  # We'll skip limitations extraction
         "current_session": max_sessions,
         "exploration_finished": True,
         "conversation_goals": [],
@@ -360,29 +416,23 @@ def main():
         "fallback_message": fallback_message,
     }
 
-    # Execute the analysis
+    # Generate profiles directly without full analysis
     config = {"configurable": {"thread_id": "analysis_session"}}
+
+    # Skip analyzer and structure_builder nodes since we already have the structure
+    explorer.graph = explorer._build_profile_generation_graph()
     result = explorer.run_exploration(analysis_state, config)
 
-    # Display brief summary of what was discovered
-    print("\n=== Analysis Complete ===")
-    print(f"Found {len(result.get('discovered_functionalities', []))} functionalities")
-    print(f"Found {len(result.get('discovered_limitations', []))} limitations")
-    print(
-        f"Supported languages: {', '.join(supported_languages) if supported_languages else 'None detected'}"
-    )
-
-    # Save profiles from the built_profiles in result
+    # Save profiles
     built_profiles = result.get("built_profiles", [])
     if built_profiles:
         print(f"\n--- Saving {len(built_profiles)} user profiles to disk ---")
 
-        # If output_dir is directly specified, use it as the profile directory
         profiles_dir = output_dir
         os.makedirs(profiles_dir, exist_ok=True)
 
         for profile in built_profiles:
-            # Handle cases where test_name might be a dict (like random profile generators)
+            # Handle cases where test_name might be a dict
             test_name = profile["test_name"]
 
             if isinstance(test_name, dict):
@@ -392,16 +442,13 @@ def main():
                     and "data" in test_name
                     and test_name["data"]
                 ):
-                    # Use the first item in the data list as a base name
                     base_name = str(test_name["data"][0])
                     filename = (
                         f"random_profile_{base_name.lower().replace(' ', '_')}.yaml"
                     )
                 else:
-                    # Generic fallback for other dict types
                     filename = f"profile_{hash(str(test_name))}.yaml"
             else:
-                # Normal string case
                 filename = (
                     str(test_name)
                     .lower()
@@ -416,28 +463,18 @@ def main():
                 yaml.dump(profile, yf, sort_keys=False, allow_unicode=True)
             print(f"  Saved profile: {filename}")
 
-        print(f"\nAll profiles saved to: {output_dir}")
-
-    # --- Call write_report ---
+    # Write report
     print("\n--- Writing report to disk ---")
     write_report(
         output_dir,
-        result,
+        {"discovered_functionalities": functionality_dicts},
         supported_languages,
         fallback_message,
     )
-    print(f"   Report saved to: {os.path.join(output_dir, 'report.txt')}")
 
-    # --- Call generate_graph_image ---
-    structured_functionalities = result.get("discovered_functionalities", [])
-    if structured_functionalities:
-        # Define the output path for the graph image
-        graph_output_base = os.path.join(output_dir, "workflow_graph")
-        generate_graph_image(structured_functionalities, graph_output_base)
-    else:
-        print(
-            "\n--- Skipping graph generation: No structured functionalities found in results. ---"
-        )
+    # Generate graph image
+    graph_output_base = os.path.join(output_dir, "workflow_graph")
+    generate_graph_image(functionality_dicts, graph_output_base)
 
     print("\n--- Exploration and Analysis Complete ---")
 
