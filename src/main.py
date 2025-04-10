@@ -78,6 +78,7 @@ def generate_graph_image(
         ranksep="1.2",
         splines="curved",
         overlap="false",
+        dpi="300",
     )
 
     # Set default node attributes
