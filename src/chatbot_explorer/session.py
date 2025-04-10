@@ -1,6 +1,7 @@
 from typing import List, Dict, Any, Optional, Tuple, Set
 from .functionality_node import FunctionalityNode
 import re
+import json
 
 
 def extract_supported_languages(chatbot_response, llm):
@@ -124,20 +125,33 @@ def extract_functionality_nodes(conversation_history, llm, current_node=None):
     CONVERSATION:
     {formatted_conversation}
 
-    Extract the distinct functionalities/actions the chatbot can perform based on this conversation.
-    For each functionality, identify:
+    Extract ONLY distinct ACTIONABLE FUNCTIONALITIES the chatbot can perform based on this conversation.
+
+    STRICT DEFINITION: A functionality must be something the chatbot can actively DO or HELP WITH, not just information it has.
+
+    GOOD EXAMPLES of functionalities:
+    - schedule_appointment: Helps users book an appointment (action)
+    - calculate_price: Calculates the price for a service (computation)
+    - search_products: Searches the product database (retrieval action)
+
+    BAD EXAMPLES (NOT functionalities):
+    - knows_about_company: Just has information about the company (passive knowledge)
+    - has_business_hours: Just knows store hours (passive information)
+    - responds_to_greeting: Just responds to greetings (basic chat behavior)
+
+    For each TRUE functionality, identify:
     1. A short name (use snake_case)
-    2. A clear description
+    2. A clear description of what action it performs
     3. Required parameters (if any)
 
     Format each functionality EXACTLY as:
     FUNCTIONALITY:
     name: snake_case_name
-    description: Clear description of what this functionality does
+    description: Clear description of what this functionality DOES
     parameters: param1, param2 (or "None" if no parameters)
 
-    If you identify multiple functionalities, list each one separately with the FUNCTIONALITY: header.
-    If no new functionality is identified, respond with "NO_NEW_FUNCTIONALITY".
+    Be VERY SELECTIVE and only list ACTIONS the chatbot can perform, not just topics it knows about.
+    If no new ACTIONABLE functionality is identified, respond with "NO_NEW_FUNCTIONALITY".
     """
 
     response = llm.invoke(extraction_prompt)
@@ -156,6 +170,8 @@ def extract_functionality_nodes(conversation_history, llm, current_node=None):
     )
 
     matches = func_pattern.finditer(content)
+    candidates = []
+
     for match in matches:
         name = match.group(1).strip()
         description = match.group(2).strip()
@@ -180,113 +196,160 @@ def extract_functionality_nodes(conversation_history, llm, current_node=None):
 
         functionality_nodes.append(new_node)
 
-    return functionality_nodes
+    # If we have candidates, validate them
+    if candidates:
+        # Secondary validation to ensure they're actually functionalities
+        validation_prompt = f"""
+        Evaluate each candidate functionality and determine if it represents a TRUE ACTIONABLE FUNCTIONALITY
+        that the chatbot can perform (not just passive knowledge).
 
+        For each functionality, respond ONLY with "VALID" or "INVALID" followed by a brief reason.
 
-def extract_functionality_nodes(conversation_history, llm, current_node=None):
-    """
-    Extract functionalities from conversation as FunctionalityNode objects.
+        CANDIDATE FUNCTIONALITIES:
+        {json.dumps(candidates, indent=2)}
 
-    Args:
-        conversation_history: The conversation history
-        llm: The language model for extraction
-        current_node: The current node being explored (if any)
+        RESPOND IN THIS FORMAT:
+        1. [name]: [VALID/INVALID] - [brief reason]
+        2. [name]: [VALID/INVALID] - [brief reason]
+        ...
+        """
 
-    Returns:
-        List[FunctionalityNode]: List of new functionality nodes discovered
-    """
-    # Format the conversation for analysis
-    formatted_conversation = format_conversation(conversation_history)
+        validation_response = llm.invoke(validation_prompt)
+        validation_results = validation_response.content.strip().split("\n")
 
-    # Create the context for function extraction
-    context = "Identify new chatbot functionalities discovered in this conversation."
-    if current_node:
-        context += f"\nWe are currently exploring the '{current_node.name}' functionality: {current_node.description}"
-
-    extraction_prompt = f"""
-    {context}
-
-    CONVERSATION:
-    {formatted_conversation}
-
-    Extract the distinct functionalities/actions the chatbot can perform based on this conversation.
-    For each functionality, identify:
-    1. A short name (use snake_case)
-    2. A clear description
-    3. Required parameters (if any)
-
-    Format each functionality EXACTLY as:
-    FUNCTIONALITY:
-    name: snake_case_name
-    description: Clear description of what this functionality does
-    parameters: param1, param2 (or "None" if no parameters)
-
-    If you identify multiple functionalities, list each one separately with the FUNCTIONALITY: header.
-    If no new functionality is identified, respond with "NO_NEW_FUNCTIONALITY".
-    """
-
-    response = llm.invoke(extraction_prompt)
-    content = response.content.strip()
-
-    # Extract functionalities using regex
-    functionality_nodes = []
-
-    if "NO_NEW_FUNCTIONALITY" in content:
-        return functionality_nodes
-
-    # Pattern to extract functionality blocks
-    func_pattern = re.compile(
-        r"FUNCTIONALITY:\s*name:\s*([^\n]+)\s*description:\s*([^\n]+)\s*parameters:\s*([^\n]+)",
-        re.MULTILINE,
-    )
-
-    matches = func_pattern.finditer(content)
-    for match in matches:
-        name = match.group(1).strip()
-        description = match.group(2).strip()
-        params_str = match.group(3).strip()
-
-        # Parse parameters
-        parameters = []
-        if params_str.lower() != "none":
-            param_names = [p.strip() for p in params_str.split(",") if p.strip()]
-            parameters = [
-                {"name": p, "type": "string", "description": f"Parameter {p}"}
-                for p in param_names
-            ]
-
-        # Create new node
-        new_node = FunctionalityNode(
-            name=name,
-            description=description,
-            parameters=parameters,
-            parent=current_node,
-        )
-
-        functionality_nodes.append(new_node)
+        for i, result in enumerate(validation_results):
+            if i < len(candidates) and "VALID" in result:
+                # Create functionality node for valid candidates
+                candidate = candidates[i]
+                new_node = FunctionalityNode(
+                    name=candidate["name"],
+                    description=candidate["description"],
+                    parameters=candidate["parameters"],
+                    parent=current_node,
+                )
+                functionality_nodes.append(new_node)
+                print(f"  Validated functionality: {candidate['name']}")
+            elif i < len(candidates):
+                print(
+                    f"  Rejected candidate: {candidates[i]['name']} - Not a true functionality"
+                )
 
     return functionality_nodes
 
 
 def is_duplicate_functionality(
-    node: FunctionalityNode, existing_nodes: List[FunctionalityNode]
+    node: FunctionalityNode, existing_nodes: List[FunctionalityNode], llm=None
 ) -> bool:
     """
     Check if a node represents functionality that's already captured in existing nodes.
-
-    This uses semantic similarity rather than exact name matching.
+    Uses both exact matching and semantic similarity checking.
     """
+    # First do basic checks
     for existing in existing_nodes:
-        # For now check if description or name are the same
+        # Check for exact matches
         if (
-            existing.description.lower() == node.description.lower()
-            or existing.name.lower() == node.name.lower()
+            existing.name.lower() == node.name.lower()
+            or existing.description.lower() == node.description.lower()
         ):
             return True
 
-        # TODO: Ask LLM for similarity check
+    # If we have an LLM, use it for more sophisticated checks
+    if llm and existing_nodes:
+        # Only check the first 5 nodes to avoid too many API calls
+        nodes_to_check = existing_nodes[:5]
+
+        # Create descriptions of existing nodes
+        existing_descriptions = [
+            f"Name: {n.name}, Description: {n.description}" for n in nodes_to_check
+        ]
+
+        duplicate_check_prompt = f"""
+        Determine if the new functionality is semantically equivalent to any existing functionality.
+
+        NEW FUNCTIONALITY:
+        Name: {node.name}
+        Description: {node.description}
+
+        EXISTING FUNCTIONALITIES:
+        {json.dumps(existing_descriptions, indent=2)}
+
+        A functionality is a duplicate if it represents the SAME ACTION/CAPABILITY, even if described differently.
+
+        Respond with ONLY "DUPLICATE" or "UNIQUE" followed by a brief explanation.
+        """
+
+        response = llm.invoke(duplicate_check_prompt)
+        result = response.content.strip().upper()
+
+        if "DUPLICATE" in result:
+            return True
 
     return False
+
+
+def validate_parent_child_relationship(parent_node, child_node, llm) -> bool:
+    """
+    Validate if a child node is truly a sub-functionality of a parent node.
+    Uses strict criteria to prevent incorrect hierarchical relationships.
+
+    Returns True if the relationship is valid, False otherwise.
+    """
+    if not parent_node:
+        return True  # No parent means it's a root node - always valid
+
+    validation_prompt = f"""
+    Evaluate if the second functionality is TRULY a direct SUB-FUNCTIONALITY of the first functionality.
+    Be EXTREMELY STRICT in your evaluation and prefer to reject the relationship if there's any doubt.
+
+    PARENT FUNCTIONALITY:
+    Name: {parent_node.name}
+    Description: {parent_node.description}
+
+    POTENTIAL SUB-FUNCTIONALITY:
+    Name: {child_node.name}
+    Description: {child_node.description}
+
+    A TRUE SUB-FUNCTIONALITY MUST satisfy at least TWO of these criteria:
+    1. It CANNOT exist or operate independently of the parent functionality
+    2. It is ALWAYS accessed through or after using the parent functionality
+    3. It directly implements a SPECIFIC PART of the parent functionality's purpose
+    4. It would make NO LOGICAL SENSE to place it elsewhere in the system
+
+    A functionality is DEFINITELY NOT a sub-functionality if ANY of these are true:
+    1. It could reasonably exist without the parent functionality
+    2. It has a different core purpose than the parent
+    3. It could just as easily be accessed from elsewhere
+    4. The relationship is merely topical but not functional
+    5. The two functionalities are simply related or complementary
+
+    EXAMPLE VALID RELATIONSHIP:
+    Parent: "manage_account" - "Allows users to manage their account settings and preferences"
+    Child: "change_password" - "Allows users to change their account password"
+    (Valid because changing password is specifically part of account management and cannot exist independently)
+
+    EXAMPLE INVALID RELATIONSHIP:
+    Parent: "get_weather_forecast" - "Provides weather forecasts for locations"
+    Child: "set_temperature_units" - "Changes temperature display between Celsius and Fahrenheit"
+    (Invalid because setting units is a preference that could exist independently of the weather feature)
+
+    Respond with EXACTLY "VALID" or "INVALID" followed by a brief explanation.
+    """
+
+    validation_response = llm.invoke(validation_prompt)
+    result = validation_response.content.strip().upper()
+
+    is_valid = result.startswith("VALID")
+
+    if is_valid:
+        print(
+            f"  ✓ Validated relationship: '{child_node.name}' is a proper sub-functionality of '{parent_node.name}'"
+        )
+    else:
+        print(
+            f"  ✗ Invalid relationship: '{child_node.name}' is not a true sub-functionality of '{parent_node.name}'"
+        )
+
+    return is_valid
 
 
 def run_exploration_session(
@@ -488,21 +551,36 @@ def run_exploration_session(
                 all_existing.extend(_get_all_nodes(root))
 
             if not is_duplicate_functionality(node, all_existing):
+                # Validate relationship if we have a current node
+                relationship_valid = True
                 if current_node:
+                    relationship_valid = validate_parent_child_relationship(
+                        current_node, node, explorer.llm
+                    )
+
+                if relationship_valid and current_node:
                     # Add as child to current node
                     current_node.add_child(node)
-                    print(f"  - '{node.name}' (child of '{current_node.name}')")
-                else:
+                    print(
+                        f"  - '{node.name}' (confirmed child of '{current_node.name}')"
+                    )
+                    # Add to pending nodes for exploration
+                    pending_nodes.append(node)
+                elif relationship_valid:  # Valid but no parent
                     # Add as root node
                     root_nodes.append(node)
                     print(f"  - '{node.name}' (root node)")
-
-                # Add to pending nodes for exploration
-                pending_nodes.append(node)
+                    # Add to pending nodes for exploration
+                    pending_nodes.append(node)
+                else:
+                    # Invalid relationship - add as root instead
+                    print(
+                        f"  - '{node.name}' (invalid child relationship, adding as root)"
+                    )
+                    root_nodes.append(node)
+                    pending_nodes.append(node)
             else:
                 print(f"  - Skipped duplicate functionality: '{node.name}'")
-    else:
-        print("No new functionalities discovered in this session.")
 
     # Mark current node as explored if we're exploring one
     if current_node:
