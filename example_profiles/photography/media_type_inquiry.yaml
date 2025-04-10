@@ -1,0 +1,85 @@
+test_name: Media Type Inquiry
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You are a user who wants to know more about the different media types the
+    gallery works with.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You have a strong interest in contemporary art and want to explore how different
+    media types can enhance the artistic experience.
+  - Your friend recently showcased a stunning video piece in a gallery, sparking your
+    curiosity about the role of video in modern artwork.
+  - You are considering commissioning a 3D rendering for an upcoming project and want
+    to understand the available features and options.
+  goals:
+  - Inquire about the different media types offered, including photography, video,
+    and 3D rendering
+  - Request a price estimate for a specific artwork in {{media_type}} with {{number_of_artworks}}
+  - Ask about special features available for {{media_type}} projects
+  - Find out if there are any unique services tailored for specific types of artworks
+    such as {{artwork_type}}
+  - artwork_type:
+      function: random()
+      type: string
+      data:
+      - painting
+      - sculpture
+      - installation
+      - digital art
+      - drawing
+  - number_of_artworks:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+  - media_type:
+      function: default()
+      type: string
+      data:
+      - photography
+      - video
+      - 3D rendering
+      - mixed media
+      - printmaking
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.`\nFor troubleshooting,
+    visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - media_types_available:
+      type: str
+      description: A list of different media types the gallery works with, such as
+        photography, video, and 3D rendering, as provided by the chatbot in response
+        to inquiries about available media.
+  - price_estimate:
+      type: float
+      description: The price estimate quoted by the chatbot for a specific artwork
+        based on user input regarding project specifics and media type.
+  - special_features:
+      type: str
+      description: Information about any special features available for specific types
+        of projects (e.g., lighting options, presentation formats) mentioned by the
+        chatbot in response to queries about specific details.
+  - unique_services:
+      type: str
+      description: Details of any unique services tailored specifically for certain
+        types of artworks, as presented by the chatbot when asked about specialized
+        offerings for particular projects.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question

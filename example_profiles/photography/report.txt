@@ -1,0 +1,134 @@
+=== CHATBOT FUNCTIONALITY ANALYSIS ===
+
+## FUNCTIONALITIES (Workflow Structure)
+- appointment_scheduling: The chatbot assists users in setting up appointments for photo sessions (Params: name, phone number, email, date)
+  - appointment_follow_up: The chatbot may follow up after the appointment scheduling process to confirm or finalize details
+- price_estimates_provision: The chatbot provides tailored price estimates based on user input regarding artwork media and project specifics (Params: type of media, number of artworks, type of artworks)
+  - price_estimate_follow_up: The chatbot may follow up after providing price estimates to clarify or confirm details related to the quote
+- information_querying: The chatbot answers questions related to shop services, opening hours, and location
+- customization_of_services: The chatbot allows clients to customize services or packages based on their specific needs and preferences (Params: media type, number of artworks, type of artworks)
+  - customization_follow_up: The chatbot may follow up with users to confirm customizations and preferences regarding services
+- request_for_special_features: Clients can inquire about special features available for their artworks and projects
+- multimedia_inquiry: The chatbot facilitates inquiries about multiple media types simultaneously (Params: details for each media type)
+
+## FUNCTIONALITIES (Raw JSON Structure)
+[
+  {
+    "name": "appointment_scheduling",
+    "description": "The chatbot assists users in setting up appointments for photo sessions",
+    "parameters": [
+      {
+        "name": "name"
+      },
+      {
+        "name": "phone number"
+      },
+      {
+        "name": "email"
+      },
+      {
+        "name": "date"
+      }
+    ],
+    "parent_names": [],
+    "children": [
+      {
+        "name": "appointment_follow_up",
+        "description": "The chatbot may follow up after the appointment scheduling process to confirm or finalize details",
+        "parameters": [],
+        "parent_names": [
+          "appointment_scheduling"
+        ],
+        "children": []
+      }
+    ]
+  },
+  {
+    "name": "price_estimates_provision",
+    "description": "The chatbot provides tailored price estimates based on user input regarding artwork media and project specifics",
+    "parameters": [
+      {
+        "name": "type of media"
+      },
+      {
+        "name": "number of artworks"
+      },
+      {
+        "name": "type of artworks"
+      }
+    ],
+    "parent_names": [],
+    "children": [
+      {
+        "name": "price_estimate_follow_up",
+        "description": "The chatbot may follow up after providing price estimates to clarify or confirm details related to the quote",
+        "parameters": [],
+        "parent_names": [
+          "price_estimates_provision"
+        ],
+        "children": []
+      }
+    ]
+  },
+  {
+    "name": "information_querying",
+    "description": "The chatbot answers questions related to shop services, opening hours, and location",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "customization_of_services",
+    "description": "The chatbot allows clients to customize services or packages based on their specific needs and preferences",
+    "parameters": [
+      {
+        "name": "media type"
+      },
+      {
+        "name": "number of artworks"
+      },
+      {
+        "name": "type of artworks"
+      }
+    ],
+    "parent_names": [],
+    "children": [
+      {
+        "name": "customization_follow_up",
+        "description": "The chatbot may follow up with users to confirm customizations and preferences regarding services",
+        "parameters": [],
+        "parent_names": [
+          "customization_of_services"
+        ],
+        "children": []
+      }
+    ]
+  },
+  {
+    "name": "request_for_special_features",
+    "description": "Clients can inquire about special features available for their artworks and projects",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "multimedia_inquiry",
+    "description": "The chatbot facilitates inquiries about multiple media types simultaneously",
+    "parameters": [
+      {
+        "name": "details for each media type"
+      }
+    ],
+    "parent_names": [],
+    "children": []
+  }
+]
+## LIMITATIONS
+1. The chatbot may struggle with complex or multi-part questions, requiring simplification for better understanding.
+2. Specific customizations may not always be feasible due to resource constraints or complexity involved in the requests.
+
+## SUPPORTED LANGUAGES
+1. English
+
+## FALLBACK MESSAGE
+"I'm sorry, I can help you to set an appointment for a session, provide price estimates, and answer on issues related to our shop.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE "

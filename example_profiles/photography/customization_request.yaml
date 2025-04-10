@@ -1,0 +1,72 @@
+test_name: Customization Request
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You are a client wanting to customize a service or package for your upcoming
+    art project.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You are planning an art exhibition that features a mix of digital installations
+    and traditional canvas artworks.
+  - You have previously used the chatbot for a similar project and found it helpful
+    in getting tailored recommendations.
+  - You want to ensure the customization includes eco-friendly materials for the artworks
+    to align with your project's sustainable theme.
+  goals:
+  - Request a customized price estimate for {{number}} artworks in {{media_type}}
+  - Inquire about specific special features available for {{media_type}} artworks
+  - Ask how to combine services for a project involving {{media_type}} and {{number}}
+    artworks
+  - number:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+  - media_type:
+      function: random()
+      type: string
+      data:
+      - painting
+      - sculpture
+      - digital art
+      - photography
+      - mixed media
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.`\nFor troubleshooting,
+    visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the customized service
+        or package based on the user's specified artwork details.
+  - special_features:
+      type: str
+      description: A description of the specific special features available for the
+        artworks as provided by the chatbot in its response.
+  - service_combination_options:
+      type: str
+      description: Details on how the chatbot suggests combining services for the
+        project that involves multiple types of artworks, reflecting the user's request.
+  - appointment_availability:
+      type: time
+      description: The proposed time slots for appointments offered by the chatbot
+        to the user for photo sessions related to their art project.
+conversation:
+  number: 4
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - long phrases
+  - change your mind

@@ -1,0 +1,51 @@
+test_name: Rephrase a Question for Clarity
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who needs clarification on the information provided
+    by the chatbot and wants to rephrase questions.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You recently discovered a new pizza place and are curious about their menu offerings.
+  - You've heard a friend mention unique customization options, including gluten-free
+    crusts and vegan toppings, and want to explore these further.
+  - You noticed an advertisement about exciting deals for the weekend, so you're interested
+    in finding out more about any current promotions.
+  goals:
+  - Ask about the types of pizzas available
+  - Inquire about customization options for pizzas, including crust types and toppings
+  - Request information on any current promotions or special deals
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. Can you rephrase?`"'
+  output:
+  - types_of_pizzas:
+      type: str
+      description: A list of the different types of pizzas available, as provided
+        by the chatbot in response to inquiries about the pizza menu.
+  - customization_options:
+      type: str
+      description: Detailed information about available customization options for
+        pizzas, including crust types and toppings, as explained by the chatbot when
+        discussing how users can customize their orders.
+  - current_promotions:
+      type: str
+      description: Information on any ongoing promotions or special deals related
+        to pizza orders, shared by the chatbot when asked about specials.
+  - drink_options:
+      type: str
+      description: A summary of drink options that can be ordered alongside pizzas,
+        provided by the chatbot when discussing available menu items.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - single question

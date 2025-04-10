@@ -1,0 +1,80 @@
+test_name: Customize a Pizza
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to customize a pizza order with specific
+    crusts and toppings.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You have a strong preference for a thin crust pizza because you enjoy a crispy
+    texture rather than a doughy one.
+  - You love spicy flavors and want to add jalapeños and pepperoni as toppings to
+    your pizza.
+  - You've previously ordered a custom pizza and were disappointed with the price,
+    so you're eager to know the total cost before finalizing your order.
+  goals:
+  - Customize a pizza with {{crust_type}} crust and {{toppings}}
+  - Specify additional toppings such as {{extra_topping}} for my pizza
+  - Ask for the total price of my custom pizza with {{crust_type}} and {{toppings}}
+  - crust_type:
+      function: random()
+      type: string
+      data:
+      - Thin
+      - Thick
+      - Stuffed
+      - Gluten-free
+      - Cauliflower
+  - extra_topping:
+      function: another(2)
+      type: string
+      data:
+      - Pepperoni
+      - Mushrooms
+      - Olives
+      - Onions
+      - Green Peppers
+      - Jalapeños
+  - toppings:
+      function: forward()
+      type: string
+      data:
+      - Cheese
+      - Tomato Sauce
+      - Basil
+      - Garlic
+      - Spinach
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. Can you rephrase?`"'
+  output:
+  - selected_crust:
+      type: str
+      description: The type of crust selected by the user for their custom pizza as
+        stated by the chatbot in the response.
+  - selected_toppings:
+      type: str
+      description: The specific toppings chosen by the user for their pizza, as confirmed
+        by the chatbot in its response.
+  - total_cost:
+      type: float
+      description: The final price given by the chatbot for the customized pizza order,
+        including any selected crust and toppings.
+  - estimated_preparation_time:
+      type: time
+      description: The estimated time provided by the chatbot for how long it will
+        take to prepare the customized pizza order.
+conversation:
+  number: 4
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - change your mind
+  - single question

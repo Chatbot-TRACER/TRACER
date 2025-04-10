@@ -1,0 +1,65 @@
+test_name: Pregunta sobre soporte técnico
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un usuario que enfrenta problemas técnicos y desea saber si el CAU puede
+    ayudar a resolverlos.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Tu computadora no se conecta a Internet desde esta mañana y necesitas resolverlo
+    para cumplir con un proyecto urgente.
+  - Te han comentado que el CAU tiene un servicio de atención al cliente que es bastante
+    eficiente.
+  - Estás buscando información sobre el horario de atención del CAU porque planeas
+    llamar después de tu almuerzo.
+  goals:
+  - Solicitar ayuda para resolver un problema técnico específico relacionado con {{tipo_de_problema}}
+  - Preguntar sobre el horario de atención del Centro de Atención a Usuarios
+  - Consultar los métodos de contacto disponibles para acceder al soporte técnico
+  - tipo_de_problema:
+      function: random()
+      type: string
+      data:
+      - problemas de conexión a Internet
+      - fallos en la instalación de software
+      - errores de hardware
+      - problemas de configuración
+      - fallas en la actualización del sistema
+chatbot:
+  is_starter: false
+  fallback: '''<p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n'''
+  output:
+  - horarios_atencion_cau:
+      type: str
+      description: Información sobre los horarios de atención del Centro de Atención
+        a Usuarios proporcionada por el chatbot.
+  - metodos_contacto_cau:
+      type: str
+      description: Detalles sobre los métodos de contacto disponibles para acceder
+        al soporte técnico que el chatbot comparte, como correo electrónico, teléfono
+        o atención presencial.
+  - problema_resuelto:
+      type: str
+      description: La descripción del problema técnico específico relacionado con
+        el que el chatbot indica que puede ayudar al usuario.
+  - habilidades_chatbot:
+      type: str
+      description: Descripción de las habilidades y capacidades del chatbot para ayudar
+        a los usuarios con problemas técnicos, según lo indicado en las respuestas
+        del chatbot.
+conversation:
+  number: 3
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

@@ -1,0 +1,57 @@
+test_name: Inquire About Customization Options
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user seeking detailed information on how to customize
+    your pizza, focusing on toppings and crust options.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You love experimenting with different flavors and want to create a unique pizza
+    experience for an upcoming dinner party.
+  - You recently heard about a new pizzeria in town that allows extensive customization,
+    which has piqued your interest.
+  - You have dietary preferences that require you to choose toppings carefully, making
+    customization essential for your meal.
+  goals:
+  - Inquire about available crust options for my pizza
+  - Ask for a list of toppings I can choose from
+  - Request guidance on how to customize my pizza's ingredients
+  - Check if there are any combination options for crusts and toppings
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. Can you rephrase?`"'
+  output:
+  - available_crust_options:
+      type: str
+      description: The types of crust options that the chatbot provides for customizing
+        a pizza. This can be found in the chatbot's response when discussing customization
+        features related to crusts.
+  - available_toppings:
+      type: str
+      description: A list of toppings available for customization of the pizza as
+        provided by the chatbot. This output can be extracted from the chatbot's response
+        when detailing available toppings for user selection.
+  - customization_guidance:
+      type: str
+      description: Instructions or tips offered by the chatbot on how to effectively
+        customize the pizza's ingredients. This information is typically included
+        in the chatbot's messages when addressing the user's inquiries about customization.
+  - combination_options:
+      type: str
+      description: Information about any combination options available for crusts
+        and toppings, as provided by the chatbot. This detail can be found in the
+        chatbot's response when it discusses potential combinations for customization.
+conversation:
+  number: 4
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - long phrases
+  - change your mind

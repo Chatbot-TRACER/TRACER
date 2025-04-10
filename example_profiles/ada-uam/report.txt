@@ -1,0 +1,143 @@
+=== CHATBOT FUNCTIONALITY ANALYSIS ===
+
+## FUNCTIONALITIES (Workflow Structure)
+- consulta_de_idiomas: El chatbot puede responder en español
+  - consulta_sobre_habilidades: El chatbot puede describir las habilidades que tiene para ayudar a los usuarios
+    - respuesta_a_preguntas: El chatbot responde preguntas sobre el Centro de Atención a Usuarios de Tecnologías de la Información
+      - proporcionar_información_de_contacto: El chatbot puede dar detalles sobre cómo contactar con el CAU por correo electrónico, teléfono o presencialmente
+        - información_sobre_horarios: El chatbot proporciona información sobre los horarios de atención del CAU
+    - acceso_al_catálogo_de_servicios: El chatbot puede ofrecer acceso al catálogo de servicios ofrecidos por el CAU
+  - respuesta_a_preguntas: El chatbot responde preguntas sobre el Centro de Atención a Usuarios de Tecnologías de la Información
+    - proporcionar_información_de_contacto: El chatbot puede dar detalles sobre cómo contactar con el CAU por correo electrónico, teléfono o presencialmente
+      - información_sobre_horarios: El chatbot proporciona información sobre los horarios de atención del CAU
+- asistencia_técnica: El chatbot brinda información relacionada con el soporte técnico y problemas en el uso de servicios
+  - uso_de_pc_virtual: El chatbot proporciona instrucciones sobre cómo utilizar el servicio de PC Virtual
+    - almacenamiento_de_datos_en_pc_virtual: El chatbot informa sobre cómo almacenar datos en el PC Virtual y advierte sobre la destrucción de datos al cerrar sesión
+
+## FUNCTIONALITIES (Raw JSON Structure)
+[
+  {
+    "name": "consulta_de_idiomas",
+    "description": "El chatbot puede responder en español",
+    "parameters": [],
+    "parent_names": [],
+    "children": [
+      {
+        "name": "consulta_sobre_habilidades",
+        "description": "El chatbot puede describir las habilidades que tiene para ayudar a los usuarios",
+        "parameters": [],
+        "parent_names": [
+          "consulta_de_idiomas"
+        ],
+        "children": [
+          {
+            "name": "respuesta_a_preguntas",
+            "description": "El chatbot responde preguntas sobre el Centro de Atención a Usuarios de Tecnologías de la Información",
+            "parameters": [],
+            "parent_names": [
+              "consulta_de_idiomas",
+              "consulta_sobre_habilidades"
+            ],
+            "children": [
+              {
+                "name": "proporcionar_información_de_contacto",
+                "description": "El chatbot puede dar detalles sobre cómo contactar con el CAU por correo electrónico, teléfono o presencialmente",
+                "parameters": [],
+                "parent_names": [
+                  "respuesta_a_preguntas"
+                ],
+                "children": [
+                  {
+                    "name": "información_sobre_horarios",
+                    "description": "El chatbot proporciona información sobre los horarios de atención del CAU",
+                    "parameters": [],
+                    "parent_names": [
+                      "proporcionar_información_de_contacto"
+                    ],
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "acceso_al_catálogo_de_servicios",
+            "description": "El chatbot puede ofrecer acceso al catálogo de servicios ofrecidos por el CAU",
+            "parameters": [],
+            "parent_names": [
+              "consulta_sobre_habilidades"
+            ],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "respuesta_a_preguntas",
+        "description": "El chatbot responde preguntas sobre el Centro de Atención a Usuarios de Tecnologías de la Información",
+        "parameters": [],
+        "parent_names": [
+          "consulta_de_idiomas",
+          "consulta_sobre_habilidades"
+        ],
+        "children": [
+          {
+            "name": "proporcionar_información_de_contacto",
+            "description": "El chatbot puede dar detalles sobre cómo contactar con el CAU por correo electrónico, teléfono o presencialmente",
+            "parameters": [],
+            "parent_names": [
+              "respuesta_a_preguntas"
+            ],
+            "children": [
+              {
+                "name": "información_sobre_horarios",
+                "description": "El chatbot proporciona información sobre los horarios de atención del CAU",
+                "parameters": [],
+                "parent_names": [
+                  "proporcionar_información_de_contacto"
+                ],
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "asistencia_técnica",
+    "description": "El chatbot brinda información relacionada con el soporte técnico y problemas en el uso de servicios",
+    "parameters": [],
+    "parent_names": [],
+    "children": [
+      {
+        "name": "uso_de_pc_virtual",
+        "description": "El chatbot proporciona instrucciones sobre cómo utilizar el servicio de PC Virtual",
+        "parameters": [],
+        "parent_names": [
+          "asistencia_técnica"
+        ],
+        "children": [
+          {
+            "name": "almacenamiento_de_datos_en_pc_virtual",
+            "description": "El chatbot informa sobre cómo almacenar datos en el PC Virtual y advierte sobre la destrucción de datos al cerrar sesión",
+            "parameters": [],
+            "parent_names": [
+              "uso_de_pc_virtual"
+            ],
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+]
+## LIMITATIONS
+1. El chatbot parece tener dificultad para manejar múltiples preguntas a la vez.
+2. Solo se encuentra disponible en español, limitando la accesibilidad para hablantes de otros idiomas.
+3. La información parece estar restringida a aspectos relacionados con el Centro de Atención a Usuarios y servicios de Tecnologías de la Información, lo que puede limitar su utilidad en otros contextos.
+
+## SUPPORTED LANGUAGES
+1. Spanish
+
+## FALLBACK MESSAGE
+'<p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n'

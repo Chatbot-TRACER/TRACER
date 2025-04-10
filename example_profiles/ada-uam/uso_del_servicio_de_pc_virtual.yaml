@@ -1,0 +1,58 @@
+test_name: Uso del servicio de PC Virtual
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un investigador que necesita acceder al servicio de PC Virtual para realizar
+    tu trabajo.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has realizado investigaciones previas sobre este servicio y conoces su importancia
+    para tu trabajo.
+  - Necesitas acceder a PC Virtual urgentemente porque tu plazo de entrega es en dos
+    días.
+  - Un compañero te comentó que había problemas para guardar datos en sesiones anteriores,
+    lo que te preocupa.
+  goals:
+  - Solicitar información sobre cómo acceder al servicio de PC Virtual
+  - Preguntar si es necesario instalar algún programa para utilizar PC Virtual
+  - Buscar detalles sobre cómo almacenar datos en PC Virtual
+  - Consultar qué hacer si se cierra la sesión sin guardar datos
+chatbot:
+  is_starter: false
+  fallback: '''<p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n'''
+  output:
+  - acceso_servicio_pc_virtual:
+      type: str
+      description: Información sobre el proceso para acceder al servicio de PC Virtual,
+        que el chatbot proporciona en respuesta a consultas sobre cómo iniciar la
+        sesión.
+  - necesidad_instalacion_programa:
+      type: str
+      description: Detalles mencionados por el chatbot sobre si se requiere instalar
+        algún programa específico para utilizar el servicio de PC Virtual.
+  - almacenamiento_datos_pc_virtual:
+      type: str
+      description: Instrucciones o consejos ofrecidos por el chatbot sobre cómo almacenar
+        datos dentro del servicio de PC Virtual, incluidos métodos o ubicaciones recomendadas.
+  - procedimiento_sesion_cerrada:
+      type: str
+      description: Orientaciones proporcionadas por el chatbot sobre qué hacer si
+        la sesión se cierra sin haber guardado datos, incluyendo posibles soluciones
+        o pasos a seguir.
+conversation:
+  number: 4
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question
+  - long phrases

@@ -1,0 +1,90 @@
+test_name: Order Drinks with Pizza
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to order drinks along with a pizza from
+    Fast Pizza.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You have already decided on ordering a large pepperoni pizza with extra cheese.
+  - You've heard from friends that Fast Pizza has the best selection of craft beers
+    to pair with pizza.
+  - You’re feeling hungry and want the food delivered as quickly as possible to enjoy
+    a movie night.
+  goals:
+  - Order a {{size}} pizza with {{toppings}}
+  - Select {{quantity}} of {{drink}} to add to my pizza order
+  - Ask about the estimated delivery time for my order
+  - size:
+      function: random()
+      type: string
+      data:
+      - Small
+      - Medium
+      - Large
+      - Extra Large
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+  - toppings:
+      function: another(3)
+      type: string
+      data:
+      - Pepperoni
+      - Mushrooms
+      - Onions
+      - Sausage
+      - Bell Peppers
+      - Extra Cheese
+      - Black Olives
+      - Pineapple
+  - drink:
+      function: random()
+      type: string
+      data:
+      - Coke
+      - Sprite
+      - Lemonade
+      - Iced Tea
+      - Water
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. Can you rephrase?`"'
+  output:
+  - pizza_type:
+      type: str
+      description: This represents the specific type of pizza selected by the user,
+        such as "Margherita," "Pepperoni," or any custom pizza mentioned by the chatbot
+        in response.
+  - drink_selection:
+      type: str
+      description: This refers to the specific drinks that are recommended or added
+        to the user's order, such as "Coke," "Sprite," or any other beverages mentioned
+        by the chatbot during the conversation.
+  - estimated_delivery_time:
+      type: time
+      description: This indicates the estimated time provided by the chatbot for the
+        delivery of the pizza and drinks order, typically expressed in hours and minutes.
+  - total_cost:
+      type: float
+      description: This is the final price quoted by the chatbot for the total order,
+        including the selected pizza and drinks, which should be clear in the chatbot's
+        response.
+conversation:
+  number: 4
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - change your mind
+  - single question

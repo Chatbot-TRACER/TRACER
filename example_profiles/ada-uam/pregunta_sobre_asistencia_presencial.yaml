@@ -1,0 +1,56 @@
+test_name: Pregunta sobre asistencia presencial
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un estudiante nuevo en la universidad y quieres saber dónde se encuentra
+    el Centro de Atención a Usuarios para recibir asistencia presencial.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Eres nuevo en la universidad y te sientes un poco perdido en el campus, especialmente
+    con todos los recursos disponibles.
+  - Has escuchado de otros estudiantes que el Centro de Atención a Usuarios es muy
+    útil para resolver dudas.
+  - Tienes una clase importante pronto y necesitas esa información para planificar
+    tu día.
+  goals:
+  - Preguntar dónde se encuentra el Centro de Atención a Usuarios para recibir asistencia
+    presencial
+  - Solicitar información sobre el horario de atención del Centro de Atención a Usuarios
+  - Consultar los medios de contacto disponibles para el Centro de Atención a Usuarios
+chatbot:
+  is_starter: false
+  fallback: '''<p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n'''
+  output:
+  - ubicacion_cau:
+      type: str
+      description: La dirección del Centro de Atención a Usuarios, que el chatbot
+        proporciona al responder sobre su ubicación.
+  - horario_atencion_cau:
+      type: str
+      description: Los horarios de atención del Centro de Atención a Usuarios, que
+        el chatbot menciona al solicitar esa información.
+  - medios_contacto_cau:
+      type: str
+      description: La lista de medios de contacto disponibles, como correo electrónico
+        y teléfono, que el chatbot ofrece al consultar sobre cómo contactar el CAU.
+  - descripcion_servicios_cau:
+      type: str
+      description: Una breve descripción de los servicios que ofrece el Centro de
+        Atención a Usuarios, que el chatbot comparte al hablar sobre sus habilidades
+        para ayudar a los usuarios.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question
