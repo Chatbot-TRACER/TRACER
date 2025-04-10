@@ -1,0 +1,68 @@
+test_name: Asesoramiento para solicitar direcciones funcionales
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Tienes que actuar como un usuario que necesita información sobre cómo solicitar
+    direcciones funcionales en el nuevo sistema de correo.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has estado recibiendo correos electrónicos de clientes que no pueden enviar consultas
+    debido a direcciones incorrectas en el sistema antiguo.
+  - Te han informado que las direcciones funcionales son clave para mejorar la eficiencia
+    en la gestión de correos electrónicos dentro del equipo.
+  - Tienes una reunión programada para el viernes donde necesitas presentar el nuevo
+    proceso de gestión del correo, y quieres asegurarte de que todo esté correcto.
+  goals:
+  - Solicitar una dirección funcional para {{uso_descripcion}}
+  - Pedir información sobre los requisitos necesarios para solicitar direcciones funcionales
+  - Confirmar si el formato de la dirección funcional cumple con las recomendaciones
+  - uso_descripcion:
+      function: random()
+      type: string
+      data:
+      - soporte técnico
+      - gestión de proyectos
+      - atención al cliente
+      - ventas
+      - administración
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - requisitos_solicitud:
+      type: str
+      description: Información sobre los requisitos necesarios para solicitar direcciones
+        funcionales, que el chatbot proporciona al responder a la consulta del usuario
+        sobre este tema.
+  - formato_direccion_funcional:
+      type: str
+      description: Confirmación de si el formato de la dirección funcional cumple
+        con las recomendaciones, que se menciona en respuesta a la pregunta específica
+        del usuario.
+  - contacto_cau:
+      type: str
+      description: Detalles sobre cómo contactar al Centro de Atención a Usuarios
+        (CAU) de Tecnologías de la Información, que el chatbot incluye al brindar
+        asistencia al usuario.
+  - horarios_atencion_cau:
+      type: str
+      description: Información sobre los horarios de atención del CAU, tanto telefónica
+        como presencial, que el chatbot proporciona al usuario al consultar sobre
+        la disponibilidad de asistencia.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question
+  - long phrases

@@ -1,0 +1,63 @@
+test_name: Consulta sobre la disponibilidad del CAU en días festivos
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Tienes que actuar como un usuario que desea saber si el CAU estará disponible
+    en días festivos para planificar una visita o llamada.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Tienes un viaje planeado el próximo fin de semana y necesitas saber si podrás
+    acceder al CAU durante los días festivos.
+  - Tu última experiencia con el CAU fue positiva, pero no te dieron información clara
+    sobre su disponibilidad en días festivos.
+  - Has escuchado de otros usuarios que a veces los horarios cambian en fechas especiales,
+    por lo que quieres estar seguro antes de ir.
+  goals:
+  - Preguntar si el CAU estará disponible para atención el {{fecha_festiva}}
+  - Consultar los horarios de atención del CAU en días festivos
+  - Solicitar información sobre los servicios que se pueden gestionar en el CAU durante
+    días festivos
+  - fecha_festiva:
+      function: random()
+      type: string
+      data:
+      - 1 de enero
+      - 15 de agosto
+      - 12 de octubre
+      - 25 de diciembre
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - disponibilidad_caum:
+      type: str
+      description: Información sobre si el CAU estará disponible en días festivos,
+        extraída de la respuesta del chatbot.
+  - horarios_atencion_caum:
+      type: str
+      description: Los horarios de atención del CAU en días festivos que el chatbot
+        proporciona al usuario.
+  - servicios_disponibles_caum:
+      type: str
+      description: Detalles sobre los servicios que se pueden gestionar en el CAU
+        durante días festivos, según la respuesta del chatbot.
+  - contacto_caum:
+      type: str
+      description: Información sobre cómo contactar al Centro de Atención a Usuarios
+        (CAU), incluida en la respuesta del chatbot.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

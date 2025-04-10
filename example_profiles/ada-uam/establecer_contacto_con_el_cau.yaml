@@ -1,0 +1,63 @@
+test_name: Establecer contacto con el CAU
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúa como un usuario que necesita contactar al CAU para realizar una consulta
+    urgente y quiere saber las formas adecuadas de contacto.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Tienes una consulta sobre un problema técnico que está afectando tu trabajo y
+    no puedes esperar mucho tiempo para resolverlo.
+  - Has escuchado que el CAU tiene un catálogo de servicios en línea, pero no estás
+    seguro de cómo navegarlo.
+  - Necesitas saber los horarios de atención del CAU porque planeas contactarlos durante
+    tu hora de descanso.
+  goals:
+  - Contactar al CAU por {{medio_de_contacto}} para resolver un problema urgente
+  - Preguntar sobre los horarios de atención del CAU
+  - Solicitar información sobre los servicios específicos que ofrece el CAU
+  - Pedir ayuda para entender cómo acceder al catálogo de servicios del CAU
+  - medio_de_contacto:
+      function: another(3)
+      type: string
+      data:
+      - teléfono
+      - correo electrónico
+      - chat en línea
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - formas_de_contacto:
+      type: str
+      description: Información sobre las diferentes maneras en que el usuario puede
+        contactar al CAU, ya sea telefónicamente, por correo electrónico o presencialmente,
+        tal como lo proporciona el chatbot.
+  - horarios_atencion:
+      type: str
+      description: Detalles sobre los horarios de atención del CAU, tanto para consultas
+        telefónicas como presenciales, que el chatbot menciona en sus respuestas.
+  - servicios_ofrecidos:
+      type: str
+      description: Enumeración o descripción de los servicios específicos que el CAU
+        ofrece, según lo detallado por el chatbot en la conversación.
+  - acceso_catalogo:
+      type: str
+      description: Instrucciones sobre cómo acceder al catálogo de servicios del CAU,
+        incluyendo cualquier detalle que el chatbot pueda proporcionar sobre el proceso.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - single question
