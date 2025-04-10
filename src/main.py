@@ -3,26 +3,139 @@ import yaml
 import os
 import re
 import json
+import graphviz
 from chatbot_explorer.cli import parse_arguments
 from chatbot_explorer.explorer import ChatbotExplorer
 from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
 from chatbot_explorer.session import run_exploration_session
 from chatbot_explorer.functionality_node import FunctionalityNode
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Set
 
 
 def print_structured_functionalities(f, nodes: List[Dict[str, Any]], indent: str = ""):
     """
     Helper function to recursively print the structured functionalities.
+    Handles variations in the 'parameters' field type.
     """
     for node in nodes:
-        param_str_list = [p.get("name", "?") for p in node.get("parameters", [])]
-        param_str = f" (Params: {', '.join(param_str_list)})" if param_str_list else ""
+        param_str = ""
+        params_data = node.get("parameters", [])
+
+        if isinstance(params_data, list):
+            # Process as list of dicts
+            param_str_list = []
+            for p in params_data:
+                if isinstance(p, dict):  # Ensure item in list is a dict
+                    param_str_list.append(p.get("name", "?"))
+                elif isinstance(p, str):  # Handle case where list contains strings
+                    param_str_list.append(p)  # Just use the string
+            if param_str_list:
+                param_str = f" (Params: {', '.join(param_str_list)})"
+        elif isinstance(params_data, str) and params_data.lower() not in ["none", ""]:
+            # Handle case where parameters is just a string
+            param_str = f" (Params: {params_data})"
+
         f.write(
             f"{indent}- {node.get('name', 'N/A')}: {node.get('description', 'N/A')}{param_str}\n"
         )
         if node.get("children"):
-            print_structured_functionalities(f, node["children"], indent + "  ")
+            # Ensure children is also a list before recursing
+            children_data = node.get("children", [])
+            if isinstance(children_data, list):
+                print_structured_functionalities(f, children_data, indent + "  ")
+            else:
+                f.write(
+                    f"{indent}  WARN: Expected 'children' to be a list, found {type(children_data)}\n"
+                )
+
+
+def generate_graph_image(
+    structured_data: List[Dict[str, Any]], output_filename_base: str
+):
+    """
+    Generates a PNG image visualizing the workflow graph using Graphviz.
+
+    Args:
+        structured_data: List of root node dictionaries representing the workflow.
+        output_filename_base: The base path and filename for the output image (e.g., 'output_dir/workflow').
+                              '.png' will be added automatically by render.
+    """
+    print(f"\n--- Generating workflow graph image ({output_filename_base}.png) ---")
+    if not structured_data:
+        print("   Skipping graph generation: No structured data provided.")
+        return
+
+    # Initialize a directed graph
+    dot = graphviz.Digraph(comment="Chatbot Workflow", format="png")
+    # LR -> Left to Right, can be changed to TB for Top to Bottom
+    dot.attr(rankdir="LR")
+    dot.attr(
+        "node", shape="box", style="filled", fillcolor="lightblue"
+    )  # Default node style
+
+    processed_nodes: Set[str] = set()
+
+    def add_nodes_edges(graph: graphviz.Digraph, node_dict: Dict[str, Any]):
+        """Recursive helper to add nodes and edges."""
+        node_name = node_dict.get("name")
+        if not node_name:
+            return
+
+        if node_name not in processed_nodes:
+            params_label = ""
+            params_data = node_dict.get("parameters", [])
+
+            if isinstance(params_data, list):
+                param_str_list = []
+                for p in params_data:
+                    if isinstance(p, dict):
+                        param_str_list.append(p.get("name", "?"))
+                    elif isinstance(p, str):
+                        param_str_list.append(p)
+                if param_str_list:
+                    params_label = f"\nParams: {', '.join(param_str_list)}"
+            elif isinstance(params_data, str) and params_data.lower() not in [
+                "none",
+                "",
+            ]:
+                params_label = f"\nParams: {params_data}"
+
+            wrapped_name = (
+                node_name.replace("_", " ").replace(" ", "\n")
+                if len(node_name) > 20
+                else node_name.replace("_", " ")
+            )
+            label = f"{wrapped_name}{params_label}"
+
+            graph.node(node_name, label=label)
+            processed_nodes.add(node_name)
+
+        # Process children (ensure children is a list)
+        children = node_dict.get("children", [])
+        if isinstance(children, list):
+            for child_dict in children:
+                child_name = child_dict.get("name")
+                if child_name:
+                    add_nodes_edges(graph, child_dict)
+                    graph.edge(node_name, child_name)
+        else:
+            print(
+                f"WARN in graph: Expected 'children' for node '{node_name}' to be a list, found {type(children)}"
+            )
+
+    # Process all root nodes
+    for root_node_dict in structured_data:
+        add_nodes_edges(dot, root_node_dict)
+
+    try:
+        dot.render(output_filename_base, cleanup=True, view=False)
+        print(f"   Successfully generated graph image: {output_filename_base}.png")
+    except graphviz.backend.execute.ExecutableNotFound:
+        print("\n   ERROR: Graphviz executable not found.")
+        print("   Please install Graphviz (see https://graphviz.org/download/)")
+        print("   and ensure it's in your system's PATH.")
+    except Exception as e:
+        print(f"\n   ERROR: Failed to generate graph image: {e}")
 
 
 def write_report(output_dir, result, supported_languages, fallback_message):
@@ -217,6 +330,7 @@ def main():
 
     print(f"\nAll profiles saved to: {output_dir}")
 
+    # --- Call write_report ---
     print("\n--- Writing report to disk ---")
     write_report(
         output_dir,
@@ -224,6 +338,20 @@ def main():
         supported_languages,
         fallback_message,
     )
+    print(f"   Report saved to: {os.path.join(output_dir, 'report.txt')}")
+
+    # --- Call generate_graph_image ---
+    structured_functionalities = result.get("discovered_functionalities", [])
+    if structured_functionalities:
+        # Define the output path for the graph image
+        graph_output_base = os.path.join(output_dir, "workflow_graph")
+        generate_graph_image(structured_functionalities, graph_output_base)
+    else:
+        print(
+            "\n--- Skipping graph generation: No structured functionalities found in results. ---"
+        )
+
+    print("\n--- Exploration and Analysis Complete ---")
 
 
 if __name__ == "__main__":
