@@ -53,30 +53,59 @@ def generate_graph_image(
     structured_data: List[Dict[str, Any]], output_filename_base: str
 ):
     """
-    Generates a PNG image visualizing the workflow graph using Graphviz.
+    Generates a visually appealing PNG image visualizing the workflow graph using Graphviz.
 
     Args:
         structured_data: List of root node dictionaries representing the workflow.
-        output_filename_base: The base path and filename for the output image (e.g., 'output_dir/workflow').
-                              '.png' will be added automatically by render.
+        output_filename_base: The base path and filename for the output image.
     """
     print(f"\n--- Generating workflow graph image ({output_filename_base}.png) ---")
     if not structured_data:
         print("   Skipping graph generation: No structured data provided.")
         return
 
-    # Initialize a directed graph
-    dot = graphviz.Digraph(comment="Chatbot Workflow", format="png")
-    # LR -> Left to Right, can be changed to TB for Top to Bottom
-    dot.attr(rankdir="LR")
+    # Initialize a directed graph with modern styling
+    dot = graphviz.Digraph(comment="Chatbot Workflow", format="png", engine="dot")
+
+    # Set global graph attributes for better aesthetics
     dot.attr(
-        "node", shape="box", style="filled", fillcolor="lightblue"
-    )  # Default node style
+        rankdir="LR",
+        bgcolor="#ffffff",
+        fontname="Helvetica",
+        fontsize="12",
+        pad="0.5",
+        nodesep="0.7",
+        ranksep="1.0",
+        splines="curved",
+        overlap="false",
+    )
+
+    # Set default node attributes
+    dot.attr(
+        "node",
+        shape="rectangle",
+        style="filled,rounded",
+        fillcolor="#e6f3ff:#c2e0ff",  # Gradient fill
+        gradientangle="270",
+        color="#4a86e8",
+        fontname="Helvetica",
+        fontsize="11",
+        margin="0.2,0.1",  # Horizontal,vertical margin
+        penwidth="1.5",
+    )
+
+    # Set default edge attributes
+    dot.attr(
+        "edge",
+        color="#4a86e8",
+        penwidth="1.2",
+        arrowsize="0.8",
+    )
 
     processed_nodes: Set[str] = set()
 
-    def add_nodes_edges(graph: graphviz.Digraph, node_dict: Dict[str, Any]):
-        """Recursive helper to add nodes and edges."""
+    def add_nodes_edges(graph: graphviz.Digraph, node_dict: Dict[str, Any], depth=0):
+        """Recursive helper to add nodes and edges with enhanced styling."""
         node_name = node_dict.get("name")
         if not node_name:
             return
@@ -85,6 +114,7 @@ def generate_graph_image(
             params_label = ""
             params_data = node_dict.get("parameters", [])
 
+            # Process parameters for display
             if isinstance(params_data, list):
                 param_str_list = []
                 for p in params_data:
@@ -100,28 +130,60 @@ def generate_graph_image(
             ]:
                 params_label = f"\nParams: {params_data}"
 
-            wrapped_name = (
-                node_name.replace("_", " ").replace(" ", "\n")
-                if len(node_name) > 20
-                else node_name.replace("_", " ")
-            )
-            label = f"{wrapped_name}{params_label}"
+            # Format node label
+            label = f"{node_name.replace('_', ' ')}{params_label}"
 
-            graph.node(node_name, label=label)
+            # Different color schemes based on node depth
+            color_schemes = {
+                0: {
+                    "fillcolor": "#e6f3ff:#c2e0ff",
+                    "color": "#4a86e8",
+                },  # Root nodes - blue
+                1: {
+                    "fillcolor": "#e9f7ed:#c5e9d3",
+                    "color": "#43a047",
+                },  # First level - green
+                2: {
+                    "fillcolor": "#fef8e3:#faecc5",
+                    "color": "#f6b26b",
+                },  # Second level - orange
+                3: {
+                    "fillcolor": "#f9e4e8:#f4c7d0",
+                    "color": "#cc4125",
+                },  # Third level - red
+            }
+
+            # Cap at 3 levels of color differentiation
+            depth_mod = min(depth, 3)
+            node_style = color_schemes[depth_mod]
+
+            # Apply styling and add node
+            graph.node(
+                node_name,
+                label=label,
+                fillcolor=node_style["fillcolor"],
+                color=node_style["color"],
+            )
+
             processed_nodes.add(node_name)
 
-        # Process children (ensure children is a list)
+        # Process children with level-based styling
         children = node_dict.get("children", [])
         if isinstance(children, list):
             for child_dict in children:
                 child_name = child_dict.get("name")
                 if child_name:
-                    add_nodes_edges(graph, child_dict)
+                    add_nodes_edges(graph, child_dict, depth + 1)
                     graph.edge(node_name, child_name)
         else:
             print(
                 f"WARN in graph: Expected 'children' for node '{node_name}' to be a list, found {type(children)}"
             )
+
+    # Add title
+    dot.attr(
+        "graph", label="Chatbot Functionality Workflow", fontsize="18", labelloc="t"
+    )
 
     # Process all root nodes
     for root_node_dict in structured_data:
@@ -315,20 +377,41 @@ def main():
         os.makedirs(profiles_dir, exist_ok=True)
 
         for profile in built_profiles:
-            filename = (
-                profile["test_name"]
-                .lower()
-                .replace(" ", "_")
-                .replace(",", "")
-                .replace("&", "and")
-                + ".yaml"
-            )
+            # Handle cases where test_name might be a dict (like random profile generators)
+            test_name = profile["test_name"]
+
+            if isinstance(test_name, dict):
+                # For random profiles, use a consistent filename with index
+                if (
+                    test_name.get("function") == "random()"
+                    and "data" in test_name
+                    and test_name["data"]
+                ):
+                    # Use the first item in the data list as a base name
+                    base_name = str(test_name["data"][0])
+                    filename = (
+                        f"random_profile_{base_name.lower().replace(' ', '_')}.yaml"
+                    )
+                else:
+                    # Generic fallback for other dict types
+                    filename = f"profile_{hash(str(test_name))}.yaml"
+            else:
+                # Normal string case
+                filename = (
+                    str(test_name)
+                    .lower()
+                    .replace(" ", "_")
+                    .replace(",", "")
+                    .replace("&", "and")
+                    + ".yaml"
+                )
+
             filepath = os.path.join(profiles_dir, filename)
             with open(filepath, "w", encoding="utf-8") as yf:
                 yaml.dump(profile, yf, sort_keys=False, allow_unicode=True)
             print(f"  Saved profile: {filename}")
 
-    print(f"\nAll profiles saved to: {output_dir}")
+        print(f"\nAll profiles saved to: {output_dir}")
 
     # --- Call write_report ---
     print("\n--- Writing report to disk ---")
