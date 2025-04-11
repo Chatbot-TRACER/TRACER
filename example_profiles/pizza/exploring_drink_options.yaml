@@ -1,0 +1,95 @@
+test_name: Exploring Drink Options
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user looking for drink options to accompany your pizza
+    order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You are craving a classic pepperoni pizza with extra cheese and want a refreshing
+    drink to complement the meal.
+  - You remember that your friend suggested a tasty craft soda that pairs well with
+    pizza.
+  - You're planning to enjoy this meal while watching a movie, so you want everything
+    to arrive promptly.
+  goals:
+  - Order a {{size}} pizza with {{toppings}}
+  - Select {{quantity}} {{drink}} to add to my order
+  - Request the total cost of my order including drinks
+  - Ask about the estimated preparation time for my order
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+  - toppings:
+      function: another(3)
+      type: string
+      data:
+      - pepperoni
+      - mushrooms
+      - bell peppers
+      - olives
+      - onions
+      - sausage
+      - extra cheese
+  - size:
+      function: random()
+      type: string
+      data:
+      - small
+      - medium
+      - large
+      - extra large
+  - drink:
+      function: random()
+      type: string
+      data:
+      - soda
+      - lemonade
+      - iced tea
+      - sparkling water
+      - juice
+chatbot:
+  is_starter: false
+  fallback: '"I''m here to assist you with your pizza order! Please let me know the
+    size of the pizza (small, medium, or large) and the toppings you''d like (cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken). Thank you!"'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the complete order, including
+        pizza and drinks. This information should be present in the chatbot's response
+        when the user asks for the total cost.
+  - estimated_preparation_time:
+      type: time
+      description: The time provided by the chatbot indicating how long it will take
+        to prepare the order. This should be mentioned when the user inquires about
+        the estimated preparation time for their pizza and drinks.
+  - selected_drink_options:
+      type: str
+      description: The details of the drink options that the chatbot confirms for
+        the user's order. This information will appear when the user requests to add
+        specific drinks to their order.
+  - order_details:
+      type: str
+      description: A summary given by the chatbot that includes specifics about the
+        pizza size, toppings, and drink selections. This output will help users verify
+        the exact order they placed and will commonly appear after confirming the
+        order.
+conversation:
+  number: 4
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - change your mind
+  - single question

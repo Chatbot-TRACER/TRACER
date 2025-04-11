@@ -1,95 +1,122 @@
 === CHATBOT FUNCTIONALITY ANALYSIS ===
 
 ## FUNCTIONALITIES (Workflow Structure)
-- menu_item_queries: The chatbot can provide information about the types of pizzas and other food items available on the menu
-  - ordering_pizza: The chatbot assists users in ordering pizzas, including options for predefined and custom pizzas (Params: pizza type)
-    - customization_of_pizza: The chatbot provides information on customizing pizzas, including options for crusts and toppings (Params: toppings, crust type)
-    - ordering_drinks: The chatbot helps users order drinks alongside their pizza orders
-- rephrasing_requests: Users can ask the chatbot to repeat or rephrase its questions or information if they do not understand
-- handling_multiple_questions: The chatbot struggles to answer multiple questions at once and is designed to respond to one question at a time
-- language_support_information: The chatbot informs users about its supported languages, specifically English
+- order_custom_pizza: Assists users in ordering a custom pizza by collecting size and toppings information. (Params: size, toppings)
+  - calculate_price: Calculates the total price for a pizza and drink order. (Params: size, topping, drink_type, quantity)
+  - provide_order_details: Provides the user with details of their order, including price and estimated pickup time.
+- provide_pizza_options: Provides users with available types of pizzas to order.
+  - create_custom_pizza: Allows users to select and mix different toppings for a custom pizza (Params: toppings (list of chosen ingredients))
+- provide_pizza_sizes: Provides users with the available sizes for pizzas.
+- order_drinks: Assists users in adding drink orders to their pizza order by collecting the type and quantity of drinks. (Params: drink_type, quantity)
 
 ## FUNCTIONALITIES (Raw JSON Structure)
 [
   {
-    "name": "menu_item_queries",
-    "description": "The chatbot can provide information about the types of pizzas and other food items available on the menu",
-    "parameters": [],
-    "parent_names": [],
+    "__type__": "FunctionalityNode",
+    "name": "order_custom_pizza",
+    "description": "Assists users in ordering a custom pizza by collecting size and toppings information.",
+    "parameters": [
+      {
+        "name": "size",
+        "type": "string",
+        "description": "Parameter size"
+      },
+      {
+        "name": "toppings",
+        "type": "string",
+        "description": "Parameter toppings"
+      }
+    ],
     "children": [
       {
-        "name": "ordering_pizza",
-        "description": "The chatbot assists users in ordering pizzas, including options for predefined and custom pizzas",
+        "__type__": "FunctionalityNode",
+        "name": "calculate_price",
+        "description": "Calculates the total price for a pizza and drink order.",
         "parameters": [
           {
-            "name": "pizza type",
-            "type": "predefined/custom"
-          }
-        ],
-        "parent_names": [
-          "menu_item_queries"
-        ],
-        "children": [
-          {
-            "name": "customization_of_pizza",
-            "description": "The chatbot provides information on customizing pizzas, including options for crusts and toppings",
-            "parameters": [
-              {
-                "name": "toppings",
-                "type": "array"
-              },
-              {
-                "name": "crust type",
-                "type": "string"
-              }
-            ],
-            "parent_names": [
-              "ordering_pizza"
-            ],
-            "children": []
+            "name": "size",
+            "type": "string",
+            "description": "Parameter size"
           },
           {
-            "name": "ordering_drinks",
-            "description": "The chatbot helps users order drinks alongside their pizza orders",
-            "parameters": [],
-            "parent_names": [
-              "ordering_pizza"
-            ],
-            "children": []
+            "name": "topping",
+            "type": "string",
+            "description": "Parameter topping"
+          },
+          {
+            "name": "drink_type",
+            "type": "string",
+            "description": "Parameter drink_type"
+          },
+          {
+            "name": "quantity",
+            "type": "string",
+            "description": "Parameter quantity"
           }
-        ]
+        ],
+        "children": []
+      },
+      {
+        "__type__": "FunctionalityNode",
+        "name": "provide_order_details",
+        "description": "Provides the user with details of their order, including price and estimated pickup time.",
+        "parameters": [],
+        "children": []
       }
     ]
   },
   {
-    "name": "rephrasing_requests",
-    "description": "Users can ask the chatbot to repeat or rephrase its questions or information if they do not understand",
+    "__type__": "FunctionalityNode",
+    "name": "provide_pizza_options",
+    "description": "Provides users with available types of pizzas to order.",
     "parameters": [],
-    "parent_names": [],
+    "children": [
+      {
+        "__type__": "FunctionalityNode",
+        "name": "create_custom_pizza",
+        "description": "Allows users to select and mix different toppings for a custom pizza",
+        "parameters": [
+          {
+            "name": "toppings (list of chosen ingredients)",
+            "type": "string",
+            "description": "Parameter toppings (list of chosen ingredients)"
+          }
+        ],
+        "children": []
+      }
+    ]
+  },
+  {
+    "__type__": "FunctionalityNode",
+    "name": "provide_pizza_sizes",
+    "description": "Provides users with the available sizes for pizzas.",
+    "parameters": [],
     "children": []
   },
   {
-    "name": "handling_multiple_questions",
-    "description": "The chatbot struggles to answer multiple questions at once and is designed to respond to one question at a time",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "language_support_information",
-    "description": "The chatbot informs users about its supported languages, specifically English",
-    "parameters": [],
-    "parent_names": [],
+    "__type__": "FunctionalityNode",
+    "name": "order_drinks",
+    "description": "Assists users in adding drink orders to their pizza order by collecting the type and quantity of drinks.",
+    "parameters": [
+      {
+        "name": "drink_type",
+        "type": "string",
+        "description": "Parameter drink_type"
+      },
+      {
+        "name": "quantity",
+        "type": "string",
+        "description": "Parameter quantity"
+      }
+    ],
     "children": []
   }
 ]
 ## LIMITATIONS
-1. The chatbot appears to struggle with understanding complex or multiple questions, often requiring simplification of requests.
-2. It predominantly supports English, with limited capabilities in handling requests made in other languages, leading to user confusion when switching languages.
-3. It has trouble recognizing unrecognized inputs and often requests rephrasing when it cannot comprehend user prompts.
+No limitations discovered.
 
 ## SUPPORTED LANGUAGES
 1. English
 
 ## FALLBACK MESSAGE
-"I'm sorry, I did not get what you said. Can you rephrase?`"
+"I'm here to assist you with your pizza order! Please let me know the size of the pizza (small, medium, or large) and the toppings you'd like (cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken). Thank you!"

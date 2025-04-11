@@ -1,0 +1,93 @@
+test_name: Choosing Pizza Types
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user exploring different types of pizzas available for
+    ordering.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You recently had a delicious Margherita pizza with fresh basil and mozzarella,
+    inspiring you to explore other options.
+  - You enjoy customizing meals to cater to your specific taste preferences, particularly
+    when it comes to toppings like spicy jalapeños and extra cheese.
+  - You want to stay within a budget, so understanding the prices of specialty pizzas
+    compared to classic options is important for your order.
+  goals:
+  - Order a {{size}} pizza with {{toppings}}
+  - Create a custom pizza with {{size}} and {{multiple_toppings}}
+  - Inquire about the prices of {{drink}} options
+  - Specify how many {{drink}} to add to my pizza order
+  - multiple_toppings:
+      function: another(3)
+      type: string
+      data:
+      - pepperoni
+      - mushrooms
+      - bell peppers
+      - olives
+      - onions
+      - sausage
+  - toppings:
+      function: random()
+      type: string
+      data:
+      - cheese
+      - pepperoni
+      - mushrooms
+  - size:
+      function: random()
+      type: string
+      data:
+      - small
+      - medium
+      - large
+      - extra large
+  - drink:
+      function: random()
+      type: string
+      data:
+      - soda
+      - water
+      - iced tea
+      - lemonade
+      - juice
+chatbot:
+  is_starter: false
+  fallback: '"I''m here to assist you with your pizza order! Please let me know the
+    size of the pizza (small, medium, or large) and the toppings you''d like (cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken). Thank you!"'
+  output:
+  - available_pizzas:
+      type: str
+      description: A list of different types of pizzas that the chatbot provides to
+        the user as options for ordering. This information can be found in the chatbot's
+        responses when it shares the available pizza selections.
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the selected pizza order.
+        This output will be mentioned after the user has specified their pizza choices
+        and the chatbot has calculated the total.
+  - estimated_pickup_time:
+      type: time
+      description: The time the chatbot estimates for the user's order to be ready
+        for pickup. This information is typically given after the user finalizes their
+        order and is included in the confirmation details.
+  - selected_toppings:
+      type: str
+      description: A summary of the toppings chosen by the user for their custom pizza,
+        as stated by the chatbot in its confirmation response. This output helps verify
+        if the chatbot accurately reflected the user's choices.
+conversation:
+  number: 4
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - change your mind
+  - single question
