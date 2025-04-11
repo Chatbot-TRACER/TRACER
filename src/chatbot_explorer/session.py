@@ -289,17 +289,15 @@ def is_duplicate_functionality(
 
 def validate_parent_child_relationship(parent_node, child_node, llm) -> bool:
     """
-    Validate if a child node is truly a sub-functionality of a parent node.
-    Uses strict criteria to prevent incorrect hierarchical relationships.
-
-    Returns True if the relationship is valid, False otherwise.
+    Validate if a child node is a reasonable sub-functionality of a parent node.
+    Uses balanced criteria to identify meaningful hierarchical relationships.
     """
     if not parent_node:
         return True  # No parent means it's a root node - always valid
 
     validation_prompt = f"""
-    Evaluate if the second functionality is TRULY a direct SUB-FUNCTIONALITY of the first functionality.
-    Be EXTREMELY STRICT in your evaluation and prefer to reject the relationship if there's any doubt.
+    Evaluate if the second functionality should be considered a sub-functionality of the first functionality.
+    Use balanced judgment - we want to create a meaningful hierarchy without being overly strict.
 
     PARENT FUNCTIONALITY:
     Name: {parent_node.name}
@@ -309,32 +307,27 @@ def validate_parent_child_relationship(parent_node, child_node, llm) -> bool:
     Name: {child_node.name}
     Description: {child_node.description}
 
-    A TRUE SUB-FUNCTIONALITY MUST satisfy at least TWO of these criteria:
-    1. It CANNOT exist or operate independently of the parent functionality
-    2. It is ALWAYS accessed through or after using the parent functionality
-    3. It directly implements a SPECIFIC PART of the parent functionality's purpose
-    4. It would make NO LOGICAL SENSE to place it elsewhere in the system
+    A functionality should be considered a sub-functionality if it meets AT LEAST ONE of these criteria:
+    1. It represents a more specific version or specialized case of the parent functionality
+    2. It's normally used as part of completing the parent functionality
+    3. It extends or enhances the parent functionality in a natural way
+    4. It depends on the parent functionality conceptually or in workflow
 
-    A functionality is DEFINITELY NOT a sub-functionality if ANY of these are true:
-    1. It could reasonably exist without the parent functionality
-    2. It has a different core purpose than the parent
-    3. It could just as easily be accessed from elsewhere
-    4. The relationship is merely topical but not functional
-    5. The two functionalities are simply related or complementary
+    EXAMPLE VALID RELATIONSHIPS:
+    - Parent: "search_products" - Child: "filter_search_results"
+    - Parent: "schedule_appointment" - Child: "confirm_appointment_availability"
+    - Parent: "estimate_price" - Child: "calculate_detailed_quote"
+    - Parent: "manage_account" - Child: "update_profile_information"
 
-    EXAMPLE VALID RELATIONSHIP:
-    Parent: "manage_account" - "Allows users to manage their account settings and preferences"
-    Child: "change_password" - "Allows users to change their account password"
-    (Valid because changing password is specifically part of account management and cannot exist independently)
+    EXAMPLE INVALID RELATIONSHIPS:
+    - Parent: "login" - Child: "view_product_catalog" (unrelated functions)
+    - Parent: "check_weather" - Child: "translate_text" (completely different domains)
 
-    EXAMPLE INVALID RELATIONSHIP:
-    Parent: "get_weather_forecast" - "Provides weather forecasts for locations"
-    Child: "set_temperature_units" - "Changes temperature display between Celsius and Fahrenheit"
-    (Invalid because setting units is a preference that could exist independently of the weather feature)
-
+    Consider domain-specific logic and real-world workflows when making your determination.
     Respond with EXACTLY "VALID" or "INVALID" followed by a brief explanation.
     """
 
+    # Call LLM with validation prompt
     validation_response = llm.invoke(validation_prompt)
     result = validation_response.content.strip().upper()
 
@@ -342,14 +335,108 @@ def validate_parent_child_relationship(parent_node, child_node, llm) -> bool:
 
     if is_valid:
         print(
-            f"  ✓ Validated relationship: '{child_node.name}' is a proper sub-functionality of '{parent_node.name}'"
+            f"  ✓ Valid relationship: '{child_node.name}' is a sub-functionality of '{parent_node.name}'"
         )
     else:
         print(
-            f"  ✗ Invalid relationship: '{child_node.name}' is not a true sub-functionality of '{parent_node.name}'"
+            f"  ✗ Invalid relationship: '{child_node.name}' is not related to '{parent_node.name}'"
         )
 
     return is_valid
+
+
+def merge_similar_functionalities(
+    nodes: List[FunctionalityNode], llm
+) -> List[FunctionalityNode]:
+    """
+    Identify and merge similar functionalities in the graph.
+    Returns a new list with duplicates merged.
+    """
+    if not nodes or len(nodes) < 2:
+        return nodes
+
+    result = []
+    processed_names = set()
+
+    # First pass - group by similar names
+    name_groups = {}
+    for node in nodes:
+        normalized_name = node.name.lower().replace("_", " ")
+        if normalized_name not in name_groups:
+            name_groups[normalized_name] = []
+        name_groups[normalized_name].append(node)
+
+    # Process each group
+    for name, group in name_groups.items():
+        if len(group) == 1:
+            # Only one node with this name, add it as is
+            result.append(group[0])
+            continue
+
+        # Multiple nodes with similar names - check if they should be merged
+        merge_prompt = f"""
+        I have multiple similar functionality nodes that may represent the same capability.
+        Please determine if these should be merged into a single functionality.
+
+        FUNCTIONALITIES:
+        {json.dumps([{"name": n.name, "description": n.description, "parameters": n.parameters} for n in group], indent=2)}
+
+        If these represent the same underlying capability, respond with "MERGE" and suggest the best name and description.
+        If they are distinct and should remain separate, respond with "KEEP SEPARATE".
+
+        Format for MERGE:
+        MERGE
+        name: best_name
+        description: best consolidated description
+
+        Format for KEEP SEPARATE:
+        KEEP SEPARATE
+        reason: brief explanation
+        """
+
+        merge_response = llm.invoke(merge_prompt)
+        content = merge_response.content.strip()
+
+        if content.upper().startswith("MERGE"):
+            # Extract suggested name and description
+            name_match = re.search(r"name:\s*(.*)", content)
+            desc_match = re.search(r"description:\s*(.*)", content)
+
+            if name_match and desc_match:
+                best_name = name_match.group(1).strip()
+                best_desc = desc_match.group(1).strip()
+
+                # Merge parameters from all nodes in the group
+                all_params = []
+                for node in group:
+                    for param in node.parameters:
+                        if not any(
+                            p.get("name") == param.get("name") for p in all_params
+                        ):
+                            all_params.append(param)
+
+                # Create merged node with children from all nodes in the group
+                merged_node = FunctionalityNode(
+                    name=best_name, description=best_desc, parameters=all_params
+                )
+
+                # Add all children from the group nodes
+                for node in group:
+                    for child in node.children:
+                        merged_node.add_child(child)
+
+                result.append(merged_node)
+                print(
+                    f"  Merged {len(group)} similar functionalities into '{best_name}'"
+                )
+            else:
+                # Couldn't extract merged details, keep the first one
+                result.append(group[0])
+        else:
+            # Keep them separate
+            result.extend(group)
+
+    return result
 
 
 def run_exploration_session(
@@ -544,6 +631,12 @@ def run_exploration_session(
     # Update graph structure
     if new_functionality_nodes:
         print(f"Discovered {len(new_functionality_nodes)} new functionality nodes:")
+
+        # First, merge any similar functionalities among the new nodes
+        new_functionality_nodes = merge_similar_functionalities(
+            new_functionality_nodes, explorer.llm
+        )
+
         for node in new_functionality_nodes:
             # Check for duplicates against all existing nodes
             all_existing = []
@@ -551,7 +644,7 @@ def run_exploration_session(
                 all_existing.extend(_get_all_nodes(root))
 
             if not is_duplicate_functionality(node, all_existing):
-                # Validate relationship if we have a current node
+                # Validate relationship with current node (if we have one)
                 relationship_valid = True
                 if current_node:
                     relationship_valid = validate_parent_child_relationship(
@@ -561,28 +654,23 @@ def run_exploration_session(
                 if relationship_valid and current_node:
                     # Add as child to current node
                     current_node.add_child(node)
-                    print(
-                        f"  - '{node.name}' (confirmed child of '{current_node.name}')"
-                    )
+                    print(f"  - '{node.name}' (child of '{current_node.name}')")
                     # Add to pending nodes for exploration
                     pending_nodes.append(node)
-                elif relationship_valid:  # Valid but no parent
+                else:
                     # Add as root node
                     root_nodes.append(node)
                     print(f"  - '{node.name}' (root node)")
                     # Add to pending nodes for exploration
                     pending_nodes.append(node)
-                else:
-                    # Invalid relationship - add as root instead
-                    print(
-                        f"  - '{node.name}' (invalid child relationship, adding as root)"
-                    )
-                    root_nodes.append(node)
-                    pending_nodes.append(node)
             else:
                 print(f"  - Skipped duplicate functionality: '{node.name}'")
 
-    # Mark current node as explored if we're exploring one
+        # After adding all new nodes, merge similar root nodes
+        if root_nodes:
+            root_nodes = merge_similar_functionalities(root_nodes, explorer.llm)
+
+    # Mark current node as explored
     if current_node:
         explored_nodes.add(current_node.name)
 
