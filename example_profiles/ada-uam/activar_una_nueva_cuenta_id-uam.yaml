@@ -1,0 +1,59 @@
+test_name: Activar una nueva cuenta ID-UAM
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un nuevo estudiante en la UAM que acaba de matricularse y necesita activar
+    su cuenta ID-UAM.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Recibiste un mensaje de bienvenida el lunes, pero no tienes claro cómo activar
+    tu cuenta ID-UAM con el código que incluye.
+  - Te preocupa que si no recibes el mensaje de bienvenida en 48 horas, no podrás
+    acceder a los recursos de la universidad a tiempo.
+  - Has cambiado tu nombre recientemente y no sabes el proceso para actualizar tu
+    ID-UAM en el sistema.
+  goals:
+  - Activar mi cuenta ID-UAM utilizando el código de activación que recibí en mi mensaje
+    de bienvenida
+  - Solicitar información sobre lo que hacer si no he recibido el mensaje de bienvenida
+    dentro de 48 horas
+  - Preguntar cómo puedo modificar mi ID-UAM si he cambiado mi nombre
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - activacion_exitosa:
+      type: str
+      description: Mensaje que confirma que la cuenta ID-UAM ha sido activada correctamente,
+        usualmente contiene información positiva sobre el proceso de activación.
+  - contacto_cau:
+      type: str
+      description: Información de contacto del Centro de Atención a Usuarios (CAU),
+        que incluye un número de teléfono y/o correo electrónico para que el usuario
+        pueda solicitar asistencia adicional si no ha recibido su mensaje de bienvenida.
+  - tiempo_espera_bienvenida:
+      type: str
+      description: Indicación acerca de cuándo el usuario puede esperar recibir su
+        mensaje de bienvenida, en este caso debe ser dentro de las 48 horas posteriores
+        a la matriculación.
+  - procedimiento_modificacion_id:
+      type: str
+      description: Instrucciones sobre cómo modificar el ID-UAM en caso de haber cambiado
+        el nombre, que debe incluir pasos o referencias específicas para realizar
+        esta modificación.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

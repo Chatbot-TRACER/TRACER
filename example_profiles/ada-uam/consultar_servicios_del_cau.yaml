@@ -1,0 +1,54 @@
+test_name: Consultar servicios del CAU
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un estudiante que desea conocer qué servicios ofrece el Centro de Atención
+    a Usuarios (CAU).
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Te han recomendado visitar el CAU porque ofrecen una amplia variedad de servicios
+    para estudiantes.
+  - Tienes una clase importante el lunes y necesitas resolver tu ID-UAM antes de eso.
+  - Escuchaste que el CAU tiene horarios flexibles, lo que te da la oportunidad de
+    consultarlos después de clases.
+  goals:
+  - Consultar el catálogo de servicios del CAU
+  - Preguntar sobre los horarios de atención del CAU
+  - Solicitar información sobre cómo modificar mi ID-UAM
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - catalogo_servicios:
+      type: str
+      description: Descripción del catálogo de servicios que el CAU ofrece a los estudiantes,
+        que el chatbot proporciona en su respuesta.
+  - horarios_atencion:
+      type: str
+      description: Información sobre los horarios de atención del CAU, mencionados
+        por el chatbot en sus respuestas.
+  - instrucciones_modificar_id_uam:
+      type: str
+      description: Detalles sobre el proceso para modificar el ID-UAM, incluyendo
+        pasos y requisitos que el chatbot indica al usuario.
+  - contacto_ca:
+      type: str
+      description: Información de contacto del Centro de Atención a Usuarios (CAU)
+        que el chatbot proporciona para asistencia adicional.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question
+  - long phrases

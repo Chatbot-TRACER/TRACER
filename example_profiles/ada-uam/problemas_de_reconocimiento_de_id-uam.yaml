@@ -1,0 +1,82 @@
+test_name: Problemas de reconocimiento de ID-UAM
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un usuario que tiene problemas para acceder a su cuenta porque su ID-UAM
+    no es reconocido.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has intentado acceder a tu cuenta varias veces y te aparece un mensaje diciendo
+    que tu ID-UAM no está registrado.
+  - Necesitas acceder a tu cuenta para inscribirte en un curso que empieza la próxima
+    semana.
+  - Tu última actualización de datos fue hace seis meses, y tu identificador actual
+    parece no coincidir con los registros.
+  goals:
+  - Solicitar un cambio en mi ID-UAM porque ha cambiado mi {{nombre}} o {{apellido}}
+  - Preguntar cómo obtener mi identificador de usuario UAM utilizando mi {{DNI}}
+  - Consultar los pasos para restablecer mi contraseña de ID-UAM
+  - apellido:
+      function: another(3)
+      type: string
+      data:
+      - García
+      - López
+      - Martínez
+      - Pérez
+      - Sánchez
+  - nombre:
+      function: forward()
+      type: string
+      data:
+      - Juan
+      - María
+      - Carlos
+      - Ana
+      - Luis
+  - DNI:
+      function: random()
+      type: string
+      data:
+      - 12345678A
+      - 87654321B
+      - 23456789C
+      - 34567890D
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - pasos_para_restablecer_contraseña:
+      type: str
+      description: Instrucciones detalladas sobre cómo restablecer la contraseña del
+        ID-UAM, que el chatbot proporciona en respuesta a la solicitud del usuario.
+  - guía_para_obtener_id_uam:
+      type: str
+      description: Información sobre el procedimiento que el chatbot describe para
+        obtener el identificador de usuario UAM utilizando el DNI o especificaciones
+        similares.
+  - contacto_centro_atencion:
+      type: str
+      description: Detalles de contacto o referencia al Centro de Atención a Usuarios
+        (CAU) que el chatbot proporciona para que el usuario pueda obtener más ayuda
+        con su ID-UAM o problemas relacionados con la cuenta.
+  - activacion_codigo_requerido:
+      type: str
+      description: Información sobre el código de activación que el chatbot menciona
+        que es necesario para realizar el cambio de contraseña del ID-UAM.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question

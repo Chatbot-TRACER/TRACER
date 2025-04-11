@@ -1,0 +1,59 @@
+test_name: Contactar al CAU
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un usuario que necesita contactar al Centro de Atención a Usuarios (CAU)
+    para resolver un problema relacionado con tu cuenta ID-UAM.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Llevas varios días intentando acceder a tu cuenta ID-UAM, pero te aparece un mensaje
+    de error que no comprendes.
+  - Te han recomendado contactar al CAU por correo electrónico, ya que es el medio
+    más eficiente para resolver problemas técnicos.
+  - Has visitado la página del CAU y te parece útil revisar el catálogo de servicios
+    para encontrar una solución específica a tu inconveniente.
+  goals:
+  - Contactar al CAU a través de correo electrónico para resolver un problema con
+    mi cuenta ID-UAM
+  - Solicitar información sobre los pasos para obtener el código de activación de
+    mi cuenta ID-UAM
+  - Consultar el catálogo de servicios ofrecidos por el CAU para encontrar ayuda específica
+    para mi situación
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - email_contact_info:
+      type: str
+      description: Información proporcionada por el chatbot sobre el correo electrónico
+        a utilizar para contactar al Centro de Atención a Usuarios (CAU) en caso de
+        problemas con la cuenta ID-UAM.
+  - activation_code_steps:
+      type: str
+      description: Pasos detallados que ofrece el chatbot sobre cómo obtener el código
+        de activación necesario para cambiar la contraseña de la cuenta ID-UAM.
+  - service_catalog_info:
+      type: str
+      description: Descripción del catálogo de servicios ofrecidos por el CAU que
+        el chatbot proporciona para ayudar al usuario a encontrar asistencia específica.
+  - password_reset_guidance:
+      type: str
+      description: Instrucciones que el chatbot brinda sobre cómo restablecer la contraseña
+        del usuario, incluyendo datos relevantes o enlaces a seguir.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question
+  - make spelling mistakes

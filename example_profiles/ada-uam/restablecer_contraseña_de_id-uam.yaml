@@ -1,0 +1,61 @@
+test_name: Restablecer contraseña de ID-UAM
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un usuario que ha olvidado su contraseña de ID-UAM y necesita instrucciones
+    para restablecerla.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has intentado restablecer tu contraseña varias veces sin éxito, lo que te genera
+    frustración.
+  - Te gustaría obtener el nuevo código de activación lo más rápido posible para poder
+    acceder a tus cursos en línea.
+  - Tienes un examen programado para mañana y necesitas asegurarte de que puedas ingresar
+    a tu cuenta antes de eso.
+  goals:
+  - Solicitar el código de activación para restablecer mi contraseña de ID-UAM
+  - Seguir los pasos para cambiar mi contraseña utilizando el código de activación
+  - Preguntar sobre el procedimiento para recuperar mi identificador de usuario con
+    mi DNI
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - codigo_activacion:
+      type: str
+      description: El código de activación proporcionado por el chatbot para restablecer
+        la contraseña de ID-UAM. Este dato se encuentra en la respuesta donde el chatbot
+        indica que ha enviado un código de activación al usuario.
+  - pasos_restablecer_contrasena:
+      type: str
+      description: Instrucciones detalladas sobre cómo restablecer la contraseña después
+        de recibir el código de activación. Se puede encontrar en la respuesta donde
+        el chatbot enumera los pasos que el usuario debe seguir.
+  - procedimiento_recuperar_identificador:
+      type: str
+      description: Información sobre el procedimiento para recuperar el identificador
+        de usuario utilizando el DNI. Este dato está presente en la parte de la respuesta
+        donde el chatbot brinda detalles acerca de cómo buscar el ID-UAM con el documento
+        nacional de identidad.
+  - contacto_cau:
+      type: str
+      description: Información de contacto del Centro de Atención a Usuarios (CAU)
+        para asistencia adicional. Este dato aparecerá en la respuesta del chatbot
+        cuando sugiera comunicarse con el CAU por ayuda relacionada con la cuenta
+        o ID-UAM.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - single question

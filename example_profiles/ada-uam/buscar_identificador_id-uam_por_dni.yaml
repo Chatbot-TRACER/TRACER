@@ -1,0 +1,55 @@
+test_name: Buscar identificador ID-UAM por DNI
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un estudiante que necesita obtener su identificador ID-UAM utilizando
+    su DNI para matricularse.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has intentado acceder a tu cuenta de estudiante en la web de la UAM, pero no recuerdas
+    tu contraseña y necesitas el ID-UAM para completar la matrícula.
+  - Tienes un plazo de inscripción que se acerca rápidamente, lo que aumenta la urgencia
+    de obtener tu identificador ID-UAM.
+  - Recibiste información de un compañero que el proceso para obtener el ID-UAM es
+    sencillo si utilizas tu DNI correctamente.
+  goals:
+  - Buscar mi identificador ID-UAM utilizando mi DNI
+  - Obtener instrucciones sobre cómo cambiar mi contraseña
+  - Contactar al CAU para solicitar ayuda si no puedo acceder a mi cuenta
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - id_uam_identifier:
+      type: str
+      description: El identificador ID-UAM que el chatbot proporciona al usuario tras
+        buscarlo utilizando el DNI.
+  - password_reset_instructions:
+      type: str
+      description: Instrucciones detalladas que el chatbot da sobre cómo cambiar la
+        contraseña, incluyendo los pasos a seguir.
+  - cau_contact_information:
+      type: str
+      description: Información de contacto del Centro de Atención a Usuarios (CAU)
+        que el chatbot proporciona para que los usuarios puedan solicitar ayuda.
+  - activation_code_instructions:
+      type: str
+      description: Instrucciones sobre cómo obtener el código de activación necesario
+        para cambiar la contraseña, que el chatbot ofrece al usuario.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - single question
+  - make spelling mistakes

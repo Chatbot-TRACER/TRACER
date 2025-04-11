@@ -1,93 +1,86 @@
 === CHATBOT FUNCTIONALITY ANALYSIS ===
 
 ## FUNCTIONALITIES (Workflow Structure)
-- soporte_de_idiomas: El chatbot puede interactuar en español, respondiendo a las consultas de los usuarios
-  - proporcionar_información_de_contacto: El chatbot ofrece detalles sobre cómo contactar al Centro de Atención a Usuarios (CAU) de Tecnologías de la Información
-    - listar_horarios_de_atención: El chatbot proporciona información sobre los horarios de atención del CAU, tanto telefónica como presencial
-    - acceso_al_catálogo_de_servicios: El chatbot dirige a los usuarios al catálogo de servicios ofrecidos por el CAU
-      - filtrado_de_servicios: Aunque se consulta sobre las opciones para filtrar o buscar servicios específicos en el catálogo, no se proporciona información directa sobre esta funcionalidad
-  - resolver_problemas: El chatbot responde a las preguntas relacionadas con los problemas que puede ayudar a resolver el CAU
-    - solicitud_de_direcciones_funcionales: El chatbot informa sobre el procedimiento y requisitos para solicitar direcciones funcionales en el nuevo sistema de correo (Params: URL del sistema, requisitos para la solicitud)
+- get_user_identification_help: Provides users with guidance on how to obtain their ID-UAM identifier or reset their password, including links and steps to follow.
+  - contact_cau: Allows users to contact the Centro de Atención a Usuarios (CAU) for assistance with their ID-UAM or account-related issues.
+  - provide_password_reset_steps: Offers detailed steps on how to reset the user's password, including how to obtain an activation code.
+    - provide_activation_code_instructions: Guides users on how to obtain the activation code necessary for changing their password.
+  - fetch_identification_by_dni: Guides users on how to search for their ID-UAM identifier using their DNI (National ID).
+  - modify_user_id: Informs users on how to request a modification of their ID-UAM identifier if they have changed their name or if it is not recognized.
+- provide_cau_contact_info: Supplies users with detailed contact information for the Centro de Atención a Usuarios (CAU), including email, phone number, and physical address.
+- offer_service_catalog: Directs users to the catalog of services offered by the CAU, providing a link for further information.
+- provide_password_change_reminder: Reminds users to change their password periodically to avoid account locking.
 
 ## FUNCTIONALITIES (Raw JSON Structure)
 [
   {
-    "name": "soporte_de_idiomas",
-    "description": "El chatbot puede interactuar en español, respondiendo a las consultas de los usuarios",
+    "__type__": "FunctionalityNode",
+    "name": "get_user_identification_help",
+    "description": "Provides users with guidance on how to obtain their ID-UAM identifier or reset their password, including links and steps to follow.",
     "parameters": [],
-    "parent_names": [],
     "children": [
       {
-        "name": "proporcionar_información_de_contacto",
-        "description": "El chatbot ofrece detalles sobre cómo contactar al Centro de Atención a Usuarios (CAU) de Tecnologías de la Información",
+        "__type__": "FunctionalityNode",
+        "name": "contact_cau",
+        "description": "Allows users to contact the Centro de Atención a Usuarios (CAU) for assistance with their ID-UAM or account-related issues.",
         "parameters": [],
-        "parent_names": [
-          "soporte_de_idiomas"
-        ],
+        "children": []
+      },
+      {
+        "__type__": "FunctionalityNode",
+        "name": "provide_password_reset_steps",
+        "description": "Offers detailed steps on how to reset the user's password, including how to obtain an activation code.",
+        "parameters": [],
         "children": [
           {
-            "name": "listar_horarios_de_atención",
-            "description": "El chatbot proporciona información sobre los horarios de atención del CAU, tanto telefónica como presencial",
+            "__type__": "FunctionalityNode",
+            "name": "provide_activation_code_instructions",
+            "description": "Guides users on how to obtain the activation code necessary for changing their password.",
             "parameters": [],
-            "parent_names": [
-              "proporcionar_información_de_contacto"
-            ],
             "children": []
-          },
-          {
-            "name": "acceso_al_catálogo_de_servicios",
-            "description": "El chatbot dirige a los usuarios al catálogo de servicios ofrecidos por el CAU",
-            "parameters": [],
-            "parent_names": [
-              "proporcionar_información_de_contacto"
-            ],
-            "children": [
-              {
-                "name": "filtrado_de_servicios",
-                "description": "Aunque se consulta sobre las opciones para filtrar o buscar servicios específicos en el catálogo, no se proporciona información directa sobre esta funcionalidad",
-                "parameters": [],
-                "parent_names": [
-                  "acceso_al_catálogo_de_servicios"
-                ],
-                "children": []
-              }
-            ]
           }
         ]
       },
       {
-        "name": "resolver_problemas",
-        "description": "El chatbot responde a las preguntas relacionadas con los problemas que puede ayudar a resolver el CAU",
+        "__type__": "FunctionalityNode",
+        "name": "fetch_identification_by_dni",
+        "description": "Guides users on how to search for their ID-UAM identifier using their DNI (National ID).",
         "parameters": [],
-        "parent_names": [
-          "soporte_de_idiomas"
-        ],
-        "children": [
-          {
-            "name": "solicitud_de_direcciones_funcionales",
-            "description": "El chatbot informa sobre el procedimiento y requisitos para solicitar direcciones funcionales en el nuevo sistema de correo",
-            "parameters": [
-              {
-                "name": "URL del sistema"
-              },
-              {
-                "name": "requisitos para la solicitud"
-              }
-            ],
-            "parent_names": [
-              "resolver_problemas"
-            ],
-            "children": []
-          }
-        ]
+        "children": []
+      },
+      {
+        "__type__": "FunctionalityNode",
+        "name": "modify_user_id",
+        "description": "Informs users on how to request a modification of their ID-UAM identifier if they have changed their name or if it is not recognized.",
+        "parameters": [],
+        "children": []
       }
     ]
+  },
+  {
+    "__type__": "FunctionalityNode",
+    "name": "provide_cau_contact_info",
+    "description": "Supplies users with detailed contact information for the Centro de Atención a Usuarios (CAU), including email, phone number, and physical address.",
+    "parameters": [],
+    "children": []
+  },
+  {
+    "__type__": "FunctionalityNode",
+    "name": "offer_service_catalog",
+    "description": "Directs users to the catalog of services offered by the CAU, providing a link for further information.",
+    "parameters": [],
+    "children": []
+  },
+  {
+    "__type__": "FunctionalityNode",
+    "name": "provide_password_change_reminder",
+    "description": "Reminds users to change their password periodically to avoid account locking.",
+    "parameters": [],
+    "children": []
   }
 ]
 ## LIMITATIONS
-1. El chatbot solo puede interactuar en español, lo que limita la accesibilidad para usuarios que hablan otros idiomas.
-2. La información proporcionada sobre la búsqueda avanzada en el catálogo de servicios es insuficiente, lo que puede dificultar la navegación para los usuarios.
-3. Las respuestas del chatbot a menudo dependen de la información que el usuario proporciona, siendo menos útil si la información no se solicita claramente.
+No limitations discovered.
 
 ## SUPPORTED LANGUAGES
 1. Spanish
