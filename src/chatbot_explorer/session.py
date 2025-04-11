@@ -101,7 +101,8 @@ def extract_fallback_message(the_chatbot, llm):
 
 def extract_functionality_nodes(conversation_history, llm, current_node=None):
     """
-    Extract functionalities from conversation as FunctionalityNode objects.
+    Extract functionalities or interaction steps from conversation as FunctionalityNode objects.
+    Focuses on capturing steps relevant to the user's workflow.
 
     Args:
         conversation_history: The conversation history
@@ -109,15 +110,15 @@ def extract_functionality_nodes(conversation_history, llm, current_node=None):
         current_node: The current node being explored (if any)
 
     Returns:
-        List[FunctionalityNode]: List of new functionality nodes discovered
+        List[FunctionalityNode]: List of new functionality/interaction nodes discovered
     """
     # Format the conversation for analysis
     formatted_conversation = format_conversation(conversation_history)
 
     # Create the context for function extraction
-    context = "Identify new chatbot functionalities discovered in this conversation."
+    context = "Identify distinct interaction steps or functionalities the chatbot provides in this conversation, relevant to the user's workflow."
     if current_node:
-        context += f"\nWe are currently exploring the '{current_node.name}' functionality: {current_node.description}"
+        context += f"\nWe are currently exploring the '{current_node.name}' step: {current_node.description}"
 
     extraction_prompt = f"""
     {context}
@@ -125,114 +126,95 @@ def extract_functionality_nodes(conversation_history, llm, current_node=None):
     CONVERSATION:
     {formatted_conversation}
 
-    Extract ONLY distinct ACTIONABLE FUNCTIONALITIES the chatbot can perform based on this conversation.
+    Extract distinct INTERACTION STEPS or FUNCTIONALITIES the chatbot provides based on this conversation.
+    Focus on steps that advance the user's goal or represent a state in the workflow. This includes actions the chatbot performs AND key information it provides that enables the next user action.
 
-    STRICT DEFINITION: A functionality must be something the chatbot can actively DO or HELP WITH, not just information it has.
+    EXAMPLES of relevant steps/functionalities:
+    - provide_menu: Shows the user available options (Information step enabling action)
+    - schedule_appointment: Helps users book an appointment (Action)
+    - confirm_details: Asks user to confirm information (Interaction step)
+    - explain_policy: Provides details about a policy (Information step)
+    - search_products: Searches the product database (Action)
 
-    GOOD EXAMPLES of functionalities:
-    - schedule_appointment: Helps users book an appointment (action)
-    - calculate_price: Calculates the price for a service (computation)
-    - search_products: Searches the product database (retrieval action)
+    AVOID extracting basic conversational filler (e.g., greetings, acknowledgments) unless they represent a specific state (like 'confirm_understanding').
 
-    BAD EXAMPLES (NOT functionalities):
-    - knows_about_company: Just has information about the company (passive knowledge)
-    - has_business_hours: Just knows store hours (passive information)
-    - responds_to_greeting: Just responds to greetings (basic chat behavior)
+    For each relevant step/functionality, identify:
+    1. A short name (use snake_case) reflecting the step's purpose.
+    2. A clear description of what happens in this step.
+    3. Required parameters (if the step involves user input or specific data).
 
-    For each TRUE functionality, identify:
-    1. A short name (use snake_case)
-    2. A clear description of what action it performs
-    3. Required parameters (if any)
-
-    Format each functionality EXACTLY as:
+    Format each step/functionality EXACTLY as:
     FUNCTIONALITY:
     name: snake_case_name
-    description: Clear description of what this functionality DOES
+    description: Clear description of this interaction step/functionality
     parameters: param1, param2 (or "None" if no parameters)
 
-    Be VERY SELECTIVE and only list ACTIONS the chatbot can perform, not just topics it knows about.
-    If no new ACTIONABLE functionality is identified, respond with "NO_NEW_FUNCTIONALITY".
+    Be comprehensive in capturing steps that define the chatbot's interaction flow.
+    If no new relevant step/functionality is identified, respond with "NO_NEW_FUNCTIONALITY".
     """
-
     response = llm.invoke(extraction_prompt)
     content = response.content.strip()
 
-    # Extract functionalities using regex
+    print("\n--- Raw LLM Response for Functionality Extraction ---")
+    print(content)
+    print("-----------------------------------------------------")
+
+    # Extract functionalities using a more robust parsing approach
     functionality_nodes = []
 
-    if "NO_NEW_FUNCTIONALITY" in content:
+    if "NO_NEW_FUNCTIONALITY" in content.upper():  # Check case-insensitively
+        print("  LLM indicated no new functionalities.")
         return functionality_nodes
 
-    # Pattern to extract functionality blocks
-    func_pattern = re.compile(
-        r"FUNCTIONALITY:\s*name:\s*([^\n]+)\s*description:\s*([^\n]+)\s*parameters:\s*([^\n]+)",
-        re.MULTILINE,
-    )
+    # Split the response into potential blocks based on "FUNCTIONALITY:"
+    blocks = re.split(r"FUNCTIONALITY:\s*", content, flags=re.IGNORECASE)
 
-    matches = func_pattern.finditer(content)
-    candidates = []
+    for block in blocks:
+        block = block.strip()
+        if not block:  # Skip empty blocks resulting from split
+            continue
 
-    for match in matches:
-        name = match.group(1).strip()
-        description = match.group(2).strip()
-        params_str = match.group(3).strip()
+        name = None
+        description = None
+        params_str = "None"
 
-        # Parse parameters
-        parameters = []
-        if params_str.lower() != "none":
-            param_names = [p.strip() for p in params_str.split(",") if p.strip()]
-            parameters = [
-                {"name": p, "type": "string", "description": f"Parameter {p}"}
-                for p in param_names
-            ]
+        # Parse lines within the block
+        lines = block.split("\n")
+        for line in lines:
+            line = line.strip()
+            if line.lower().startswith("name:"):
+                name = line[len("name:") :].strip()
+            elif line.lower().startswith("description:"):
+                description = line[len("description:") :].strip()
+            elif line.lower().startswith("parameters:"):
+                params_str = line[len("parameters:") :].strip()
 
-        # Create new node
-        new_node = FunctionalityNode(
-            name=name,
-            description=description,
-            parameters=parameters,
-            parent=current_node,
+        # If we found at least a name and description, create the node
+        if name and description:
+            # Parse parameters
+            parameters = []
+            if params_str.lower() != "none":
+                param_names = [p.strip() for p in params_str.split(",") if p.strip()]
+                parameters = [
+                    {"name": p, "type": "string", "description": f"Parameter {p}"}
+                    for p in param_names
+                ]
+
+            new_node = FunctionalityNode(
+                name=name,
+                description=description,
+                parameters=parameters,
+                parent=current_node,  # Assign parent initially based on context
+            )
+            functionality_nodes.append(new_node)
+            print(f"  Identified step (Robust Parsing): {name}")
+        elif block:  # Log if a block was found but couldn't be parsed
+            print(f"  WARN: Could not parse functionality block:\n{block}")
+
+    if not functionality_nodes and "NO_NEW_FUNCTIONALITY" not in content.upper():
+        print(
+            "  WARN: LLM response did not contain 'NO_NEW_FUNCTIONALITY' but no functionalities were parsed."
         )
-
-        functionality_nodes.append(new_node)
-
-    # If we have candidates, validate them
-    if candidates:
-        # Secondary validation to ensure they're actually functionalities
-        validation_prompt = f"""
-        Evaluate each candidate functionality and determine if it represents a TRUE ACTIONABLE FUNCTIONALITY
-        that the chatbot can perform (not just passive knowledge).
-
-        For each functionality, respond ONLY with "VALID" or "INVALID" followed by a brief reason.
-
-        CANDIDATE FUNCTIONALITIES:
-        {json.dumps(candidates, indent=2)}
-
-        RESPOND IN THIS FORMAT:
-        1. [name]: [VALID/INVALID] - [brief reason]
-        2. [name]: [VALID/INVALID] - [brief reason]
-        ...
-        """
-
-        validation_response = llm.invoke(validation_prompt)
-        validation_results = validation_response.content.strip().split("\n")
-
-        for i, result in enumerate(validation_results):
-            if i < len(candidates) and "VALID" in result:
-                # Create functionality node for valid candidates
-                candidate = candidates[i]
-                new_node = FunctionalityNode(
-                    name=candidate["name"],
-                    description=candidate["description"],
-                    parameters=candidate["parameters"],
-                    parent=current_node,
-                )
-                functionality_nodes.append(new_node)
-                print(f"  Validated functionality: {candidate['name']}")
-            elif i < len(candidates):
-                print(
-                    f"  Rejected candidate: {candidates[i]['name']} - Not a true functionality"
-                )
 
     return functionality_nodes
 

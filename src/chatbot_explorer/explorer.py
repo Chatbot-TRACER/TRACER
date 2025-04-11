@@ -106,7 +106,17 @@ class ChatbotExplorer:
     def _explorer_node(self, state: State):
         """Explorer node for interacting with the target chatbot."""
         if not state["exploration_finished"]:
-            return {"messages": [self.llm.invoke(state["messages"])], "explored": True}
+            max_history_messages = 20  # Keep last 10 turns (user + assistant)
+            messages_to_send = []
+            if state["messages"]:
+                messages_to_send.append(state["messages"][0])  # Keep system prompt
+                messages_to_send.extend(state["messages"][-max_history_messages:])
+
+            if not messages_to_send:  # Handle empty initial state if necessary
+                return {"messages": state["messages"]}  # Or handle appropriately
+
+            return {"messages": [self.llm.invoke(messages_to_send)], "explored": True}
+
         return {"messages": state["messages"]}
 
     def _analyzer_node(self, state: State) -> State:
@@ -651,16 +661,21 @@ class ChatbotExplorer:
                 if "add" in node_name.lower() or "order_drink" in node_name.lower():
                     node = nodes_map[node_name]
                     # Check if this should likely be nested under a parent
-                    if not node.get("parent_names") and node_name not in all_child_names:
+                    if (
+                        not node.get("parent_names")
+                        and node_name not in all_child_names
+                    ):
                         potentially_misplaced.append(node_name)
 
             if potentially_misplaced:
-                print(f"   Found {len(potentially_misplaced)} potentially misplaced nodes: {', '.join(potentially_misplaced)}")
+                print(
+                    f"   Found {len(potentially_misplaced)} potentially misplaced nodes: {', '.join(potentially_misplaced)}"
+                )
                 print("   Attempting to correct workflow hierarchy...")
 
                 # Ask the LLM to specifically review these nodes
                 correction_prompt = f"""
-                Review these potentially misplaced nodes in our workflow: {', '.join(potentially_misplaced)}
+                Review these potentially misplaced nodes in our workflow: {", ".join(potentially_misplaced)}
 
                 These nodes might need parents but were identified as root nodes. Review them carefully.
 
@@ -686,7 +701,9 @@ class ChatbotExplorer:
                     correction_content = correction_response.content
 
                     # Extract JSON from correction response
-                    match = re.search(r"\[\s*\{.+\}\s*\]", correction_content, re.DOTALL)
+                    match = re.search(
+                        r"\[\s*\{.+\}\s*\]", correction_content, re.DOTALL
+                    )
                     if match:
                         corrections = json.loads(match.group(0))
 
@@ -696,7 +713,9 @@ class ChatbotExplorer:
                             parents = correction.get("should_be_child_of", [])
 
                             if node_name in nodes_map and parents:
-                                print(f"   Correcting: '{node_name}' should be child of {parents}")
+                                print(
+                                    f"   Correcting: '{node_name}' should be child of {parents}"
+                                )
 
                                 # Update the node's parent_names
                                 nodes_map[node_name]["parent_names"] = parents
@@ -705,13 +724,23 @@ class ChatbotExplorer:
                                 for parent_name in parents:
                                     if parent_name in nodes_map:
                                         # Remove from root nodes if it was there
-                                        if node_name in [n.get("name") for n in root_nodes_dicts]:
-                                            root_nodes_dicts = [n for n in root_nodes_dicts if n.get("name") != node_name]
+                                        if node_name in [
+                                            n.get("name") for n in root_nodes_dicts
+                                        ]:
+                                            root_nodes_dicts = [
+                                                n
+                                                for n in root_nodes_dicts
+                                                if n.get("name") != node_name
+                                            ]
 
                                         # Add as child to parent
                                         parent_node = nodes_map[parent_name]
-                                        if nodes_map[node_name] not in parent_node.get("children", []):
-                                            parent_node.setdefault("children", []).append(nodes_map[node_name])
+                                        if nodes_map[node_name] not in parent_node.get(
+                                            "children", []
+                                        ):
+                                            parent_node.setdefault(
+                                                "children", []
+                                            ).append(nodes_map[node_name])
 
                         # Recalculate root nodes after corrections
                         all_child_names = set()
@@ -725,7 +754,9 @@ class ChatbotExplorer:
                             if node_name not in all_child_names
                         ]
 
-                        print(f"   After corrections: {len(root_nodes_dicts)} root node(s)")
+                        print(
+                            f"   After corrections: {len(root_nodes_dicts)} root node(s)"
+                        )
 
                 except Exception as correction_error:
                     print(f"   Error applying corrections: {correction_error}")

@@ -335,52 +335,39 @@ def main():
         supported_languages=supported_languages,
     )
 
-    # Update tracking variables
+    # Update tracking variables after the first session
     conversation_sessions.append(conversation_history)
     if new_languages:
         supported_languages = new_languages
     if new_fallback:
         fallback_message = new_fallback
     root_nodes = updated_roots
-    pending_nodes = updated_pending
+    pending_nodes = updated_pending  # This now contains initial nodes
     explored_nodes = updated_explored
 
-    session_num = 1
-    while session_num < max_sessions:
-        # Determine exploration mode for this session
-        if not pending_nodes:
-            print(
-                f"\n=== Starting general exploration session ({session_num + 1}/{max_sessions}) ==="
-            )
-            explore_node = None
-        else:
-            # Get next node to explore from pending nodes
-            explore_node = pending_nodes.pop(0)
+    # --- SIMPLIFIED EXPLORATION LOOP ---
+    session_num = 1  # Start from the second session
+    while session_num < max_sessions and pending_nodes:
+        # Get the next node to explore from the front of the queue
+        explore_node = pending_nodes.pop(0)
 
-            # Skip if already explored
-            if explore_node.name in explored_nodes:
-                # If all nodes are explored but we still have sessions, force re-exploration
-                if all(node.name in explored_nodes for node in pending_nodes):
-                    print(
-                        f"\n=== Re-exploring '{explore_node.name}' ({session_num + 1}/{max_sessions}) ==="
-                    )
-                    explored_nodes.remove(explore_node.name)  # Allow re-exploration
-                else:
-                    # Skip and continue loop without incrementing session counter
-                    continue
-            else:
-                print(
-                    f"\n=== Exploring functionality '{explore_node.name}' ({session_num + 1}/{max_sessions}) ==="
-                )
+        # Skip if already explored (should ideally not happen with pop(0), but good safeguard)
+        if explore_node.name in explored_nodes:
+            print(f"\n--- Skipping already explored node: '{explore_node.name}' ---")
+            continue
 
-        # Run exploration session with current focus
+        print(
+            f"\n=== Exploring functionality '{explore_node.name}' (Session {session_num + 1}/{max_sessions}) ==="
+        )
+
+        # Run exploration session focused on this node
         (
             conversation_history,
             _,
-            new_nodes,
+            new_nodes,  # We care about new nodes discovered from this exploration
             _,
             updated_roots,
-            updated_pending,
+            updated_pending,  # This will contain newly added nodes from the session
             updated_explored,
         ) = run_exploration_session(
             session_num,
@@ -388,41 +375,32 @@ def main():
             max_turns,
             explorer,
             the_chatbot,
-            current_node=explore_node,  # Could be None for general exploration
-            root_nodes=root_nodes,
-            pending_nodes=pending_nodes,
-            explored_nodes=explored_nodes,
+            current_node=explore_node,
+            root_nodes=root_nodes,  # Pass current roots
+            pending_nodes=pending_nodes,  # Pass current pending (will be appended to)
+            explored_nodes=explored_nodes,  # Pass current explored
             supported_languages=supported_languages,
         )
 
         # Update tracking
         conversation_sessions.append(conversation_history)
-        root_nodes = updated_roots
-        pending_nodes = updated_pending
-        explored_nodes = updated_explored
+        root_nodes = updated_roots  # Update roots (might change if relationships are re-evaluated)
+        pending_nodes = updated_pending  # This now includes nodes added during the session
+        explored_nodes = updated_explored  # Mark the node as explored
 
-        # If the explored node yielded no new nodes, switch to general exploration of root functionalities
-        if explore_node and len(new_nodes) == 0:
-            print(
-                f"No sub-functionalities found for '{explore_node.name}', switching to root exploration."
-            )
-            # Reset pending_nodes to any unexplored root functionalities
-            pending_nodes = [
-                node for node in root_nodes if node.name not in explored_nodes
-            ]
-
-        # Always increment session counter - we've used a session regardless of results
+        # Increment session counter
         session_num += 1
 
-        # In case we're running low on pending nodes, we force a general exploration next
-        if session_num < max_sessions and len(pending_nodes) < 2:
-            print(
-                "\n=== Few nodes left but sessions remaining, scheduling general exploration ==="
-            )
-            explored_nodes = set()
+    # --- END SIMPLIFIED LOOP ---
 
-    print(f"\n=== Exploration complete ({session_num} sessions) ===")
-    print(f"Discovered {len(root_nodes)} root functionalities")
+    if pending_nodes:
+        print(f"\n--- Reached max sessions ({max_sessions}) with {len(pending_nodes)} nodes still pending exploration. ---")
+    elif session_num < max_sessions:
+        print(f"\n--- Explored all discovered nodes within {session_num} sessions. ---")
+    else:
+        print(f"\n=== Exploration complete ({session_num} sessions) ===")
+
+    print(f"Discovered {len(root_nodes)} root functionalities after exploration.")
 
     # First ensure we convert all FunctionalityNodes to dicts while preserving structure
     functionality_dicts = [node.to_dict() for node in root_nodes]
