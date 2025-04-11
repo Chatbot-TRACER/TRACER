@@ -479,52 +479,62 @@ class ChatbotExplorer:
         )
 
         structuring_prompt = f"""
-    You are a Workflow Analyzer. Your task is to analyze a list of discovered chatbot functionalities (actions/steps) and conversation transcripts to determine the likely workflows or sequences a user follows.
+        You are a Workflow Analyzer specializing in sequential process modeling. Your task is to analyze a list of discovered chatbot functionalities (actions/steps) and conversation transcripts to determine the EXACT sequential workflow a user must follow.
 
-    Input Functionalities:
-    {func_list_str}
+        Input Functionalities:
+        {func_list_str}
 
-    Conversation History Snippets:
-    {str(conversation_history)[:3000]} # Include a portion of the history for context
+        Conversation History Snippets:
+        {str(conversation_history)[:3000]} # Include a portion of the history for context
 
-    Based on the functionalities and conversations, determine the dependencies and sequences. Structure the output as a JSON list of nodes, where each node represents a functionality and includes its parent(s).
+        IMPORTANT: Pay special attention to SEQUENTIAL DEPENDENCIES - some functionalities can ONLY be accessed AFTER completing others.
 
-    Rules:
-    - Represent the workflow as a directed acyclic graph (DAG).
-    - A node can have zero or more parents. Root nodes have zero parents.
-    - Use the 'name' field from the input functionalities as the primary identifier.
-    - The output MUST be a valid JSON list.
+        When analyzing the conversation flow, identify:
+        1. Mandatory starting points in the workflow
+        2. Actions that are only available after completing prerequisite steps
+        3. Branching paths that merge later in the workflow
+        4. Required sequences to complete the entire process
 
-    Output Format Example:
-    [
-    {{
-        "name": "functionality_name_1",
-        "description": "Description from input...",
-        "parameters": [{{"name": "param1", ...}}, ...],
-        "parent_names": [] // Root node
-    }},
-    {{
-        "name": "functionality_name_2",
-        "description": "Description from input...",
-        "parameters": [...],
-        "parent_names": ["functionality_name_1"] // Depends on func_1
-    }},
-    {{
-        "name": "functionality_name_3",
-        "description": "Description from input...",
-        "parameters": [...],
-        "parent_names": ["functionality_name_1"] // Also depends on func_1 (branch)
-    }},
-    {{
-        "name": "functionality_name_4",
-        "description": "Description from input...",
-        "parameters": [...],
-        "parent_names": ["functionality_name_2", "functionality_name_3"] // Depends on func_2 OR func_3 (merge)
-    }}
-    ]
+        Structure the output as a JSON list of nodes, where each node represents a functionality and includes its parent(s).
 
-    Generate the JSON list representing the workflow structure based ONLY on the provided functionalities and conversation context:
-    """
+        Rules:
+        - Represent the workflow as a directed acyclic graph (DAG)
+        - A node can have zero or more parents - Root nodes have zero parents
+        - Child nodes should ONLY be accessible AFTER their parent nodes
+        - Use the 'name' field from the input functionalities as the primary identifier
+        - The output MUST be a valid JSON list
+
+        Output Format Example:
+        [
+        {{
+            "name": "account_creation",
+            "description": "Create a new user account",
+            "parameters": ["username", "email"],
+            "parent_names": [] // Root node - the starting point
+        }},
+        {{
+            "name": "profile_setup",
+            "description": "Complete profile information",
+            "parameters": ["personal_details"],
+            "parent_names": ["account_creation"] // Can only happen AFTER account creation
+        }},
+        {{
+            "name": "security_settings",
+            "description": "Configure account security options",
+            "parameters": ["security_options"],
+            "parent_names": ["account_creation"] // Can only happen AFTER account creation
+        }},
+        {{
+            "name": "account_verification",
+            "description": "Verify account details",
+            "parameters": [],
+            "parent_names": ["profile_setup", "security_settings"] // Can only happen AFTER both previous steps
+        }}
+        ]
+
+        Generate the JSON list representing the precise sequential workflow structure:
+        """
+
         try:
             print("   Asking LLM to determine workflow structure...")
             response = self.llm.invoke(structuring_prompt)
