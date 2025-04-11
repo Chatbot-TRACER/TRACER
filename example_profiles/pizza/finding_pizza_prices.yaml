@@ -1,0 +1,84 @@
+test_name: Finding Pizza Prices
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to know the prices of different types
+    of pizzas.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You are hosting a party this weekend and want to order several pizzas for your
+    guests.
+  - Your friend recommended trying a new pizza place that has a good selection of
+    specialty pizzas.
+  - You recently heard about a promotion offering a discount on orders of three or
+    more pizzas from a local restaurant.
+  goals:
+  - Find out the prices for a {{type}} pizza of {{size}}
+  - Ask about the cost of a custom pizza with {{number}} toppings
+  - Inquire if there are any discounts for ordering {{quantity}} pizzas
+  - type:
+      function: another(3)
+      type: string
+      data:
+      - pepperoni
+      - margherita
+      - veggie
+      - BBQ chicken
+      - Hawaiian
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+  - size:
+      function: another(3)
+      type: string
+      data:
+      - small
+      - medium
+      - large
+      - extra large
+  - number:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - pizza_price:
+      type: float
+      description: The price of a specific type of pizza stated by the chatbot, either
+        from the menu or for a custom pizza based on user preferences.
+  - custom_pizza_cost:
+      type: float
+      description: The cost of a custom pizza with specified toppings and size, as
+        quoted by the chatbot in response to a user's inquiry.
+  - discount_info:
+      type: str
+      description: Information regarding any available discounts for ordering certain
+        types of pizzas, as provided by the chatbot when asked by the user.
+  - available_pizza_types:
+      type: str
+      description: A list or description of the types of pizzas available for order,
+        shared by the chatbot during the conversation.
+conversation:
+  number: 4
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question
+  - change your mind

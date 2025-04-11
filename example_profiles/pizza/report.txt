@@ -1,114 +1,109 @@
 === CHATBOT FUNCTIONALITY ANALYSIS ===
 
 ## FUNCTIONALITIES (Workflow Structure)
-- order_custom_pizza: Assists users in ordering a custom pizza by collecting size and toppings information. (Params: size, toppings)
-  - calculate_price: Calculates the total price for a pizza and drink order. (Params: size, topping, drink_type, quantity)
-  - provide_order_details: Provides the user with details of their order, including price and estimated pickup time.
-- provide_pizza_options: Provides users with available types of pizzas to order.
-  - create_custom_pizza: Allows users to select and mix different toppings for a custom pizza (Params: toppings (list of chosen ingredients))
-- provide_pizza_sizes: Provides users with the available sizes for pizzas.
-- order_drinks: Assists users in adding drink orders to their pizza order by collecting the type and quantity of drinks. (Params: drink_type, quantity)
+- provide_menu_items: Lists the types of pizzas available for order.
+  - order_predefined_pizza: Helps users in ordering predefined pizza types available in the menu. (Params: pizza_type)
+    - order_drinks: Assists users in selecting and ordering drinks to accompany their pizza order. (Params: drink_type)
+  - order_custom_pizza: Assists users in creating and ordering a custom pizza based on their preferred toppings and size. (Params: toppings, size)
+    - order_drinks: Assists users in selecting and ordering drinks to accompany their pizza order. (Params: drink_type)
+- provide_price_info: Provides users with price information for pizzas and beverages.
+- provide_order_information: Provides information on how to get the order and estimated time to receive it.
+- provide_order_time: Provides users with an estimated time for their order preparation and delivery.
+- check_opening_hours: Assists users in finding out the opening hours of the pizza establishment.
+- provide_opening_hours: Provides the opening hours of the shop.
 
 ## FUNCTIONALITIES (Raw JSON Structure)
 [
   {
-    "__type__": "FunctionalityNode",
-    "name": "order_custom_pizza",
-    "description": "Assists users in ordering a custom pizza by collecting size and toppings information.",
-    "parameters": [
-      {
-        "name": "size",
-        "type": "string",
-        "description": "Parameter size"
-      },
-      {
-        "name": "toppings",
-        "type": "string",
-        "description": "Parameter toppings"
-      }
-    ],
+    "name": "provide_menu_items",
+    "description": "Lists the types of pizzas available for order.",
+    "parameters": [],
+    "parent_names": [],
     "children": [
       {
-        "__type__": "FunctionalityNode",
-        "name": "calculate_price",
-        "description": "Calculates the total price for a pizza and drink order.",
+        "name": "order_predefined_pizza",
+        "description": "Helps users in ordering predefined pizza types available in the menu.",
         "parameters": [
-          {
-            "name": "size",
-            "type": "string",
-            "description": "Parameter size"
-          },
-          {
-            "name": "topping",
-            "type": "string",
-            "description": "Parameter topping"
-          },
-          {
-            "name": "drink_type",
-            "type": "string",
-            "description": "Parameter drink_type"
-          },
-          {
-            "name": "quantity",
-            "type": "string",
-            "description": "Parameter quantity"
-          }
+          "pizza_type"
         ],
-        "children": []
+        "parent_names": [
+          "provide_menu_items"
+        ],
+        "children": [
+          {
+            "name": "order_drinks",
+            "description": "Assists users in selecting and ordering drinks to accompany their pizza order.",
+            "parameters": [
+              "drink_type"
+            ],
+            "parent_names": [
+              "order_predefined_pizza",
+              "order_custom_pizza"
+            ],
+            "children": []
+          }
+        ]
       },
       {
-        "__type__": "FunctionalityNode",
-        "name": "provide_order_details",
-        "description": "Provides the user with details of their order, including price and estimated pickup time.",
-        "parameters": [],
-        "children": []
+        "name": "order_custom_pizza",
+        "description": "Assists users in creating and ordering a custom pizza based on their preferred toppings and size.",
+        "parameters": [
+          "toppings",
+          "size"
+        ],
+        "parent_names": [
+          "provide_menu_items"
+        ],
+        "children": [
+          {
+            "name": "order_drinks",
+            "description": "Assists users in selecting and ordering drinks to accompany their pizza order.",
+            "parameters": [
+              "drink_type"
+            ],
+            "parent_names": [
+              "order_predefined_pizza",
+              "order_custom_pizza"
+            ],
+            "children": []
+          }
+        ]
       }
     ]
   },
   {
-    "__type__": "FunctionalityNode",
-    "name": "provide_pizza_options",
-    "description": "Provides users with available types of pizzas to order.",
+    "name": "provide_price_info",
+    "description": "Provides users with price information for pizzas and beverages.",
     "parameters": [],
-    "children": [
-      {
-        "__type__": "FunctionalityNode",
-        "name": "create_custom_pizza",
-        "description": "Allows users to select and mix different toppings for a custom pizza",
-        "parameters": [
-          {
-            "name": "toppings (list of chosen ingredients)",
-            "type": "string",
-            "description": "Parameter toppings (list of chosen ingredients)"
-          }
-        ],
-        "children": []
-      }
-    ]
-  },
-  {
-    "__type__": "FunctionalityNode",
-    "name": "provide_pizza_sizes",
-    "description": "Provides users with the available sizes for pizzas.",
-    "parameters": [],
+    "parent_names": [],
     "children": []
   },
   {
-    "__type__": "FunctionalityNode",
-    "name": "order_drinks",
-    "description": "Assists users in adding drink orders to their pizza order by collecting the type and quantity of drinks.",
-    "parameters": [
-      {
-        "name": "drink_type",
-        "type": "string",
-        "description": "Parameter drink_type"
-      },
-      {
-        "name": "quantity",
-        "type": "string",
-        "description": "Parameter quantity"
-      }
-    ],
+    "name": "provide_order_information",
+    "description": "Provides information on how to get the order and estimated time to receive it.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "provide_order_time",
+    "description": "Provides users with an estimated time for their order preparation and delivery.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "check_opening_hours",
+    "description": "Assists users in finding out the opening hours of the pizza establishment.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "provide_opening_hours",
+    "description": "Provides the opening hours of the shop.",
+    "parameters": [],
+    "parent_names": [],
     "children": []
   }
 ]
@@ -119,4 +114,4 @@ No limitations discovered.
 1. English
 
 ## FALLBACK MESSAGE
-"I'm here to assist you with your pizza order! Please let me know the size of the pizza (small, medium, or large) and the toppings you'd like (cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken). Thank you!"
+I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE

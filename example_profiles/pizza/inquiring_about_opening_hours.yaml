@@ -1,0 +1,75 @@
+test_name: Inquiring About Opening Hours
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user asking about the opening hours of the pizza establishment.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You have a family gathering this weekend and need to know if the pizza establishment
+    can accommodate your plans.
+  - You're interested in trying their new pizza but want to confirm if they are open
+    on public holidays before visiting.
+  - A friend recommended this pizza place for its late-night hours, and you want to
+    check if those hours are still current.
+  goals:
+  - Inquire about the opening hours of the pizza establishment on {{day_of_week}}
+  - Ask if the shop is open on public holidays
+  - Find out if there are any special hours for {{special_event}}
+  - special_event:
+      function: random()
+      type: string
+      data:
+      - Valentine's Day
+      - New Year's Eve
+      - Halloween
+      - Super Bowl Sunday
+      - Thanksgiving
+  - day_of_week:
+      function: random()
+      type: string
+      data:
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+      - Sunday
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - opening_hours:
+      type: str
+      description: This represents the standard operating hours of the pizza establishment
+        as mentioned by the chatbot. Look for phrases indicating the days and times
+        the shop is open.
+  - holiday_hours:
+      type: str
+      description: This indicates whether the pizza establishment is open on public
+        holidays, as provided by the chatbot. It may also specify any differences
+        in hours during these holidays.
+  - special_hours:
+      type: str
+      description: This refers to any special or altered hours that the establishment
+        may have for specific occasions or events, as stated by the chatbot. It could
+        include details about unique hours for days like major sports events or holidays.
+  - available_pizza_types:
+      type: str
+      description: This consists of the list or description of different types of
+        pizzas that the establishment offers, as listed by the chatbot in response
+        to inquiries about their menu.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

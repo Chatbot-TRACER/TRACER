@@ -1,0 +1,78 @@
+test_name: Requesting Nutrition Information
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user interested in knowing the nutritional information
+    for their pizza choices (this could imply patterns of use).
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You recently started a healthier eating plan and need to monitor your calorie
+    intake closely.
+  - You have a friend who has a gluten allergy, so you're particularly attentive to
+    allergen information in food.
+  - You're planning a pizza night and want to ensure that the drinks pair well with
+    your selected pizza choices for a balanced meal.
+  goals:
+  - Request the nutritional information for a {{type}} pizza
+  - Inquire about the calories in a custom pizza with {{toppings}}
+  - Ask if the predefined pizzas contain any allergens
+  - Find out the nutritional details for drinks available with my order
+  - type:
+      function: random()
+      type: string
+      data:
+      - Margherita
+      - Pepperoni
+      - BBQ Chicken
+      - Veggie
+      - Hawaiian
+  - toppings:
+      function: another(3)
+      type: string
+      data:
+      - Extra Cheese
+      - Mushrooms
+      - Bell Peppers
+      - Olives
+      - Pineapple
+      - Jalapeños
+      - Garlic
+      - Spinach
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - calorie_count:
+      type: int
+      description: The total number of calories in a specific pizza or a custom pizza
+        as provided by the chatbot in response to the user's request for nutritional
+        information.
+  - allergen_information:
+      type: str
+      description: Details about any allergens present in predefined pizzas, as mentioned
+        by the chatbot in response to the user's inquiry regarding allergens in their
+        pizza choices.
+  - drink_nutritional_info:
+      type: str
+      description: Nutritional details for drinks available with the user's order,
+        as provided by the chatbot when the user inquires about drinks accompanying
+        their pizza order.
+  - pizza_types_available:
+      type: str
+      description: A list of types of pizzas available for order, as communicated
+        by the chatbot when describing the options to the user.
+conversation:
+  number: 4
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - single question
+  - change your mind

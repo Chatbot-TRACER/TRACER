@@ -1,0 +1,85 @@
+test_name: Understanding Ingredients of Pizzas
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user wanting to know the ingredients of a specific type
+    of pizza.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You recently enjoyed a Margherita pizza and are curious about its traditional
+    ingredients.
+  - You're planning a pizza party and want to know about custom toppings that can
+    cater to different preferences.
+  - You have dietary restrictions and need to ensure that the specific pizza you're
+    interested in accommodates those needs.
+  goals:
+  - List the ingredients in a {{pizza_type}} pizza
+  - Ask about the available toppings for a custom pizza
+  - Inquire about the sizes available for the {{pizza_type}} pizza
+  - Request to create a custom pizza with {{toppings}} and a {{size}}
+  - pizza_type:
+      function: default()
+      type: string
+      data:
+      - Margherita
+      - Pepperoni
+      - BBQ Chicken
+      - Hawaiian
+      - Veggie
+  - size:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 3
+        step: 1
+  - toppings:
+      function: another(3)
+      type: string
+      data:
+      - Olives
+      - Mushrooms
+      - Onions
+      - Jalapeños
+      - Bell Peppers
+      - Extra Cheese
+      - Spinach
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - ingredients_list:
+      type: str
+      description: A detailed list of ingredients that make up a specific type of
+        pizza mentioned by the chatbot, including any base components like dough and
+        sauce, as well as toppings.
+  - available_toppings:
+      type: str
+      description: A comprehensive list of toppings that users can choose from when
+        creating a custom pizza as provided by the chatbot, including options for
+        both vegetarian and non-vegetarian add-ons.
+  - sizes_available:
+      type: str
+      description: The different size options (e.g., small, medium, large) that the
+        chatbot mentions are available for a specific type of pizza, helping users
+        understand their choices.
+  - custom_pizza_confirmation:
+      type: str
+      description: Confirmation message or details provided by the chatbot when a
+        custom pizza is successfully created, including the chosen ingredients and
+        the specified size.
+conversation:
+  number: 3
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - single question
+  - change your mind

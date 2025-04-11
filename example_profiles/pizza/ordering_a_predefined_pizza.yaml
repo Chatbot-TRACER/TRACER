@@ -1,0 +1,69 @@
+test_name: Ordering a Predefined Pizza
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to order a predefined pizza from the menu.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You have a clear preference for a large pepperoni pizza with extra cheese and
+    a side of garlic bread.
+  - You recently checked the menu online and noted that the large pepperoni pizza
+    costs $15.99.
+  - You often order pizza for movie nights and want to ensure the total includes a
+    couple of sodas for the event.
+  goals:
+  - Order a {{size}} {{pizza_type}} pizza
+  - Ask for the price of a {{pizza_type}} pizza
+  - Inquire about the available toppings for a Custom pizza
+  - Request the total cost of my pizza order including drinks
+  - pizza_type:
+      function: random()
+      type: string
+      data:
+      - Margherita
+      - Pepperoni
+      - Hawaiian
+      - BBQ Chicken
+      - Veggie Deluxe
+  - size:
+      function: random()
+      type: string
+      data:
+      - Small
+      - Medium
+      - Large
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - pizza_types_available:
+      type: str
+      description: The list of predefined pizza types mentioned by the chatbot when
+        prompted about available pizzas on the menu.
+  - pizza_price:
+      type: float
+      description: The price quoted by the chatbot for a specific predefined pizza
+        when asked by the user.
+  - available_toppings:
+      type: str
+      description: The list of toppings provided by the chatbot for a custom pizza
+        when the user inquires about options.
+  - total_cost:
+      type: float
+      description: The final cost of the pizza order, including any drinks, as mentioned
+        by the chatbot after the user requests the total price.
+conversation:
+  number: 3
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - change your mind
+  - single question

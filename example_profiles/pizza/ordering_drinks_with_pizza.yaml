@@ -1,0 +1,73 @@
+test_name: Ordering Drinks with Pizza
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user looking to order drinks to accompany a pizza order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You are craving a classic pepperoni pizza and want to find the perfect complementary
+    drink.
+  - You recently heard that craft beers can enhance the flavors of pizza, so you're
+    interested in these options.
+  - You're on a budget and want to ensure that the total price for drinks won't exceed
+    your planned spending for the meal.
+  goals:
+  - Order a {{quantity}} {{drink}} to accompany my pizza
+  - Inquire about the total price for my drink order
+  - Ask for drink recommendations that pair well with my selected pizza
+  - quantity:
+      function: random(5)
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+  - drink:
+      function: random()
+      type: string
+      data:
+      - cola
+      - lemonade
+      - iced tea
+      - sparkling water
+      - orange juice
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - total_price:
+      type: float
+      description: The total cost quoted by the chatbot for the drink order, which
+        includes any additional charges for selected beverages. Look for a statement
+        from the chatbot that summarizes the final cost after all selections are made.
+  - drink_recommendations:
+      type: str
+      description: Suggestions provided by the chatbot for drinks that pair well with
+        the user's selected pizza. This will appear as a list of drink options in
+        the chatbot's response, based on the type of pizza chosen.
+  - ordered_drinks:
+      type: str
+      description: A summary of the specific drinks that the user has selected to
+        accompany their pizza order, including sizes if applicable. The chatbot will
+        confirm the ordered drinks in its response before finalizing the order.
+  - availability_status:
+      type: str
+      description: Information regarding the availability of the selected drinks,
+        confirming whether they are in stock or if any substitutions are necessary.
+        This will typically be found in the chatbot's response when discussing drink
+        options.
+conversation:
+  number: 3
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - change your mind
+  - single question
