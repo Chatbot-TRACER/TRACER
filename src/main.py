@@ -345,7 +345,6 @@ def main():
     pending_nodes = updated_pending
     explored_nodes = updated_explored
 
-    # Continue with depth-first exploration of discovered functionalities
     session_num = 1
     while session_num < max_sessions:
         # Determine exploration mode for this session
@@ -402,30 +401,27 @@ def main():
         pending_nodes = updated_pending
         explored_nodes = updated_explored
 
-        # If this is a functionality exploration and we didn't find any sub-functionalities,
-        # set a "max attempts" counter to avoid getting stuck
+        # If the explored node yielded no new nodes, switch to general exploration of root functionalities
         if explore_node and len(new_nodes) == 0:
-            print(f"No sub-functionalities found for '{explore_node.name}'")
+            print(
+                f"No sub-functionalities found for '{explore_node.name}', switching to root exploration."
+            )
+            # Reset pending_nodes to any unexplored root functionalities
+            pending_nodes = [
+                node for node in root_nodes if node.name not in explored_nodes
+            ]
 
         # Always increment session counter - we've used a session regardless of results
         session_num += 1
 
-        # If we're running out of pending nodes but still have sessions left,
-        # generate some "exploratory" queries to potentially discover new functionalities
-        if (
-            session_num < max_sessions
-            and len(pending_nodes) < 2
-            and session_num % 3 != 0
-        ):
+        # In case we're running low on pending nodes, we force a general exploration next
+        if session_num < max_sessions and len(pending_nodes) < 2:
             print(
                 "\n=== Few nodes left but sessions remaining, scheduling general exploration ==="
             )
-            # Force next iteration to be general exploration
             explored_nodes = set()
 
-    print(
-        f"\n=== Exploration complete ({session_num}/{max_sessions} sessions used) ==="
-    )
+    print(f"\n=== Exploration complete ({session_num} sessions) ===")
     print(f"Discovered {len(root_nodes)} root functionalities")
 
     # Convert FunctionalityNodes to dicts for further processing
