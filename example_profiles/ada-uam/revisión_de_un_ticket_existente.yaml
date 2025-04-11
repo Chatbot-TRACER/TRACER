@@ -1,0 +1,74 @@
+test_name: Revisión de un ticket existente
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúas como un usuario que desea consultar el estado de un ticket previamente
+    abierto en el sistema del CAU.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - El ticket que deseas revisar es el número 2345, el cual fue creado hace dos semanas
+    para solucionar un problema de acceso a la red.
+  - Has intentado comunicarte con el soporte técnico varias veces y estás frustrado
+    por la falta de respuesta sobre el estado de tu ticket.
+  - Te gustaría conocer el proceso para abrir un nuevo ticket, ya que has identificando
+    un nuevo problema que necesita atención inmediata.
+  goals:
+  - Consultar el estado de mi ticket con el ID {{ticket_id}}
+  - Preguntar sobre el proceso para crear un nuevo ticket
+  - Solicitar información sobre los requisitos para acceder al sistema de gestión
+    de incidencias
+  - ticket_id:
+      function: random()
+      type: string
+      data:
+      - TICKET1234
+      - TICKET5678
+      - TICKET9101
+chatbot:
+  is_starter: false
+  fallback: '<p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
+
+    <p>Disculpa, pero... ¿Me lo puedes repetir con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
+
+    <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres, puedes
+    consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n'
+  output:
+  - ticket_status:
+      type: str
+      description: El estado que el chatbot proporciona sobre el ticket existente
+        solicitado por el usuario, indicando si está abierto, cerrado o en progreso.
+  - ticket_id:
+      type: str
+      description: El ID del ticket mencionado por el usuario para la consulta, que
+        debe ser confirmado por el chatbot en su respuesta.
+  - ticket_creation_process:
+      type: str
+      description: Información que el chatbot brinda sobre el proceso para crear un
+        nuevo ticket, incluyendo los requisitos necesarios, como el inicio de sesión
+        con credenciales institucionales.
+  - incident_management_access_requirements:
+      type: str
+      description: Detalles sobre los requisitos necesarios para acceder al sistema
+        de gestión de incidencias, como métodos de acceso (IP UAM, Wi-Fi universitario,
+        o VPN remota) que el chatbot menciona.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

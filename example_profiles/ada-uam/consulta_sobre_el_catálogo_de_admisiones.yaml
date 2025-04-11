@@ -1,0 +1,64 @@
+test_name: Consulta sobre el catálogo de admisiones
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúas como un estudiante potencial que desea información sobre admisión a
+    grados en la UAM.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Tienes interés en estudiar Ciencias Sociales y necesitas información específica
+    sobre la facultad de esa área en la UAM.
+  - Has oído comentarios positivos de amigos sobre la calidad académica y los programas
+    que ofrece la UAM, lo que te motiva a solicitar información.
+  - El plazo de inscripción para el próximo ciclo escolar se acerca, y quieres asegurarte
+    de no perder la oportunidad de aplicar.
+  goals:
+  - Solicitar información sobre los requisitos para la admisión a grados en la UAM
+  - Preguntar sobre los plazos de inscripción y documentación necesaria para la admisión
+  - Pedir detalles sobre la facultad correspondiente para un programa específico
+chatbot:
+  is_starter: false
+  fallback: '<p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
+
+    <p>Disculpa, pero... ¿Me lo puedes repetir con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
+
+    <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres, puedes
+    consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n'
+  output:
+  - requisitos_admision:
+      type: str
+      description: Los requisitos necesarios para la admisión a grados en la UAM,
+        que el chatbot proporciona al usuario al consultar sobre el proceso de admisión.
+  - plazos_inscripcion:
+      type: str
+      description: La información sobre los plazos de inscripción que el chatbot ofrece
+        cuando el usuario pregunta sobre las fechas límite para aplicar.
+  - documentacion_necesaria:
+      type: str
+      description: Los tipos de documentos que el chatbot menciona como necesarios
+        para completar el proceso de admisión.
+  - facultad_programa_especifico:
+      type: str
+      description: Los detalles sobre la facultad correspondiente a un programa específico
+        que el chatbot proporciona en respuesta a una consulta sobre un programa académico.
+conversation:
+  number: 3
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

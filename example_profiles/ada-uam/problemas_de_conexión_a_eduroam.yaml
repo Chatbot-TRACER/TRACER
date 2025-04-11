@@ -1,0 +1,70 @@
+test_name: Problemas de conexión a Eduroam
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un estudiante que experimenta problemas de conexión a la red Eduroam
+    y busca soluciones.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has intentado conectarte a Eduroam desde la biblioteca, pero no logras establecer
+    la conexión y tus clases dependen de ello.
+  - Te preocupa que los problemas de conexión puedan afectar tus calificaciones, ya
+    que necesitas acceder a materiales en línea.
+  - Has escuchado que algunos compañeros han tenido éxito al crear un ticket de asistencia
+    técnica, así que decides intentarlo también.
+  goals:
+  - Obtener ayuda para conectarme a la red Eduroam
+  - Crear un ticket de asistencia técnica para solucionar problemas de conexión
+  - Consultar el catálogo de servicios relacionados con la red Eduroam
+  - Preguntar sobre los requisitos para conectarme a Eduroam desde una red externa
+chatbot:
+  is_starter: false
+  fallback: '<p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
+
+    <p>Disculpa, pero... ¿Me lo puedes repetir con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
+
+    <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres, puedes
+    consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n'
+  output:
+  - pasos_para_crear_ticket:
+      type: str
+      description: Información sobre los pasos necesarios que el chatbot menciona
+        para crear un ticket de asistencia técnica, que incluye el inicio de sesión
+        con credenciales institucionales y los métodos de acceso.
+  - requisitos_conexion_eduroam:
+      type: str
+      description: Detalles proporcionados por el chatbot sobre los requisitos necesarios
+        para conectarse a la red Eduroam desde una red externa, incluyendo cualquier
+        información relevante acerca de credenciales o configuraciones.
+  - disponibilidad_servicios_cau:
+      type: str
+      description: Un resumen de los servicios relacionados con la red Eduroam que
+        el chatbot menciona están disponibles a través del Centro de Atención al Usuario
+        de Tecnologías de Información (CAU).
+  - recordatorio_crear_ticket:
+      type: str
+      description: Un recordatorio del chatbot que asegura al usuario que debe crear
+        un ticket para recibir asistencia técnica, y que confirma los pasos que debe
+        seguir para hacerlo.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question
+  - long phrases

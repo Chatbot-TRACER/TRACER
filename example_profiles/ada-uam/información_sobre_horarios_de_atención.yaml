@@ -1,0 +1,66 @@
+test_name: Información sobre horarios de atención
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúas como un estudiante que necesita saber los horarios de atención del
+    Centro de Atención a Usuarios (CAU) para planear una visita.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Estás organizando tus estudios y deseas asegurarte de que el CAU esté abierto
+    cuando planeas ir.
+  - Te han comentado que durante las vacaciones de invierno el horario puede cambiar,
+    así que necesitas confirmar.
+  - Ya conoces algunos servicios del CAU, pero quieres ver si hay novedades o cambios
+    en el catálogo.
+  goals:
+  - Consultar los horarios de atención normales y en períodos de suspensión del CAU
+  - Preguntar qué días no está disponible el CAU para atención
+  - Solicitar el catálogo de servicios ofrecidos por el CAU
+chatbot:
+  is_starter: false
+  fallback: '<p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
+
+    <p>Disculpa, pero... ¿Me lo puedes repetir con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
+
+    <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres, puedes
+    consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n'
+  output:
+  - horarios_atencion_normales:
+      type: str
+      description: Horarios regulares de atención proporcionados por el chatbot para
+        el Centro de Atención a Usuarios (CAU), que deberían incluir días y horas
+        específicas.
+  - dias_no_disponibles:
+      type: str
+      description: Días específicos en los que el CAU no estará disponible para atención,
+        como los que el chatbot menciona como no disponibles para consultas.
+  - catalogo_servicios:
+      type: str
+      description: La información sobre los servicios ofrecidos por el CAU, tal como
+        la describe el chatbot al solicitar el catálogo de servicios.
+  - pasos_crear_ticket:
+      type: str
+      description: Instrucciones que el chatbot proporciona sobre cómo crear un ticket
+        para asistencia técnica, incluyendo información sobre los requisitos de inicio
+        de sesión y métodos de acceso.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

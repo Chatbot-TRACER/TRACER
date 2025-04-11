@@ -1,81 +1,124 @@
 === CHATBOT FUNCTIONALITY ANALYSIS ===
 
 ## FUNCTIONALITIES (Workflow Structure)
-- get_user_identification_help: Provides users with guidance on how to obtain their ID-UAM identifier or reset their password, including links and steps to follow.
-  - contact_cau: Allows users to contact the Centro de Atención a Usuarios (CAU) for assistance with their ID-UAM or account-related issues.
-  - provide_password_reset_steps: Offers detailed steps on how to reset the user's password, including how to obtain an activation code.
-    - provide_activation_code_instructions: Guides users on how to obtain the activation code necessary for changing their password.
-  - fetch_identification_by_dni: Guides users on how to search for their ID-UAM identifier using their DNI (National ID).
-  - modify_user_id: Informs users on how to request a modification of their ID-UAM identifier if they have changed their name or if it is not recognized.
-- provide_cau_contact_info: Supplies users with detailed contact information for the Centro de Atención a Usuarios (CAU), including email, phone number, and physical address.
-- offer_service_catalog: Directs users to the catalog of services offered by the CAU, providing a link for further information.
-- provide_password_change_reminder: Reminds users to change their password periodically to avoid account locking.
+- provide_menu: Shows the user available options related to queries about services offered by the Center for User Attention of Information Technologies (CAU).
+- explain_ticket_creation: Provides guidance on how to create a ticket, including the requirement to log in with institutional credentials and access methods (UAM IP, university Wi-Fi, or remote VPN).
+  - show_ticket_buttons: Displays buttons for the user to create or consult tickets, allowing the user to select the appropriate action related to their requests.
+  - confirm_ticket_requirements: Reminds the user that they need to create a ticket for technical assistance and confirms the steps required to submit it.
+- clarify_service_inquiries: Assures the user that the chatbot can assist with questions regarding services available at the Center for User Attention of Information Technologies (CAU).
+- provide_password_change_instructions: Gives specific instructions on how to change the ID-UAM password, including generating an activation code and necessary links.
+- direct_to_faculty_resources: Redirects users to their respective faculty or school for inquiries about admission and registration processes.
+- provide_admission_links: Supplies specific links to resources related to admission for different academic programs (grados, másteres, etc.).
+- explain_access_requirements: Provides information regarding the necessary conditions to access the incident management system, including the need for credentials and connection requirements.
+- provide_catalog_link: Offers the user a link to consult the catalog of services offered by the CAU.
+- offer_service_catalog: Suggests users consult the catalog of services offered by the Center for User Attention for additional information, enabling them to explore available services beyond their current query.
+- request_clarification: Asks users to rephrase their questions when the chatbot cannot clearly understand the inquiry, which helps ensure accurate responses and keeps the interaction going.
+- provide_location_details: Provides the physical address and campus details for the Center for User Attention, which helps users with in-person visits.
+- connect_issues: Provides follow-up options in relation to Eduroam connectivity issues, suggesting to select an option that best fits their query or to contact CAU for further assistance.
 
 ## FUNCTIONALITIES (Raw JSON Structure)
 [
   {
-    "__type__": "FunctionalityNode",
-    "name": "get_user_identification_help",
-    "description": "Provides users with guidance on how to obtain their ID-UAM identifier or reset their password, including links and steps to follow.",
+    "name": "provide_menu",
+    "description": "Shows the user available options related to queries about services offered by the Center for User Attention of Information Technologies (CAU).",
     "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "explain_ticket_creation",
+    "description": "Provides guidance on how to create a ticket, including the requirement to log in with institutional credentials and access methods (UAM IP, university Wi-Fi, or remote VPN).",
+    "parameters": [],
+    "parent_names": [],
     "children": [
       {
-        "__type__": "FunctionalityNode",
-        "name": "contact_cau",
-        "description": "Allows users to contact the Centro de Atención a Usuarios (CAU) for assistance with their ID-UAM or account-related issues.",
+        "name": "show_ticket_buttons",
+        "description": "Displays buttons for the user to create or consult tickets, allowing the user to select the appropriate action related to their requests.",
         "parameters": [],
+        "parent_names": [
+          "explain_ticket_creation"
+        ],
         "children": []
       },
       {
-        "__type__": "FunctionalityNode",
-        "name": "provide_password_reset_steps",
-        "description": "Offers detailed steps on how to reset the user's password, including how to obtain an activation code.",
+        "name": "confirm_ticket_requirements",
+        "description": "Reminds the user that they need to create a ticket for technical assistance and confirms the steps required to submit it.",
         "parameters": [],
-        "children": [
-          {
-            "__type__": "FunctionalityNode",
-            "name": "provide_activation_code_instructions",
-            "description": "Guides users on how to obtain the activation code necessary for changing their password.",
-            "parameters": [],
-            "children": []
-          }
-        ]
-      },
-      {
-        "__type__": "FunctionalityNode",
-        "name": "fetch_identification_by_dni",
-        "description": "Guides users on how to search for their ID-UAM identifier using their DNI (National ID).",
-        "parameters": [],
-        "children": []
-      },
-      {
-        "__type__": "FunctionalityNode",
-        "name": "modify_user_id",
-        "description": "Informs users on how to request a modification of their ID-UAM identifier if they have changed their name or if it is not recognized.",
-        "parameters": [],
+        "parent_names": [
+          "explain_ticket_creation"
+        ],
         "children": []
       }
     ]
   },
   {
-    "__type__": "FunctionalityNode",
-    "name": "provide_cau_contact_info",
-    "description": "Supplies users with detailed contact information for the Centro de Atención a Usuarios (CAU), including email, phone number, and physical address.",
+    "name": "clarify_service_inquiries",
+    "description": "Assures the user that the chatbot can assist with questions regarding services available at the Center for User Attention of Information Technologies (CAU).",
     "parameters": [],
+    "parent_names": [],
     "children": []
   },
   {
-    "__type__": "FunctionalityNode",
+    "name": "provide_password_change_instructions",
+    "description": "Gives specific instructions on how to change the ID-UAM password, including generating an activation code and necessary links.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "direct_to_faculty_resources",
+    "description": "Redirects users to their respective faculty or school for inquiries about admission and registration processes.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "provide_admission_links",
+    "description": "Supplies specific links to resources related to admission for different academic programs (grados, másteres, etc.).",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "explain_access_requirements",
+    "description": "Provides information regarding the necessary conditions to access the incident management system, including the need for credentials and connection requirements.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "provide_catalog_link",
+    "description": "Offers the user a link to consult the catalog of services offered by the CAU.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
     "name": "offer_service_catalog",
-    "description": "Directs users to the catalog of services offered by the CAU, providing a link for further information.",
+    "description": "Suggests users consult the catalog of services offered by the Center for User Attention for additional information, enabling them to explore available services beyond their current query.",
     "parameters": [],
+    "parent_names": [],
     "children": []
   },
   {
-    "__type__": "FunctionalityNode",
-    "name": "provide_password_change_reminder",
-    "description": "Reminds users to change their password periodically to avoid account locking.",
+    "name": "request_clarification",
+    "description": "Asks users to rephrase their questions when the chatbot cannot clearly understand the inquiry, which helps ensure accurate responses and keeps the interaction going.",
     "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "provide_location_details",
+    "description": "Provides the physical address and campus details for the Center for User Attention, which helps users with in-person visits.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "connect_issues",
+    "description": "Provides follow-up options in relation to Eduroam connectivity issues, suggesting to select an option that best fits their query or to contact CAU for further assistance.",
+    "parameters": [],
+    "parent_names": [],
     "children": []
   }
 ]
@@ -86,4 +129,6 @@ No limitations discovered.
 1. Spanish
 
 ## FALLBACK MESSAGE
-<p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+<p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
+<p>Disculpa, pero... ¿Me lo puedes repetir con otras palabras? o, si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
+<p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
