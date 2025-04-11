@@ -492,7 +492,7 @@ class ChatbotExplorer:
         )
 
         structuring_prompt = f"""
-        You are a Workflow Analyzer specializing in sequential process modeling. Your task is to analyze a list of discovered chatbot functionalities (actions/steps) and conversation transcripts to determine the EXACT sequential workflow a user must follow.
+        You are a Workflow Dependency Analyzer specializing in sequential process modeling. Your task is to analyze a list of discovered chatbot functionalities (actions/steps) and conversation transcripts to determine the EXACT sequential workflow a user must follow.
 
         Input Functionalities:
         {func_list_str}
@@ -500,51 +500,61 @@ class ChatbotExplorer:
         Conversation History Snippets:
         {str(conversation_history)[:3000]} # Include a portion of the history for context
 
-        IMPORTANT: Pay special attention to SEQUENTIAL DEPENDENCIES - some functionalities can ONLY be accessed AFTER completing others.
+        CRITICAL TASK: Determine which functionalities depend on others and CANNOT be accessed without first completing their prerequisites.
+
+        EXAMPLE:
+        In an ordering system:
+        - "order_drinks" can ONLY happen AFTER "order_pizza" because the workflow forces users to order main items first
+        - "confirm_order" can ONLY happen AFTER all items are selected
 
         When analyzing the conversation flow, identify:
         1. Mandatory starting points in the workflow
         2. Actions that are only available after completing prerequisite steps
-        3. Branching paths that merge later in the workflow
-        4. Required sequences to complete the entire process
+        3. The actual ORDER in which users must perform actions
+
+        DEEPLY ANALYZE:
+        1. Which actions must be performed FIRST before others become available?
+        2. Which actions are sub-steps of larger processes?
+        3. Where in conversations do users get REDIRECTED to complete prerequisite steps?
 
         Structure the output as a JSON list of nodes, where each node represents a functionality and includes its parent(s).
 
         Rules:
-        - Represent the workflow as a directed acyclic graph (DAG)
-        - A node can have zero or more parents - Root nodes have zero parents
-        - Child nodes should ONLY be accessible AFTER their parent nodes
+        - A node with parents can ONLY be accessed AFTER its parent nodes are completed
+        - Root nodes (no parents) are the ONLY valid starting points in the conversation
         - Use the 'name' field from the input functionalities as the primary identifier
-        - The output MUST be valid JSON - DO NOT include comments in the JSON
+        - The output MUST be valid JSON - DO NOT include comments
         - Empty arrays should be represented as [] without comments
 
         Output Format Example:
         [
         {{
-            "name": "account_creation",
-            "description": "Create a new user account",
-            "parameters": ["username", "email"],
+            "name": "start_order",
+            "description": "Begin a new order",
+            "parameters": [],
             "parent_names": []
         }},
         {{
-            "name": "profile_setup",
-            "description": "Complete profile information",
-            "parameters": ["personal_details"],
-            "parent_names": ["account_creation"]
+            "name": "select_main_item",
+            "description": "Select a main item for the order",
+            "parameters": ["item_type"],
+            "parent_names": ["start_order"]
         }},
         {{
-            "name": "security_settings",
-            "description": "Configure account security options",
-            "parameters": ["security_options"],
-            "parent_names": ["account_creation"]
+            "name": "add_side_items",
+            "description": "Add side items to the order",
+            "parameters": ["side_item_type"],
+            "parent_names": ["select_main_item"]
         }},
         {{
-            "name": "account_verification",
-            "description": "Verify account details",
-            "parameters": [],
-            "parent_names": ["profile_setup", "security_settings"]
+            "name": "checkout",
+            "description": "Complete the order",
+            "parameters": ["payment_method"],
+            "parent_names": ["select_main_item"]
         }}
         ]
+
+        PAY CLOSE ATTENTION to the conversation flow to identify true dependencies, not just related concepts. Actions that can only happen AFTER another action MUST list that action in parent_names.
 
         Generate the JSON list representing the precise sequential workflow structure:
         """
@@ -570,10 +580,8 @@ class ChatbotExplorer:
                     break
 
             if not json_str:
-                print("   Error: No valid JSON detected in LLM response.")
-                print(f"   LLM Response Content:\n{response_content}")
-                # Return the state unchanged if no valid JSON is found
-                return state
+                # Last resort - assume the entire content might be JSON
+                json_str = response_content.strip()
 
             print("   Parsing workflow structure from LLM response...")
             # Remove JavaScript-style comments before parsing
@@ -596,9 +604,6 @@ class ChatbotExplorer:
             # Clear existing children and add based on parent_names
             for node_info in nodes_map.values():
                 node_info["children"] = []  # Reset children list
-
-            root_nodes_dicts = []
-            processed_nodes = set()
 
             # Add children based on parent_names
             for node_name, node_info in nodes_map.items():
@@ -634,8 +639,96 @@ class ChatbotExplorer:
             ]
 
             print(f"   Built structure with {len(root_nodes_dicts)} root node(s).")
-            # Optional: Print structure for debugging
-            # print(json.dumps(root_nodes_dicts, indent=2))
+
+            # Check for improper nesting - identify functionalities that should be nested
+            # but aren't properly connected in the parent-child relationships
+            print("   Verifying proper nesting of dependent functionalities...")
+            all_node_names = set(nodes_map.keys())
+            potentially_misplaced = []
+
+            # Look for nodes with names suggesting they should be nested
+            for node_name in all_node_names:
+                if "add" in node_name.lower() or "order_drink" in node_name.lower():
+                    node = nodes_map[node_name]
+                    # Check if this should likely be nested under a parent
+                    if not node.get("parent_names") and node_name not in all_child_names:
+                        potentially_misplaced.append(node_name)
+
+            if potentially_misplaced:
+                print(f"   Found {len(potentially_misplaced)} potentially misplaced nodes: {', '.join(potentially_misplaced)}")
+                print("   Attempting to correct workflow hierarchy...")
+
+                # Ask the LLM to specifically review these nodes
+                correction_prompt = f"""
+                Review these potentially misplaced nodes in our workflow: {', '.join(potentially_misplaced)}
+
+                These nodes might need parents but were identified as root nodes. Review them carefully.
+
+                Current workflow structure:
+                {json.dumps(root_nodes_dicts, indent=2)[:1000]}
+
+                For each potentially misplaced node, determine:
+                1. Should it be a child of another node? If yes, which one(s)?
+                2. Or is it correctly a root/starting node?
+
+                Return ONLY a JSON list of corrections with this structure:
+                [
+                    {{
+                        "node_name": "name_of_node",
+                        "should_be_child_of": ["parent1", "parent2"]
+                    }},
+                    ...
+                ]
+                """
+
+                try:
+                    correction_response = self.llm.invoke(correction_prompt)
+                    correction_content = correction_response.content
+
+                    # Extract JSON from correction response
+                    match = re.search(r"\[\s*\{.+\}\s*\]", correction_content, re.DOTALL)
+                    if match:
+                        corrections = json.loads(match.group(0))
+
+                        # Apply corrections
+                        for correction in corrections:
+                            node_name = correction.get("node_name")
+                            parents = correction.get("should_be_child_of", [])
+
+                            if node_name in nodes_map and parents:
+                                print(f"   Correcting: '{node_name}' should be child of {parents}")
+
+                                # Update the node's parent_names
+                                nodes_map[node_name]["parent_names"] = parents
+
+                                # Re-establish parent-child relationships
+                                for parent_name in parents:
+                                    if parent_name in nodes_map:
+                                        # Remove from root nodes if it was there
+                                        if node_name in [n.get("name") for n in root_nodes_dicts]:
+                                            root_nodes_dicts = [n for n in root_nodes_dicts if n.get("name") != node_name]
+
+                                        # Add as child to parent
+                                        parent_node = nodes_map[parent_name]
+                                        if nodes_map[node_name] not in parent_node.get("children", []):
+                                            parent_node.setdefault("children", []).append(nodes_map[node_name])
+
+                        # Recalculate root nodes after corrections
+                        all_child_names = set()
+                        for node_info in nodes_map.values():
+                            for child_info in node_info.get("children", []):
+                                all_child_names.add(child_info["name"])
+
+                        root_nodes_dicts = [
+                            node_info
+                            for node_name, node_info in nodes_map.items()
+                            if node_name not in all_child_names
+                        ]
+
+                        print(f"   After corrections: {len(root_nodes_dicts)} root node(s)")
+
+                except Exception as correction_error:
+                    print(f"   Error applying corrections: {correction_error}")
 
             # Update state with the structured list of dictionaries
             return {**state, "discovered_functionalities": root_nodes_dicts}
