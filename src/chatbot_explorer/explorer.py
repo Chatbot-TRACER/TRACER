@@ -570,8 +570,10 @@ class ChatbotExplorer:
                     break
 
             if not json_str:
-                # Last resort - assume the entire content might be JSON
-                json_str = response_content.strip()
+                print("   Error: No valid JSON detected in LLM response.")
+                print(f"   LLM Response Content:\n{response_content}")
+                # Return the state unchanged if no valid JSON is found
+                return state
 
             print("   Parsing workflow structure from LLM response...")
             # Remove JavaScript-style comments before parsing
