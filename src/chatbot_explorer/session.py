@@ -498,11 +498,13 @@ def run_exploration_session(
             "Explore basic information and general capabilities of the chatbot"
         )
 
+    primary_language = supported_languages[0] if supported_languages else None
+
     # Add language information to the system prompt if available
     language_instruction = ""
     if session_num > 0 and supported_languages:
         language_str = ", ".join(supported_languages)
-        language_instruction = f"\n\nIMPORTANT: The chatbot supports these languages: {language_str}. Adapt your questions accordingly."
+        language_instruction = f"\n\nIMPORTANT: The chatbot supports these languages: {language_str}. YOU MUST COMMUNICATE PRIMARILY IN {language_str}."
 
     # Create the system prompt
     system_content = f"""You are an Explorer AI tasked with learning about another chatbot you're interacting with.
@@ -528,7 +530,9 @@ def run_exploration_session(
         }
     ]
 
-    # Generate the initial question based on current node context
+    # Update the initial question generation inside run_exploration_session
+
+    # Generate the initial question based on current node context and language
     if current_node:
         question_prompt = f"""
         You need to generate an initial question to explore a chatbot functionality.
@@ -538,6 +542,8 @@ def run_exploration_session(
         Description: {current_node.description}
         Parameters: {", ".join(p.get("name", "?") for p in current_node.parameters) if current_node.parameters else "None"}
 
+        {"IMPORTANT: Generate your question in " + primary_language + "." if primary_language else ""}
+
         Generate a simple, direct question that would help explore this functionality in depth.
         Your question should be appropriate for starting a conversation about this specific feature.
         """
@@ -545,7 +551,17 @@ def run_exploration_session(
         question_response = explorer.llm.invoke(question_prompt)
         initial_question = question_response.content.strip().strip("\"'")
     else:
-        initial_question = "Hello! What can you help me with?"
+        if primary_language and primary_language.lower() == "spanish":
+            initial_question = "¡Hola! ¿En qué me puedes ayudar hoy?"
+        elif primary_language and primary_language.lower() == "french":
+            initial_question = "Bonjour! Comment pouvez-vous m'aider aujourd'hui?"
+        elif primary_language:
+            # Ask the LLM to translate the greeting to the appropriate language
+            translation_prompt = f"Translate 'Hello! What can you help me with today?' to {primary_language}:"
+            translation = explorer.llm.invoke(translation_prompt).content.strip()
+            initial_question = translation
+        else:
+            initial_question = "Hello! What can you help me with today?"
 
     print(f"\nExplorer: {initial_question}")
 

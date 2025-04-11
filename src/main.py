@@ -347,19 +347,34 @@ def main():
 
     # Continue with depth-first exploration of discovered functionalities
     session_num = 1
-    while session_num < max_sessions and pending_nodes:
-        # Get next node to explore
-        current_node = pending_nodes.pop(0)
+    while session_num < max_sessions:
+        # Determine exploration mode for this session
+        if not pending_nodes:
+            print(
+                f"\n=== Starting general exploration session ({session_num + 1}/{max_sessions}) ==="
+            )
+            explore_node = None
+        else:
+            # Get next node to explore from pending nodes
+            explore_node = pending_nodes.pop(0)
 
-        # Skip if already explored
-        if current_node.name in explored_nodes:
-            continue
+            # Skip if already explored
+            if explore_node.name in explored_nodes:
+                # If all nodes are explored but we still have sessions, force re-exploration
+                if all(node.name in explored_nodes for node in pending_nodes):
+                    print(
+                        f"\n=== Re-exploring '{explore_node.name}' ({session_num + 1}/{max_sessions}) ==="
+                    )
+                    explored_nodes.remove(explore_node.name)  # Allow re-exploration
+                else:
+                    # Skip and continue loop without incrementing session counter
+                    continue
+            else:
+                print(
+                    f"\n=== Exploring functionality '{explore_node.name}' ({session_num + 1}/{max_sessions}) ==="
+                )
 
-        print(
-            f"\n=== Starting depth-first exploration of '{current_node.name}' ({session_num + 1}/{max_sessions}) ==="
-        )
-
-        # Run exploration session focused on this functionality
+        # Run exploration session with current focus
         (
             conversation_history,
             _,
@@ -374,7 +389,7 @@ def main():
             max_turns,
             explorer,
             the_chatbot,
-            current_node=current_node,
+            current_node=explore_node,  # Could be None for general exploration
             root_nodes=root_nodes,
             pending_nodes=pending_nodes,
             explored_nodes=explored_nodes,
@@ -387,9 +402,30 @@ def main():
         pending_nodes = updated_pending
         explored_nodes = updated_explored
 
+        # If this is a functionality exploration and we didn't find any sub-functionalities,
+        # set a "max attempts" counter to avoid getting stuck
+        if explore_node and len(new_nodes) == 0:
+            print(f"No sub-functionalities found for '{explore_node.name}'")
+
+        # Always increment session counter - we've used a session regardless of results
         session_num += 1
 
-    print(f"\n=== Exploration complete ({session_num} sessions) ===")
+        # If we're running out of pending nodes but still have sessions left,
+        # generate some "exploratory" queries to potentially discover new functionalities
+        if (
+            session_num < max_sessions
+            and len(pending_nodes) < 2
+            and session_num % 3 != 0
+        ):
+            print(
+                "\n=== Few nodes left but sessions remaining, scheduling general exploration ==="
+            )
+            # Force next iteration to be general exploration
+            explored_nodes = set()
+
+    print(
+        f"\n=== Exploration complete ({session_num}/{max_sessions} sessions used) ==="
+    )
     print(f"Discovered {len(root_nodes)} root functionalities")
 
     # Convert FunctionalityNodes to dicts for further processing
