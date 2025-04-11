@@ -90,6 +90,19 @@ class ChatbotExplorer:
 
         return graph_builder.compile(checkpointer=self.memory)
 
+    def _build_structure_graph(self):
+        """Build a graph that only runs the structure builder node"""
+        graph_builder = StateGraph(State)
+
+        # Add structure builder node
+        graph_builder.add_node("structure_builder", self._structure_builder_node)
+
+        # Set it as both entry and finish point
+        graph_builder.set_entry_point("structure_builder")
+        graph_builder.set_finish_point("structure_builder")
+
+        return graph_builder.compile(checkpointer=self.memory)
+
     def _explorer_node(self, state: State):
         """Explorer node for interacting with the target chatbot."""
         if not state["exploration_finished"]:
@@ -502,7 +515,8 @@ class ChatbotExplorer:
         - A node can have zero or more parents - Root nodes have zero parents
         - Child nodes should ONLY be accessible AFTER their parent nodes
         - Use the 'name' field from the input functionalities as the primary identifier
-        - The output MUST be a valid JSON list
+        - The output MUST be valid JSON - DO NOT include comments in the JSON
+        - Empty arrays should be represented as [] without comments
 
         Output Format Example:
         [
@@ -510,25 +524,25 @@ class ChatbotExplorer:
             "name": "account_creation",
             "description": "Create a new user account",
             "parameters": ["username", "email"],
-            "parent_names": [] // Root node - the starting point
+            "parent_names": []
         }},
         {{
             "name": "profile_setup",
             "description": "Complete profile information",
             "parameters": ["personal_details"],
-            "parent_names": ["account_creation"] // Can only happen AFTER account creation
+            "parent_names": ["account_creation"]
         }},
         {{
             "name": "security_settings",
             "description": "Configure account security options",
             "parameters": ["security_options"],
-            "parent_names": ["account_creation"] // Can only happen AFTER account creation
+            "parent_names": ["account_creation"]
         }},
         {{
             "name": "account_verification",
             "description": "Verify account details",
             "parameters": [],
-            "parent_names": ["profile_setup", "security_settings"] // Can only happen AFTER both previous steps
+            "parent_names": ["profile_setup", "security_settings"]
         }}
         ]
 
@@ -541,15 +555,31 @@ class ChatbotExplorer:
             response_content = response.content
 
             # --- Extract JSON from LLM response ---
-            # Simple extraction assuming JSON is between ```json ... ``` or is the whole content
-            json_match = re.search(r"```json\s*([\s\S]+?)\s*```", response_content)
-            if json_match:
-                json_str = json_match.group(1)
-            else:
-                # Assume the whole content is JSON if no code fences
+            # Try multiple patterns to extract JSON
+            json_str = None
+            json_patterns = [
+                r"```json\s*([\s\S]+?)\s*```",  # JSON with code fence
+                r"```\s*([\s\S]+?)\s*```",  # Any code fence
+                r"\[\s*\{.+\}\s*\]",  # Raw JSON array pattern
+            ]
+
+            for pattern in json_patterns:
+                match = re.search(pattern, response_content, re.DOTALL)
+                if match:
+                    json_str = match.group(1) if "```" in pattern else match.group(0)
+                    break
+
+            if not json_str:
+                # Last resort - assume the entire content might be JSON
                 json_str = response_content.strip()
 
             print("   Parsing workflow structure from LLM response...")
+            # Remove JavaScript-style comments before parsing
+            json_str = re.sub(r"//.*?(\n|$)", "\n", json_str)
+
+            # Handle cleanup of any trailing commas which might be in the JSON
+            json_str = re.sub(r",(\s*[\]}])", r"\1", json_str)
+
             structured_nodes_info = json.loads(json_str)
             if not isinstance(structured_nodes_info, list):
                 raise ValueError("LLM response is not a JSON list.")

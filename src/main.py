@@ -424,12 +424,12 @@ def main():
     print(f"\n=== Exploration complete ({session_num} sessions) ===")
     print(f"Discovered {len(root_nodes)} root functionalities")
 
-    # Convert FunctionalityNodes to dicts for further processing
+    # First ensure we convert all FunctionalityNodes to dicts while preserving structure
     functionality_dicts = [node.to_dict() for node in root_nodes]
 
     # Create state for goal generation, user profiles, etc.
     print(
-        "\n--- Preparing to generate user profiles based on discovered functionality graph ---"
+        "\n--- Preparing to infer complete workflow structure and generate user profiles ---"
     )
     analysis_state = {
         "messages": [
@@ -439,8 +439,8 @@ def main():
             },
         ],
         "conversation_history": conversation_sessions,
-        "discovered_functionalities": functionality_dicts,  # Already structured!
-        "discovered_limitations": [],  # We'll skip limitations extraction
+        "discovered_functionalities": functionality_dicts,
+        "discovered_limitations": [],
         "current_session": max_sessions,
         "exploration_finished": True,
         "conversation_goals": [],
@@ -448,6 +448,27 @@ def main():
         "fallback_message": fallback_message,
     }
 
+    # First run the structure builder to get a properly sequenced workflow
+    print("\n--- Running workflow structure inference ---")
+    structure_graph = explorer._build_structure_graph()
+    structure_result = structure_graph.invoke(
+        analysis_state, config={"configurable": {"thread_id": "structure_analysis"}}
+    )
+
+    # Now we have a properly structured workflow in structure_result["discovered_functionalities"]
+    # Use this for the profile generation
+    analysis_state["discovered_functionalities"] = structure_result[
+        "discovered_functionalities"
+    ]
+
+    # Generate profiles with the properly structured workflow
+    profile_graph = explorer._build_profile_generation_graph()
+    result = profile_graph.invoke(
+        analysis_state, config={"configurable": {"thread_id": "analysis_session"}}
+    )
+
+    # Update functionality_dicts to use the properly sequenced workflow for reporting/visualization
+    functionality_dicts = structure_result["discovered_functionalities"]
     # Generate profiles directly without full analysis
     config = {"configurable": {"thread_id": "analysis_session"}}
 

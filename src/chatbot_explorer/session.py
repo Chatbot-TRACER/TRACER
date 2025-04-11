@@ -649,26 +649,28 @@ def run_exploration_session(
             for root in root_nodes:
                 all_existing.extend(_get_all_nodes(root))
 
-            if not is_duplicate_functionality(node, all_existing):
-                # Validate relationship with current node (if we have one)
-                relationship_valid = True
+            if not is_duplicate_functionality(node, all_existing, explorer.llm):
+                # If we're exploring a specific node, validate relationship - but be more flexible
                 if current_node:
                     relationship_valid = validate_parent_child_relationship(
                         current_node, node, explorer.llm
                     )
 
-                if relationship_valid and current_node:
-                    # Add as child to current node
-                    current_node.add_child(node)
-                    print(f"  - '{node.name}' (child of '{current_node.name}')")
-                    # Add to pending nodes for exploration
-                    pending_nodes.append(node)
+                    if relationship_valid:
+                        # Add as child to current node
+                        current_node.add_child(node)
+                        print(f"  - '{node.name}' (child of '{current_node.name}')")
+                    else:
+                        # Even if not a direct child, add to pending for future structure inference
+                        print(f"  - '{node.name}' (standalone functionality)")
+                        root_nodes.append(node)
                 else:
-                    # Add as root node
+                    # Add as root node temporarily - structure will be inferred later
                     root_nodes.append(node)
-                    print(f"  - '{node.name}' (root node)")
-                    # Add to pending nodes for exploration
-                    pending_nodes.append(node)
+                    print(f"  - '{node.name}' (root node for now)")
+
+                # Always add to pending nodes for exploration
+                pending_nodes.append(node)
             else:
                 print(f"  - Skipped duplicate functionality: '{node.name}'")
 
