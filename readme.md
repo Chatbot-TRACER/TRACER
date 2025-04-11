@@ -62,7 +62,6 @@ A critical output is the `workflow_graph.png`, representing the user's interacti
 - **Sequential Dependencies:** The graph must accurately capture prerequisites. If Functionality B can only be accessed after Functionality A is completed, there should be a directed edge from A to B.
 - **Branching Logic:** The graph must clearly show points where the conversation can diverge based on user choice or chatbot logic. For example, after deciding to "Order Pizza", the flow might split into two distinct paths: "Order Predefined Pizza" and "Order Custom Pizza". This should be visualized as a single parent node leading to multiple mutually exclusive child nodes or paths.
 - **Joining Paths:** The graph must represent points where previously diverged conversational paths converge back into a common flow. Following the pizza example, after either ordering a predefined pizza or creating a custom one, both paths might lead to adding drinks (`order_drinks`). This convergence should be clearly visualized.
-- **Optional Steps:** Steps that are not mandatory within a specific path should be identifiable. For instance, "Add Drinks" might be an optional step after the main pizza order is confirmed but before finalizing the order. This could be indicated visually (e.g., dashed lines, node styling) or through node attributes in the underlying data.
 - **Root Nodes:** Identify the valid starting points (entry points) of a conversation or workflow.
 - **LLM Inference:** The structuring of this graph relies heavily on LLM analysis of both the extracted functionalities _and_ the flow observed in the conversation transcripts. The LLM needs to be prompted specifically to identify sequential dependencies, branching points, convergence points, and optional steps based on the conversational context and functionality descriptions (like parent/child relationships if available).
 - **Visualization:** The generated `workflow_graph.png` should clearly and aesthetically visualize this structure using nodes and directed edges via Graphviz.
@@ -83,7 +82,7 @@ graph LR
     I --> D[provide order information];
 ```
 
-> Note: The Mermaid diagram above is illustrative of the desired logical flow. The actual implementation uses Graphviz based on LLM-inferred relationships from conversation analysis.
+> Note: The Mermaid diagram above is illustrative of the desired logical flow. The actual implementation uses Graphviz.
 
 ## 5. Usage
 
