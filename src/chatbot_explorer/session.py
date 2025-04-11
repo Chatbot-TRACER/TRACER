@@ -349,91 +349,81 @@ def merge_similar_functionalities(
     nodes: List[FunctionalityNode], llm
 ) -> List[FunctionalityNode]:
     """
-    Identify and merge similar functionalities in the graph.
-    Returns a new list with duplicates merged.
+    Use LLM to identify and merge similar functionalities via semantic checks
+    rather than hard-coded synonyms. Returns a new list with duplicates merged.
     """
     if not nodes or len(nodes) < 2:
         return nodes
 
     result = []
-    processed_names = set()
-
-    # First pass - group by similar names
     name_groups = {}
+
+    # Group by lowercased name (a simple initial pass)
     for node in nodes:
         normalized_name = node.name.lower().replace("_", " ")
         if normalized_name not in name_groups:
             name_groups[normalized_name] = []
         name_groups[normalized_name].append(node)
 
-    # Process each group
     for name, group in name_groups.items():
+        # Only one node for this normalized name
         if len(group) == 1:
-            # Only one node with this name, add it as is
             result.append(group[0])
             continue
 
-        # Multiple nodes with similar names - check if they should be merged
+        # Use the LLM to decide if these functionalities should be merged
         merge_prompt = f"""
-        I have multiple similar functionality nodes that may represent the same capability.
-        Please determine if these should be merged into a single functionality.
+        We have multiple functionality nodes that look vaguely similar:
+        {json.dumps([{"name": n.name, "description": n.description} for n in group], indent=2)}
 
-        FUNCTIONALITIES:
-        {json.dumps([{"name": n.name, "description": n.description, "parameters": n.parameters} for n in group], indent=2)}
+        Decide if these functionalities represent the same core action or capability.
+        If yes, respond with exactly:
 
-        If these represent the same underlying capability, respond with "MERGE" and suggest the best name and description.
-        If they are distinct and should remain separate, respond with "KEEP SEPARATE".
-
-        Format for MERGE:
         MERGE
-        name: best_name
+        name: best name
         description: best consolidated description
 
-        Format for KEEP SEPARATE:
+        If they are conceptually unique, respond with:
+
         KEEP SEPARATE
-        reason: brief explanation
+        reason: short explanation
         """
 
         merge_response = llm.invoke(merge_prompt)
         content = merge_response.content.strip()
 
         if content.upper().startswith("MERGE"):
-            # Extract suggested name and description
-            name_match = re.search(r"name:\s*(.*)", content)
-            desc_match = re.search(r"description:\s*(.*)", content)
-
+            # Parse out the suggested name and description
+            name_match = re.search(r"name:\s*(.+)", content)
+            desc_match = re.search(r"description:\s*(.+)", content)
             if name_match and desc_match:
                 best_name = name_match.group(1).strip()
                 best_desc = desc_match.group(1).strip()
 
-                # Merge parameters from all nodes in the group
+                # Combine parameters and children
                 all_params = []
+                merged_node = FunctionalityNode(
+                    name=best_name, description=best_desc, parameters=all_params
+                )
+
                 for node in group:
+                    # Merge parameters
                     for param in node.parameters:
                         if not any(
                             p.get("name") == param.get("name") for p in all_params
                         ):
                             all_params.append(param)
-
-                # Create merged node with children from all nodes in the group
-                merged_node = FunctionalityNode(
-                    name=best_name, description=best_desc, parameters=all_params
-                )
-
-                # Add all children from the group nodes
-                for node in group:
+                    # Merge children
                     for child in node.children:
                         merged_node.add_child(child)
 
+                print(f"  Merged {len(group)} functionalities into '{best_name}'")
                 result.append(merged_node)
-                print(
-                    f"  Merged {len(group)} similar functionalities into '{best_name}'"
-                )
             else:
-                # Couldn't extract merged details, keep the first one
+                # If we can’t parse, just keep the first item
                 result.append(group[0])
         else:
-            # Keep them separate
+            # Keep them all separate
             result.extend(group)
 
     return result
