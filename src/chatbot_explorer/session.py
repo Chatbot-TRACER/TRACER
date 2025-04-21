@@ -142,7 +142,7 @@ def extract_functionality_nodes(conversation_history, llm, current_node=None):
     - For **informational bots** (answering questions): Focus on the TOPIC of information provided (e.g., `provide_contact_info`, `explain_wifi_setup`).
     - Use clear, descriptive snake_case names.
 
-    AVOID overly generic names like `display_results` if a more specific action or topic name applies. Avoid basic greetings/acknowledgments.
+    AVOID extracting functionalities that solely describe the chatbot failing to understand or provide information (e.g., 'handle_repeat_requests', 'fail_to_provide_info'). Focus on successful actions or information provided, or capabilities the chatbot *claims* to have.
 
     For each relevant step/topic, identify:
     1. A short, descriptive name (snake_case).
