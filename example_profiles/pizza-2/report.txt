@@ -1,0 +1,98 @@
+=== CHATBOT FUNCTIONALITY ANALYSIS ===
+
+## FUNCTIONALITIES (Workflow Structure)
+- provide_options: Chatbot presents a list of predefined pizza options for the user to choose from.
+  - select_option: User chooses a specific pizza option from the list provided by the chatbot. (Params: pizza_type)
+    - gather_information: Chatbot asks the user for the size of the pizza they would like to order.
+      - process_request: Chatbot confirms the user’s pizza order based on the selected type and size. (Params: pizza_type, pizza_size)
+        - gather_drinks_info: Chatbot requests the user to indicate how many drinks they would like to order.
+    - process_request: Chatbot confirms the user’s pizza order based on the selected type and size. (Params: pizza_type, pizza_size)
+      - gather_drinks_info: Chatbot requests the user to indicate how many drinks they would like to order.
+
+## FUNCTIONALITIES (Raw JSON Structure)
+[
+  {
+    "name": "provide_options",
+    "description": "Chatbot presents a list of predefined pizza options for the user to choose from.",
+    "parameters": [],
+    "parent_names": [],
+    "children": [
+      {
+        "name": "select_option",
+        "description": "User chooses a specific pizza option from the list provided by the chatbot.",
+        "parameters": [
+          "pizza_type"
+        ],
+        "parent_names": [
+          "provide_options"
+        ],
+        "children": [
+          {
+            "name": "gather_information",
+            "description": "Chatbot asks the user for the size of the pizza they would like to order.",
+            "parameters": [],
+            "parent_names": [
+              "select_option"
+            ],
+            "children": [
+              {
+                "name": "process_request",
+                "description": "Chatbot confirms the user’s pizza order based on the selected type and size.",
+                "parameters": [
+                  "pizza_type",
+                  "pizza_size"
+                ],
+                "parent_names": [
+                  "select_option",
+                  "gather_information"
+                ],
+                "children": [
+                  {
+                    "name": "gather_drinks_info",
+                    "description": "Chatbot requests the user to indicate how many drinks they would like to order.",
+                    "parameters": [],
+                    "parent_names": [
+                      "process_request"
+                    ],
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "process_request",
+            "description": "Chatbot confirms the user’s pizza order based on the selected type and size.",
+            "parameters": [
+              "pizza_type",
+              "pizza_size"
+            ],
+            "parent_names": [
+              "select_option",
+              "gather_information"
+            ],
+            "children": [
+              {
+                "name": "gather_drinks_info",
+                "description": "Chatbot requests the user to indicate how many drinks they would like to order.",
+                "parameters": [],
+                "parent_names": [
+                  "process_request"
+                ],
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
+## LIMITATIONS
+No limitations discovered.
+
+## SUPPORTED LANGUAGES
+1. English
+
+## FALLBACK MESSAGE
+I still need to know how many drinks you would like to order. Could you please provide that information?

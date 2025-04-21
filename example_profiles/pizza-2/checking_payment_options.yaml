@@ -1,0 +1,43 @@
+test_name: Checking Payment Options
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format: {type: text}
+user:
+  language: English
+  role: You have to act as a user wanting to know about payment options available for a pizza order.
+  context: ['personality: personalities/conversational-user.yml', You recently ordered a large pepperoni pizza with extra cheese and two sides of garlic bread for a family movie night., You prefer paying with a credit card but are open to exploring other payment methods if they offer better discounts or rewards., You want to ensure that the total cost includes any applicable delivery fees and taxes before finalizing your order.]
+  goals:
+  - Confirm my order details for a {{size}} {{pizza_type}} and {{quantity}} {{drink_type}}
+  - Request available payment options for my order
+  - Inquire about the total cost of my order including taxes and fees
+  - size:
+      function: another(3)
+      type: string
+      data: [small, medium, large, extra-large]
+  - drink_type:
+      function: random()
+      type: string
+      data: [soda, water, juice, tea]
+  - pizza_type:
+      function: random()
+      type: string
+      data: [margherita, pepperoni, BBQ chicken, vegetarian]
+  - quantity:
+      function: random()
+      type: int
+      data: {min: 1, max: 10, step: 1}
+chatbot:
+  is_starter: false
+  fallback: I still need to know how many drinks you would like to order. Could you please provide that information?
+  output:
+  - total_cost: {type: float, description: 'The final price quoted by the chatbot for the user''s pizza order, including taxes and fees. This will typically be presented after the user has confirmed the pizza type, size, and any additional items (like drinks).'}
+  - available_payment_options: {type: str, description: A list of payment methods provided by the chatbot that the user can choose from to complete their order. This information will be given after the user has confirmed their order details.}
+  - pizza_confirmation_details: {type: str, description: 'A summary of the pizza order including the type, size, and any additional items like drinks, as confirmed by the chatbot. This will be presented once the user finalizes their choices.'}
+  - order_confirmation_message: {type: str, description: A message from the chatbot confirming that the user's order has been successfully placed. This will typically include a thank you note and may reference the order's details or next steps.}
+conversation:
+  number: 3
+  max_cost: 2.0
+  goal_style:
+    all_answered: {export: false, limit: 10}
+  interaction_style: [single question, change your mind]

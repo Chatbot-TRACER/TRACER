@@ -1,0 +1,44 @@
+test_name: Confirming a Pizza Order
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format: {type: text}
+user:
+  language: English
+  role: You have to act as a user who has finalized their choices and is ready to confirm the order.
+  context: ['personality: personalities/conversational-user.yml', You recently discovered a new pizza joint that offers a unique variety of toppings and crust options., You are particularly craving a pepperoni pizza with extra cheese and garlic bread on the side., You have a tight schedule and need to know the total cost and estimated preparation time to fit it into your lunch break.]
+  goals:
+  - Confirm my order for a {{size}} {{pizza_type}} pizza
+  - Specify that I would like to order {{quantity}} {{drink}} with my pizza
+  - Request the total cost of my order and estimated preparation time
+  - Ask for the order ID and pickup details
+  - size:
+      function: forward()
+      type: string
+      data: [small, medium, large]
+  - drink:
+      function: another(2)
+      type: string
+      data: [soda, juice, water]
+  - pizza_type:
+      function: random()
+      type: string
+      data: [pepperoni, margherita, BBQ chicken, veggie]
+  - quantity:
+      function: random()
+      type: int
+      data: {min: 1, max: 5, step: 1}
+chatbot:
+  is_starter: false
+  fallback: I still need to know how many drinks you would like to order. Could you please provide that information?
+  output:
+  - total_cost: {type: float, description: 'The final price quoted by the chatbot for the pizza order, including any selected options, which can be found in the chatbot''s confirmation of the order details.'}
+  - estimated_preparation_time: {type: time, description: 'The estimated time provided by the chatbot for preparing the order, which may be included alongside the order confirmation message.'}
+  - order_id: {type: str, description: 'A reference number assigned to the order by the chatbot, usually mentioned in the confirmation message for tracking purposes.'}
+  - pickup_details: {type: str, description: 'Information regarding where and when the order can be picked up, which the chatbot typically provides after confirming the order.'}
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered: {export: false, limit: 10}
+  interaction_style: [single question, change your mind]

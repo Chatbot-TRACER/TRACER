@@ -1,0 +1,44 @@
+test_name: Modifying an Existing Order
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format: {type: text}
+user:
+  language: English
+  role: You have to act as a user wanting to add items to an already placed pizza order.
+  context: ['personality: personalities/conversational-user.yml', You initially ordered a large pepperoni pizza and now want to add a medium veggie pizza to the order., You intend to include an order of garlic knots along with the additional pizza., You need confirmation of the updated order details before making any payment.]
+  goals:
+  - Add a {{size}} {{pizza_type}} pizza to my existing order
+  - Include {{quantity}} {{drink}} in my order
+  - Confirm my updated order details
+  - Get the total cost for my modified order
+  - size:
+      function: another()
+      type: string
+      data: [small, medium, large, extra large]
+  - drink:
+      function: random()
+      type: string
+      data: [soda, water, juice, tea, lemonade]
+  - pizza_type:
+      function: default()
+      type: string
+      data: [Margherita, Pepperoni, BBQ Chicken, Veggie, Hawaiian, Cheese]
+  - quantity:
+      function: random()
+      type: int
+      data: {min: 1, max: 5, step: 1}
+chatbot:
+  is_starter: false
+  fallback: I still need to know how many drinks you would like to order. Could you please provide that information?
+  output:
+  - total_cost: {type: float, description: 'The final price quoted by the chatbot for the modified pizza order, including any additional items or modifications requested by the user. This information can be found in the chatbot''s confirmation response of the updated order.'}
+  - confirmation_details: {type: str, description: 'A summary of the updated order that the chatbot provides, including the selected pizza type, size, and any additional items like drinks. This can be extracted from the chatbot''s confirmation message summarizing the order.'}
+  - available_pizza_options: {type: str, description: The list of predefined pizza options presented by the chatbot for the user to choose from. This will be mentioned when the chatbot initiates the selection process for adding a pizza to the existing order.}
+  - requested_drinks_count: {type: int, description: The number of drinks that the chatbot confirms the user would like to order. This is mentioned when the chatbot requests input on how many drinks the user wants to add to the modified order.}
+conversation:
+  number: 4
+  max_cost: 1.5
+  goal_style:
+    all_answered: {export: false, limit: 10}
+  interaction_style: [change your mind, single question]

@@ -1,0 +1,47 @@
+test_name: Inquiry About Order Details
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format: {type: text}
+user:
+  language: English
+  role: You have to act as a user seeking details on their order and its status.
+  context: ['personality: personalities/conversational-user.yml', 'You placed an order for a new laptop model, the Dell XPS 13, along with a protective case and a wireless mouse.', 'You are concerned because the order was supposed to arrive within three business days, but you haven''t received any updates yet.', 'You read positive reviews online about the company''s customer service, which motivates you to reach out for clarification on your order.']
+  goals:
+  - Confirm my order for a {{size}} {{pizza_type}} with {{drink_quantity}} {{drink_type}}
+  - Request the final order details including {{toppings}} and any additional items
+  - Inquire about the estimated delivery time for my order
+  - size:
+      function: random()
+      type: string
+      data: [small, medium, large, extra large]
+  - drink_quantity:
+      function: random()
+      type: int
+      data: {min: 1, max: 5, step: 1}
+  - toppings:
+      function: another(3)
+      type: string
+      data: [mushrooms, onions, bell peppers, olives, jalapeños, extra cheese, pineapple, spinach]
+  - pizza_type:
+      function: random()
+      type: string
+      data: [pepperoni, margherita, veggie, barbecue chicken, Hawaiian]
+  - drink_type:
+      function: another()
+      type: string
+      data: [cola, orange juice, lemonade, iced tea, water]
+chatbot:
+  is_starter: false
+  fallback: I still need to know how many drinks you would like to order. Could you please provide that information?
+  output:
+  - order_confirmation: {type: str, description: 'This is the confirmation message provided by the chatbot that includes the details of the user''s order. It typically includes the type and size of pizza selected, along with any additional items ordered.'}
+  - estimated_delivery_time: {type: time, description: This output represents the estimated delivery time given by the chatbot for the user's order. It is the time frame the chatbot provides during the conversation to inform the user when they can expect their order.}
+  - total_order_cost: {type: float, description: 'This output indicates the total cost of the user''s order as quoted by the chatbot. It summarizes the price for the selected pizza, size, drinks, and any additional items, ensuring clarity on the final amount to be paid.'}
+  - available_pizza_options: {type: str, description: This output lists the predefined pizza options that the chatbot presents to the user at the start of the conversation. It includes the names and descriptions of the pizzas available for selection.}
+conversation:
+  number: 4
+  max_cost: 1.0
+  goal_style:
+    all_answered: {export: false, limit: 12}
+  interaction_style: [single question, change your mind]

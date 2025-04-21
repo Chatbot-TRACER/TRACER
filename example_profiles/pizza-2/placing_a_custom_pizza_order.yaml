@@ -1,0 +1,35 @@
+test_name: Placing a Custom Pizza Order
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format: {type: text}
+user:
+  language: English
+  role: You have to act as a user wanting to create a custom pizza order based on personal preferences.
+  context: ['personality: personalities/conversational-user.yml', You have a preference for thin crust and love extra cheese on your pizza., You want to try a new soda flavor that you've heard about from a friend., 'You recently had a bad experience with a pizza order that was missing toppings, so you want to ensure everything is confirmed before finalizing your order.']
+  goals:
+  - Order a {{size}} custom pizza with {{toppings}}
+  - Specify the number of drinks I would like to order and their types
+  - Confirm the final details of my order
+  - toppings:
+      function: random(3)
+      type: string
+      data: [Pepperoni, Mushrooms, Onions, Bell Peppers, Olives, Bacon, Pineapple, Spinach]
+  - size:
+      function: random()
+      type: string
+      data: [Small, Medium, Large, Extra Large]
+chatbot:
+  is_starter: false
+  fallback: I still need to know how many drinks you would like to order. Could you please provide that information?
+  output:
+  - selected_pizza_type: {type: str, description: 'The type of pizza chosen by the user, as presented by the chatbot. This information will be found in the chatbot''s confirmation message after the user selects a pizza option from the predefined list.'}
+  - pizza_size: {type: str, description: 'The size of the pizza ordered by the user, as specified by the chatbot during the order process. This detail will be included in the chatbot''s message confirming the user''s order details.'}
+  - number_of_drinks: {type: int, description: 'The total number of drinks that the user has indicated they would like to order, as requested by the chatbot. This value will be part of the user''s order summary as conveyed by the chatbot.'}
+  - drink_types: {type: str, description: 'The specific types of drinks that the user has chosen, as listed by the chatbot in its response. This information will be included in the summary after the user specifies their drink preferences.'}
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered: {export: false, limit: 10}
+  interaction_style: [change your mind, single question]
