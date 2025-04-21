@@ -449,6 +449,7 @@ def run_exploration_session(
     max_turns,
     explorer,
     the_chatbot,
+    fallback_message: Optional[str] = None,
     current_node: Optional[FunctionalityNode] = None,
     explored_nodes: Optional[Set[str]] = None,
     pending_nodes: Optional[List[FunctionalityNode]] = None,
@@ -457,7 +458,7 @@ def run_exploration_session(
 ):
     """
     Runs one chat session to explore the bot.
-    Can focus on a specific 'current_node' if provided.
+    Can focus on a specific 'current_node' if provided. Includes retry logic on fallback.
 
     Args:
         session_num (int): The current session number (0-based).
@@ -465,6 +466,7 @@ def run_exploration_session(
         max_turns (int): Max chat turns per session.
         explorer: The ChatbotExplorer instance.
         the_chatbot: The chatbot connector instance.
+        fallback_message (str, optional): The detected fallback message of the chatbot. Defaults to None. # ADDED
         current_node (FunctionalityNode, optional): Node to focus exploration on. Defaults to None.
         explored_nodes (set, optional): Set of names of already explored nodes. Defaults to None.
         pending_nodes (list, optional): List of nodes waiting to be explored. Defaults to None.
@@ -472,10 +474,12 @@ def run_exploration_session(
         supported_languages (list, optional): List of detected languages. Defaults to None.
 
     Returns:
-        tuple: Contains the conversation history, detected languages (likely None),
-               new nodes found this session, detected fallback (likely None),
+        tuple: Contains the conversation history, detected languages (None),
+               new nodes found this session,
                updated root nodes list, updated pending nodes list, updated explored nodes set.
+               # REMOVED fallback_message from return tuple
     """
+
     # Setup default values if needed
     if explored_nodes is None:
         explored_nodes = set()
@@ -606,6 +610,10 @@ def run_exploration_session(
 
     # Main chat loop
     turn_count = 0
+    retry_count = 0
+    # How many times we try after we receive fallback
+    MAX_RETRIES = 1
+
     while True:
         turn_count += 1
 
@@ -616,23 +624,88 @@ def run_exploration_session(
             )
             break
 
-        # Get explorer's next response using LangGraph
-        explorer_response = None
-        for event in explorer.stream_exploration(
-            {
-                "messages": conversation_history,
-                "conversation_history": [],  # Not needed here?
-                "discovered_functionalities": [],  # Not needed here?
-                "current_session": session_num,
-                "exploration_finished": False,
-                "conversation_goals": [],  # Not used?
-                "supported_languages": supported_languages,
-            }
-        ):
-            for value in event.values():
-                # Get the last message added by the graph
-                latest_message = value["messages"][-1]
-                explorer_response = latest_message.content
+        # --- START RETRY LOGIC ---
+
+        # Check if the last chatbot message was a fallback
+        is_fallback = False
+        if fallback_message and chatbot_message:
+            # Simple check: is the fallback a significant part of the response?
+            fallback_norm = fallback_message.strip().lower()
+            response_norm = chatbot_message.strip().lower()
+            # Check if response starts with a substantial portion of the fallback
+            if fallback_norm and response_norm.startswith(
+                fallback_norm[: max(20, len(fallback_norm) // 2)]
+            ):
+                is_fallback = True
+                print("   (Detected potential fallback response)")
+
+        if is_fallback and retry_count < MAX_RETRIES:
+            retry_count += 1
+            print(f"   Attempting retry {retry_count}/{MAX_RETRIES} by rephrasing...")
+            # Get the message that triggered the fallback (Explorer's last message)
+            last_explorer_msg = conversation_history[-2]["content"]
+
+            rephrase_prompt = f"""
+            The chatbot responded with what seems like a fallback message ("{chatbot_message[:100]}...") to your last message.
+            Rephrase your previous message to express the SAME INTENT but using different wording.
+            Keep it concise and clear.
+
+            PREVIOUS MESSAGE: {last_explorer_msg}
+            {"IMPORTANT: Generate your rephrased message in " + primary_language + "." if primary_language else ""}
+
+            REPHRASED MESSAGE:
+            """
+            try:
+                rephrased_response = (
+                    explorer.llm.invoke(rephrase_prompt).content.strip().strip("\"'")
+                )
+                if rephrased_response and rephrased_response != last_explorer_msg:
+                    explorer_response = rephrased_response
+                    print(f"   Rephrased as: {explorer_response}")
+                else:
+                    print(
+                        "   WARN: Rephrasing failed or produced identical message. Proceeding without retry."
+                    )
+                    retry_count = MAX_RETRIES  # Skip further retries for this turn
+                    explorer_response = (
+                        None  # Signal to generate response normally via graph
+                    )
+            except Exception as e:
+                print(
+                    f"   WARN: Error during rephrasing: {e}. Proceeding without retry."
+                )
+                retry_count = MAX_RETRIES
+                explorer_response = (
+                    None  # Signal to generate response normally via graph
+                )
+
+        else:
+            # Reset retry count if it wasn't a fallback or retries exhausted
+            if not is_fallback:
+                retry_count = 0
+            # Generate next response normally using LangGraph
+            explorer_response = None  # Reset before graph call
+            for event in explorer.stream_exploration(
+                {
+                    "messages": conversation_history,
+                    "conversation_history": [],
+                    "discovered_functionalities": [],
+                    "current_session": session_num,
+                    "exploration_finished": False,
+                    "conversation_goals": [],
+                    "supported_languages": supported_languages,
+                }
+            ):
+                for value in event.values():
+                    latest_message = value["messages"][-1]
+                    explorer_response = latest_message.content
+
+        # --- END RETRY LOGIC ---
+
+        # Check if explorer_response was generated (might be None if graph failed or retry logic set it)
+        if explorer_response is None:
+            print("   WARN: Explorer failed to generate a response. Ending session.")
+            break  # Or potentially try to generate a generic question?
 
         print(f"\nExplorer: {explorer_response}")
 
@@ -659,14 +732,6 @@ def run_exploration_session(
         if chatbot_message.lower() in ["quit", "exit", "q", "bye", "goodbye"]:
             print("Chatbot ended the conversation. Ending session.")
             break
-
-    # After the loop, do analysis for the first session
-    fallback_message = None
-    new_supported_languages = None  # Language detection moved to main.py pre-probe
-    if session_num == 0:
-        # Try to find the fallback message
-        fallback_message = extract_fallback_message(the_chatbot, explorer.llm)
-        # Language detection is now done before the loop starts
 
     # Extract functionalities found in this session
     print("\nAnalyzing conversation for new functionalities...")
@@ -727,9 +792,8 @@ def run_exploration_session(
     # Return all updated state
     return (
         conversation_history,
-        new_supported_languages,  # Will be None unless session_num == 0 (and even then, likely None now)
+        None,
         new_functionality_nodes,  # Nodes found *this* session
-        fallback_message,  # Fallback found *this* session (only if session_num == 0)
         root_nodes,  # Updated list of roots
         pending_nodes,  # Updated pending queue
         explored_nodes,  # Updated set of explored names

@@ -344,6 +344,22 @@ def main():
         )
     # --- End Initial Language Detection ---
 
+    # --- Initial Fallback Message Detection ---
+    print("\n--- Attempting to detect chatbot fallback message ---")
+    try:
+        # Call the function now defined in main.py
+        fallback_message = extract_fallback_message(the_chatbot, explorer.llm)
+        if fallback_message:
+            print(f'   Detected fallback message: "{fallback_message[:50]}..."')
+        else:
+            print("   Could not detect a fallback message.")
+    except Exception as fb_e:
+        print(
+            f"   Error during fallback detection: {fb_e}. Proceeding without fallback."
+        )
+        fallback_message = None
+    # --- End Fallback Message Detection ---
+
     # --- Exploration Loop ---
     session_num = 0  # Session counter (0-based)
     while session_num < args.sessions:
@@ -373,9 +389,8 @@ def main():
         # Execute one exploration session
         (
             conversation_history,
-            new_languages,  # Language detected this session (only used after session 0)
-            new_nodes_raw,  # Raw functionality data extracted this session
-            new_fallback,  # Fallback detected this session (only used after session 0)
+            _,  # Languages
+            _,  # New nodes
             updated_roots,  # Updated list of root nodes
             updated_pending,  # Updated queue of nodes to explore
             updated_explored,  # Updated set of explored node names
@@ -385,6 +400,7 @@ def main():
             args.turns,
             explorer,
             the_chatbot,
+            fallback_message=fallback_message,
             current_node=explore_node,  # None for general exploration
             root_nodes=root_nodes,
             pending_nodes=pending_nodes,  # Pass current queue
@@ -397,18 +413,6 @@ def main():
         root_nodes = updated_roots
         pending_nodes = updated_pending  # Includes newly discovered nodes
         explored_nodes = updated_explored
-
-        # Update language/fallback only after the first session (index 0)
-        # Assumes these are unlikely to change and avoids repeated LLM calls.
-        if current_session_index == 0:
-            if new_languages:  # Update if detection was successful
-                supported_languages = new_languages
-                print(
-                    f"   Confirmed/Updated supported languages: {supported_languages}"
-                )
-            if new_fallback:
-                fallback_message = new_fallback
-                print(f"   Confirmed fallback message.")
 
         # Move to the next session
         session_num += 1
