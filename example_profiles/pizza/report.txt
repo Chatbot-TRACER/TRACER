@@ -1,107 +1,137 @@
 === CHATBOT FUNCTIONALITY ANALYSIS ===
 
 ## FUNCTIONALITIES (Workflow Structure)
-- provide_menu_items: Lists the types of pizzas available for order.
-  - order_predefined_pizza: Helps users in ordering predefined pizza types available in the menu. (Params: pizza_type)
-    - order_drinks: Assists users in selecting and ordering drinks to accompany their pizza order. (Params: drink_type)
-  - order_custom_pizza: Assists users in creating and ordering a custom pizza based on their preferred toppings and size. (Params: toppings, size)
-    - order_drinks: Assists users in selecting and ordering drinks to accompany their pizza order. (Params: drink_type)
-- provide_price_info: Provides users with price information for pizzas and beverages.
-- provide_order_information: Provides information on how to get the order and estimated time to receive it.
-- provide_order_time: Provides users with an estimated time for their order preparation and delivery.
-- check_opening_hours: Assists users in finding out the opening hours of the pizza establishment.
-- provide_opening_hours: Provides the opening hours of the shop.
+- provide_options: Chatbot presents the list of available pizza options for the user to choose from.
+  - gather_information: Chatbot asks the user for the size of the pizza to proceed with the order.
+    - select_option: User selects a medium size for the Hawaiian pizza from the available size options. (Params: pizza_size)
+      - gather_drink_information: Chatbot requests information about the number and types of drinks the user wants to order.
+        - submit_data: User provides the details of the drinks they want to add to their order (one Coke and one Sprite). (Params: drinks_count, drink_types)
+          - process_request: Chatbot processes the order and calculates the total cost based on the selected pizza and drinks. (Params: pizza_type, pizza_size, number_of_drinks, drink_types)
+            - display_results: Chatbot displays the order summary, total cost, estimated readiness time, and shop address. (Params: order_summary, total_cost, readiness_time, shop_address, order_id)
+      - process_request: Chatbot processes the order and calculates the total cost based on the selected pizza and drinks. (Params: pizza_type, pizza_size, number_of_drinks, drink_types)
+        - display_results: Chatbot displays the order summary, total cost, estimated readiness time, and shop address. (Params: order_summary, total_cost, readiness_time, shop_address, order_id)
+- handle_error: Chatbot indicates it cannot proceed or understand the user's last input correctly.
 
 ## FUNCTIONALITIES (Raw JSON Structure)
 [
   {
-    "name": "provide_menu_items",
-    "description": "Lists the types of pizzas available for order.",
+    "name": "provide_options",
+    "description": "Chatbot presents the list of available pizza options for the user to choose from.",
     "parameters": [],
     "parent_names": [],
     "children": [
       {
-        "name": "order_predefined_pizza",
-        "description": "Helps users in ordering predefined pizza types available in the menu.",
-        "parameters": [
-          "pizza_type"
-        ],
+        "name": "gather_information",
+        "description": "Chatbot asks the user for the size of the pizza to proceed with the order.",
+        "parameters": [],
         "parent_names": [
-          "provide_menu_items"
+          "provide_options"
         ],
         "children": [
           {
-            "name": "order_drinks",
-            "description": "Assists users in selecting and ordering drinks to accompany their pizza order.",
+            "name": "select_option",
+            "description": "User selects a medium size for the Hawaiian pizza from the available size options.",
             "parameters": [
-              "drink_type"
+              "pizza_size"
             ],
             "parent_names": [
-              "order_predefined_pizza",
-              "order_custom_pizza"
+              "gather_information"
             ],
-            "children": []
-          }
-        ]
-      },
-      {
-        "name": "order_custom_pizza",
-        "description": "Assists users in creating and ordering a custom pizza based on their preferred toppings and size.",
-        "parameters": [
-          "toppings",
-          "size"
-        ],
-        "parent_names": [
-          "provide_menu_items"
-        ],
-        "children": [
-          {
-            "name": "order_drinks",
-            "description": "Assists users in selecting and ordering drinks to accompany their pizza order.",
-            "parameters": [
-              "drink_type"
-            ],
-            "parent_names": [
-              "order_predefined_pizza",
-              "order_custom_pizza"
-            ],
-            "children": []
+            "children": [
+              {
+                "name": "gather_drink_information",
+                "description": "Chatbot requests information about the number and types of drinks the user wants to order.",
+                "parameters": [],
+                "parent_names": [
+                  "select_option"
+                ],
+                "children": [
+                  {
+                    "name": "submit_data",
+                    "description": "User provides the details of the drinks they want to add to their order (one Coke and one Sprite).",
+                    "parameters": [
+                      "drinks_count",
+                      "drink_types"
+                    ],
+                    "parent_names": [
+                      "gather_drink_information"
+                    ],
+                    "children": [
+                      {
+                        "name": "process_request",
+                        "description": "Chatbot processes the order and calculates the total cost based on the selected pizza and drinks.",
+                        "parameters": [
+                          "pizza_type",
+                          "pizza_size",
+                          "number_of_drinks",
+                          "drink_types"
+                        ],
+                        "parent_names": [
+                          "select_option",
+                          "submit_data"
+                        ],
+                        "children": [
+                          {
+                            "name": "display_results",
+                            "description": "Chatbot displays the order summary, total cost, estimated readiness time, and shop address.",
+                            "parameters": [
+                              "order_summary",
+                              "total_cost",
+                              "readiness_time",
+                              "shop_address",
+                              "order_id"
+                            ],
+                            "parent_names": [
+                              "process_request"
+                            ],
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "process_request",
+                "description": "Chatbot processes the order and calculates the total cost based on the selected pizza and drinks.",
+                "parameters": [
+                  "pizza_type",
+                  "pizza_size",
+                  "number_of_drinks",
+                  "drink_types"
+                ],
+                "parent_names": [
+                  "select_option",
+                  "submit_data"
+                ],
+                "children": [
+                  {
+                    "name": "display_results",
+                    "description": "Chatbot displays the order summary, total cost, estimated readiness time, and shop address.",
+                    "parameters": [
+                      "order_summary",
+                      "total_cost",
+                      "readiness_time",
+                      "shop_address",
+                      "order_id"
+                    ],
+                    "parent_names": [
+                      "process_request"
+                    ],
+                    "children": []
+                  }
+                ]
+              }
+            ]
           }
         ]
       }
     ]
   },
   {
-    "name": "provide_price_info",
-    "description": "Provides users with price information for pizzas and beverages.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "provide_order_information",
-    "description": "Provides information on how to get the order and estimated time to receive it.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "provide_order_time",
-    "description": "Provides users with an estimated time for their order preparation and delivery.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "check_opening_hours",
-    "description": "Assists users in finding out the opening hours of the pizza establishment.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "provide_opening_hours",
-    "description": "Provides the opening hours of the shop.",
+    "name": "handle_error",
+    "description": "Chatbot indicates it cannot proceed or understand the user's last input correctly.",
     "parameters": [],
     "parent_names": [],
     "children": []
@@ -114,4 +144,4 @@ No limitations discovered.
 1. English
 
 ## FALLBACK MESSAGE
-I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+"I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE "

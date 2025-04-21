@@ -1,0 +1,87 @@
+test_name: Choosing Pizza Size
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user choosing a specific size for your pizza order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You typically prefer a large pizza for gatherings with friends but are considering
+    a medium size for a solo meal.
+  - You have a preference for extra toppings like pepperoni and olives, which you
+    want to add to your order.
+  - You have already checked the restaurant's website and know their current prices
+    for pizza sizes.
+  goals:
+  - Order a {{size}} {{pizza_type}} pizza
+  - Add {{quantity}} {{drink}} to my order
+  - Confirm my order summary and total cost
+  - drink:
+      function: random()
+      type: string
+      data:
+      - cola
+      - lemonade
+      - iced tea
+      - water
+      - orange soda
+  - size:
+      function: random()
+      type: string
+      data:
+      - small
+      - medium
+      - large
+      - extra large
+  - pizza_type:
+      function: random()
+      type: string
+      data:
+      - pepperoni
+      - margherita
+      - hawaiian
+      - veggie
+      - barbecue chicken
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - pizza_size:
+      type: str
+      description: The size of the pizza selected by the user, as specified in the
+        chatbot's response when confirming the order details.
+  - pizza_type:
+      type: str
+      description: The type of pizza chosen by the user, which the chatbot will confirm
+        in its response, such as "Hawaiian" in this scenario.
+  - drink_order_details:
+      type: str
+      description: The details of the drinks added to the user's order, as mentioned
+        by the chatbot when summarizing the user's order (e.g., "one Coke and one
+        Sprite").
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the entire order, which
+        includes the pizza and drink selections, displayed during the order confirmation.
+conversation:
+  number: 4
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - change your mind
+  - single question

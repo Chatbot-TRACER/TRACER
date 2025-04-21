@@ -1,0 +1,73 @@
+test_name: Changing Drink Order
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to change the drinks in their order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You initially ordered a classic mojito and a berry smoothie but decided you want
+    something non-alcoholic and more refreshing.
+  - You saw a promotional deal for a tropical fruit punch that you want to take advantage
+    of while modifying your order.
+  - You are planning to share the drinks with friends, so you want to ensure they
+    are all enjoyable and appealing to everyone in your group.
+  goals:
+  - Change my drink order to {{quantity}} {{drink_type}} instead of the original drinks
+  - Confirm the new total cost after changing my drink order
+  - Request an updated order summary including the new drink details
+  - drink_type:
+      function: random()
+      type: string
+      data:
+      - coffee
+      - tea
+      - soda
+      - juice
+      - water
+  - quantity:
+      function: default()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - new_total_cost:
+      type: float
+      description: The updated total cost calculated by the chatbot after the drink
+        order has been changed. This information will be provided in the chatbot's
+        response confirming the new order total.
+  - updated_order_summary:
+      type: str
+      description: A detailed summary of the user's order that includes the new drink
+        details and any other relevant order information. This data point should be
+        found in the chatbot's message confirming the updated order.
+  - previous_drink_order:
+      type: str
+      description: The original drink order that the user wanted to change, as communicated
+        in the chatbot's response. This information helps to confirm what the user
+        is replacing.
+  - confirmation_message:
+      type: str
+      description: A message from the chatbot confirming that the drink order change
+        has been successfully processed. It will indicate that the changes have been
+        made and might include reassurance about the updated order.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - change your mind
+  - single question

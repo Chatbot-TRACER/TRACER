@@ -1,0 +1,90 @@
+test_name: Placing a Custom Pizza Order
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user wanting to create a custom pizza with specific toppings.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You are craving a pizza with unique toppings like arugula and goat cheese, which
+    you haven't tried before.
+  - You recently learned that the local pizza place allows for a high degree of customization
+    in orders.
+  - You are on a tight schedule and need your pizza ready within 30 minutes for a
+    lunch meeting.
+  goals:
+  - Order a {{size}} Custom pizza with {{toppings}}
+  - Specify {{quantity}} {{drink}} to add to my pizza order
+  - Request the total cost and estimated readiness time for my order
+  - toppings:
+      function: another(3)
+      type: string
+      data:
+      - pepperoni
+      - mushrooms
+      - bell peppers
+      - olives
+      - onions
+      - bacon
+  - drink:
+      function: random()
+      type: string
+      data:
+      - cola
+      - lemonade
+      - iced tea
+      - water
+  - size:
+      function: random()
+      type: string
+      data:
+      - small
+      - medium
+      - large
+      - extra large
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the custom pizza and
+        drinks order. This information can typically be found in the chatbot's response
+        detailing the total amount payable after all items have been selected.
+  - estimated_ready_time:
+      type: time
+      description: The estimated time provided by the chatbot for when the user's
+        custom pizza order will be ready for pickup or delivery. This can be located
+        in the chatbot's message indicating when the order will be completed.
+  - selected_pizza_size:
+      type: str
+      description: The size of the pizza that the chatbot confirms for the user's
+        order. This output is derived from the chatbot’s response that summarizes
+        the chosen pizza size after the user has made their selection.
+  - selected_drinks:
+      type: str
+      description: A summary of the drinks that the chatbot confirms will be included
+        in the order. This can be found in the chatbot’s response that lists the drinks
+        the user chose to add, such as "one Coke and one Sprite."
+conversation:
+  number: 4
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - change your mind
+  - single question

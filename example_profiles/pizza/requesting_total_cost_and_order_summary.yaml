@@ -1,0 +1,99 @@
+test_name: Requesting Total Cost and Order Summary
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to review the cost of their pizza and
+    drinks order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You are craving a medium pepperoni pizza with extra cheese and a side of garlic
+    knots for dinner.
+  - You remember seeing a promotion for a discount on drink orders when placed together
+    with a pizza.
+  - You plan to pick up your order from the shop, which is located just five minutes
+    away from your home.
+  goals:
+  - Request the total cost for a medium {{pizza_type}} pizza with {{quantity}} {{drink_type}}
+  - Ask for the order summary including {{pizza_details}} and {{drink_details}}
+  - Confirm the estimated readiness time for my order
+  - Inquire about the shop address for picking up my order
+  - drink_type:
+      function: random()
+      type: string
+      data:
+      - Coke
+      - Sprite
+      - Lemonade
+      - Iced Tea
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+  - drink_details:
+      function: another(3)
+      type: string
+      data:
+      - Coke - 500ml
+      - Sprite - 500ml
+      - Lemonade - 500ml
+      - Iced Tea - 500ml
+  - pizza_details:
+      function: another(3)
+      type: string
+      data:
+      - Medium pepperoni with extra cheese
+      - Medium vegetarian with mushrooms and bell peppers
+      - Medium Hawaiian with ham and pineapples
+      - Medium BBQ chicken with red onions
+  - pizza_type:
+      function: random()
+      type: string
+      data:
+      - Pepperoni
+      - Vegetarian
+      - Hawaiian
+      - BBQ Chicken
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the entire order, including
+        the medium pizza and drinks. This information will be clearly stated in the
+        order summary provided by the chatbot.
+  - order_summary:
+      type: str
+      description: A detailed summary of the order that includes the specifics such
+        as the type and size of the pizza, and the types and quantities of drinks
+        ordered. This summary should be presented by the chatbot after the user requests
+        it.
+  - estimated_readiness_time:
+      type: time
+      description: The time provided by the chatbot indicating when the order will
+        be ready for pickup. This will usually be specified as part of the completion
+        message regarding the order.
+  - shop_address:
+      type: str
+      description: The physical address of the shop where the user can pick up their
+        order. This will be communicated by the chatbot upon the user's inquiry about
+        where to collect the order.
+conversation:
+  number: 3
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question
+  - change your mind

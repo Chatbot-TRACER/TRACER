@@ -1,0 +1,54 @@
+test_name: Reviewing Specific Order Queries
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user asking for specific details about your pizza order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You placed an order for a large pepperoni pizza with extra cheese and garlic bread
+    last night.
+  - You were informed during the checkout process that the estimated delivery time
+    is typically around 30-45 minutes.
+  - You want to confirm the total cost because you believe there might have been a
+    promotional discount applied.
+  goals:
+  - Request the order summary for my recent order
+  - Ask about the total cost of my order
+  - Inquire about the estimated readiness time for my order
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - order_summary:
+      type: str
+      description: A brief recap of the details of the user's recent pizza order,
+        including the type of pizza, size, and any additional drinks ordered, as communicated
+        by the chatbot.
+  - total_cost:
+      type: float
+      description: The total monetary amount for the user's order as provided by the
+        chatbot, which includes the cost of the pizza and any additional items.
+  - estimated_readiness_time:
+      type: time
+      description: The approximate time given by the chatbot for when the user's order
+        will be ready for pickup or delivery.
+  - order_confirmation_number:
+      type: str
+      description: A unique reference number supplied by the chatbot to confirm the
+        user's order, which can be used for tracking or inquiries regarding the order.
+conversation:
+  number: 4
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - change your mind
+  - single question
