@@ -121,36 +121,43 @@ def extract_functionality_nodes(conversation_history, llm, current_node=None):
         context += f"\nWe are currently exploring the '{current_node.name}' step: {current_node.description}"
 
     extraction_prompt = f"""
-    {context}
+    {context} # Includes current node focus if applicable
 
     CONVERSATION:
     {formatted_conversation}
 
-    Extract distinct INTERACTION STEPS or FUNCTIONALITIES the chatbot provides based on this conversation.
-    Focus on steps that advance the user's goal or represent a state in the workflow. This includes actions the chatbot performs AND key information it provides that enables the next user action.
+    Analyze the conversation and extract distinct USER ACTIONS, CHATBOT ACTIONS, or KEY INTERACTION STEPS that define the workflow. Focus on steps that advance a user goal, represent a state change, or present a decision point.
 
-    EXAMPLES of relevant steps/functionalities:
-    - provide_menu: Shows the user available options (Information step enabling action)
-    - schedule_appointment: Helps users book an appointment (Action)
-    - confirm_details: Asks user to confirm information (Interaction step)
-    - explain_policy: Provides details about a policy (Information step)
-    - search_products: Searches the product database (Action)
+    EXAMPLES of relevant types of steps/functionalities (Generic):
+    - `provide_options`: Chatbot presents a list of choices or capabilities. (Information step enabling action)
+    - `gather_information`: Chatbot asks user for specific input needed to proceed. (Interaction step)
+    - `select_option`: User chooses one item from a list or set of choices. (User Action / Branch Point)
+    - `submit_data`: User provides requested information or confirms input. (User Action)
+    - `process_request`: Chatbot performs an action based on user input (e.g., search, calculation, booking). (Chatbot Action)
+    - `display_results`: Chatbot shows the outcome of a process (e.g., search results, confirmation details). (Information step)
+    - `confirm_action`: Chatbot asks for confirmation before proceeding with a significant action. (Interaction / Decision Point)
+    - `handle_error`: Chatbot indicates it cannot proceed or understand. (State)
+    - `provide_explanation`: Chatbot gives details about a topic or process. (Information step)
 
-    AVOID extracting basic conversational filler (e.g., greetings, acknowledgments) unless they represent a specific state (like 'confirm_understanding').
+    AVOID extracting:
+    - Basic greetings or farewells (unless they are specific entry/exit points).
+    - Simple acknowledgments ("Okay", "Got it", "Thanks").
+    - Generic confirmations unless they represent a specific workflow state (like 'confirm_final_action').
+    - Repetitive error messages if already captured by a general 'handle_error' type step.
 
     For each relevant step/functionality, identify:
-    1. A short name (use snake_case) reflecting the step's purpose.
-    2. A clear description of what happens in this step.
-    3. Required parameters (if the step involves user input or specific data).
+    1. A short, descriptive name (use snake_case, reflecting the step's purpose).
+    2. A clear description of what happens or what action is taken during this step.
+    3. Required parameters (inputs needed *for* this step, if any, like 'item_id', 'search_query', 'user_choice'). List parameter names separated by commas, or "None".
 
     Format each step/functionality EXACTLY as:
     FUNCTIONALITY:
     name: snake_case_name
-    description: Clear description of this interaction step/functionality
-    parameters: param1, param2 (or "None" if no parameters)
+    description: Clear description of this interaction step/functionality.
+    parameters: param1, param2 (or "None")
 
-    Be comprehensive in capturing steps that define the chatbot's interaction flow.
-    If no new relevant step/functionality is identified, respond with "NO_NEW_FUNCTIONALITY".
+    Be precise. If the conversation shows a clear sequence (A then B), or a choice (A leads to B or C), capture those steps distinctly.
+    If no new relevant step/functionality is identified in THIS specific conversation snippet, respond ONLY with "NO_NEW_FUNCTIONALITY".
     """
     response = llm.invoke(extraction_prompt)
     content = response.content.strip()
@@ -459,16 +466,22 @@ def run_exploration_session(
 
     # Define exploration focus based on current node
     if current_node:
-        session_focus = f"Explore the '{current_node.name}' functionality in depth. Ask questions about how to use it, what options it has, and how it connects to other features."
+        # Make the focus more directive and action-oriented
+        session_focus = f"Actively try to USE and COMPLETE the '{current_node.name}' functionality. If it presents choices or options, SELECT one and proceed down that path. Ask clarifying questions only if necessary to proceed, but prioritize taking action or giving commands."
         if current_node.parameters:
             param_names = [p.get("name", "unknown") for p in current_node.parameters]
-            session_focus += (
-                f" Pay special attention to these parameters: {', '.join(param_names)}."
-            )
+            session_focus += f" Attempt to provide plausible values for these parameters if prompted: {', '.join(param_names)}."
+        # General guidance for option-presenting nodes
+        if (
+            "menu" in current_node.name.lower()
+            or "options" in current_node.name.lower()
+            or "list" in current_node.name.lower()
+        ):
+            session_focus += " After seeing the options/list/menu, try to SELECT one to continue the interaction."
+
     else:
-        session_focus = (
-            "Explore basic information and general capabilities of the chatbot"
-        )
+        # Initial exploration focus - encourage trying actions
+        session_focus = "Explore the chatbot's main capabilities. Ask what it can do. If it offers options or asks questions requiring a choice, TRY to provide an answer or make a selection to see where it leads."
 
     primary_language = supported_languages[0] if supported_languages else None
 
@@ -479,19 +492,20 @@ def run_exploration_session(
         language_instruction = f"\n\nIMPORTANT: The chatbot supports these languages: {language_str}. YOU MUST COMMUNICATE PRIMARILY IN {language_str}."
 
     # Create the system prompt
-    system_content = f"""You are an Explorer AI tasked with learning about another chatbot you're interacting with.
+    system_content = f"""You are an Explorer AI tasked with actively discovering and testing the capabilities of another chatbot through conversation.
 
     IMPORTANT GUIDELINES:
-    1. Ask ONE simple question at a time - the chatbot gets confused by multiple questions
-    2. Keep your messages short and direct
-    3. When the chatbot indicates it didn't understand, simplify your language further
-    4. Follow the chatbot's conversation flow and adapt to its capabilities{language_instruction}
+    1. Ask ONE clear question or give ONE clear instruction/command at a time.
+    2. Keep messages concise but focused on progressing the interaction or using a feature.
+    3. **CRITICAL: If the chatbot offers choices, options, or asks a question requiring a selection (e.g., "Option A or Option B?", "Yes or No?", "Which item?"), you MUST try to select one of the offered options in your next turn to explore that path.**
+    4. Your goal is not just to chat, but to actively USE the chatbot's features and follow its workflows.
+    5. Prioritize taking actions or giving commands relevant to the focus over asking general questions.
+    6. Follow the chatbot's conversation flow and adapt to its capabilities.{language_instruction}
 
     EXPLORATION FOCUS FOR THIS SESSION:
     {session_focus}
 
-    Your goal is to understand the chatbot's capabilities through direct, simple interactions.
-    After {max_turns} exchanges, or when you feel you've explored this path thoroughly, say "EXPLORATION COMPLETE".
+    Try to follow the focus. After {max_turns} exchanges, or when you believe you have thoroughly explored this specific path (or reached a dead end/loop), respond ONLY with "EXPLORATION COMPLETE".
     """
 
     # Reset conversation history for this session

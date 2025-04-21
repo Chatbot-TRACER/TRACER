@@ -505,63 +505,42 @@ class ChatbotExplorer:
         conversation_snippets = str(conversation_history)[:5000]
 
         structuring_prompt = f"""
-        You are a Workflow Dependency Analyzer specializing in sequential process modeling. Your task is to analyze a list of discovered chatbot functionalities (actions/steps) and conversation transcripts to determine the EXACT sequential workflow a user must follow.
+    You are a Workflow Dependency Analyzer specializing in modeling sequential processes from conversations. Your task is to analyze a list of discovered chatbot interaction steps (functionalities) and conversation transcripts to determine the EXACT sequential workflow a user typically follows or MUST follow.
 
-        Input Functionalities:
-        {func_list_str}
+    Input Functionalities (Extracted Steps):
+    {func_list_str}
 
-        Conversation History Snippets:
-        {conversation_snippets} # Include a portion of the history for context
+    Conversation History Snippets (Context for Flow):
+    {conversation_snippets} # Provides context on how steps actually occurred
 
-        CRITICAL TASK: Determine the sequential flow, including prerequisites, branches, and joins.
-        - **Sequences:** Identify actions that MUST happen before others (e.g., select item before checkout).
-        - **Branches:** Identify points where the user is offered mutually exclusive choices leading to different paths (e.g., choose 'custom pizza' OR 'predefined pizza'). The parent node should be the one presenting the choice.
-        - **Joins:** Identify points where different paths converge to a common next step (e.g., both pizza paths lead to 'add drinks').
+    CRITICAL TASK: Determine the sequential flow, including prerequisites, branches, and joins, based *primarily on the conversational evidence*.
+    - **Sequences:** Identify steps that consistently or necessarily happen *after* others based on the conversation flow (e.g., Chatbot says 'First, do X', then user does X, then Chatbot says 'Okay, now do Y').
+    - **Branches:** Identify points where the chatbot explicitly offers mutually exclusive choices leading to different subsequent steps (e.g., Chatbot asks 'Would you like Option A or Option B?', User selects A, leading to Step_A; or User selects B, leading to Step_B). The parent node should be the one *presenting* the choice.
+    - **Joins:** Identify points where different interaction paths observed in the conversations seem to converge to the *same* common next step (e.g., after completing either Step_A or Step_B, the conversation consistently proceeds to Step_Z).
 
-        DEEPLY ANALYZE the conversation flow:
-        1. Which actions are presented as the FIRST options (potential root nodes)?
-        2. Which actions are explicitly offered only AFTER another action is completed?
-        3. Does the chatbot present clear choices (e.g., "Would you like A or B?") indicating a branch?
-        4. Do different interaction paths seem to lead to the same follow-up action (a join)?
+    DEEPLY ANALYZE the conversation flow provided:
+    1. Which steps appear at the beginning of conversations or seem like entry points? (Potential root nodes)
+    2. Which steps are explicitly offered or occur only *after* another specific step is completed in the transcripts? (Indicates sequence/parent)
+    3. Does the chatbot present clear choices (e.g., "Choose 1 or 2", "Do you want X or Y?") followed by different interactions based on the user's response? (Indicates a branch)
+    4. Do different interaction paths observed in the transcripts seem to lead back to the same follow-up step? (Indicates a join)
 
-        Structure the output as a JSON list of nodes. Each node represents a functionality and MUST include:
-        - "name": The functionality name (string).
-        - "description": The description (string).
-        - "parameters": List of parameter names (list of strings, or empty list []).
-        - "parent_names": List of names of functionalities that MUST be completed immediately before this one (list of strings, or empty list [] for root nodes or nodes following a join where the parent is ambiguous without more context).
+    Structure the output as a JSON list of nodes. Each node represents an interaction step/functionality and MUST include:
+    - "name": The functionality name (string, from the input list).
+    - "description": The description (string, from the input list).
+    - "parameters": List of parameter names relevant *to this step* (list of strings, or empty list []).
+    - "parent_names": List of names of functionalities that, based on the conversational evidence, MUST be completed *immediately before* this one can occur (list of strings).
+        - An empty list `[]` indicates a root node or an entry point.
+        - Multiple names in `parent_names` indicate a JOIN point where this step can follow *any* of the listed parents.
 
-        Rules:
-        - A node with parent_names can ONLY be accessed AFTER ALL its parent nodes are completed sequentially.
-        - Root nodes (empty parent_names) are the valid starting points or entry points reached from other flows.
-        - Use the 'name' field from the input functionalities as the primary identifier.
-        - The output MUST be valid JSON. Do NOT include comments. Use [] for empty lists.
+    Rules for Output:
+    - The structure MUST reflect the dependencies observed in the conversation flow.
+    - Use the 'name' field from the input functionalities as the primary identifier.
+    - The output MUST be valid JSON. Do NOT include comments outside the JSON structure. Use [] for empty lists. Ensure correct quoting and commas.
 
-        Output Format Example (Illustrating Sequence, Branch, Join):
-        [
-          {{ // Root node
-            "name": "start_order", "description": "Begin a new order", "parameters": [], "parent_names": []
-          }},
-          {{ // Sequence: Must follow start_order
-            "name": "select_main_item_type", "description": "Choose between pizza or pasta", "parameters": [], "parent_names": ["start_order"]
-          }},
-          {{ // Branch 1: Follows select_main_item_type
-            "name": "order_pizza", "description": "Configure pizza order", "parameters": ["size", "toppings"], "parent_names": ["select_main_item_type"]
-          }},
-          {{ // Branch 2: Follows select_main_item_type
-            "name": "order_pasta", "description": "Configure pasta order", "parameters": ["type", "sauce"], "parent_names": ["select_main_item_type"]
-          }},
-          {{ // Join: Can follow EITHER order_pizza OR order_pasta
-            "name": "add_drinks", "description": "Add drinks to the order", "parameters": ["drink_type"], "parent_names": ["order_pizza", "order_pasta"] // Indicates it can follow either parent
-          }},
-          {{ // Sequence: Follows add_drinks
-            "name": "checkout", "description": "Complete the order", "parameters": ["payment_method"], "parent_names": ["add_drinks"]
-          }}
-        ]
+    PAY CLOSE ATTENTION to the conversational evidence (prompts, choices offered, user responses, chatbot replies) to identify true dependencies, branches, and joins. Do not invent relationships not supported by the flow.
 
-        PAY CLOSE ATTENTION to the conversation flow to identify true dependencies, branches, and joins based on how the chatbot presents options and guides the user.
-
-        Generate the JSON list representing the precise sequential workflow structure:
-        """
+    Generate the JSON list representing the precise sequential workflow structure based on the provided functionalities and conversation snippets:
+    """
 
         try:
             print("   Asking LLM to determine workflow structure...")
