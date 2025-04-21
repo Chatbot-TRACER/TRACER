@@ -1,5 +1,6 @@
 from typing import List, Dict, Any, Optional, Tuple, Set
 from .functionality_node import FunctionalityNode
+from langchain_core.messages import AIMessage
 import re
 import json
 import random
@@ -608,130 +609,151 @@ def run_exploration_session(
     conversation_history.append({"role": "assistant", "content": initial_question})
     conversation_history.append({"role": "user", "content": chatbot_message})
 
-    # Main chat loop
-    turn_count = 0
-    retry_count = 0
-    # How many times we try after we receive fallback
-    MAX_RETRIES = 1
-
+    # Main loop
+    turn_count = 1  # We already did the first question, so start at 1
     while True:
-        turn_count += 1
-
-        # Stop if max turns reached
+        # Stop if we hit the max number of turns
         if turn_count >= max_turns:
             print(
                 f"\nReached maximum turns ({max_turns}). Ending session {session_num + 1}."
             )
             break
 
-        # --- START RETRY LOGIC ---
-
-        # Check if the last chatbot message was a fallback
-        is_fallback = False
-        if fallback_message and chatbot_message:
-            # Simple check: is the fallback a significant part of the response?
-            fallback_norm = fallback_message.strip().lower()
-            response_norm = chatbot_message.strip().lower()
-            # Check if response starts with a substantial portion of the fallback
-            if fallback_norm and response_norm.startswith(
-                fallback_norm[: max(20, len(fallback_norm) // 2)]
-            ):
-                is_fallback = True
-                print("   (Detected potential fallback response)")
-
-        if is_fallback and retry_count < MAX_RETRIES:
-            retry_count += 1
-            print(f"   Attempting retry {retry_count}/{MAX_RETRIES} by rephrasing...")
-            # Get the message that triggered the fallback (Explorer's last message)
-            last_explorer_msg = conversation_history[-2]["content"]
-
-            rephrase_prompt = f"""
-            The chatbot responded with what seems like a fallback message ("{chatbot_message[:100]}...") to your last message.
-            Rephrase your previous message to express the SAME INTENT but using different wording.
-            Keep it concise and clear.
-
-            PREVIOUS MESSAGE: {last_explorer_msg}
-            {"IMPORTANT: Generate your rephrased message in " + primary_language + "." if primary_language else ""}
-
-            REPHRASED MESSAGE:
-            """
-            try:
-                rephrased_response = (
-                    explorer.llm.invoke(rephrase_prompt).content.strip().strip("\"'")
-                )
-                if rephrased_response and rephrased_response != last_explorer_msg:
-                    explorer_response = rephrased_response
-                    print(f"   Rephrased as: {explorer_response}")
-                else:
-                    print(
-                        "   WARN: Rephrasing failed or produced identical message. Proceeding without retry."
-                    )
-                    retry_count = MAX_RETRIES  # Skip further retries for this turn
-                    explorer_response = (
-                        None  # Signal to generate response normally via graph
-                    )
-            except Exception as e:
-                print(
-                    f"   WARN: Error during rephrasing: {e}. Proceeding without retry."
-                )
-                retry_count = MAX_RETRIES
-                explorer_response = (
-                    None  # Signal to generate response normally via graph
-                )
-
-        else:
-            # Reset retry count if it wasn't a fallback or retries exhausted
-            if not is_fallback:
-                retry_count = 0
-            # Generate next response normally using LangGraph
-            explorer_response = None  # Reset before graph call
-            for event in explorer.stream_exploration(
-                {
-                    "messages": conversation_history,
-                    "conversation_history": [],
-                    "discovered_functionalities": [],
-                    "current_session": session_num,
-                    "exploration_finished": False,
-                    "conversation_goals": [],
-                    "supported_languages": supported_languages,
-                }
-            ):
+        # --- Get what the explorer wants to say next ---
+        explorer_response = None
+        # This is the stuff the explorer LLM needs to decide what to do
+        llm_state = {
+            "messages": conversation_history,
+            "conversation_history": [],  # Not really used here
+            "discovered_functionalities": [],  # Not really used here
+            "current_session": session_num,
+            "exploration_finished": False,
+            "conversation_goals": [],  # Not really used here
+            "supported_languages": supported_languages,
+            "fallback_message": fallback_message,  # Just in case the LLM wants to know
+        }
+        try:
+            # Ask the explorer LLM what to do next
+            for event in explorer.stream_exploration(llm_state):
                 for value in event.values():
-                    latest_message = value["messages"][-1]
-                    explorer_response = latest_message.content
+                    if value.get("messages"):
+                        latest_message = value["messages"][-1]
+                        # Make sure this is the LLM's response
+                        if isinstance(latest_message, AIMessage):
+                            explorer_response = latest_message.content
+        except Exception as e:
+            print(f"\nError getting response from Explorer AI: {e}. Ending session.")
+            break  # If the explorer LLM crashes, just stop
 
-        # --- END RETRY LOGIC ---
-
-        # Check if explorer_response was generated (might be None if graph failed or retry logic set it)
-        if explorer_response is None:
-            print("   WARN: Explorer failed to generate a response. Ending session.")
-            break  # Or potentially try to generate a generic question?
+        if not explorer_response:
+            print(
+                "\nError: Failed to get next action from Explorer AI. Ending session."
+            )
+            break
 
         print(f"\nExplorer: {explorer_response}")
 
-        # Stop if explorer says it's done
+        # If the explorer says it's done, just stop
         if "EXPLORATION COMPLETE" in explorer_response.upper():
             print(f"\nExplorer has finished session {session_num + 1} exploration.")
             break
 
-        # Add explorer response to history
+        # Save what the explorer said before sending it to the chatbot
         conversation_history.append({"role": "assistant", "content": explorer_response})
 
-        # Send explorer response to the chatbot
+        # --- Send the explorer's message to the chatbot ---
         is_ok, chatbot_message = the_chatbot.execute_with_input(explorer_response)
 
         if not is_ok:
             print("\nError communicating with chatbot. Ending session.")
+            # Put an error in the chat history so we know what happened
+            conversation_history.append(
+                {"role": "user", "content": "[Chatbot communication error]"}
+            )
             break
 
-        print(f"\nChatbot: {chatbot_message}")
-        # Add chatbot response to history
+        # Save the chatbot's first response in case we need it later
+        original_chatbot_message = chatbot_message
+
+        # Check if the chatbot gave us a fallback or error
+        is_fallback = False
+        if fallback_message and chatbot_message:
+            # Try to see if the chatbot's response looks like the fallback
+            fallback_norm = fallback_message.strip().lower()
+            response_norm = chatbot_message.strip().lower()
+            # Just check if the start matches a big chunk of the fallback
+            if fallback_norm and response_norm.startswith(
+                fallback_norm[: max(20, len(fallback_norm) // 2)]
+            ):
+                is_fallback = True
+
+        is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
+
+        # --- Try the same message again if we hit a fallback or parsing error ---
+        if is_fallback or is_parsing_error:
+            failure_reason = (
+                "Fallback message"
+                if is_fallback
+                else "Potential chatbot error (OUTPUT_PARSING_FAILURE)"
+            )
+            print(
+                f"\n   {failure_reason} detected. Attempting 1 retry with the *same* input..."
+            )
+
+            print(f"   Retrying with the same input: '{explorer_response}'")
+            is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(
+                explorer_response
+            )
+
+            if is_ok_retry:
+                # See if the retry gave us something different and not another failure
+                is_retry_fallback = False
+                if fallback_message and chatbot_message_retry:
+                    retry_fallback_norm = fallback_message.strip().lower()
+                    retry_response_norm = chatbot_message_retry.strip().lower()
+                    if retry_fallback_norm and retry_response_norm.startswith(
+                        retry_fallback_norm[: max(20, len(retry_fallback_norm) // 2)]
+                    ):
+                        is_retry_fallback = True
+
+                is_retry_parsing_error = (
+                    "OUTPUT_PARSING_FAILURE" in chatbot_message_retry
+                )
+
+                if (
+                    chatbot_message_retry != original_chatbot_message
+                    and not is_retry_fallback
+                    and not is_retry_parsing_error
+                ):
+                    # Retry worked, use the new response
+                    print("   Retry successful!")
+                    chatbot_message = chatbot_message_retry
+                    print(f"   New Chatbot Response: {chatbot_message}")
+                else:
+                    # Retry didn't help, just use the original
+                    print(
+                        "   Retry did not yield a different/successful response. Using original failure."
+                    )
+                    chatbot_message = original_chatbot_message
+            else:
+                # Retry couldn't even talk to the chatbot
+                print("   Retry communication failed. Using original failure.")
+                chatbot_message = original_chatbot_message
+        # --- END Simple Retry Logic ---
+
+        print(
+            f"\nChatbot: {chatbot_message}"
+        )  # Show what the chatbot said (either original or retry)
+
+        # Save the chatbot's response so the explorer can see it next time
         conversation_history.append({"role": "user", "content": chatbot_message})
 
-        # Stop if chatbot says goodbye
+        # If the chatbot says bye, just stop
         if chatbot_message.lower() in ["quit", "exit", "q", "bye", "goodbye"]:
             print("Chatbot ended the conversation. Ending session.")
             break
+
+        turn_count += 1
 
     # Extract functionalities found in this session
     print("\nAnalyzing conversation for new functionalities...")
