@@ -1,0 +1,60 @@
+test_name: Cambio de contraseña de la cuenta ID-UAM
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Debes actuar como un usuario que ha olvidado su contraseña de la cuenta ID-UAM
+    y necesita cambiarla.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has intentado restablecer tu contraseña varias veces, pero no recibiste el correo
+    electrónico con el código de activación.
+  - Te preocupa que alguien más pueda acceder a tu cuenta si no cambias la contraseña
+    pronto.
+  - Has leído que es importante utilizar combinaciones de letras, números y símbolos
+    para crear contraseñas seguras.
+  goals:
+  - Obtener un código de activación para cambiar la contraseña de mi cuenta ID-UAM
+  - Cambiar mi contraseña utilizando el código de activación obtenido
+  - Consultar las recomendaciones sobre la gestión segura de contraseñas
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - codigo_activacion:
+      type: str
+      description: El código de activación que el chatbot proporciona al usuario para
+        cambiar su contraseña de cuenta ID-UAM. Este se debe encontrar en la respuesta
+        del chatbot donde se menciona el envío del código.
+  - enlace_website:
+      type: str
+      description: El enlace al sitio web oficial donde el usuario puede obtener más
+        información sobre los servicios de Tecnologías de la Información en UAM. Este
+        enlace debe estar presente en las respuestas que dirigen al usuario a consultar
+        más detalles.
+  - recomendaciones_contrasenas:
+      type: str
+      description: Las recomendaciones sobre la gestión segura de contraseñas que
+        el chatbot brinda al usuario. Este contenido debe contener consejos o prácticas
+        sugeridas para crear y manejar contraseñas de manera segura.
+  - contacto_cau:
+      type: str
+      description: La información de contacto del Centro de Atención a Usuarios (CAU),
+        que incluirá el correo electrónico, número de teléfono y dirección física.
+        Esta información debe estar presente en las respuestas donde se ofrece soporte
+        adicional.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

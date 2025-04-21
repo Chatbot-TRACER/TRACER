@@ -1,0 +1,60 @@
+test_name: Soporte para videoconferencias
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Debes actuar como un docente que necesita información sobre los servicios
+    de soporte técnicos para conferencias y videoconferencias en la UAM.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has tenido problemas anteriores con la conexión a internet durante tus videoconferencias
+    y ahora buscas soluciones más estables.
+  - Estás preparando una conferencia para tus estudiantes que se llevará a cabo la
+    próxima semana y necesitas asegurarte de que todo funcione correctamente.
+  - Te han recomendado que consultes el catálogo de servicios de soporte de la UAM,
+    ya que ellos ofrecen asistencia técnica durante eventos importantes.
+  goals:
+  - Preguntar sobre los tipos de conexiones disponibles para videoconferencias en
+    UAM
+  - Solicitar soporte técnico específico para una videoconferencia
+  - Consultar el catálogo de servicios de soporte técnico para conferencias en la
+    UAM
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - tipos_conexiones_videoconferencia:
+      type: str
+      description: Información sobre los tipos de conexiones disponibles para videoconferencias
+        en UAM que el chatbot menciona en sus respuestas.
+  - contacto_cau:
+      type: str
+      description: Datos de contacto del Centro de Atención a Usuarios (CAU) que el
+        chatbot proporciona, incluyendo correo electrónico, número de teléfono y dirección
+        física.
+  - servicios_soporte_disponibles:
+      type: str
+      description: Descripción de los servicios de soporte técnico disponibles para
+        resoluciones de problemas técnicos en videoconferencias mencionados por el
+        chatbot.
+  - enlace_catalogo_servicios:
+      type: str
+      description: URL o referencia al catálogo de servicios de soporte técnico que
+        el chatbot menciona para que el usuario consulte más detalles sobre los servicios
+        ofrecidos.
+conversation:
+  number: 4
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question
+  - change your mind

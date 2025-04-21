@@ -1,0 +1,55 @@
+test_name: Solicitud de información de contacto del CAU
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Debes actuar como un estudiante que necesita el contacto del Centro de Atención
+    a Usuarios (CAU) de la UAM para resolver un problema técnico.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Tienes un examen importante mañana y necesitas acceso a Moodle para revisar el
+    material.
+  - Has escuchado que el CAU tiene un tiempo de respuesta rápido para consultas relacionadas
+    con problemas técnicos.
+  - Te han informado que los horarios de atención del CAU son limitados, por lo que
+    necesitas contactarlos pronto.
+  goals:
+  - Obtener el correo electrónico y número de teléfono del CAU
+  - Consultar los horarios de atención del CAU
+  - Preguntar sobre el proceso para solicitar soporte técnico relacionado con problemas
+    de acceso a Moodle
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - contacto_email_cau:
+      type: str
+      description: El correo electrónico proporcionado por el chatbot para contactar
+        al Centro de Atención a Usuarios (CAU).
+  - contacto_telefono_cau:
+      type: str
+      description: El número de teléfono que el chatbot menciona para comunicarse
+        con el Centro de Atención a Usuarios (CAU).
+  - horarios_atencion_cau:
+      type: str
+      description: Los horarios de atención del Centro de Atención a Usuarios (CAU)
+        que el chatbot indica.
+  - proceso_soporte_tecnico:
+      type: str
+      description: La descripción del proceso que el chatbot ofrece para solicitar
+        soporte técnico relacionado con problemas de acceso a Moodle.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

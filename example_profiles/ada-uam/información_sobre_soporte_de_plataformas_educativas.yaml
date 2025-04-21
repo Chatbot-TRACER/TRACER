@@ -1,0 +1,63 @@
+test_name: Información sobre soporte de plataformas educativas
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Debes actuar como un estudiante que busca información sobre el soporte técnico
+    que se ofrece para las plataformas educativas de la UAM, como Moodle.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Eres nuevo en la UAM y no estás familiarizado con los procedimientos de soporte
+    técnico para plataformas educativas como Moodle.
+  - Has escuchado de otros estudiantes que el Centro de Atención a Usuarios es útil,
+    pero no conoces sus horarios de atención.
+  - Necesitas acceder a Moodle para completar un trabajo importante y temes que no
+    puedas hacerlo si no recuerdas tu contraseña de ID-UAM.
+  goals:
+  - Solicitar información sobre los tipos de soporte disponibles para Moodle
+  - Preguntar cómo cambiar mi contraseña de ID-UAM
+  - Consultar los horarios de atención del Centro de Atención a Usuarios (CAU)
+  - Pedir detalles sobre el procedimiento para acceder a plataformas educativas como
+    Moodle
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - tipos_de_soporte:
+      type: str
+      description: Información sobre los tipos de soporte técnico disponibles para
+        la plataforma Moodle que menciona el chatbot. Se puede encontrar en la respuesta
+        donde se describen los servicios ofrecidos por Tecnologías de la Información
+        en UAM.
+  - contacto_cau:
+      type: str
+      description: Detalles de contacto del Centro de Atención a Usuarios (CAU) que
+        el chatbot proporciona, incluyendo correo electrónico, número de teléfono
+        y dirección física. Esta información se extrae de la respuesta donde se ofrece
+        asistencia directa al usuario.
+  - horarios_atencion_cau:
+      type: str
+      description: Horarios de atención del Centro de Atención a Usuarios (CAU) que
+        el chatbot especifica. Se puede identificar en la parte de la respuesta que
+        menciona los tiempos en los que el servicio está disponible.
+  - procedimiento_acceso_moodle:
+      type: str
+      description: Detalles sobre el procedimiento para acceder a plataformas educativas
+        como Moodle. Esta información se encuentra en la respuesta del chatbot que
+        se centra en cómo realizar el ingreso a las plataformas.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question
+  - long phrases

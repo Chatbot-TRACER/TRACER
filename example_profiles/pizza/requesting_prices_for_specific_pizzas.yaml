@@ -1,0 +1,74 @@
+test_name: Requesting Prices for Specific Pizzas
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user inquiring about the costs of specific pizzas.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You recently discovered a new pizza place that offers unique toppings and would
+    like to try their Hawaiian pizza.
+  - You are planning a small gathering at home this weekend and want to ensure you
+    order enough pizzas for your guests.
+  - You remember that the last time you ordered from this restaurant, the pizza took
+    longer than expected to arrive.
+  goals:
+  - Inquire about the price of a {{size}} Hawaiian pizza
+  - Request the total cost for a medium Hawaiian pizza and {{quantity}} {{drink}}
+  - Confirm my order details including total cost and preparation time
+  - drink:
+      function: random()
+      type: string
+      data:
+      - Coke
+      - Sprite
+      - Fanta
+      - Water
+  - size:
+      function: default()
+      type: string
+      data:
+      - Small
+      - Medium
+      - Large
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. Can you rephrase?"'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the order, including
+        any specified pizzas and drinks.
+  - pizza_details:
+      type: str
+      description: A detailed description of the specific pizza(s) ordered, including
+        size and any additional toppings specified by the user.
+  - preparation_time:
+      type: time
+      description: The estimated time given by the chatbot for preparing the user's
+        order, as mentioned in the chat response.
+  - order_confirmation:
+      type: str
+      description: A summary of the order confirmation provided by the chatbot, including
+        details such as pizza type, size, additional drink options, and the total
+        cost.
+conversation:
+  number: 4
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - single question
+  - change your mind

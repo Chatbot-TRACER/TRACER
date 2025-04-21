@@ -6,44 +6,31 @@ llm:
     type: text
 user:
   language: English
-  role: You have to act as a user confirming the details of your pizza and drink order.
+  role: You have to act as a user who wants to confirm details of your order before
+    finalizing it.
   context:
   - 'personality: personalities/conversational-user.yml'
-  - You ordered a large pepperoni pizza with extra cheese and a 2-liter bottle of
-    cola.
-  - You want to ensure that your order is ready for pick-up in an hour, as you have
-    plans to meet friends for dinner.
-  - You've used this pizza place multiple times in the past and appreciate their punctuality
-    and customer service.
+  - You recently saw a promotional email about combo meal deals and are considering
+    adding a drink to your order.
+  - You placed an order for a large pepperoni pizza with extra cheese and garlic bread,
+    but you want to ensure everything is accurate before pickup.
+  - You're familiar with the restaurant’s menu from previous visits, but you want
+    to double-check the drink options to match your meal.
   goals:
-  - Confirm my order for a {{size}} {{pizza_type}} with {{drink_quantity}} {{drink_type}}
-  - Ask about the total cost of my order
-  - Get confirmation of my order readiness time and order ID
-  - drink_type:
-      function: random()
-      type: string
-      data:
-      - cola
-      - lemonade
-      - iced tea
-      - orange juice
-      - water
-  - drink_quantity:
-      function: random()
-      type: int
-      data:
-        min: 1
-        max: 5
-        step: 1
+  - Confirm my order details for a {{size}} {{pizza_type}} with {{quantity}} {{drink}}
+  - Request a summary of my order including total cost, preparation time, and order
+    ID
+  - Ask for available drink options to include in my order
+  - Inquire about the estimated time for my order to be ready for pickup
   - pizza_type:
-      function: another(3)
+      function: default()
       type: string
       data:
       - pepperoni
       - margherita
       - BBQ chicken
-      - vegetarian
-      - Hawaiian
+      - veggie
+      - supreme
   - size:
       function: random()
       type: string
@@ -51,35 +38,52 @@ user:
       - small
       - medium
       - large
+      - extra-large
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+  - drink:
+      function: random()
+      type: string
+      data:
+      - cola
+      - lemonade
+      - iced tea
+      - water
+      - orange juice
 chatbot:
   is_starter: false
-  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
-    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
-    "'
+  fallback: '"I''m sorry, I did not get what you said. Can you rephrase?"'
   output:
   - total_cost:
       type: float
-      description: The final price quoted by the chatbot for the pizza and drink order,
-        which should be stated as part of the order confirmation.
+      description: The final price quoted by the chatbot for the user's order, including
+        any additional items such as drinks or toppings and reflecting any taxes or
+        fees.
   - order_id:
       type: str
-      description: A reference number provided by the chatbot that identifies the
-        user's order, mentioned in the confirmation of the order details.
-  - order_ready_time:
+      description: A unique reference number provided by the chatbot that corresponds
+        to the user's order, allowing them to identify or refer to the order in future
+        interactions.
+  - preparation_time:
       type: time
-      description: The estimated time provided by the chatbot for when the order will
-        be ready for pickup or delivery, included in the order confirmation message.
-  - selected_drink_options:
+      description: The estimated time the chatbot indicates for the order to be ready,
+        which informs the user how long they will need to wait for pickup.
+  - available_drink_options:
       type: str
-      description: The specific types of drinks chosen by the user, as confirmed by
-        the chatbot in response to the drink selection step.
+      description: A list of drink options that the chatbot provides, indicating what
+        beverages the user can choose to include with their order.
 conversation:
   number: 4
   max_cost: 1.5
   goal_style:
     all_answered:
       export: false
-      limit: 10
+      limit: 15
   interaction_style:
   - change your mind
   - single question

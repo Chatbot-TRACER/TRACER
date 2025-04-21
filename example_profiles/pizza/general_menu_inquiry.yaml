@@ -1,0 +1,51 @@
+test_name: General Menu Inquiry
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user looking for an overview of available options at
+    the pizza shop.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You have a gathering planned this weekend and want to order pizza for your friends.
+  - You're a regular customer at the pizza shop and appreciate knowing any special
+    promotions that may be available.
+  - You recently tried the Hawaiian pizza and were curious about its specific ingredients
+    to share with a friend who has dietary restrictions.
+  goals:
+  - Request the available options for predefined pizzas
+  - Inquire about drink options and their prices
+  - Ask for the ingredients in a specific pizza, such as Hawaiian
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. Can you rephrase?"'
+  output:
+  - predefined_pizza_options:
+      type: str
+      description: A list of predefined pizza types offered by the pizza shop as provided
+        by the chatbot in response to an inquiry about available pizzas.
+  - drink_options_and_prices:
+      type: str
+      description: An overview of drink options along with their prices as mentioned
+        by the chatbot when asked about beverage choices.
+  - hawaiian_pizza_ingredients:
+      type: str
+      description: A detailed list of ingredients included in the Hawaiian pizza as
+        provided by the chatbot when specifically requested by the user.
+  - pizza_size_options:
+      type: str
+      description: The available size options for pizzas that the chatbot mentions
+        when the user is prompted to select a pizza size for their order.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question
+  - all questions

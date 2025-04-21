@@ -1,0 +1,71 @@
+test_name: Ordering a Predefined Pizza
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user ordering a predefined pizza from a pizza shop.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You love Hawaiian pizza and have decided to treat yourself after a long week at
+    work.
+  - You prefer a thin crust and extra cheese on your pizza for a more flavorful experience.
+  - You want to ensure your order is ready before your movie starts in two hours.
+  goals:
+  - Order a {{size}} Hawaiian pizza
+  - Add {{quantity}} {{drink}} to my order
+  - Request the total cost of my order
+  - Ask about the estimated preparation time for my order
+  - drink:
+      function: random()
+      type: string
+      data:
+      - soda
+      - iced tea
+      - lemonade
+  - size:
+      function: random()
+      type: string
+      data:
+      - small
+      - medium
+      - large
+  - quantity:
+      function: random(5)
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. Can you rephrase?"'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the user's pizza order,
+        including any additional items such as drinks or toppings.
+  - estimated_preparation_time:
+      type: time
+      description: The estimated amount of time the chatbot indicates it will take
+        to prepare the user's order after it has been confirmed.
+  - order_confirmation_details:
+      type: str
+      description: A summary of the confirmed details of the user's order provided
+        by the chatbot, including pizza type, size, and any additional items or toppings.
+  - available_pizza_options:
+      type: str
+      description: A list of predefined pizza options that the chatbot provides in
+        response to the user's inquiry about available pizzas.
+conversation:
+  number: 4
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - change your mind
+  - single question

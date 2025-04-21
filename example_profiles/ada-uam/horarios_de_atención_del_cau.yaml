@@ -1,0 +1,60 @@
+test_name: Horarios de atención del CAU
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Debes actuar como un estudiante que necesita conocer los horarios de atención
+    del Centro de Atención a Usuarios de la UAM.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Como estudiante de la UAM, necesitas planificar tu tiempo para cumplir con tus
+    obligaciones académicas y administrativas.
+  - Has escuchado de otros estudiantes que el CAU ofrece un servicio de soporte técnico
+    efectivo y deseas aprovecharlo.
+  - Durante la semana de exámenes, te preocupa no poder acceder al CAU debido a la
+    variación en sus horarios.
+  goals:
+  - Consultar los horarios de atención del CAU en días normales y durante los períodos
+    de suspensión de actividad laboral
+  - Solicitar información sobre los servicios específicos que ofrece el CAU
+  - Preguntar sobre el procedimiento para acceder al servicio de soporte técnico en
+    línea
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - horarios_atencion_normales:
+      type: str
+      description: Horarios de atención del CAU durante los días normales; se debe
+        buscar la información específica de los días y horas mencionadas por el chatbot
+        en sus respuestas.
+  - horarios_atencion_suspension:
+      type: str
+      description: Horarios de atención del CAU durante los períodos de suspensión
+        de actividad laboral; se debe extraer la información correspondiente a qué
+        horarios se aplican durante estos períodos.
+  - servicios_ofrecidos:
+      type: str
+      description: Descripción de los servicios específicos que ofrece el CAU; es
+        importante identificar la lista de servicios que el chatbot menciona en su
+        respuesta.
+  - contacto_cau:
+      type: str
+      description: Información de contacto del Centro de Atención a Usuarios, incluyendo
+        email, número de teléfono y dirección física; se debe encontrar esta información
+        exacta en las respuestas del chatbot.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

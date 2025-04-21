@@ -1,0 +1,63 @@
+test_name: Soporte técnico para problemas con Moodle
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Debes actuar como un estudiante que enfrenta problemas para acceder a Moodle
+    y busca asistencia técnica.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Tienes una tarea importante que necesitas entregar en Moodle y el plazo se acerca
+    rápidamente.
+  - No recuerdas la última vez que cambiaron la contraseña y no tienes acceso a tu
+    correo de recuperación.
+  - Has escuchado que el Centro de Atención a Usuarios tiene horarios restringidos
+    y no quieres perder la oportunidad de obtener ayuda.
+  goals:
+  - Recuperar mi {{identificador}} de usuario de la cuenta ID-UAM
+  - Cambiar la contraseña de mi cuenta ID-UAM
+  - Obtener información sobre los horarios de atención del Centro de Atención a Usuarios
+  - identificador:
+      function: random()
+      type: string
+      data:
+      - uam123
+      - uam456
+      - uam789
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - contacto_cau:
+      type: str
+      description: Información de contacto proporcionada por el chatbot para el Centro
+        de Atención a Usuarios, que incluye el correo electrónico, número de teléfono
+        y dirección física.
+  - horarios_atencion_cau:
+      type: str
+      description: Horarios de atención del Centro de Atención a Usuarios que el chatbot
+        menciona en su respuesta.
+  - servicios_disponibles:
+      type: str
+      description: Descripción de los servicios de soporte técnico que el chatbot
+        ofrece, especialmente en relación con problemas técnicos y software.
+  - catalogo_servicios_url:
+      type: str
+      description: URL proporcionada por el chatbot que dirige al usuario al catálogo
+        de servicios ofrecidos por Tecnologías de la Información en UAM.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - long phrases
+  - single question

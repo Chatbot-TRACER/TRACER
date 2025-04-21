@@ -1,0 +1,68 @@
+test_name: Consulta sobre servicios ofrecidos por Tecnologías de la Información
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Debes actuar como un estudiante que busca información sobre qué servicios
+    específicos ofrece Tecnologías de la Información en la UAM.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Como estudiante de ingeniería en computación, necesitas conocer los servicios
+    que Tecnologías de la Información ofrece para completar un proyecto escolar.
+  - Estás enfrentando un problema con la conexión a Internet en el campus y necesitas
+    soporte técnico para resolverlo antes de la entrega de tu tarea.
+  - Has escuchado que el Centro de Atención a Usuarios (CAU) es muy útil, pero no
+    estás seguro de sus horarios de atención y necesitas planificar tu visita.
+  goals:
+  - Consultar el catálogo de servicios de Tecnologías de la Información en la UAM
+  - Pedir información sobre el soporte técnico específico para problemas con {{plataforma}}
+    en UAM
+  - Solicitar los horarios de atención del Centro de Atención a Usuarios (CAU)
+  - plataforma:
+      function: random()
+      type: string
+      data:
+      - Moodle
+      - SAP
+      - Google Workspace
+      - Microsoft Teams
+      - Zoom
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - catalogo_servicios:
+      type: str
+      description: Descripción o enlace al catálogo de servicios ofrecidos por Tecnologías
+        de la Información en la UAM, que debe ser mencionado por el chatbot al responder
+        la consulta sobre los servicios.
+  - contacto_cau:
+      type: str
+      description: Información de contacto del Centro de Atención a Usuarios (CAU),
+        incluyendo teléfono y correo electrónico, que el chatbot debe proporcionar
+        para asistencia.
+  - soporte_tecnico_detalle:
+      type: str
+      description: Explicación sobre los tipos de problemas técnicos específicos que
+        se pueden resolver con soporte técnico en la UAM, que el chatbot debería ofrecer
+        al responder preguntas sobre soporte.
+  - horarios_atencion_cau:
+      type: str
+      description: Horarios de atención del Centro de Atención a Usuarios (CAU) que
+        el chatbot debe mencionar al responder a la solicitud de información sobre
+        los horarios de atención.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 20
+  interaction_style:
+  - single question
