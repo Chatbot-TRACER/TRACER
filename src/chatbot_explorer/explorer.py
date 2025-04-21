@@ -501,6 +501,9 @@ class ChatbotExplorer:
             ]
         )
 
+        # Increase context window slightly for conversation history
+        conversation_snippets = str(conversation_history)[:5000]
+
         structuring_prompt = f"""
         You are a Workflow Dependency Analyzer specializing in sequential process modeling. Your task is to analyze a list of discovered chatbot functionalities (actions/steps) and conversation transcripts to determine the EXACT sequential workflow a user must follow.
 
@@ -508,63 +511,54 @@ class ChatbotExplorer:
         {func_list_str}
 
         Conversation History Snippets:
-        {str(conversation_history)[:3000]} # Include a portion of the history for context
+        {conversation_snippets} # Include a portion of the history for context
 
-        CRITICAL TASK: Determine which functionalities depend on others and CANNOT be accessed without first completing their prerequisites.
+        CRITICAL TASK: Determine the sequential flow, including prerequisites, branches, and joins.
+        - **Sequences:** Identify actions that MUST happen before others (e.g., select item before checkout).
+        - **Branches:** Identify points where the user is offered mutually exclusive choices leading to different paths (e.g., choose 'custom pizza' OR 'predefined pizza'). The parent node should be the one presenting the choice.
+        - **Joins:** Identify points where different paths converge to a common next step (e.g., both pizza paths lead to 'add drinks').
 
-        EXAMPLE:
-        In an ordering system:
-        - "order_drinks" can ONLY happen AFTER "order_pizza" because the workflow forces users to order main items first
-        - "confirm_order" can ONLY happen AFTER all items are selected
+        DEEPLY ANALYZE the conversation flow:
+        1. Which actions are presented as the FIRST options (potential root nodes)?
+        2. Which actions are explicitly offered only AFTER another action is completed?
+        3. Does the chatbot present clear choices (e.g., "Would you like A or B?") indicating a branch?
+        4. Do different interaction paths seem to lead to the same follow-up action (a join)?
 
-        When analyzing the conversation flow, identify:
-        1. Mandatory starting points in the workflow
-        2. Actions that are only available after completing prerequisite steps
-        3. The actual ORDER in which users must perform actions
-
-        DEEPLY ANALYZE:
-        1. Which actions must be performed FIRST before others become available?
-        2. Which actions are sub-steps of larger processes?
-        3. Where in conversations do users get REDIRECTED to complete prerequisite steps?
-
-        Structure the output as a JSON list of nodes, where each node represents a functionality and includes its parent(s).
+        Structure the output as a JSON list of nodes. Each node represents a functionality and MUST include:
+        - "name": The functionality name (string).
+        - "description": The description (string).
+        - "parameters": List of parameter names (list of strings, or empty list []).
+        - "parent_names": List of names of functionalities that MUST be completed immediately before this one (list of strings, or empty list [] for root nodes or nodes following a join where the parent is ambiguous without more context).
 
         Rules:
-        - A node with parents can ONLY be accessed AFTER its parent nodes are completed
-        - Root nodes (no parents) are the ONLY valid starting points in the conversation
-        - Use the 'name' field from the input functionalities as the primary identifier
-        - The output MUST be valid JSON - DO NOT include comments
-        - Empty arrays should be represented as [] without comments
+        - A node with parent_names can ONLY be accessed AFTER ALL its parent nodes are completed sequentially.
+        - Root nodes (empty parent_names) are the valid starting points or entry points reached from other flows.
+        - Use the 'name' field from the input functionalities as the primary identifier.
+        - The output MUST be valid JSON. Do NOT include comments. Use [] for empty lists.
 
-        Output Format Example:
+        Output Format Example (Illustrating Sequence, Branch, Join):
         [
-        {{
-            "name": "start_order",
-            "description": "Begin a new order",
-            "parameters": [],
-            "parent_names": []
-        }},
-        {{
-            "name": "select_main_item",
-            "description": "Select a main item for the order",
-            "parameters": ["item_type"],
-            "parent_names": ["start_order"]
-        }},
-        {{
-            "name": "add_side_items",
-            "description": "Add side items to the order",
-            "parameters": ["side_item_type"],
-            "parent_names": ["select_main_item"]
-        }},
-        {{
-            "name": "checkout",
-            "description": "Complete the order",
-            "parameters": ["payment_method"],
-            "parent_names": ["select_main_item"]
-        }}
+          {{ // Root node
+            "name": "start_order", "description": "Begin a new order", "parameters": [], "parent_names": []
+          }},
+          {{ // Sequence: Must follow start_order
+            "name": "select_main_item_type", "description": "Choose between pizza or pasta", "parameters": [], "parent_names": ["start_order"]
+          }},
+          {{ // Branch 1: Follows select_main_item_type
+            "name": "order_pizza", "description": "Configure pizza order", "parameters": ["size", "toppings"], "parent_names": ["select_main_item_type"]
+          }},
+          {{ // Branch 2: Follows select_main_item_type
+            "name": "order_pasta", "description": "Configure pasta order", "parameters": ["type", "sauce"], "parent_names": ["select_main_item_type"]
+          }},
+          {{ // Join: Can follow EITHER order_pizza OR order_pasta
+            "name": "add_drinks", "description": "Add drinks to the order", "parameters": ["drink_type"], "parent_names": ["order_pizza", "order_pasta"] // Indicates it can follow either parent
+          }},
+          {{ // Sequence: Follows add_drinks
+            "name": "checkout", "description": "Complete the order", "parameters": ["payment_method"], "parent_names": ["add_drinks"]
+          }}
         ]
 
-        PAY CLOSE ATTENTION to the conversation flow to identify true dependencies, not just related concepts. Actions that can only happen AFTER another action MUST list that action in parent_names.
+        PAY CLOSE ATTENTION to the conversation flow to identify true dependencies, branches, and joins based on how the chatbot presents options and guides the user.
 
         Generate the JSON list representing the precise sequential workflow structure:
         """
