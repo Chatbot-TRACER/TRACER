@@ -1,0 +1,79 @@
+test_name: Looking for Predefined Pizza Options
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user seeking information on predefined pizza options.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You saw a social media post highlighting a new pizza special and want to know
+    more about it.
+  - You've had a long day at work and want to order a pizza along with some drinks
+    for dinner.
+  - A friend recommended this pizza place for its variety of predefined options and
+    great prices.
+  goals:
+  - List the available predefined pizza options
+  - Order a {{size}} {{pizza_type}} pizza
+  - Inquire about the price for a {{size}} {{pizza_type}} pizza
+  - Ask for available drink options and specify the quantity
+  - pizza_type:
+      function: default()
+      type: string
+      data:
+      - Margherita
+      - Pepperoni
+      - BBQ Chicken
+      - Vegetarian
+      - Hawaiian
+      - Supreme
+  - size:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 3
+        step: 1
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - predefined_pizza_options:
+      type: str
+      description: A list of predefined pizza options provided by the chatbot, which
+        includes various types of pizzas like Margherita, Pepperoni, Veggie, etc.
+        This can be found in the chatbot's response when the user asks about available
+        pizza options.
+  - pizza_price:
+      type: float
+      description: The price of the specified pizza size and type mentioned by the
+        chatbot when the user inquires about the cost of a particular pizza. This
+        is typically included in the chatbot's response after the user requests pricing
+        information.
+  - drink_options:
+      type: str
+      description: A list of available drink options that the chatbot provides when
+        the user asks for drink selections. This output will feature the various drinks
+        available, such as soda, water, or juice, and can be found in the chatbot's
+        response to drink inquiries.
+  - order_confirmation:
+      type: str
+      description: A confirmation message from the chatbot indicating the details
+        of the pizza order, including type and size, which serves as a validation
+        that the order has been successfully processed. This is present in the chatbot's
+        response once the user finalizes their order.
+conversation:
+  number: 3
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question
+  - change your mind

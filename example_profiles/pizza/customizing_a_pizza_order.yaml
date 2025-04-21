@@ -1,0 +1,93 @@
+test_name: Customizing a Pizza Order
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to customize a pizza with specific toppings.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You have a favorite combination of toppings that includes pepperoni, mushrooms,
+    and olives, which you want to specify in your order.
+  - You're considering ordering a side of garlic bread and a bottle of soda to go
+    along with your pizza.
+  - You recall a recent promotion that offered a discount for online orders over a
+    certain amount, and you want to confirm if it applies to your order.
+  goals:
+  - Customize a {{size}} pizza with {{toppings}}
+  - Order {{quantity}} {{drink}} to accompany my pizza
+  - Request the total cost of my order and any applicable discounts
+  - toppings:
+      function: another(3)
+      type: string
+      data:
+      - pepperoni
+      - mushrooms
+      - onions
+      - green peppers
+      - olives
+      - pineapple
+      - sausage
+      - spinach
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+  - drink:
+      function: another(2)
+      type: string
+      data:
+      - soda
+      - water
+      - lemonade
+      - iced tea
+      - juice
+  - size:
+      function: random()
+      type: string
+      data:
+      - small
+      - medium
+      - large
+      - extra-large
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the customized pizza
+        order, including any applicable discounts. This can be found in the chatbot's
+        response when it summarizes the order details.
+  - pizza_size:
+      type: str
+      description: The size of the pizza (small, medium, large) as confirmed by the
+        chatbot. This information will be provided in the chatbot's response where
+        it confirms the order specifics.
+  - selected_drinks:
+      type: str
+      description: The types of drinks chosen by the user as displayed by the chatbot.
+        This will be included in the chatbot's response when summarizing the drink
+        options selected for the order.
+  - available_drink_options:
+      type: str
+      description: The list of drink options provided by the chatbot to the user for
+        selection. This information can be extracted from the chatbot's response when
+        it lists the available drinks.
+conversation:
+  number: 4
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - change your mind
+  - single question

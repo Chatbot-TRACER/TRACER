@@ -1,0 +1,92 @@
+test_name: Placing Multiple Orders
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user placing multiple orders for pizza and drinks in
+    one session.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You are hosting a game night for friends and want to ensure everyone has enough
+    food and drinks to enjoy.
+  - You have specific preferences for the pizza, including extra cheese and pepperoni,
+    which you want to communicate clearly.
+  - You are in a hurry and need to know the estimated delivery time so you can plan
+    the evening accordingly.
+  goals:
+  - Order a {{size}} {{pizza_type}} pizza
+  - Add {{quantity}} {{drink}} to my order
+  - Confirm my order details and total cost
+  - Ask about the expected preparation time for my order
+  - drink:
+      function: random()
+      type: string
+      data:
+      - cola
+      - lemonade
+      - iced tea
+      - water
+      - orange juice
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+  - pizza_type:
+      function: default()
+      type: string
+      data:
+      - pepperoni
+      - margherita
+      - barbecue chicken
+      - veggie
+      - hawaiian
+  - size:
+      function: another(3)
+      type: string
+      data:
+      - small
+      - medium
+      - large
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for all items in the user's
+        order, including the pizzas and drinks selected. This information will typically
+        be provided after the user has confirmed their selections.
+  - order_confirmation:
+      type: str
+      description: A confirmation message or reference number provided by the chatbot
+        after the user places their order. This may include details about the items
+        ordered and serves as a validation of the completed transaction.
+  - expected_preparation_time:
+      type: time
+      description: The estimated time provided by the chatbot for the preparation
+        of the user's order. This information is given after the order details are
+        confirmed, indicating how long the user can expect to wait for their pizza
+        and drinks.
+  - available_drinks:
+      type: str
+      description: A list of drink options provided by the chatbot for the user to
+        choose from when placing their order. This typically appears after the user
+        indicates they want to add drinks to their order.
+conversation:
+  number: 4
+  max_cost: 2.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 20
+  interaction_style:
+  - change your mind
+  - all questions

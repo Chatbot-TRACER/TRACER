@@ -1,88 +1,222 @@
 === CHATBOT FUNCTIONALITY ANALYSIS ===
 
 ## FUNCTIONALITIES (Workflow Structure)
-- provide_options: Chatbot presents the list of available pizza options for the user to choose from.
-  - gather_information: Chatbot asks the user for the size of the pizza to proceed with the order.
-    - select_option: User selects a medium size for the Hawaiian pizza from the available size options. (Params: pizza_size)
-      - gather_drink_information: Chatbot requests information about the number and types of drinks the user wants to order.
-        - submit_data: User provides the details of the drinks they want to add to their order (one Coke and one Sprite). (Params: drinks_count, drink_types)
-          - process_request: Chatbot processes the order and calculates the total cost based on the selected pizza and drinks. (Params: pizza_type, pizza_size, number_of_drinks, drink_types)
-            - display_results: Chatbot displays the order summary, total cost, estimated readiness time, and shop address. (Params: order_summary, total_cost, readiness_time, shop_address, order_id)
-      - process_request: Chatbot processes the order and calculates the total cost based on the selected pizza and drinks. (Params: pizza_type, pizza_size, number_of_drinks, drink_types)
-        - display_results: Chatbot displays the order summary, total cost, estimated readiness time, and shop address. (Params: order_summary, total_cost, readiness_time, shop_address, order_id)
-- handle_error: Chatbot indicates it cannot proceed or understand the user's last input correctly.
+- list_predefined_pizza_options: The chatbot lists predefined pizza options available for ordering.
+  - select_pizza_size: The user selects a size for the pizza they want to order (small, medium, large). (Params: size)
+    - confirm_pizza_order: The chatbot confirms the order of a specific type and size of pizza. (Params: pizza_type, pizza_size)
+      - request_drink_order: The chatbot asks the user how many drinks they would like to order.
+        - list_drink_options: The chatbot provides a list of available drink options for the user to choose from.
+          - select_drink_order: The user selects specific drinks to order based on available options. (Params: drink_type, quantity)
+            - confirm_order_summary: The chatbot summarizes the details of the order including food and drink items, total cost, pickup time, and location. (Params: order_details)
+              - inquire_payment_methods: The user asks the chatbot about the accepted payment methods for their order.
+            - order_confirmation: The chatbot confirms the user's pizza order and asks for drink specifications. (Params: pizza_type, size)
+              - confirm_drink_order: The user confirms the specific types of drinks to order. (Params: drink1, drink2)
+                - finalize_order_details: The chatbot provides the total cost, estimated preparation time, and order ID after confirmation. (Params: pizza_type, drink1, drink2, total_cost, preparation_time, order_id)
+                  - confirm_order: Chatbot confirms the complete order, providing details such as total cost, order readiness, and order ID.
+          - order_drink: The user attempts to place an order for a specific drink (Water), but the chatbot fails to correctly parse the user's request consistently. (Params: drink_name)
+      - order_confirmation: The chatbot confirms the user's pizza order and asks for drink specifications. (Params: pizza_type, size)
+        - confirm_drink_order: The user confirms the specific types of drinks to order. (Params: drink1, drink2)
+          - finalize_order_details: The chatbot provides the total cost, estimated preparation time, and order ID after confirmation. (Params: pizza_type, drink1, drink2, total_cost, preparation_time, order_id)
+            - confirm_order: Chatbot confirms the complete order, providing details such as total cost, order readiness, and order ID.
+  - select_custom_pizza_ingredients: The user can inquire about and select specific ingredients for a custom pizza.
+    - customize_pizza: User indicates a desire to customize their pizza toppings. (Params: toppings)
+- add_item_to_cart: User adds an item (pizza, drinks) to their order cart. (Params: item_type, item_details)
+- explain_custom_pizza_option: The chatbot attempts to provide information about customizing pizza but indicates limitations on knowledge.
+- handle_input_error: The chatbot repeatedly fails to understand user input regarding pizza preferences, leading to a prompt for rephrasing.
+- provide_pizza_prices: The chatbot provides the price details for the various types of pizzas offered.
+- provide_beverage_prices: The chatbot details the prices for different beverage options available.
 
 ## FUNCTIONALITIES (Raw JSON Structure)
 [
   {
-    "name": "provide_options",
-    "description": "Chatbot presents the list of available pizza options for the user to choose from.",
+    "name": "list_predefined_pizza_options",
+    "description": "The chatbot lists predefined pizza options available for ordering.",
     "parameters": [],
     "parent_names": [],
     "children": [
       {
-        "name": "gather_information",
-        "description": "Chatbot asks the user for the size of the pizza to proceed with the order.",
-        "parameters": [],
+        "name": "select_pizza_size",
+        "description": "The user selects a size for the pizza they want to order (small, medium, large).",
+        "parameters": [
+          "size"
+        ],
         "parent_names": [
-          "provide_options"
+          "list_predefined_pizza_options"
         ],
         "children": [
           {
-            "name": "select_option",
-            "description": "User selects a medium size for the Hawaiian pizza from the available size options.",
+            "name": "confirm_pizza_order",
+            "description": "The chatbot confirms the order of a specific type and size of pizza.",
             "parameters": [
+              "pizza_type",
               "pizza_size"
             ],
             "parent_names": [
-              "gather_information"
+              "select_pizza_size"
             ],
             "children": [
               {
-                "name": "gather_drink_information",
-                "description": "Chatbot requests information about the number and types of drinks the user wants to order.",
+                "name": "request_drink_order",
+                "description": "The chatbot asks the user how many drinks they would like to order.",
                 "parameters": [],
                 "parent_names": [
-                  "select_option"
+                  "confirm_pizza_order"
                 ],
                 "children": [
                   {
-                    "name": "submit_data",
-                    "description": "User provides the details of the drinks they want to add to their order (one Coke and one Sprite).",
-                    "parameters": [
-                      "drinks_count",
-                      "drink_types"
-                    ],
+                    "name": "list_drink_options",
+                    "description": "The chatbot provides a list of available drink options for the user to choose from.",
+                    "parameters": [],
                     "parent_names": [
-                      "gather_drink_information"
+                      "request_drink_order"
                     ],
                     "children": [
                       {
-                        "name": "process_request",
-                        "description": "Chatbot processes the order and calculates the total cost based on the selected pizza and drinks.",
+                        "name": "select_drink_order",
+                        "description": "The user selects specific drinks to order based on available options.",
                         "parameters": [
-                          "pizza_type",
-                          "pizza_size",
-                          "number_of_drinks",
-                          "drink_types"
+                          "drink_type",
+                          "quantity"
                         ],
                         "parent_names": [
-                          "select_option",
-                          "submit_data"
+                          "list_drink_options"
                         ],
                         "children": [
                           {
-                            "name": "display_results",
-                            "description": "Chatbot displays the order summary, total cost, estimated readiness time, and shop address.",
+                            "name": "confirm_order_summary",
+                            "description": "The chatbot summarizes the details of the order including food and drink items, total cost, pickup time, and location.",
                             "parameters": [
-                              "order_summary",
-                              "total_cost",
-                              "readiness_time",
-                              "shop_address",
-                              "order_id"
+                              "order_details"
                             ],
                             "parent_names": [
-                              "process_request"
+                              "select_drink_order"
+                            ],
+                            "children": [
+                              {
+                                "name": "inquire_payment_methods",
+                                "description": "The user asks the chatbot about the accepted payment methods for their order.",
+                                "parameters": [],
+                                "parent_names": [
+                                  "confirm_order_summary"
+                                ],
+                                "children": []
+                              }
+                            ]
+                          },
+                          {
+                            "name": "order_confirmation",
+                            "description": "The chatbot confirms the user's pizza order and asks for drink specifications.",
+                            "parameters": [
+                              "pizza_type",
+                              "size"
+                            ],
+                            "parent_names": [
+                              "confirm_pizza_order",
+                              "select_drink_order"
+                            ],
+                            "children": [
+                              {
+                                "name": "confirm_drink_order",
+                                "description": "The user confirms the specific types of drinks to order.",
+                                "parameters": [
+                                  "drink1",
+                                  "drink2"
+                                ],
+                                "parent_names": [
+                                  "order_confirmation"
+                                ],
+                                "children": [
+                                  {
+                                    "name": "finalize_order_details",
+                                    "description": "The chatbot provides the total cost, estimated preparation time, and order ID after confirmation.",
+                                    "parameters": [
+                                      "pizza_type",
+                                      "drink1",
+                                      "drink2",
+                                      "total_cost",
+                                      "preparation_time",
+                                      "order_id"
+                                    ],
+                                    "parent_names": [
+                                      "confirm_drink_order"
+                                    ],
+                                    "children": [
+                                      {
+                                        "name": "confirm_order",
+                                        "description": "Chatbot confirms the complete order, providing details such as total cost, order readiness, and order ID.",
+                                        "parameters": [],
+                                        "parent_names": [
+                                          "finalize_order_details"
+                                        ],
+                                        "children": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "name": "order_drink",
+                        "description": "The user attempts to place an order for a specific drink (Water), but the chatbot fails to correctly parse the user's request consistently.",
+                        "parameters": [
+                          "drink_name"
+                        ],
+                        "parent_names": [
+                          "list_drink_options"
+                        ],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "order_confirmation",
+                "description": "The chatbot confirms the user's pizza order and asks for drink specifications.",
+                "parameters": [
+                  "pizza_type",
+                  "size"
+                ],
+                "parent_names": [
+                  "confirm_pizza_order",
+                  "select_drink_order"
+                ],
+                "children": [
+                  {
+                    "name": "confirm_drink_order",
+                    "description": "The user confirms the specific types of drinks to order.",
+                    "parameters": [
+                      "drink1",
+                      "drink2"
+                    ],
+                    "parent_names": [
+                      "order_confirmation"
+                    ],
+                    "children": [
+                      {
+                        "name": "finalize_order_details",
+                        "description": "The chatbot provides the total cost, estimated preparation time, and order ID after confirmation.",
+                        "parameters": [
+                          "pizza_type",
+                          "drink1",
+                          "drink2",
+                          "total_cost",
+                          "preparation_time",
+                          "order_id"
+                        ],
+                        "parent_names": [
+                          "confirm_drink_order"
+                        ],
+                        "children": [
+                          {
+                            "name": "confirm_order",
+                            "description": "Chatbot confirms the complete order, providing details such as total cost, order readiness, and order ID.",
+                            "parameters": [],
+                            "parent_names": [
+                              "finalize_order_details"
                             ],
                             "children": []
                           }
@@ -91,47 +225,68 @@
                     ]
                   }
                 ]
-              },
-              {
-                "name": "process_request",
-                "description": "Chatbot processes the order and calculates the total cost based on the selected pizza and drinks.",
-                "parameters": [
-                  "pizza_type",
-                  "pizza_size",
-                  "number_of_drinks",
-                  "drink_types"
-                ],
-                "parent_names": [
-                  "select_option",
-                  "submit_data"
-                ],
-                "children": [
-                  {
-                    "name": "display_results",
-                    "description": "Chatbot displays the order summary, total cost, estimated readiness time, and shop address.",
-                    "parameters": [
-                      "order_summary",
-                      "total_cost",
-                      "readiness_time",
-                      "shop_address",
-                      "order_id"
-                    ],
-                    "parent_names": [
-                      "process_request"
-                    ],
-                    "children": []
-                  }
-                ]
               }
             ]
+          }
+        ]
+      },
+      {
+        "name": "select_custom_pizza_ingredients",
+        "description": "The user can inquire about and select specific ingredients for a custom pizza.",
+        "parameters": [],
+        "parent_names": [
+          "list_predefined_pizza_options"
+        ],
+        "children": [
+          {
+            "name": "customize_pizza",
+            "description": "User indicates a desire to customize their pizza toppings.",
+            "parameters": [
+              "toppings"
+            ],
+            "parent_names": [
+              "select_custom_pizza_ingredients"
+            ],
+            "children": []
           }
         ]
       }
     ]
   },
   {
-    "name": "handle_error",
-    "description": "Chatbot indicates it cannot proceed or understand the user's last input correctly.",
+    "name": "add_item_to_cart",
+    "description": "User adds an item (pizza, drinks) to their order cart.",
+    "parameters": [
+      "item_type",
+      "item_details"
+    ],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "explain_custom_pizza_option",
+    "description": "The chatbot attempts to provide information about customizing pizza but indicates limitations on knowledge.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "handle_input_error",
+    "description": "The chatbot repeatedly fails to understand user input regarding pizza preferences, leading to a prompt for rephrasing.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "provide_pizza_prices",
+    "description": "The chatbot provides the price details for the various types of pizzas offered.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "provide_beverage_prices",
+    "description": "The chatbot details the prices for different beverage options available.",
     "parameters": [],
     "parent_names": [],
     "children": []

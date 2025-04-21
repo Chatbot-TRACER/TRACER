@@ -1,0 +1,73 @@
+test_name: Confirming Appointment Details
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user looking to confirm the details of a previously scheduled
+    appointment.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You have a scheduled appointment for a photography session next Saturday at 2
+    PM.
+  - You heard from a friend that the studio often provides additional services like
+    retouching, but you’re not sure what’s included.
+  - You want to confirm the appointment details because you might need to bring extra
+    props based on the services discussed earlier.
+  goals:
+  - Confirm my appointment for {{date}} at {{time}}
+  - Request a summary of the services that will be provided during the session
+  - Ask if there are any additional costs for extra revisions or services
+  - date:
+      function: random()
+      type: string
+      data:
+      - '2023-10-01'
+      - '2023-10-02'
+      - '2023-10-03'
+      - '2023-10-04'
+      - '2023-10-05'
+  - time:
+      function: random()
+      type: string
+      data:
+      - 09:00 AM
+      - 01:00 PM
+      - 03:30 PM
+      - 10:30 AM
+      - 11:15 AM
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.`\nFor troubleshooting,
+    visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - appointment_confirmation:
+      type: str
+      description: The chatbot's message confirming the details of the user's appointment,
+        including date, time, and service type.
+  - services_summary:
+      type: str
+      description: A detailed list of the services that will be provided during the
+        user's appointment, as specified by the chatbot.
+  - additional_costs_info:
+      type: str
+      description: Information provided by the chatbot regarding any additional costs
+        for extra revisions or services, if applicable.
+  - appointment_reference_number:
+      type: str
+      description: A unique reference number provided by the chatbot for the confirmed
+        appointment, which the user can use for future inquiries.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question
+  - long phrases

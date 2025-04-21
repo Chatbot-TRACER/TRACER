@@ -1,0 +1,56 @@
+test_name: Summarizing Order Details
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user requesting a summary of your current order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You recently placed an order for a laptop and accessories, and want to confirm
+    the total amount you’re being charged.
+  - You are interested in picking up your order today and want to ensure that the
+    pickup time at the local store is convenient for you.
+  - You heard from a friend that there might be a promotional discount available,
+    and you want to clarify if it has been applied to your order.
+  goals:
+  - Request a summary of my current order including the items and total cost
+  - Ask about the pickup time and location for my order
+  - Inquire if there are any additional charges or discounts applied to my order
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the user's order, including
+        any applicable discounts or additional charges. This can be found in the chatbot's
+        response summarizing the order details.
+  - pickup_time:
+      type: time
+      description: The time provided by the chatbot for when the order will be ready
+        for pickup. This information will be found in the chatbot's response regarding
+        order pickup details.
+  - pickup_location:
+      type: str
+      description: The location given by the chatbot where the order can be picked
+        up. This will be included in the summary of the order details provided by
+        the chatbot.
+  - additional_charges:
+      type: float
+      description: Any extra fees or charges mentioned by the chatbot that are applied
+        to the user's order. This will be highlighted in the summary when the chatbot
+        discusses costs associated with the order.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

@@ -1,0 +1,79 @@
+test_name: Adding Beverages to an Order
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to add drinks to their pizza order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You are craving a Hawaiian pizza topped with pineapple, ham, and extra cheese
+    to share with friends during movie night.
+  - You enjoyed the refreshing taste of iced lemonade with your last order and want
+    to add it to this one.
+  - You are in a hurry to get the food delivered before the game starts at 7 PM, so
+    you need to confirm the order total and estimated preparation time.
+  goals:
+  - Order a {{size}} Hawaiian pizza
+  - Add {{quantity}} {{drink}} to my order
+  - Confirm my order total and estimated preparation time
+  - Ask for the order ID after finalizing the order
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+  - drink:
+      function: random()
+      type: string
+      data:
+      - Cola
+      - Sprite
+      - Lemonade
+      - Iced Tea
+      - Water
+  - size:
+      function: random()
+      type: string
+      data:
+      - Small
+      - Medium
+      - Large
+      - Extra Large
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - total_cost:
+      type: float
+      description: The final price for the pizza and beverages provided by the chatbot,
+        typically presented after the user confirms their order.
+  - preparation_time:
+      type: time
+      description: The estimated time required for the order to be prepared, as indicated
+        by the chatbot after finalizing the order details.
+  - order_id:
+      type: str
+      description: A unique identifier for the order that the chatbot supplies to
+        the user after the order is confirmed, allowing tracking of the order.
+  - available_drinks:
+      type: str
+      description: A list of available beverage options provided by the chatbot when
+        asked by the user, detailing the drinks they can choose from to add to their
+        pizza order.
+conversation:
+  number: 4
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - change your mind
+  - single question

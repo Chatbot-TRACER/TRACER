@@ -1,0 +1,64 @@
+test_name: Checking for Additional Food Options
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user inquiring about desserts or snacks available alongside
+    pizza.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You recently enjoyed a chocolate lava cake from another restaurant and are eager
+    to find a similar dessert option.
+  - You often order pizza for family movie nights and want to enhance the experience
+    with a special treat.
+  - You remember enjoying garlic knots as a side in previous orders and hope to find
+    a complementary snack to go with your pizza this time.
+  goals:
+  - Inquire about available dessert options to pair with my pizza
+  - Add a {{dessert}} to my order
+  - Ask about the total cost of my order including pizza, drinks, and dessert
+  - Confirm the estimated delivery time for my order
+  - dessert:
+      function: random()
+      type: string
+      data:
+      - Chocolate Lava Cake
+      - Tiramisu
+      - Cheesecake
+      - Brownie Sundae
+      - Fruit Tart
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - dessert_options:
+      type: str
+      description: A list of dessert options that the chatbot provides to the user
+        when inquiring about desserts available to pair with pizza.
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the total order, which
+        includes the pizza, drinks, and desserts.
+  - estimated_delivery_time:
+      type: time
+      description: The estimated time provided by the chatbot for the delivery of
+        the order after it has been placed.
+  - drink_options:
+      type: str
+      description: A list of available drink options that the chatbot specifies when
+        the user asks about drinks to accompany their pizza order.
+conversation:
+  number: 3
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - change your mind
+  - single question

@@ -1,0 +1,85 @@
+test_name: Confirming Order Details
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user confirming the details of your pizza and drink order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You ordered a large pepperoni pizza with extra cheese and a 2-liter bottle of
+    cola.
+  - You want to ensure that your order is ready for pick-up in an hour, as you have
+    plans to meet friends for dinner.
+  - You've used this pizza place multiple times in the past and appreciate their punctuality
+    and customer service.
+  goals:
+  - Confirm my order for a {{size}} {{pizza_type}} with {{drink_quantity}} {{drink_type}}
+  - Ask about the total cost of my order
+  - Get confirmation of my order readiness time and order ID
+  - drink_type:
+      function: random()
+      type: string
+      data:
+      - cola
+      - lemonade
+      - iced tea
+      - orange juice
+      - water
+  - drink_quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+  - pizza_type:
+      function: another(3)
+      type: string
+      data:
+      - pepperoni
+      - margherita
+      - BBQ chicken
+      - vegetarian
+      - Hawaiian
+  - size:
+      function: random()
+      type: string
+      data:
+      - small
+      - medium
+      - large
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the pizza and drink order,
+        which should be stated as part of the order confirmation.
+  - order_id:
+      type: str
+      description: A reference number provided by the chatbot that identifies the
+        user's order, mentioned in the confirmation of the order details.
+  - order_ready_time:
+      type: time
+      description: The estimated time provided by the chatbot for when the order will
+        be ready for pickup or delivery, included in the order confirmation message.
+  - selected_drink_options:
+      type: str
+      description: The specific types of drinks chosen by the user, as confirmed by
+        the chatbot in response to the drink selection step.
+conversation:
+  number: 4
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - change your mind
+  - single question

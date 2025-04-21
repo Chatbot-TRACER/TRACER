@@ -1,0 +1,92 @@
+test_name: Ordering a Pizza with Drinks
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user ordering a pizza from a pizza shop and selecting
+    drinks.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You have a craving for a large pepperoni pizza with extra cheese and some garlic
+    dipping sauce.
+  - You've heard that the shop offers a selection of craft sodas, so you want to ask
+    about the available flavors.
+  - You're planning to have friends over for a movie night and need the order delivered
+    by 7 PM.
+  goals:
+  - Order a {{size}} {{pizza_type}} pizza
+  - Specify {{quantity}} {{drink}} for my order
+  - Confirm my total order cost
+  - Ask for the estimated delivery or pickup time
+  - drink:
+      function: random()
+      type: string
+      data:
+      - soda
+      - juice
+      - water
+      - iced tea
+      - lemonade
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+  - pizza_type:
+      function: random()
+      type: string
+      data:
+      - pepperoni
+      - margherita
+      - barbecue chicken
+      - veggie
+      - hawaiian
+  - size:
+      function: random()
+      type: string
+      data:
+      - small
+      - medium
+      - large
+      - extra-large
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the pizza and drinks
+        order, including any potential taxes or fees. This information can be found
+        when the chatbot summarizes the user's order before final confirmation.
+  - delivery_time:
+      type: time
+      description: The estimated time provided by the chatbot for the delivery or
+        pickup of the pizza and drinks order. This output will be mentioned when the
+        chatbot confirms the order and gives the delivery or pickup details.
+  - pizza_size:
+      type: str
+      description: The size of the pizza selected by the user, as confirmed by the
+        chatbot. This information will be included in the confirmation message summarizing
+        the user's order.
+  - drinks_ordered:
+      type: str
+      description: A list of drinks the user has chosen to order, which the chatbot
+        will provide after asking how many drinks the user would like. This information
+        will be shown in the order summary.
+conversation:
+  number: 4
+  max_cost: 2.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - change your mind
+  - single question

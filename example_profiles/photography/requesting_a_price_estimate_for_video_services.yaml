@@ -1,0 +1,73 @@
+test_name: Requesting a Price Estimate for Video Services
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user interested in getting a price estimate for video
+    services.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You are a local artist looking to create a promotional video for your upcoming
+    exhibition showcasing mixed-media installations.
+  - You recently attended a workshop on video production, giving you a basic understanding
+    of the elements involved in creating a video.
+  - Your friend successfully used this video service for her nature documentary, which
+    motivates you to seek a price estimate for your own project.
+  goals:
+  - Request a price estimate for a video project involving {{number_of_artworks}}
+    artworks in {{media}} format
+  - Provide details about the type of artworks, such as pictures, sculptures, or ceramics
+  - Inquire about any additional costs for extra revisions or advanced services related
+    to the video project
+  - number_of_artworks:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+  - media:
+      function: random()
+      type: string
+      data:
+      - video
+      - animation
+      - documentary
+      - promotional
+      - tutorial
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.`\nFor troubleshooting,
+    visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the requested video services,
+        including any adjustments for specific project details.
+  - additional_costs:
+      type: float
+      description: Any additional costs mentioned by the chatbot for extra revisions
+        or advanced services related to the video project.
+  - appointment_time:
+      type: time
+      description: The time that the chatbot states is available for the user's appointment,
+        which is related to scheduling the video service.
+  - confirmation_number:
+      type: str
+      description: A reference number provided by the chatbot to confirm the appointment
+        and associated services requested by the user.
+conversation:
+  number: 3
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - single question
+  - change your mind

@@ -1,0 +1,74 @@
+test_name: Looking for Portfolio Showcase
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user interested in viewing the company's portfolio of
+    completed projects.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You recently attended a networking event where one of the company's representatives
+    showcased their impressive portfolio.
+  - You are planning a wedding in December and want high-quality photography that
+    captures all the special moments.
+  - You heard from a friend that the company offers unique video editing services
+    that could enhance the final product.
+  goals:
+  - Request to view the company's portfolio of completed projects
+  - Ask for price estimates for a photography session involving {{number_of_artworks}}
+    {{type_of_artworks}}
+  - Inquire about additional services available for video projects
+  - number_of_artworks:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+  - type_of_artworks:
+      function: random()
+      type: string
+      data:
+      - painting
+      - sculpture
+      - photography
+      - installation
+      - digital art
+      - mixed media
+      - illustration
+      - textile art
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.`\nFor troubleshooting,
+    visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - portfolio_link:
+      type: str
+      description: The URL or reference to the company's portfolio of completed projects
+        provided by the chatbot in response to the user's request.
+  - estimated_price:
+      type: float
+      description: The quoted estimated price from the chatbot for the requested photography
+        session, based on the specific details provided by the user.
+  - available_services:
+      type: str
+      description: A list or description of additional services available for video
+        projects that the chatbot provides in response to the user's inquiry.
+  - appointment_confirmation:
+      type: str
+      description: A summary confirmation message from the chatbot that includes details
+        of the scheduled appointment, confirming the date and time after user input.
+conversation:
+  number: 4
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question

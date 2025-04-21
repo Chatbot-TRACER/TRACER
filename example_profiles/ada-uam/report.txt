@@ -1,122 +1,168 @@
 === CHATBOT FUNCTIONALITY ANALYSIS ===
 
 ## FUNCTIONALITIES (Workflow Structure)
-- provide_menu: Shows the user available options related to queries about services offered by the Center for User Attention of Information Technologies (CAU).
-- explain_ticket_creation: Provides guidance on how to create a ticket, including the requirement to log in with institutional credentials and access methods (UAM IP, university Wi-Fi, or remote VPN).
-  - show_ticket_buttons: Displays buttons for the user to create or consult tickets, allowing the user to select the appropriate action related to their requests.
-  - confirm_ticket_requirements: Reminds the user that they need to create a ticket for technical assistance and confirms the steps required to submit it.
-- clarify_service_inquiries: Assures the user that the chatbot can assist with questions regarding services available at the Center for User Attention of Information Technologies (CAU).
-- provide_password_change_instructions: Gives specific instructions on how to change the ID-UAM password, including generating an activation code and necessary links.
-- direct_to_faculty_resources: Redirects users to their respective faculty or school for inquiries about admission and registration processes.
-- provide_admission_links: Supplies specific links to resources related to admission for different academic programs (grados, másteres, etc.).
-- explain_access_requirements: Provides information regarding the necessary conditions to access the incident management system, including the need for credentials and connection requirements.
-- provide_catalog_link: Offers the user a link to consult the catalog of services offered by the CAU.
-- offer_service_catalog: Suggests users consult the catalog of services offered by the Center for User Attention for additional information, enabling them to explore available services beyond their current query.
-- request_clarification: Asks users to rephrase their questions when the chatbot cannot clearly understand the inquiry, which helps ensure accurate responses and keeps the interaction going.
-- provide_location_details: Provides the physical address and campus details for the Center for User Attention, which helps users with in-person visits.
-- connect_issues: Provides follow-up options in relation to Eduroam connectivity issues, suggesting to select an option that best fits their query or to contact CAU for further assistance.
+- list_services: The chatbot lists the main services provided by the UAM's Information Technologies.
+- provide_faculty_info: The chatbot provides information about the faculties and schools at UAM and available academic programs.
+- select_service_of_interest: The user selects the button to learn more about UAM services of interest.
+- select_future_students: The user selects the button to obtain information intended for future students.
+- provide_software_info: The chatbot provides a link to information about software available for students.
+- provide_contact_info: The chatbot provides information on how to contact the Centro de Atención a Usuarios (CAU) through email, phone, and in person, including the operating hours.
+- provide_student_software_info: The chatbot provides a link to access information about the software available for students at UAM.
+- view_university_information: The chatbot provides information about the Universidad Autónoma de Madrid and links to faculties and programs.
+- select_vida_universitaria: The user selects the button to view information about university life.
+- select_sede_electronica: The user selects the button to access information regarding the electronic headquarters for academic certificate requests.
+- request_academic_certificate_info: The chatbot provides details on how to request the Academic Certificate, including access methods for current and former students.
+  - repeat_request_academic_certificate_info: The user repeatedly selects the option to receive information on how to request the Academic Certificate.
+- select_academic_certificate_request: The user selects the button to initiate the request for an Academic Certificate.
+- provide_resources_for_international_students: The chatbot asks the user to rephrase their question or directs them to a catalog of services related to resources for international students at UAM.
+- provide_technology_services_info: Offers information about the technological services provided by the UAM and solicits further specific queries from the user.
+- request_clarification: Asks the user to rephrase their question or directs them to consult the catalog of services when responses are repetitive or unclear.
+- explain_user_support_services: The chatbot explains the types of help or services that can be obtained from the Centro de Atención a Usuarios (CAU).
+- provide_technical_support_info: The chatbot informs the user to open a ticket in the CAU for technical support services by detailing their request via email.
+- repeat_admission_info: The chatbot reiterates that it does not have information about degree admissions and provides the same contact information as before.
+- encourage_ticket_submission: Advises the user to open a support ticket with the CAU for specific inquiries, prompting them to explain their request in detail via email.
 
 ## FUNCTIONALITIES (Raw JSON Structure)
 [
   {
-    "name": "provide_menu",
-    "description": "Shows the user available options related to queries about services offered by the Center for User Attention of Information Technologies (CAU).",
+    "name": "list_services",
+    "description": "The chatbot lists the main services provided by the UAM's Information Technologies.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "explain_ticket_creation",
-    "description": "Provides guidance on how to create a ticket, including the requirement to log in with institutional credentials and access methods (UAM IP, university Wi-Fi, or remote VPN).",
+    "name": "provide_faculty_info",
+    "description": "The chatbot provides information about the faculties and schools at UAM and available academic programs.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "select_service_of_interest",
+    "description": "The user selects the button to learn more about UAM services of interest.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "select_future_students",
+    "description": "The user selects the button to obtain information intended for future students.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "provide_software_info",
+    "description": "The chatbot provides a link to information about software available for students.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "provide_contact_info",
+    "description": "The chatbot provides information on how to contact the Centro de Atención a Usuarios (CAU) through email, phone, and in person, including the operating hours.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "provide_student_software_info",
+    "description": "The chatbot provides a link to access information about the software available for students at UAM.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "view_university_information",
+    "description": "The chatbot provides information about the Universidad Autónoma de Madrid and links to faculties and programs.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "select_vida_universitaria",
+    "description": "The user selects the button to view information about university life.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "select_sede_electronica",
+    "description": "The user selects the button to access information regarding the electronic headquarters for academic certificate requests.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "request_academic_certificate_info",
+    "description": "The chatbot provides details on how to request the Academic Certificate, including access methods for current and former students.",
     "parameters": [],
     "parent_names": [],
     "children": [
       {
-        "name": "show_ticket_buttons",
-        "description": "Displays buttons for the user to create or consult tickets, allowing the user to select the appropriate action related to their requests.",
+        "name": "repeat_request_academic_certificate_info",
+        "description": "The user repeatedly selects the option to receive information on how to request the Academic Certificate.",
         "parameters": [],
         "parent_names": [
-          "explain_ticket_creation"
-        ],
-        "children": []
-      },
-      {
-        "name": "confirm_ticket_requirements",
-        "description": "Reminds the user that they need to create a ticket for technical assistance and confirms the steps required to submit it.",
-        "parameters": [],
-        "parent_names": [
-          "explain_ticket_creation"
+          "request_academic_certificate_info"
         ],
         "children": []
       }
     ]
   },
   {
-    "name": "clarify_service_inquiries",
-    "description": "Assures the user that the chatbot can assist with questions regarding services available at the Center for User Attention of Information Technologies (CAU).",
+    "name": "select_academic_certificate_request",
+    "description": "The user selects the button to initiate the request for an Academic Certificate.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "provide_password_change_instructions",
-    "description": "Gives specific instructions on how to change the ID-UAM password, including generating an activation code and necessary links.",
+    "name": "provide_resources_for_international_students",
+    "description": "The chatbot asks the user to rephrase their question or directs them to a catalog of services related to resources for international students at UAM.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "direct_to_faculty_resources",
-    "description": "Redirects users to their respective faculty or school for inquiries about admission and registration processes.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "provide_admission_links",
-    "description": "Supplies specific links to resources related to admission for different academic programs (grados, másteres, etc.).",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "explain_access_requirements",
-    "description": "Provides information regarding the necessary conditions to access the incident management system, including the need for credentials and connection requirements.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "provide_catalog_link",
-    "description": "Offers the user a link to consult the catalog of services offered by the CAU.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "offer_service_catalog",
-    "description": "Suggests users consult the catalog of services offered by the Center for User Attention for additional information, enabling them to explore available services beyond their current query.",
+    "name": "provide_technology_services_info",
+    "description": "Offers information about the technological services provided by the UAM and solicits further specific queries from the user.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
     "name": "request_clarification",
-    "description": "Asks users to rephrase their questions when the chatbot cannot clearly understand the inquiry, which helps ensure accurate responses and keeps the interaction going.",
+    "description": "Asks the user to rephrase their question or directs them to consult the catalog of services when responses are repetitive or unclear.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "provide_location_details",
-    "description": "Provides the physical address and campus details for the Center for User Attention, which helps users with in-person visits.",
+    "name": "explain_user_support_services",
+    "description": "The chatbot explains the types of help or services that can be obtained from the Centro de Atención a Usuarios (CAU).",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "connect_issues",
-    "description": "Provides follow-up options in relation to Eduroam connectivity issues, suggesting to select an option that best fits their query or to contact CAU for further assistance.",
+    "name": "provide_technical_support_info",
+    "description": "The chatbot informs the user to open a ticket in the CAU for technical support services by detailing their request via email.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "repeat_admission_info",
+    "description": "The chatbot reiterates that it does not have information about degree admissions and provides the same contact information as before.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "encourage_ticket_submission",
+    "description": "Advises the user to open a support ticket with the CAU for specific inquiries, prompting them to explain their request in detail via email.",
     "parameters": [],
     "parent_names": [],
     "children": []
@@ -129,6 +175,4 @@ No limitations discovered.
 1. Spanish
 
 ## FALLBACK MESSAGE
-<p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
-<p>Disculpa, pero... ¿Me lo puedes repetir con otras palabras? o, si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
-<p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención a Usuarios del servicio de Tecnologías de la Información.</strong></p>\n
+<p>Por favor, ¿me puedes reformular la pregunta con otras palabras? o, si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención a Usuarios del servicio de Tecnologías de la Información.</strong></p>

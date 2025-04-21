@@ -1,0 +1,57 @@
+test_name: Consulta sobre Recursos Tecnológicos
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un estudiante que busca información sobre los recursos tecnológicos y
+    asistenciales que proporciona la UAM.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has escuchado que la UAM ofrece acceso gratuito a software educativo como MATLAB
+    y SPSS, pero no estás seguro de cómo acceder a ellos.
+  - Te encuentras en medio de un proyecto importante y necesitas soporte técnico urgente,
+    ya que tu computadora está presentando problemas.
+  - Un amigo te recomendó que contactaras al CAU, ya que tienen una buena reputación
+    por su rapidez en la atención a estudiantes.
+  goals:
+  - Solicitar información sobre los servicios de soporte técnico disponibles para
+    estudiantes
+  - Pedir detalles sobre el software específico que ofrece la UAM a los estudiantes
+  - Consultar cómo contactar al Centro de Atención a Usuarios (CAU) para asistencia
+    técnica
+chatbot:
+  is_starter: false
+  fallback: <p>Por favor, ¿me puedes reformular la pregunta con otras palabras? o,
+    si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - soporte_tecnico_servicios:
+      type: str
+      description: Lista de los principales servicios de soporte técnico disponibles
+        para los estudiantes, mencionados en la respuesta del chatbot.
+  - software_disponible:
+      type: str
+      description: Información sobre el software específico que ofrece la UAM a los
+        estudiantes, incluyendo nombres y descripciones breves que se extraen de la
+        respuesta del chatbot.
+  - contacto_cau:
+      type: str
+      description: Detalles sobre cómo contactar al Centro de Atención a Usuarios
+        (CAU) para asistencia técnica, que el chatbot debe proporcionar en su respuesta.
+  - enlace_software:
+      type: str
+      description: Un enlace proporcionado por el chatbot que lleva a información
+        adicional sobre el software disponible para los estudiantes de la UAM.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question

@@ -1,0 +1,48 @@
+test_name: Inquiring About Payment Methods
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to know about payment options for their
+    order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You are a frequent customer who prefers to use a digital wallet for online purchases.
+  - You recently encountered issues with your previous payment not going through,
+    which made you cautious about choosing the right method this time.
+  - You heard from a friend that some merchants offer flexible payment options, and
+    you want to explore if this applies to your current order.
+  goals:
+  - Inquire about the accepted payment methods for my order
+  - Confirm my order details including the items and total cost
+  - Ask if there are any options for splitting the payment
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - accepted_payment_methods:
+      type: str
+      description: The list of payment methods accepted by the chatbot for processing
+        the user's order.
+  - order_confirmation:
+      type: str
+      description: A summary of the order details provided by the chatbot, which includes
+        the items ordered and the total cost.
+  - payment_split_options:
+      type: str
+      description: Information regarding the available options for splitting the payment
+        mentioned by the chatbot during the conversation.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

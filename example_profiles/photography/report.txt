@@ -1,131 +1,186 @@
 === CHATBOT FUNCTIONALITY ANALYSIS ===
 
 ## FUNCTIONALITIES (Workflow Structure)
-- appointment_scheduling: The chatbot assists users in setting up appointments for photo sessions (Params: name, phone number, email, date)
-  - appointment_follow_up: The chatbot may follow up after the appointment scheduling process to confirm or finalize details
-- price_estimates_provision: The chatbot provides tailored price estimates based on user input regarding artwork media and project specifics (Params: type of media, number of artworks, type of artworks)
-  - price_estimate_follow_up: The chatbot may follow up after providing price estimates to clarify or confirm details related to the quote
-- information_querying: The chatbot answers questions related to shop services, opening hours, and location
-- customization_of_services: The chatbot allows clients to customize services or packages based on their specific needs and preferences (Params: media type, number of artworks, type of artworks)
-  - customization_follow_up: The chatbot may follow up with users to confirm customizations and preferences regarding services
-- request_for_special_features: Clients can inquire about special features available for their artworks and projects
-- multimedia_inquiry: The chatbot facilitates inquiries about multiple media types simultaneously (Params: details for each media type)
+- list_main_functions: The chatbot lists its primary services which include photography, video, and virtual/3D rendering.
+  - offer_appointment_setup: The chatbot indicates its capability to set an appointment for a session.
+    - set_appointment: The chatbot assists the user in scheduling an appointment by requesting necessary details such as name, phone number, and desired appointment date. (Params: name, phone_number, appointment_date, email_address)
+      - confirm_appointment: The chatbot confirms the appointment details with the user after receiving the necessary information. (Params: name, appointment_date)
+        - finalize_appointment: The user confirms the details of the appointment to finalize it for the specified date. (Params: appointment_confirmed)
+    - discuss_additional_costs: The chatbot informs the user about potential additional costs for extra revisions or services not included in the standard package.
+  - address_shop_issues: The chatbot is available to answer questions or provide assistance regarding issues related to the shop.
+- provide_price_estimate: The chatbot provides an estimated price for the service based on the specified media and number of artworks, while noting that the estimate could vary based on additional factors. (Params: media, number_of_artworks)
+  - request_price_estimate: The chatbot asks for additional details required to provide a price estimate for a photography session. (Params: media_type, number_of_artworks, type_of_artworks)
+  - explain_price_inclusions: The chatbot describes what is included in the provided price estimate for the video project to help the user understand the services covered.
+- provide_opening_hours: The chatbot provides information regarding the operational hours of the service.
+- inquire_services_available: The user asks for information regarding the services offered in terms of artwork sessions.
+- clarify_price_factors: The chatbot informs the user that several factors may influence the final price of the services but does not provide specifics on those factors.
+- describe_portfolio: The chatbot provides examples of completed projects to illustrate the company's portfolio.
+- provide_opening_hours_location_portfolio_pricing_structure: The chatbot offers to provide information regarding opening hours, location, portfolio, pricing structure, and types of media handled, despite not answering the user's initial question.
+- inquire_media_types: The user asks about the types of media handled in photography services to gain a better understanding of the offerings.
+- inquire_video_project_services: The user requests predefined services or packages available for video projects.
 
 ## FUNCTIONALITIES (Raw JSON Structure)
 [
   {
-    "name": "appointment_scheduling",
-    "description": "The chatbot assists users in setting up appointments for photo sessions",
-    "parameters": [
-      {
-        "name": "name"
-      },
-      {
-        "name": "phone number"
-      },
-      {
-        "name": "email"
-      },
-      {
-        "name": "date"
-      }
-    ],
+    "name": "list_main_functions",
+    "description": "The chatbot lists its primary services which include photography, video, and virtual/3D rendering.",
+    "parameters": [],
     "parent_names": [],
     "children": [
       {
-        "name": "appointment_follow_up",
-        "description": "The chatbot may follow up after the appointment scheduling process to confirm or finalize details",
+        "name": "offer_appointment_setup",
+        "description": "The chatbot indicates its capability to set an appointment for a session.",
         "parameters": [],
         "parent_names": [
-          "appointment_scheduling"
+          "list_main_functions"
+        ],
+        "children": [
+          {
+            "name": "set_appointment",
+            "description": "The chatbot assists the user in scheduling an appointment by requesting necessary details such as name, phone number, and desired appointment date.",
+            "parameters": [
+              "name",
+              "phone_number",
+              "appointment_date",
+              "email_address"
+            ],
+            "parent_names": [
+              "offer_appointment_setup"
+            ],
+            "children": [
+              {
+                "name": "confirm_appointment",
+                "description": "The chatbot confirms the appointment details with the user after receiving the necessary information.",
+                "parameters": [
+                  "name",
+                  "appointment_date"
+                ],
+                "parent_names": [
+                  "set_appointment"
+                ],
+                "children": [
+                  {
+                    "name": "finalize_appointment",
+                    "description": "The user confirms the details of the appointment to finalize it for the specified date.",
+                    "parameters": [
+                      "appointment_confirmed"
+                    ],
+                    "parent_names": [
+                      "confirm_appointment"
+                    ],
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "discuss_additional_costs",
+            "description": "The chatbot informs the user about potential additional costs for extra revisions or services not included in the standard package.",
+            "parameters": [],
+            "parent_names": [
+              "offer_appointment_setup"
+            ],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "address_shop_issues",
+        "description": "The chatbot is available to answer questions or provide assistance regarding issues related to the shop.",
+        "parameters": [],
+        "parent_names": [
+          "list_main_functions"
         ],
         "children": []
       }
     ]
   },
   {
-    "name": "price_estimates_provision",
-    "description": "The chatbot provides tailored price estimates based on user input regarding artwork media and project specifics",
+    "name": "provide_price_estimate",
+    "description": "The chatbot provides an estimated price for the service based on the specified media and number of artworks, while noting that the estimate could vary based on additional factors.",
     "parameters": [
-      {
-        "name": "type of media"
-      },
-      {
-        "name": "number of artworks"
-      },
-      {
-        "name": "type of artworks"
-      }
+      "media",
+      "number_of_artworks"
     ],
     "parent_names": [],
     "children": [
       {
-        "name": "price_estimate_follow_up",
-        "description": "The chatbot may follow up after providing price estimates to clarify or confirm details related to the quote",
+        "name": "request_price_estimate",
+        "description": "The chatbot asks for additional details required to provide a price estimate for a photography session.",
+        "parameters": [
+          "media_type",
+          "number_of_artworks",
+          "type_of_artworks"
+        ],
+        "parent_names": [
+          "provide_price_estimate"
+        ],
+        "children": []
+      },
+      {
+        "name": "explain_price_inclusions",
+        "description": "The chatbot describes what is included in the provided price estimate for the video project to help the user understand the services covered.",
         "parameters": [],
         "parent_names": [
-          "price_estimates_provision"
+          "provide_price_estimate"
         ],
         "children": []
       }
     ]
   },
   {
-    "name": "information_querying",
-    "description": "The chatbot answers questions related to shop services, opening hours, and location",
+    "name": "provide_opening_hours",
+    "description": "The chatbot provides information regarding the operational hours of the service.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "customization_of_services",
-    "description": "The chatbot allows clients to customize services or packages based on their specific needs and preferences",
-    "parameters": [
-      {
-        "name": "media type"
-      },
-      {
-        "name": "number of artworks"
-      },
-      {
-        "name": "type of artworks"
-      }
-    ],
-    "parent_names": [],
-    "children": [
-      {
-        "name": "customization_follow_up",
-        "description": "The chatbot may follow up with users to confirm customizations and preferences regarding services",
-        "parameters": [],
-        "parent_names": [
-          "customization_of_services"
-        ],
-        "children": []
-      }
-    ]
-  },
-  {
-    "name": "request_for_special_features",
-    "description": "Clients can inquire about special features available for their artworks and projects",
+    "name": "inquire_services_available",
+    "description": "The user asks for information regarding the services offered in terms of artwork sessions.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "multimedia_inquiry",
-    "description": "The chatbot facilitates inquiries about multiple media types simultaneously",
-    "parameters": [
-      {
-        "name": "details for each media type"
-      }
-    ],
+    "name": "clarify_price_factors",
+    "description": "The chatbot informs the user that several factors may influence the final price of the services but does not provide specifics on those factors.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "describe_portfolio",
+    "description": "The chatbot provides examples of completed projects to illustrate the company's portfolio.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "provide_opening_hours_location_portfolio_pricing_structure",
+    "description": "The chatbot offers to provide information regarding opening hours, location, portfolio, pricing structure, and types of media handled, despite not answering the user's initial question.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "inquire_media_types",
+    "description": "The user asks about the types of media handled in photography services to gain a better understanding of the offerings.",
+    "parameters": [],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "inquire_video_project_services",
+    "description": "The user requests predefined services or packages available for video projects.",
+    "parameters": [],
     "parent_names": [],
     "children": []
   }
 ]
 ## LIMITATIONS
-1. The chatbot may struggle with complex or multi-part questions, requiring simplification for better understanding.
-2. Specific customizations may not always be feasible due to resource constraints or complexity involved in the requests.
+No limitations discovered.
 
 ## SUPPORTED LANGUAGES
 1. English

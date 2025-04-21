@@ -1,0 +1,87 @@
+test_name: Customization Limitations Inquiry
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user intending to inquire specifically about the limitations
+    of customization options.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You recently had a disappointing experience with a pizza order that didn't meet
+    your customization preferences.
+  - You are particularly interested in adding unusual toppings like pineapple and
+    jalapeños but want to know if there are any restrictions.
+  - A friend recommended trying out the new local pizzeria due to their extensive
+    customization options, which has piqued your interest.
+  goals:
+  - Customize my pizza with {{toppings}} and choose a {{size}}
+  - Inquire about the price for a pizza with {{toppings}} and a {{size}}
+  - Order {{quantity}} of {{drink}} to accompany my pizza
+  - Request the estimated time for my order to be ready
+  - toppings:
+      function: another(3)
+      type: string
+      data:
+      - Pepperoni
+      - Mushrooms
+      - Onions
+      - Green Peppers
+      - Olives
+      - Pineapple
+  - quantity:
+      function: forward()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+  - drink:
+      function: random()
+      type: string
+      data:
+      - Coke
+      - Sprite
+      - Lemonade
+      - Iced Tea
+      - Water
+  - size:
+      function: random()
+      type: string
+      data:
+      - Small
+      - Medium
+      - Large
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - available_pizza_options:
+      type: str
+      description: A list of predefined pizza options mentioned by the chatbot for
+        the user to choose from during the customization process.
+  - selected_pizza_size:
+      type: str
+      description: The size of the pizza (e.g., small, medium, large) that the chatbot
+        confirms based on the user's selection.
+  - drink_options_list:
+      type: str
+      description: A list of available drink options provided by the chatbot for the
+        user to select from while ordering drinks to accompany the pizza.
+  - estimated_order_time:
+      type: time
+      description: The estimated time provided by the chatbot for when the user's
+        order will be ready for pickup or delivery.
+conversation:
+  number: 4
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - single question

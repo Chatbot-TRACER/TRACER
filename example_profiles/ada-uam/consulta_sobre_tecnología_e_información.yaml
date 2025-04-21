@@ -1,0 +1,58 @@
+test_name: Consulta sobre Tecnología e Información
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un estudiante que quiere saber cuáles son las principales tecnologías
+    de información que ofrece la UAM.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Eres un estudiante de primer año en la UAM y estás familiarizándote con los recursos
+    disponibles para mejorar tu rendimiento académico.
+  - Has oído de un compañero que el software de la UAM ofrece versiones gratuitas
+    de algunas herramientas de productividad.
+  - Tienes problemas técnicos con una aplicación utilizada en tus clases y necesitas
+    ayuda para resolverlo antes del próximo examen.
+  goals:
+  - Consultar los servicios de tecnologías de información disponibles en la UAM
+  - Pedir información sobre cómo contactar al CAU
+  - Solicitar detalles sobre el software específico que los estudiantes pueden utilizar
+    en la UAM
+  - Preguntar sobre el horario de atención del Centro de Atención a Usuarios
+chatbot:
+  is_starter: false
+  fallback: <p>Por favor, ¿me puedes reformular la pregunta con otras palabras? o,
+    si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - servicios_tecnologia_informacion:
+      type: str
+      description: Lista de los principales servicios de tecnologías de información
+        que ofrece la UAM, que el chatbot proporcionará al usuario en respuesta a
+        su consulta.
+  - contacto_cau:
+      type: str
+      description: Información sobre cómo contactar al Centro de Atención a Usuarios
+        (CAU), incluye número de teléfono o correo electrónico que el chatbot indicará.
+  - software_disponible:
+      type: str
+      description: Detalles sobre el software específico que los estudiantes pueden
+        utilizar en la UAM, que el chatbot mencionará al responder sobre el software
+        disponible.
+  - horario_atencion_cau:
+      type: str
+      description: Horario de atención del Centro de Atención a Usuarios, que el chatbot
+        comunicará al usuario cuando se le pregunte sobre esto.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question

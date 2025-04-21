@@ -1,0 +1,57 @@
+test_name: Consulta sobre los Servicios del Centro de Atención a Usuarios (CAU)
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Eres un estudiante que quiere saber cómo contactar al Centro de Atención a
+    Usuarios para resolver un problema técnico.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - Has tenido un problema técnico con tu computadora y necesitas asistencia urgente
+    para poder continuar con tus estudios.
+  - Un amigo te recomendó contactar al CAU, ya que le ayudaron a solucionar un problema
+    similar la semana pasada.
+  - Estás preocupado por el horario de atención del CAU, ya que solo tienes tiempo
+    libre después de las clases.
+  goals:
+  - Consultar el horario de atención del Centro de Atención a Usuarios
+  - Solicitar el correo electrónico y número de teléfono para contactar al CAU
+  - Preguntar sobre los servicios específicos que ofrece el Centro de Atención a Usuarios
+  - Preguntar si se puede contactar al CAU de manera presencial
+chatbot:
+  is_starter: false
+  fallback: <p>Por favor, ¿me puedes reformular la pregunta con otras palabras? o,
+    si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - horario_atencion:
+      type: str
+      description: Horario de atención del Centro de Atención a Usuarios que menciona
+        el chatbot, indicando los días y horas específicas en que están disponibles
+        para prestar sus servicios.
+  - correo_contacto:
+      type: str
+      description: Correo electrónico proporcionado por el chatbot para contactar
+        al Centro de Atención a Usuarios, que el usuario puede utilizar para resolver
+        problemas técnicos.
+  - telefono_contacto:
+      type: str
+      description: Número de teléfono que el chatbot ofrece para que el usuario pueda
+        comunicarse directamente con el Centro de Atención a Usuarios.
+  - servicios_ofrecidos:
+      type: str
+      description: Información sobre los servicios específicos que el chatbot enumera
+        y describe como ofrecidos por el Centro de Atención a Usuarios.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question
