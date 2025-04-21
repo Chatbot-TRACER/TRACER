@@ -2,10 +2,20 @@ from typing import List, Dict, Any, Optional, Tuple, Set
 from .functionality_node import FunctionalityNode
 import re
 import json
+import random
 
 
 def extract_supported_languages(chatbot_response, llm):
-    """Extract supported languages from chatbot response"""
+    """
+    Try to figure out what languages the chatbot knows.
+
+    Args:
+        chatbot_response (str): The chatbot's message.
+        llm: The language model instance.
+
+    Returns:
+        list: A list of language names (strings).
+    """
     language_prompt = f"""
     Based on the following chatbot response, determine what language(s) the chatbot supports.
     If the response is in a non-English language, include that language in the list.
@@ -23,7 +33,7 @@ def extract_supported_languages(chatbot_response, llm):
     language_result = llm.invoke(language_prompt)
     languages = language_result.content.strip()
 
-    # Clean up the response - remove brackets, quotes, etc.
+    # Clean up the LLM response
     languages = languages.replace("[", "").replace("]", "")
     language_list = [lang.strip() for lang in languages.split(",") if lang.strip()]
 
@@ -32,22 +42,21 @@ def extract_supported_languages(chatbot_response, llm):
 
 def extract_fallback_message(the_chatbot, llm):
     """
-    Extract the chatbot's fallback message by sending intentionally confusing queries.
-
-    This function makes separate chatbot calls that are NOT part of the main
-    conversation history and won't be included in analysis.
+    Try to get the chatbot's "I don't understand" message.
+    Sends confusing messages to trigger it. These aren't part of the main chat history.
 
     Args:
-        the_chatbot: Chatbot connector instance
-        llm: Language model for analysis
+        the_chatbot: The chatbot connector instance.
+        llm: The language model instance.
 
     Returns:
-        str: The detected fallback message or None if not detected
+        str or None: The detected fallback message, or None if not found.
     """
     print(
         "\n--- Attempting to detect chatbot fallback message (won't be included in analysis) ---"
     )
 
+    # Some weird questions to confuse the bot
     confusing_queries = [
         "What is the square root of a banana divided by the color blue?",
         "Please explain quantum chromodynamics in terms of medieval poetry",
@@ -58,7 +67,7 @@ def extract_fallback_message(the_chatbot, llm):
 
     responses = []
 
-    # Try each query and collect responses
+    # Send confusing queries and get responses
     for i, query in enumerate(confusing_queries):
         print(f"\nSending confusing query {i + 1}...")
         is_ok, response = the_chatbot.execute_with_input(query)
@@ -69,7 +78,7 @@ def extract_fallback_message(the_chatbot, llm):
         else:
             print("Error communicating with chatbot.")
 
-    # If we have responses, analyze them to find common patterns
+    # Analyze responses if we got any
     if responses:
         analysis_prompt = f"""
         I'm trying to identify a chatbot's fallback message - the standard response it gives when it doesn't understand.
@@ -101,63 +110,52 @@ def extract_fallback_message(the_chatbot, llm):
 
 def extract_functionality_nodes(conversation_history, llm, current_node=None):
     """
-    Extract functionalities or interaction steps from conversation as FunctionalityNode objects.
-    Focuses on capturing steps relevant to the user's workflow.
+    Pull out FunctionalityNodes from the conversation.
+    Tries to find steps in the user's workflow.
 
     Args:
-        conversation_history: The conversation history
-        llm: The language model for extraction
-        current_node: The current node being explored (if any)
+        conversation_history (list): The list of chat messages.
+        llm: The language model instance.
+        current_node (FunctionalityNode, optional): The node being explored. Defaults to None.
 
     Returns:
-        List[FunctionalityNode]: List of new functionality/interaction nodes discovered
+        list: A list of newly found FunctionalityNode objects.
     """
-    # Format the conversation for analysis
+    # Format conversation for the LLM
     formatted_conversation = format_conversation(conversation_history)
 
-    # Create the context for function extraction
+    # Context for the LLM
     context = "Identify distinct interaction steps or functionalities the chatbot provides in this conversation, relevant to the user's workflow."
     if current_node:
         context += f"\nWe are currently exploring the '{current_node.name}' step: {current_node.description}"
 
+    # Prompt for the LLM
     extraction_prompt = f"""
-    {context} # Includes current node focus if applicable
+    {context}
 
     CONVERSATION:
     {formatted_conversation}
 
-    Analyze the conversation and extract distinct USER ACTIONS, CHATBOT ACTIONS, or KEY INTERACTION STEPS that define the workflow. Focus on steps that advance a user goal, represent a state change, or present a decision point.
+    Analyze the conversation and extract distinct **interaction steps, user goals, or informational topics**. Identify the most meaningful representation of what happened.
 
-    EXAMPLES of relevant types of steps/functionalities (Generic):
-    - `provide_options`: Chatbot presents a list of choices or capabilities. (Information step enabling action)
-    - `gather_information`: Chatbot asks user for specific input needed to proceed. (Interaction step)
-    - `select_option`: User chooses one item from a list or set of choices. (User Action / Branch Point)
-    - `submit_data`: User provides requested information or confirms input. (User Action)
-    - `process_request`: Chatbot performs an action based on user input (e.g., search, calculation, booking). (Chatbot Action)
-    - `display_results`: Chatbot shows the outcome of a process (e.g., search results, confirmation details). (Information step)
-    - `confirm_action`: Chatbot asks for confirmation before proceeding with a significant action. (Interaction / Decision Point)
-    - `handle_error`: Chatbot indicates it cannot proceed or understand. (State)
-    - `provide_explanation`: Chatbot gives details about a topic or process. (Information step)
+    - For **transactional bots** (guiding through steps): Focus on the specific ACTIONS taken by the user or chatbot (e.g., `select_pizza_size`, `add_item_to_cart`, `confirm_order`).
+    - For **informational bots** (answering questions): Focus on the TOPIC of information provided (e.g., `provide_contact_info`, `explain_wifi_setup`).
+    - Use clear, descriptive snake_case names.
 
-    AVOID extracting:
-    - Basic greetings or farewells (unless they are specific entry/exit points).
-    - Simple acknowledgments ("Okay", "Got it", "Thanks").
-    - Generic confirmations unless they represent a specific workflow state (like 'confirm_final_action').
-    - Repetitive error messages if already captured by a general 'handle_error' type step.
+    AVOID overly generic names like `display_results` if a more specific action or topic name applies. Avoid basic greetings/acknowledgments.
 
-    For each relevant step/functionality, identify:
-    1. A short, descriptive name (use snake_case, reflecting the step's purpose).
-    2. A clear description of what happens or what action is taken during this step.
-    3. Required parameters (inputs needed *for* this step, if any, like 'item_id', 'search_query', 'user_choice'). List parameter names separated by commas, or "None".
+    For each relevant step/topic, identify:
+    1. A short, descriptive name (snake_case).
+    2. A clear description.
+    3. Required parameters (inputs needed, comma-separated or "None").
 
-    Format each step/functionality EXACTLY as:
+    Format EXACTLY as:
     FUNCTIONALITY:
     name: snake_case_name
-    description: Clear description of this interaction step/functionality.
+    description: Clear description.
     parameters: param1, param2 (or "None")
 
-    Be precise. If the conversation shows a clear sequence (A then B), or a choice (A leads to B or C), capture those steps distinctly.
-    If no new relevant step/functionality is identified in THIS specific conversation snippet, respond ONLY with "NO_NEW_FUNCTIONALITY".
+    If no new relevant step/topic is identified, respond ONLY with "NO_NEW_FUNCTIONALITY".
     """
     response = llm.invoke(extraction_prompt)
     content = response.content.strip()
@@ -166,26 +164,26 @@ def extract_functionality_nodes(conversation_history, llm, current_node=None):
     print(content)
     print("-----------------------------------------------------")
 
-    # Extract functionalities using a more robust parsing approach
+    # Parse the LLM response
     functionality_nodes = []
 
-    if "NO_NEW_FUNCTIONALITY" in content.upper():  # Check case-insensitively
+    if "NO_NEW_FUNCTIONALITY" in content.upper():  # Case-insensitive check
         print("  LLM indicated no new functionalities.")
         return functionality_nodes
 
-    # Split the response into potential blocks based on "FUNCTIONALITY:"
+    # Split response into blocks
     blocks = re.split(r"FUNCTIONALITY:\s*", content, flags=re.IGNORECASE)
 
     for block in blocks:
         block = block.strip()
-        if not block:  # Skip empty blocks resulting from split
+        if not block:  # Skip empty parts
             continue
 
         name = None
         description = None
         params_str = "None"
 
-        # Parse lines within the block
+        # Parse lines in the block
         lines = block.split("\n")
         for line in lines:
             line = line.strip()
@@ -196,12 +194,13 @@ def extract_functionality_nodes(conversation_history, llm, current_node=None):
             elif line.lower().startswith("parameters:"):
                 params_str = line[len("parameters:") :].strip()
 
-        # If we found at least a name and description, create the node
+        # Create node if we got name and description
         if name and description:
-            # Parse parameters
+            # Parse parameters string
             parameters = []
             if params_str.lower() != "none":
                 param_names = [p.strip() for p in params_str.split(",") if p.strip()]
+                # Basic parameter structure
                 parameters = [
                     {"name": p, "type": "string", "description": f"Parameter {p}"}
                     for p in param_names
@@ -211,11 +210,11 @@ def extract_functionality_nodes(conversation_history, llm, current_node=None):
                 name=name,
                 description=description,
                 parameters=parameters,
-                parent=current_node,  # Assign parent initially based on context
+                parent=current_node,  # Set parent for now
             )
             functionality_nodes.append(new_node)
             print(f"  Identified step (Robust Parsing): {name}")
-        elif block:  # Log if a block was found but couldn't be parsed
+        elif block:  # Log blocks we couldn't parse
             print(f"  WARN: Could not parse functionality block:\n{block}")
 
     if not functionality_nodes and "NO_NEW_FUNCTIONALITY" not in content.upper():
@@ -230,28 +229,36 @@ def is_duplicate_functionality(
     node: FunctionalityNode, existing_nodes: List[FunctionalityNode], llm=None
 ) -> bool:
     """
-    Check if a node represents functionality that's already captured in existing nodes.
-    Uses both exact matching and semantic similarity checking.
+    Check if this node is basically the same as one we already have.
+
+    Args:
+        node (FunctionalityNode): The new node to check.
+        existing_nodes (list): List of nodes already found.
+        llm (optional): The language model instance for semantic check. Defaults to None.
+
+    Returns:
+        bool: True if it seems like a duplicate, False otherwise.
     """
-    # First do basic checks
+    # Simple checks first
     for existing in existing_nodes:
-        # Check for exact matches
+        # Exact name or description match
         if (
             existing.name.lower() == node.name.lower()
             or existing.description.lower() == node.description.lower()
         ):
             return True
 
-    # If we have an LLM, use it for more sophisticated checks
+    # Use LLM for smarter check if available
     if llm and existing_nodes:
-        # Only check the first 5 nodes to avoid too many API calls
+        # Limit checks to save API calls
         nodes_to_check = existing_nodes[:5]
 
-        # Create descriptions of existing nodes
+        # Format existing nodes for prompt
         existing_descriptions = [
             f"Name: {n.name}, Description: {n.description}" for n in nodes_to_check
         ]
 
+        # Prompt for LLM
         duplicate_check_prompt = f"""
         Determine if the new functionality is semantically equivalent to any existing functionality.
 
@@ -278,12 +285,20 @@ def is_duplicate_functionality(
 
 def validate_parent_child_relationship(parent_node, child_node, llm) -> bool:
     """
-    Validate if a child node is a reasonable sub-functionality of a parent node.
-    Uses balanced criteria to identify meaningful hierarchical relationships.
+    Check if the child node makes sense as a sub-step of the parent node.
+
+    Args:
+        parent_node (FunctionalityNode): The potential parent node.
+        child_node (FunctionalityNode): The potential child node.
+        llm: The language model instance.
+
+    Returns:
+        bool: True if the relationship seems valid, False otherwise.
     """
     if not parent_node:
-        return True  # No parent means it's a root node - always valid
+        return True  # Root nodes are always valid
 
+    # Prompt for LLM validation
     validation_prompt = f"""
     Evaluate if the second functionality should be considered a sub-functionality of the first functionality.
     Use balanced judgment - we want to create a meaningful hierarchy without being overly strict.
@@ -316,7 +331,7 @@ def validate_parent_child_relationship(parent_node, child_node, llm) -> bool:
     Respond with EXACTLY "VALID" or "INVALID" followed by a brief explanation.
     """
 
-    # Call LLM with validation prompt
+    # Get LLM response
     validation_response = llm.invoke(validation_prompt)
     result = validation_response.content.strip().upper()
 
@@ -338,16 +353,22 @@ def merge_similar_functionalities(
     nodes: List[FunctionalityNode], llm
 ) -> List[FunctionalityNode]:
     """
-    Use LLM to identify and merge similar functionalities via semantic checks
-    rather than hard-coded synonyms. Returns a new list with duplicates merged.
+    Use LLM to find and merge similar nodes. Returns a new list.
+
+    Args:
+        nodes (list): List of FunctionalityNode objects to check.
+        llm: The language model instance.
+
+    Returns:
+        list: A new list of FunctionalityNode objects with similar ones merged.
     """
     if not nodes or len(nodes) < 2:
-        return nodes
+        return nodes  # Nothing to merge
 
     result = []
     name_groups = {}
 
-    # Group by lowercased name (a simple initial pass)
+    # Group nodes by normalized name first
     for node in nodes:
         normalized_name = node.name.lower().replace("_", " ")
         if normalized_name not in name_groups:
@@ -355,64 +376,68 @@ def merge_similar_functionalities(
         name_groups[normalized_name].append(node)
 
     for name, group in name_groups.items():
-        # Only one node for this normalized name
         if len(group) == 1:
+            # Only one node, keep it
             result.append(group[0])
             continue
 
-        # Use the LLM to decide if these functionalities should be merged
+        # Ask LLM if this group should be merged
         merge_prompt = f"""
-        We have multiple functionality nodes that look vaguely similar:
+        Analyze the following functionality nodes extracted from conversations with a potentially informational chatbot. Determine if they represent the **same core informational topic or achieve the same overall user goal**, even if the specific interaction steps (like providing options vs. displaying results vs. explaining) differ slightly.
+
+        Functionality Nodes:
         {json.dumps([{"name": n.name, "description": n.description} for n in group], indent=2)}
 
-        Decide if these functionalities represent the same core action or capability.
-        If yes, respond with exactly:
+        Consider the *purpose* and the *information conveyed*. For example, different ways of providing contact details (`display_contact_info`, `explain_contact_methods`, `repeat_contact_details`) should likely be merged into a single `provide_contact_info` node. However, `provide_contact_info` and `explain_ticketing_process` are distinct topics.
 
+        If they represent the SAME core topic/goal, respond with exactly:
         MERGE
-        name: best name
-        description: best consolidated description
+        name: [Suggest a concise, representative snake_case name for the core topic/goal, e.g., `provide_contact_info`]
+        description: [Suggest a clear, consolidated description covering the core topic and potentially mentioning the different ways it was presented]
 
-        If they are conceptually unique, respond with:
-
+        If they are distinct topics or goals, respond with exactly:
         KEEP SEPARATE
-        reason: short explanation
+        reason: [Briefly explain why they cover different topics/goals]
         """
 
         merge_response = llm.invoke(merge_prompt)
         content = merge_response.content.strip()
 
         if content.upper().startswith("MERGE"):
-            # Parse out the suggested name and description
+            # Try to parse suggested name and description
             name_match = re.search(r"name:\s*(.+)", content)
             desc_match = re.search(r"description:\s*(.+)", content)
             if name_match and desc_match:
                 best_name = name_match.group(1).strip()
                 best_desc = desc_match.group(1).strip()
 
-                # Combine parameters and children
+                # Combine parameters and children from the group
                 all_params = []
                 merged_node = FunctionalityNode(
                     name=best_name, description=best_desc, parameters=all_params
                 )
 
                 for node in group:
-                    # Merge parameters
+                    # Merge parameters (avoid duplicates)
                     for param in node.parameters:
                         if not any(
                             p.get("name") == param.get("name") for p in all_params
                         ):
                             all_params.append(param)
-                    # Merge children
+                    # Add all children
                     for child in node.children:
                         merged_node.add_child(child)
 
                 print(f"  Merged {len(group)} functionalities into '{best_name}'")
                 result.append(merged_node)
             else:
-                # If we can’t parse, just keep the first item
+                # Fallback if parsing fails: keep the first node
+                print(
+                    f"  WARN: Could not parse merge suggestion for group '{name}'. Keeping first node."
+                )
                 result.append(group[0])
         else:
-            # Keep them all separate
+            # Keep nodes separate if LLM says so
             result.extend(group)
 
     return result
@@ -431,24 +456,27 @@ def run_exploration_session(
     supported_languages=None,
 ):
     """
-    Run a single exploration session with the chatbot, targeting a specific functionality if provided.
+    Runs one chat session to explore the bot.
+    Can focus on a specific 'current_node' if provided.
 
     Args:
-        session_num: Current session number
-        max_sessions: Total number of sessions
-        max_turns: Maximum turns per session
-        explorer: Instance of ChatbotExplorer
-        the_chatbot: Chatbot connector instance
-        current_node: The functionality node we're currently exploring (if any)
-        explored_nodes: Set of node names already explored
-        pending_nodes: List of nodes waiting to be explored
-        root_nodes: List of all root nodes in the graph
-        supported_languages: List of supported languages
+        session_num (int): The current session number (0-based).
+        max_sessions (int): Total sessions to run.
+        max_turns (int): Max chat turns per session.
+        explorer: The ChatbotExplorer instance.
+        the_chatbot: The chatbot connector instance.
+        current_node (FunctionalityNode, optional): Node to focus exploration on. Defaults to None.
+        explored_nodes (set, optional): Set of names of already explored nodes. Defaults to None.
+        pending_nodes (list, optional): List of nodes waiting to be explored. Defaults to None.
+        root_nodes (list, optional): List of current root nodes. Defaults to None.
+        supported_languages (list, optional): List of detected languages. Defaults to None.
 
     Returns:
-        tuple: (conversation_history, supported_languages, new_functionality_nodes, fallback_message)
+        tuple: Contains the conversation history, detected languages (likely None),
+               new nodes found this session, detected fallback (likely None),
+               updated root nodes list, updated pending nodes list, updated explored nodes set.
     """
-    # Initialize tracking structures if not provided
+    # Setup default values if needed
     if explored_nodes is None:
         explored_nodes = set()
     if pending_nodes is None:
@@ -464,51 +492,49 @@ def run_exploration_session(
     else:
         print("Exploring general capabilities")
 
-    # Define exploration focus based on current node
+    # Determine the focus for this session
     if current_node:
-        # Make the focus more directive and action-oriented
-        session_focus = f"Actively try to USE and COMPLETE the '{current_node.name}' functionality. If it presents choices or options, SELECT one and proceed down that path. Ask clarifying questions only if necessary to proceed, but prioritize taking action or giving commands."
+        # Focus on the specific node
+        session_focus = f"Focus on actively using and exploring the '{current_node.name}' functionality ({current_node.description}). If it requires input, try providing plausible values. If it offers choices, select one to proceed."
         if current_node.parameters:
             param_names = [p.get("name", "unknown") for p in current_node.parameters]
-            session_focus += f" Attempt to provide plausible values for these parameters if prompted: {', '.join(param_names)}."
-        # General guidance for option-presenting nodes
-        if (
-            "menu" in current_node.name.lower()
-            or "options" in current_node.name.lower()
-            or "list" in current_node.name.lower()
-        ):
-            session_focus += " After seeing the options/list/menu, try to SELECT one to continue the interaction."
-
+            session_focus += f" Attempt to provide values for parameters like: {', '.join(param_names)}."
     else:
-        # Initial exploration focus - encourage trying actions
-        session_focus = "Explore the chatbot's main capabilities. Ask what it can do. If it offers options or asks questions requiring a choice, TRY to provide an answer or make a selection to see where it leads."
+        # General exploration focus
+        session_focus = "Explore the chatbot's main capabilities. Ask what it can do or what topics it covers. If it offers options or asks questions requiring a choice, TRY to provide an answer or make a selection to see where it leads."
 
-    primary_language = supported_languages[0] if supported_languages else None
+    # Determine primary language for interaction
+    primary_language = supported_languages[0] if supported_languages else "English"
+    lang_lower = primary_language.lower()
 
-    # Add language information to the system prompt if available
+    # Add language info to system prompt
     language_instruction = ""
-    if session_num > 0 and supported_languages:
+    if supported_languages:
         language_str = ", ".join(supported_languages)
         language_instruction = f"\n\nIMPORTANT: The chatbot supports these languages: {language_str}. YOU MUST COMMUNICATE PRIMARILY IN {language_str}."
 
-    # Create the system prompt
-    system_content = f"""You are an Explorer AI tasked with actively discovering and testing the capabilities of another chatbot through conversation.
+    # System prompt for the explorer AI
+    system_content = f"""You are an Explorer AI tasked with actively discovering and testing the capabilities of another chatbot through conversation. Your goal is to map out its functionalities and interaction flows.
 
     IMPORTANT GUIDELINES:
     1. Ask ONE clear question or give ONE clear instruction/command at a time.
-    2. Keep messages concise but focused on progressing the interaction or using a feature.
-    3. **CRITICAL: If the chatbot offers choices, options, or asks a question requiring a selection (e.g., "Option A or Option B?", "Yes or No?", "Which item?"), you MUST try to select one of the offered options in your next turn to explore that path.**
-    4. Your goal is not just to chat, but to actively USE the chatbot's features and follow its workflows.
-    5. Prioritize taking actions or giving commands relevant to the focus over asking general questions.
-    6. Follow the chatbot's conversation flow and adapt to its capabilities.{language_instruction}
+    2. Keep messages concise but focused on progressing the interaction or using a feature according to the current focus.
+    3. **CRITICAL: If the chatbot offers clear interactive choices (e.g., buttons, numbered lists, "Option A or Option B?", "Yes or No?"), you MUST try to select one of the offered options in your next turn to explore that path.**
+    4. **ADAPTIVE EXPLORATION:**
+        - **If the chatbot provides information (like an explanation, contact details, status update) OR a fallback/error message, and does NOT ask a question or offer clear interactive choices:**
+            a) **Check for Repetitive Failure:** If the chatbot has given the **exact same fallback/error message** for the last 2-3 turns despite you asking different relevant questions about the *same topic*, **ABANDON this topic for this session**. Your next turn should be to ask about a **completely different capability** or topic you know exists or is plausible (e.g., switch from asking about custom pizza ingredients to asking about predefined pizzas or drinks), OR if no other path is obvious, respond with "EXPLORATION COMPLETE".
+            b) **If not repetitive failure:** Ask a specific, relevant clarifying question about the information/fallback provided OR ask about a NEW, specific, plausible topic/task relevant to the chatbot's likely domain (infer this domain). Do NOT just ask "What else?".
+        - **Otherwise (if the bot asks a question or offers choices):** Respond appropriately to continue the current flow or make a selection as per Guideline 3.
+    5. Prioritize actions/questions relevant to the `EXPLORATION FOCUS` below.
+    6. Follow the chatbot's conversation flow naturally. {language_instruction}
 
     EXPLORATION FOCUS FOR THIS SESSION:
     {session_focus}
 
-    Try to follow the focus. After {max_turns} exchanges, or when you believe you have thoroughly explored this specific path (or reached a dead end/loop), respond ONLY with "EXPLORATION COMPLETE".
+    Try to follow the focus and the adaptive exploration guideline, especially the rule about abandoning topics after repetitive failures. After {max_turns} exchanges, or when you believe you have thoroughly explored this specific path/topic (or reached a dead end/loop), respond ONLY with "EXPLORATION COMPLETE".
     """
 
-    # Reset conversation history for this session
+    # Start fresh conversation history
     conversation_history = [
         {
             "role": "system",
@@ -516,90 +542,109 @@ def run_exploration_session(
         }
     ]
 
-    # Update the initial question generation inside run_exploration_session
-
-    # Generate the initial question based on current node context and language
+    # Generate the first question
     if current_node:
+        # Ask about the specific node
         question_prompt = f"""
-        You need to generate an initial question to explore a chatbot functionality.
+        You need to generate an initial question/command to start exploring a specific chatbot functionality.
 
         FUNCTIONALITY TO EXPLORE:
         Name: {current_node.name}
         Description: {current_node.description}
         Parameters: {", ".join(p.get("name", "?") for p in current_node.parameters) if current_node.parameters else "None"}
 
-        {"IMPORTANT: Generate your question in " + primary_language + "." if primary_language else ""}
+        {"IMPORTANT: Generate your question/command in " + primary_language + "." if primary_language else ""}
 
-        Generate a simple, direct question that would help explore this functionality in depth.
-        Your question should be appropriate for starting a conversation about this specific feature.
+        Generate a simple, direct question or command relevant to initiating this functionality.
+        Example: If exploring 'provide_contact_info', ask 'How can I contact support?' or 'What is the support email?'.
         """
-
         question_response = explorer.llm.invoke(question_prompt)
         initial_question = question_response.content.strip().strip("\"'")
     else:
-        if primary_language and primary_language.lower() == "spanish":
-            initial_question = "¡Hola! ¿En qué me puedes ayudar hoy?"
-        elif primary_language and primary_language.lower() == "french":
-            initial_question = "Bonjour! Comment pouvez-vous m'aider aujourd'hui?"
-        elif primary_language:
-            # Ask the LLM to translate the greeting to the appropriate language
-            translation_prompt = f"Translate 'Hello! What can you help me with today?' to {primary_language}:"
-            translation = explorer.llm.invoke(translation_prompt).content.strip()
-            initial_question = translation
+        # Ask a general question for the first session
+        possible_greetings = [
+            "Hello! What can you help me with today?",
+            "What are the main things you can do?",
+            "What topics can you provide information about?",
+            "Can you list your main functions or services?",
+        ]
+        greeting_en = random.choice(possible_greetings)
+
+        # Translate if needed
+        if lang_lower != "english":
+            try:
+                translation_prompt = f"Translate '{greeting_en}' to {primary_language}. Respond ONLY with the translation."
+                translated_greeting = (
+                    explorer.llm.invoke(translation_prompt).content.strip().strip("\"'")
+                )
+                # Check if translation looks okay
+                if translated_greeting and len(translated_greeting.split()) > 1:
+                    initial_question = translated_greeting
+                else:  # Use English if translation failed
+                    initial_question = greeting_en
+            except Exception as e:
+                print(
+                    f"Warning: Failed to translate initial greeting to {primary_language}: {e}"
+                )
+                initial_question = greeting_en  # Fallback
         else:
-            initial_question = "Hello! What can you help me with today?"
+            initial_question = greeting_en  # Use English
+
+        print(
+            f"   (Starting session 0 with general capability question: '{initial_question}')"
+        )
 
     print(f"\nExplorer: {initial_question}")
 
-    # Send our initial question to the chatbot
+    # Send first question to the chatbot
     is_ok, chatbot_message = the_chatbot.execute_with_input(initial_question)
     print(f"\nChatbot: {chatbot_message}")
 
-    # Add the initial exchange to conversation history
+    # Add first exchange to history
     conversation_history.append({"role": "assistant", "content": initial_question})
     conversation_history.append({"role": "user", "content": chatbot_message})
 
-    # Main conversation loop for this session
+    # Main chat loop
     turn_count = 0
-
     while True:
         turn_count += 1
 
-        # Exit conditions
+        # Stop if max turns reached
         if turn_count >= max_turns:
             print(
                 f"\nReached maximum turns ({max_turns}). Ending session {session_num + 1}."
             )
             break
 
-        # Process through LangGraph with full history context
+        # Get explorer's next response using LangGraph
         explorer_response = None
         for event in explorer.stream_exploration(
             {
                 "messages": conversation_history,
-                "conversation_history": [],
-                "discovered_functionalities": [],
+                "conversation_history": [],  # Not needed here?
+                "discovered_functionalities": [],  # Not needed here?
                 "current_session": session_num,
                 "exploration_finished": False,
-                "conversation_goals": [],
+                "conversation_goals": [],  # Not used?
                 "supported_languages": supported_languages,
             }
         ):
             for value in event.values():
+                # Get the last message added by the graph
                 latest_message = value["messages"][-1]
                 explorer_response = latest_message.content
 
         print(f"\nExplorer: {explorer_response}")
 
-        # Check for session completion
+        # Stop if explorer says it's done
         if "EXPLORATION COMPLETE" in explorer_response.upper():
             print(f"\nExplorer has finished session {session_num + 1} exploration.")
             break
 
-        # Add the explorer response to conversation history
+        # Add explorer response to history
         conversation_history.append({"role": "assistant", "content": explorer_response})
 
-        # Send explorer response back to Chatbot
+        # Send explorer response to the chatbot
         is_ok, chatbot_message = the_chatbot.execute_with_input(explorer_response)
 
         if not is_ok:
@@ -607,104 +652,120 @@ def run_exploration_session(
             break
 
         print(f"\nChatbot: {chatbot_message}")
+        # Add chatbot response to history
         conversation_history.append({"role": "user", "content": chatbot_message})
 
-        # Check for exit conditions from the chatbot
+        # Stop if chatbot says goodbye
         if chatbot_message.lower() in ["quit", "exit", "q", "bye", "goodbye"]:
             print("Chatbot ended the conversation. Ending session.")
             break
 
-    # Extract supported languages and fallback message in the first conversation
+    # After the loop, do analysis for the first session
     fallback_message = None
-    new_supported_languages = None
+    new_supported_languages = None  # Language detection moved to main.py pre-probe
     if session_num == 0:
+        # Try to find the fallback message
         fallback_message = extract_fallback_message(the_chatbot, explorer.llm)
-        new_supported_languages = extract_supported_languages(
-            chatbot_message, explorer.llm
-        )
-        print(f"\nDetected supported languages: {new_supported_languages}")
+        # Language detection is now done before the loop starts
 
-    # Extract functionality nodes from this session
+    # Extract functionalities found in this session
     print("\nAnalyzing conversation for new functionalities...")
     new_functionality_nodes = extract_functionality_nodes(
         conversation_history, explorer.llm, current_node
     )
 
-    # Update graph structure
+    # Process newly found nodes
     if new_functionality_nodes:
         print(f"Discovered {len(new_functionality_nodes)} new functionality nodes:")
 
-        # First, merge any similar functionalities among the new nodes
+        # Merge similar nodes found *within this session* first
         new_functionality_nodes = merge_similar_functionalities(
             new_functionality_nodes, explorer.llm
         )
 
         for node in new_functionality_nodes:
-            # Check for duplicates against all existing nodes
+            # Check against *all* nodes found so far
             all_existing = []
             for root in root_nodes:
-                all_existing.extend(_get_all_nodes(root))
+                all_existing.extend(_get_all_nodes(root))  # Get all descendants
 
             if not is_duplicate_functionality(node, all_existing, explorer.llm):
-                # If we're exploring a specific node, validate relationship - but be more flexible
+                # If exploring a specific node, check if the new one is related
                 if current_node:
                     relationship_valid = validate_parent_child_relationship(
                         current_node, node, explorer.llm
                     )
 
                     if relationship_valid:
-                        # Add as child to current node
+                        # Add as child if valid relationship
                         current_node.add_child(node)
                         print(f"  - '{node.name}' (child of '{current_node.name}')")
                     else:
-                        # Even if not a direct child, add to pending for future structure inference
+                        # Add as a new root if not related
                         print(f"  - '{node.name}' (standalone functionality)")
                         root_nodes.append(node)
                 else:
-                    # Add as root node temporarily - structure will be inferred later
+                    # Add as a new root if not exploring a specific node
                     root_nodes.append(node)
                     print(f"  - '{node.name}' (root node for now)")
 
-                # Always add to pending nodes for exploration
+                # Add all non-duplicate new nodes to the pending queue
                 pending_nodes.append(node)
             else:
                 print(f"  - Skipped duplicate functionality: '{node.name}'")
 
-        # After adding all new nodes, merge similar root nodes
+        # Merge similar root nodes after adding new ones
         if root_nodes:
             root_nodes = merge_similar_functionalities(root_nodes, explorer.llm)
 
-    # Mark current node as explored
+    # Mark the node we focused on as explored
     if current_node:
         explored_nodes.add(current_node.name)
 
     print(f"\nSession {session_num + 1} complete with {turn_count} exchanges")
 
+    # Return all updated state
     return (
         conversation_history,
-        new_supported_languages,
-        new_functionality_nodes,
-        fallback_message,
-        root_nodes,
-        pending_nodes,
-        explored_nodes,
+        new_supported_languages,  # Will be None unless session_num == 0 (and even then, likely None now)
+        new_functionality_nodes,  # Nodes found *this* session
+        fallback_message,  # Fallback found *this* session (only if session_num == 0)
+        root_nodes,  # Updated list of roots
+        pending_nodes,  # Updated pending queue
+        explored_nodes,  # Updated set of explored names
     )
 
 
 def _get_all_nodes(root_node):
-    """Helper function to get all nodes in a subtree"""
+    """
+    Helper to get a flat list of nodes in a tree.
+
+    Args:
+        root_node (FunctionalityNode): The starting node of the tree/subtree.
+
+    Returns:
+        list: A flat list containing the root_node and all its descendants.
+    """
     result = [root_node]
     for child in root_node.children:
-        result.extend(_get_all_nodes(child))
+        result.extend(_get_all_nodes(child))  # Recursive call
     return result
 
 
 def format_conversation(messages):
-    """Format conversation history into a readable string"""
+    """
+    Make the conversation history easy to read.
+
+    Args:
+        messages (list): The list of message dictionaries.
+
+    Returns:
+        str: A formatted string representing the conversation.
+    """
     formatted = []
     for msg in messages:
         if msg["role"] in ["assistant", "user"]:
-            # The explorer is the "Human" and the chatbot is "Chatbot"
+            # 'assistant' is our explorer AI, 'user' is the chatbot being tested
             sender = "Human" if msg["role"] == "assistant" else "Chatbot"
             formatted.append(f"{sender}: {msg['content']}")
     return "\n".join(formatted)

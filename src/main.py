@@ -7,43 +7,48 @@ import graphviz
 from chatbot_explorer.cli import parse_arguments
 from chatbot_explorer.explorer import ChatbotExplorer
 from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
-from chatbot_explorer.session import run_exploration_session
+
+# Import session utilities
+from chatbot_explorer.session import (
+    run_exploration_session,
+    extract_supported_languages,
+    extract_fallback_message,
+    _get_all_nodes,  # Internal use likely
+)
 from chatbot_explorer.functionality_node import FunctionalityNode
 from typing import List, Dict, Any, Set
 
 
 def print_structured_functionalities(f, nodes: List[Dict[str, Any]], indent: str = ""):
-    """
-    Helper function to recursively print the structured functionalities.
-    Handles variations in the 'parameters' field type.
-    """
+    """Recursively print the structured functionalities to the file object 'f'."""
     for node in nodes:
         param_str = ""
         params_data = node.get("parameters", [])
 
         if isinstance(params_data, list):
-            # Process as list of dicts
+            # Handle list of parameter dicts or strings
             param_str_list = []
             for p in params_data:
-                if isinstance(p, dict):  # Ensure item in list is a dict
+                if isinstance(p, dict):  # Parameter is a dict
                     param_str_list.append(p.get("name", "?"))
-                elif isinstance(p, str):  # Handle case where list contains strings
-                    param_str_list.append(p)  # Just use the string
+                elif isinstance(p, str):  # Parameter is just a string
+                    param_str_list.append(p)
             if param_str_list:
                 param_str = f" (Params: {', '.join(param_str_list)})"
         elif isinstance(params_data, str) and params_data.lower() not in ["none", ""]:
-            # Handle case where parameters is just a string
+            # Handle parameters provided as a single string
             param_str = f" (Params: {params_data})"
 
         f.write(
             f"{indent}- {node.get('name', 'N/A')}: {node.get('description', 'N/A')}{param_str}\n"
         )
         if node.get("children"):
-            # Ensure children is also a list before recursing
+            # Recurse for children if they exist and are a list
             children_data = node.get("children", [])
             if isinstance(children_data, list):
                 print_structured_functionalities(f, children_data, indent + "  ")
             else:
+                # Log unexpected children type
                 f.write(
                     f"{indent}  WARN: Expected 'children' to be a list, found {type(children_data)}\n"
                 )
@@ -52,25 +57,19 @@ def print_structured_functionalities(f, nodes: List[Dict[str, Any]], indent: str
 def generate_graph_image(
     structured_data: List[Dict[str, Any]], output_filename_base: str
 ):
-    """
-    Generates a visually appealing PNG image visualizing the workflow graph using Graphviz.
-
-    Args:
-        structured_data: List of root node dictionaries representing the workflow.
-        output_filename_base: The base path and filename for the output image.
-    """
+    """Generates a PNG visualization of the workflow graph using Graphviz."""
     print(f"\n--- Generating workflow graph image ({output_filename_base}.png) ---")
     if not structured_data:
         print("   Skipping graph generation: No structured data provided.")
         return
 
-    # Initialize a directed graph with modern styling
+    # Initialize Graphviz directed graph
     dot = graphviz.Digraph(comment="Chatbot Workflow", format="png", engine="dot")
 
-    # Set global graph attributes for better aesthetics
+    # Global graph attributes (styling)
     dot.attr(
         rankdir="LR",
-        bgcolor="#ffffff",  # Can be changed to transparent
+        bgcolor="#ffffff",  # White background
         fontname="Helvetica Neue, Helvetica, Arial, sans-serif",
         fontsize="12",
         pad="0.5",
@@ -81,7 +80,7 @@ def generate_graph_image(
         dpi="300",
     )
 
-    # Set default node attributes
+    # Default node attributes (styling)
     dot.attr(
         "node",
         shape="rectangle",
@@ -93,7 +92,7 @@ def generate_graph_image(
         fontcolor="#333333",
     )
 
-    # Set default edge attributes
+    # Default edge attributes (styling)
     dot.attr(
         "edge",
         color="#adb5bd",
@@ -105,16 +104,16 @@ def generate_graph_image(
     processed_edges: Set[tuple[str, str]] = set()
 
     def add_nodes_edges(graph: graphviz.Digraph, node_dict: Dict[str, Any], depth=0):
-        """Recursive helper to add nodes and edges with enhanced styling."""
+        """Recursive helper to add nodes and edges to the graph."""
         node_name = node_dict.get("name")
         if not node_name:
-            return
+            return  # Skip nodes without names
 
         if node_name not in processed_nodes:
             params_label = ""
             params_data = node_dict.get("parameters", [])
 
-            # Process parameters for display
+            # Format parameters for display in the node label
             if isinstance(params_data, list):
                 param_str_list = []
                 for p in params_data:
@@ -130,34 +129,34 @@ def generate_graph_image(
             ]:
                 params_label = f"\nParams: {params_data}"
 
-            # Format node label
+            # Node label text
             label = f"{node_name.replace('_', ' ')}{params_label}"
 
-            # Different color schemes based on node depth
+            # Node color based on depth (root, level 1, level 2, etc.)
             color_schemes = {
-                0: {
+                0: {  # Root nodes - blue
                     "fillcolor": "#e6f3ff:#c2e0ff",
                     "color": "#4a86e8",
-                },  # Root nodes - blue
-                1: {
+                },
+                1: {  # First level - green
                     "fillcolor": "#e9f7ed:#c5e9d3",
                     "color": "#43a047",
-                },  # First level - green
-                2: {
+                },
+                2: {  # Second level - orange
                     "fillcolor": "#fef8e3:#faecc5",
                     "color": "#f6b26b",
-                },  # Second level - orange
-                3: {
+                },
+                3: {  # Third level+ - red
                     "fillcolor": "#f9e4e8:#f4c7d0",
                     "color": "#cc4125",
-                },  # Third level - red
+                },
             }
 
-            # Cap at 3 levels of color differentiation
+            # Use depth for color, capped at level 3 scheme
             depth_mod = min(depth, 3)
             node_style = color_schemes[depth_mod]
 
-            # Apply styling and add node
+            # Add the node to the graph with styling
             graph.node(
                 node_name,
                 label=label,
@@ -167,7 +166,7 @@ def generate_graph_image(
 
             processed_nodes.add(node_name)
 
-        # Process children with level-based styling
+        # Recursively process children
         children = node_dict.get("children", [])
         if isinstance(children, list):
             for child_dict in children:
@@ -175,63 +174,66 @@ def generate_graph_image(
                 if child_name:
                     add_nodes_edges(graph, child_dict, depth + 1)
 
-                    # Check if this edge already exists before adding it
+                    # Add edge if it hasn't been added already
                     edge_key = (node_name, child_name)
                     if edge_key not in processed_edges:
                         graph.edge(node_name, child_name)
                         processed_edges.add(edge_key)
         else:
+            # Log unexpected children type
             print(
                 f"WARN in graph: Expected 'children' for node '{node_name}' to be a list, found {type(children)}"
             )
 
-    # Add title
+    # Graph title
     dot.attr(
         "graph", label="Chatbot Functionality Workflow", fontsize="18", labelloc="t"
     )
 
-    # Process all root nodes
+    # Start processing from root nodes
     for root_node_dict in structured_data:
         add_nodes_edges(dot, root_node_dict)
 
     try:
+        # Render the graph to a file
         dot.render(output_filename_base, cleanup=True, view=False)
         print(f"   Successfully generated graph image: {output_filename_base}.png")
     except graphviz.backend.execute.ExecutableNotFound:
+        # Handle missing Graphviz executable
         print("\n   ERROR: Graphviz executable not found.")
         print("   Please install Graphviz (see https://graphviz.org/download/)")
         print("   and ensure it's in your system's PATH.")
     except Exception as e:
+        # Handle other rendering errors
         print(f"\n   ERROR: Failed to generate graph image: {e}")
 
 
 def write_report(output_dir, result, supported_languages, fallback_message):
-    """
-    Write discovered functionalities (structured), limitations, languages, and fallback message.
-    """
+    """Writes the analysis results to report.txt."""
     with open(os.path.join(output_dir, "report.txt"), "w", encoding="utf-8") as f:
         f.write("=== CHATBOT FUNCTIONALITY ANALYSIS ===\n\n")
 
         f.write("## FUNCTIONALITIES (Workflow Structure)\n")
-        # result['discovered_functionalities'] is now List[Dict[str, Any]] representing the roots
+        # Expecting List[Dict[str, Any]] representing the roots
         structured_functionalities = result.get("discovered_functionalities", [])
 
         if structured_functionalities:
-            # Check if it looks like our structured dicts
+            # Verify structure before printing
             if isinstance(structured_functionalities, list) and (
                 not structured_functionalities
                 or isinstance(structured_functionalities[0], dict)
             ):
                 print_structured_functionalities(f, structured_functionalities)
             else:
+                # Log if structure is unexpected
                 f.write("Functionality structure not in expected dictionary format.\n")
                 f.write(
                     f"Raw data:\n{json.dumps(structured_functionalities, indent=2)}\n"
-                )  # Print raw data
+                )
         else:
             f.write("No functionalities structure discovered.\n")
 
-        # Add a raw JSON dump for detailed inspection
+        # Include raw JSON for debugging/details
         f.write("\n## FUNCTIONALITIES (Raw JSON Structure)\n")
         if structured_functionalities:
             f.write(
@@ -261,11 +263,11 @@ def write_report(output_dir, result, supported_languages, fallback_message):
 
 
 def main():
-    # Parse command line arguments
+    # Parse command-line arguments
     args = parse_arguments()
     valid_technologies = ["taskyto", "ada-uam"]
 
-    # Use the parameters from args
+    # Extract arguments for clarity
     chatbot_url = args.url
     max_sessions = args.sessions
     max_turns = args.turns
@@ -273,14 +275,14 @@ def main():
     output_dir = args.output
     technology = args.technology
 
-    # Validate the technology argument
+    # Validate technology choice
     if args.technology not in valid_technologies:
         print(
             f"Invalid technology: {args.technology}. Must be one of: {valid_technologies}"
         )
         sys.exit(1)
 
-    # Display configuration
+    # Print configuration summary
     print("=== Chatbot Explorer Configuration ===")
     print(f"Chatbot Technology: {args.technology}")
     print(f"Chatbot URL: {args.url}")
@@ -290,122 +292,149 @@ def main():
     print(f"Output directory: {args.output}")
     print("====================================")
 
-    # Create output directory if it doesn't exist
+    # Ensure output directory exists
     os.makedirs(output_dir, exist_ok=True)
 
-    # Initialize explorer
+    # Initialize the main explorer class
     explorer = ChatbotExplorer(model_name)
 
-    # Track multiple conversation sessions
+    # Store results from multiple sessions
     conversation_sessions = []
     supported_languages = []
     fallback_message = None
 
-    # Track functionality graph exploration
+    # Track graph exploration state
     root_nodes = []  # List of root FunctionalityNode objects
-    pending_nodes = []  # Queue of nodes to explore
-    explored_nodes = set()  # Set of explored node names
+    pending_nodes = []  # Queue of nodes remaining to explore
+    explored_nodes = set()  # Set of node names already explored
 
-    # Create the chatbot according to the technology
+    # Instantiate the correct chatbot connector based on technology
     if technology == "taskyto":
         the_chatbot = ChatbotTaskyto(chatbot_url)
     elif technology == "ada-uam":
         the_chatbot = ChatbotAdaUam(chatbot_url)
+    else:
+        # This check is redundant due to earlier validation, but good practice
+        print(f"Error: Unknown technology '{args.technology}'")
+        sys.exit(1)
 
-    # First session: general exploration without focusing on specific functionality
-    print("\n=== Starting general exploration ===")
-    (
-        conversation_history,
-        new_languages,
-        new_nodes,
-        new_fallback,
-        updated_roots,
-        updated_pending,
-        updated_explored,
-    ) = run_exploration_session(
-        0,  # First session
-        max_sessions,
-        max_turns,
-        explorer,
-        the_chatbot,
-        current_node=None,  # No specific focus
-        root_nodes=root_nodes,
-        pending_nodes=pending_nodes,
-        explored_nodes=explored_nodes,
-        supported_languages=supported_languages,
-    )
-
-    # Update tracking variables after the first session
-    conversation_sessions.append(conversation_history)
-    if new_languages:
-        supported_languages = new_languages
-    if new_fallback:
-        fallback_message = new_fallback
-    root_nodes = updated_roots
-    pending_nodes = updated_pending  # This now contains initial nodes
-    explored_nodes = updated_explored
-
-    # --- SIMPLIFIED EXPLORATION LOOP ---
-    session_num = 1  # Start from the second session
-    while session_num < max_sessions and pending_nodes:
-        # Get the next node to explore from the front of the queue
-        explore_node = pending_nodes.pop(0)
-
-        # Skip if already explored (should ideally not happen with pop(0), but good safeguard)
-        if explore_node.name in explored_nodes:
-            print(f"\n--- Skipping already explored node: '{explore_node.name}' ---")
-            continue
-
+    # --- Initial Language Detection ---
+    print("\n--- Probing Chatbot Language ---")
+    initial_probe_query = "Hello"  # Simple initial query
+    is_ok, probe_response = the_chatbot.execute_with_input(initial_probe_query)
+    if is_ok and probe_response:
+        print(f"   Initial response received: '{probe_response[:60]}...'")
+        try:
+            # Attempt language detection via LLM
+            detected_langs = extract_supported_languages(probe_response, explorer.llm)
+            if detected_langs:
+                supported_languages = detected_langs
+                print(f"   Detected initial language(s): {supported_languages}")
+            else:
+                print(
+                    "   Could not detect language from initial probe, defaulting to English."
+                )
+        except Exception as lang_e:
+            print(
+                f"   Error during initial language detection: {lang_e}. Defaulting to English."
+            )
+    else:
         print(
-            f"\n=== Exploring functionality '{explore_node.name}' (Session {session_num + 1}/{max_sessions}) ==="
+            "   Could not get initial response from chatbot for language probe. Defaulting to English."
         )
+    # --- End Initial Language Detection ---
 
-        # Run exploration session focused on this node
+    # --- Exploration Loop ---
+    session_num = 0  # Session counter (0-based)
+    while session_num < args.sessions:
+        current_session_index = session_num  # For logging (Session 1/N, etc.)
+        print(f"\n=== Starting Session {current_session_index + 1}/{args.sessions} ===")
+
+        explore_node = None  # Node to focus on this session (if any)
+        session_type_log = "General Exploration"
+
+        if pending_nodes:
+            # Prioritize exploring specific nodes from the queue
+            explore_node = pending_nodes.pop(0)
+            # Double-check if node was already explored (shouldn't happen with current logic, but safe)
+            if explore_node.name in explored_nodes:
+                print(f"--- Skipping already explored node: '{explore_node.name}' ---")
+                session_num += 1  # Consume a session slot
+                continue
+            session_type_log = f"Exploring functionality '{explore_node.name}'"
+        elif (
+            session_num > 0
+        ):  # If queue is empty after session 0, perform general exploration
+            print("   Pending nodes queue is empty. Performing general exploration.")
+        # Else: Session 0 and queue is empty is the initial state.
+
+        print(f"   Session Type: {session_type_log}")
+
+        # Execute one exploration session
         (
             conversation_history,
-            _,
-            new_nodes,  # We care about new nodes discovered from this exploration
-            _,
-            updated_roots,
-            updated_pending,  # This will contain newly added nodes from the session
-            updated_explored,
+            new_languages,  # Language detected this session (only used after session 0)
+            new_nodes_raw,  # Raw functionality data extracted this session
+            new_fallback,  # Fallback detected this session (only used after session 0)
+            updated_roots,  # Updated list of root nodes
+            updated_pending,  # Updated queue of nodes to explore
+            updated_explored,  # Updated set of explored node names
         ) = run_exploration_session(
-            session_num,
-            max_sessions,
-            max_turns,
+            current_session_index,  # Pass 0-based index
+            args.sessions,
+            args.turns,
             explorer,
             the_chatbot,
-            current_node=explore_node,
-            root_nodes=root_nodes,  # Pass current roots
-            pending_nodes=pending_nodes,  # Pass current pending (will be appended to)
-            explored_nodes=explored_nodes,  # Pass current explored
-            supported_languages=supported_languages,
+            current_node=explore_node,  # None for general exploration
+            root_nodes=root_nodes,
+            pending_nodes=pending_nodes,  # Pass current queue
+            explored_nodes=explored_nodes,
+            supported_languages=supported_languages,  # Pass current languages
         )
 
-        # Update tracking
+        # Aggregate results
         conversation_sessions.append(conversation_history)
-        root_nodes = updated_roots  # Update roots (might change if relationships are re-evaluated)
-        pending_nodes = updated_pending  # This now includes nodes added during the session
-        explored_nodes = updated_explored  # Mark the node as explored
+        root_nodes = updated_roots
+        pending_nodes = updated_pending  # Includes newly discovered nodes
+        explored_nodes = updated_explored
 
-        # Increment session counter
+        # Update language/fallback only after the first session (index 0)
+        # Assumes these are unlikely to change and avoids repeated LLM calls.
+        if current_session_index == 0:
+            if new_languages:  # Update if detection was successful
+                supported_languages = new_languages
+                print(
+                    f"   Confirmed/Updated supported languages: {supported_languages}"
+                )
+            if new_fallback:
+                fallback_message = new_fallback
+                print(f"   Confirmed fallback message.")
+
+        # Move to the next session
         session_num += 1
+    # --- End Exploration Loop ---
 
-    # --- END SIMPLIFIED LOOP ---
-
-    if pending_nodes:
-        print(f"\n--- Reached max sessions ({max_sessions}) with {len(pending_nodes)} nodes still pending exploration. ---")
-    elif session_num < max_sessions:
-        print(f"\n--- Explored all discovered nodes within {session_num} sessions. ---")
+    # --- Post-Exploration Summary ---
+    if session_num == args.sessions:
+        print(f"\n=== Completed {args.sessions} exploration sessions ===")
+        if pending_nodes:
+            print(
+                f"   NOTE: {len(pending_nodes)} nodes still remain in the pending queue."
+            )
+        else:
+            print("   All discovered nodes were explored.")
     else:
-        print(f"\n=== Exploration complete ({session_num} sessions) ===")
+        # Should not be reachable with the current loop structure
+        print(
+            f"\n--- WARNING: Exploration stopped unexpectedly after {session_num} sessions. ---"
+        )
 
     print(f"Discovered {len(root_nodes)} root functionalities after exploration.")
 
-    # First ensure we convert all FunctionalityNodes to dicts while preserving structure
+    # Convert FunctionalityNode objects to dictionaries for analysis
     functionality_dicts = [node.to_dict() for node in root_nodes]
 
-    # Create state for goal generation, user profiles, etc.
+    # Prepare state for LangGraph analysis (structure inference and profile generation)
     print(
         "\n--- Preparing to infer complete workflow structure and generate user profiles ---"
     )
@@ -417,69 +446,66 @@ def main():
             },
         ],
         "conversation_history": conversation_sessions,
-        "discovered_functionalities": functionality_dicts,
-        "discovered_limitations": [],
+        "discovered_functionalities": functionality_dicts,  # Initial structure from exploration
+        "discovered_limitations": [],  # Limitations are not currently extracted during exploration
         "current_session": max_sessions,
         "exploration_finished": True,
-        "conversation_goals": [],
+        "conversation_goals": [],  # Not used in this flow currently
         "supported_languages": supported_languages,
         "fallback_message": fallback_message,
     }
 
-    # First run the structure builder to get a properly sequenced workflow
+    # 1. Infer the workflow structure using the dedicated graph
     print("\n--- Running workflow structure inference ---")
     structure_graph = explorer._build_structure_graph()
     structure_result = structure_graph.invoke(
         analysis_state, config={"configurable": {"thread_id": "structure_analysis"}}
     )
 
-    # Now we have a properly structured workflow in structure_result["discovered_functionalities"]
-    # Use this for the profile generation
+    # Use the refined structure from the structure graph for profile generation
     analysis_state["discovered_functionalities"] = structure_result[
         "discovered_functionalities"
     ]
 
-    # Generate profiles with the properly structured workflow
+    # 2. Generate user profiles based on the inferred structure
+    print("\n--- Generating user profiles ---")
     profile_graph = explorer._build_profile_generation_graph()
     result = profile_graph.invoke(
         analysis_state, config={"configurable": {"thread_id": "analysis_session"}}
     )
 
-    # Update functionality_dicts to use the properly sequenced workflow for reporting/visualization
-    functionality_dicts = structure_result["discovered_functionalities"]
-    # Generate profiles directly without full analysis
-    config = {"configurable": {"thread_id": "analysis_session"}}
+    # Update functionality_dicts with the final, structured version for reporting
+    functionality_dicts = structure_result.get("discovered_functionalities", [])
 
-    # Skip analyzer and structure_builder nodes since we already have the structure
-    explorer.graph = explorer._build_profile_generation_graph()
-    result = explorer.run_exploration(analysis_state, config)
-
-    # Save profiles
+    # --- Save Generated Profiles ---
     built_profiles = result.get("built_profiles", [])
     if built_profiles:
         print(f"\n--- Saving {len(built_profiles)} user profiles to disk ---")
 
-        profiles_dir = output_dir
+        profiles_dir = output_dir  # Save profiles in the main output directory
         os.makedirs(profiles_dir, exist_ok=True)
 
         for profile in built_profiles:
-            # Handle cases where test_name might be a dict
+            # Generate a safe filename from the test_name
             test_name = profile["test_name"]
 
             if isinstance(test_name, dict):
-                # For random profiles, use a consistent filename with index
+                # Handle structured test names (e.g., from random generation)
                 if (
                     test_name.get("function") == "random()"
                     and "data" in test_name
                     and test_name["data"]
                 ):
+                    # Use the first data element for a more descriptive random name
                     base_name = str(test_name["data"][0])
                     filename = (
                         f"random_profile_{base_name.lower().replace(' ', '_')}.yaml"
                     )
                 else:
+                    # Fallback for other dict structures
                     filename = f"profile_{hash(str(test_name))}.yaml"
             else:
+                # Sanitize string test names for filenames
                 filename = (
                     str(test_name)
                     .lower()
@@ -494,16 +520,17 @@ def main():
                 yaml.dump(profile, yf, sort_keys=False, allow_unicode=True)
             print(f"  Saved profile: {filename}")
 
-    # Write report
+    # --- Write Final Report ---
     print("\n--- Writing report to disk ---")
     write_report(
         output_dir,
+        # Pass the final structured functionalities and other collected data
         {"discovered_functionalities": functionality_dicts},
         supported_languages,
         fallback_message,
     )
 
-    # Generate graph image
+    # --- Generate Workflow Graph Image ---
     graph_output_base = os.path.join(output_dir, "workflow_graph")
     generate_graph_image(functionality_dicts, graph_output_base)
 
