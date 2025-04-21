@@ -1,0 +1,79 @@
+test_name: Inquiring About Pickup Process
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user ordering a pizza to a pizza shop.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You have been craving a Hawaiian pizza with extra pineapple and extra cheese after
+    seeing a special on social media.
+  - You are in a hurry because you need to pick up the pizza before your movie starts
+    at 7:30 PM.
+  - You remember that the pizza shop you are calling has a good reputation for fast
+    service and quality food.
+  goals:
+  - Order a {{size}} Hawaiian pizza
+  - Add {{quantity}} {{drink}} to my order
+  - Inquire about the total cost of my order
+  - Ask for the pickup location and estimated wait time
+  - size:
+      function: default()
+      type: string
+      data:
+      - small
+      - medium
+      - large
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 5
+        step: 1
+  - drink:
+      function: random()
+      type: string
+      data:
+      - soda
+      - juice
+      - water
+      - iced tea
+      - lemonade
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the user's pizza and
+        drink order, which should be found in the chatbot's response confirming the
+        order total.
+  - pickup_location:
+      type: str
+      description: The address or details of the location where the user can pick
+        up their pizza order, as provided by the chatbot during the conversation.
+  - estimated_wait_time:
+      type: time
+      description: The estimated time the chatbot provides for how long it will take
+        for the order to be ready for pickup after the order is placed.
+  - order_confirmation:
+      type: str
+      description: A confirmation message or reference number from the chatbot that
+        validates the user's pizza order, indicating that the order has been successfully
+        recorded.
+conversation:
+  number: 3
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - change your mind
+  - single question

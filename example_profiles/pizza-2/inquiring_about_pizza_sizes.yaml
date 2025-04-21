@@ -1,0 +1,76 @@
+test_name: Inquiring About Pizza Sizes
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user ordering a pizza to a pizza shop.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You recently watched a food review video that praised the special supreme pizza
+    and its unique toppings.
+  - You typically prefer large pizzas for gatherings with friends, as you find the
+    small sizes insufficient.
+  - You're trying to keep the total cost under $30 while ensuring there are drinks
+    included in your order.
+  goals:
+  - Inquire about the available sizes for the {{pizza_type}} pizza
+  - Order a {{size}} {{pizza_type}} pizza
+  - Ask about the available drink options
+  - Get a summary of my order including total cost and pickup information
+  - size:
+      function: random()
+      type: string
+      data:
+      - Small
+      - Medium
+      - Large
+      - Extra Large
+  - pizza_type:
+      function: default()
+      type: string
+      data:
+      - Margherita
+      - Pepperoni
+      - Veggie
+      - Hawaiian
+      - BBQ Chicken
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - available_pizza_sizes:
+      type: str
+      description: This output represents the list of pizza sizes that the chatbot
+        provides to the user for the specific pizza type inquired about. It can typically
+        be found in the chatbot's response when detailing available pizza options.
+  - order_confirmation:
+      type: str
+      description: This output includes the details that the chatbot confirms after
+        the user places their order, which typically contains the size and type of
+        pizza ordered. It can be found in the chatbot's response confirming the user's
+        order.
+  - available_drink_options:
+      type: str
+      description: This output represents the list of drink options available for
+        the user to choose from, as provided by the chatbot. It can usually be found
+        in the chatbot's response when discussing beverages.
+  - total_order_cost:
+      type: float
+      description: This output indicates the total cost provided by the chatbot for
+        the entire order, including pizza and drinks. It can be found in the final
+        summary provided by the chatbot after the order is placed.
+conversation:
+  number: 4
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - change your mind
+  - single question

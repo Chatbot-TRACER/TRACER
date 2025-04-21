@@ -1,0 +1,91 @@
+test_name: Summarizing Complete Orders
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user ordering a pizza to a pizza shop.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You are craving a large pepperoni pizza with extra cheese and a side of garlic
+    knots for dinner tonight.
+  - You want to ensure that your order is accurate because you are hosting a small
+    gathering with friends.
+  - You’ve had a positive experience with this pizza shop in the past, which gives
+    you confidence in their service quality.
+  goals:
+  - Order a {{size}} {{pizza_type}} pizza
+  - Specify {{quantity}} {{drink}} to include with my pizza order
+  - Request a summary of my order, including total cost and pickup details
+  - Confirm my order before finalizing it
+  - drink:
+      function: random()
+      type: string
+      data:
+      - cola
+      - lemonade
+      - iced tea
+      - orange soda
+      - water
+  - size:
+      function: random()
+      type: string
+      data:
+      - small
+      - medium
+      - large
+      - extra-large
+  - quantity:
+      function: default()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+  - pizza_type:
+      function: random()
+      type: string
+      data:
+      - pepperoni
+      - margherita
+      - BBQ chicken
+      - veggie
+      - hawaiian
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the complete order, including
+        the pizza and any additional items such as drinks. This will be found in the
+        summary response when the user requests the total cost of their order.
+  - pickup_details:
+      type: str
+      description: Information on when and where the user can pick up their order.
+        This should be included in the chatbot's response when summarizing or confirming
+        the order.
+  - order_confirmation:
+      type: str
+      description: A confirmation statement from the chatbot verifying the details
+        of the user's order, including the type and size of the pizza, as well as
+        any additional items. This will appear after the user finalizes their order.
+  - available_drinks:
+      type: str
+      description: A list of drink options provided by the chatbot for the user to
+        select from during the ordering process. This will be found in the chatbot's
+        response when presenting drink choices after the pizza selection.
+conversation:
+  number: 4
+  max_cost: 2.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - change your mind
+  - single question
