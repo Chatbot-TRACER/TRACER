@@ -1,6 +1,6 @@
 from typing import List, Dict, Any, Optional, Tuple, Set
 from .functionality_node import FunctionalityNode
-from langchain_core.messages import AIMessage
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 import re
 import json
 import random
@@ -540,12 +540,7 @@ def run_exploration_session(
     """
 
     # Start fresh conversation history
-    conversation_history = [
-        {
-            "role": "system",
-            "content": system_content,
-        }
-    ]
+    conversation_history_lc = [SystemMessage(content=system_content)]
 
     # Generate the first question
     if current_node:
@@ -606,8 +601,12 @@ def run_exploration_session(
     print(f"\nChatbot: {chatbot_message}")
 
     # Add first exchange to history
-    conversation_history.append({"role": "assistant", "content": initial_question})
-    conversation_history.append({"role": "user", "content": chatbot_message})
+    conversation_history_lc.append(
+        AIMessage(content=initial_question)
+    )  # Explorer AI is 'assistant'
+    conversation_history_lc.append(
+        HumanMessage(content=chatbot_message)
+    )  # Target Chatbot is 'user'/'human'
 
     # Main loop
     turn_count = 1  # We already did the first question, so start at 1
@@ -620,55 +619,49 @@ def run_exploration_session(
             break
 
         # --- Get what the explorer wants to say next ---
-        explorer_response = None
-        # This is the stuff the explorer LLM needs to decide what to do
-        llm_state = {
-            "messages": conversation_history,
-            "conversation_history": [],  # Not really used here
-            "discovered_functionalities": [],  # Not really used here
-            "current_session": session_num,
-            "exploration_finished": False,
-            "conversation_goals": [],  # Not really used here
-            "supported_languages": supported_languages,
-            "fallback_message": fallback_message,  # Just in case the LLM wants to know
-        }
+        explorer_response_content = None
         try:
-            # Ask the explorer LLM what to do next
-            for event in explorer.stream_exploration(llm_state):
-                for value in event.values():
-                    if value.get("messages"):
-                        latest_message = value["messages"][-1]
-                        # Make sure this is the LLM's response
-                        if isinstance(latest_message, AIMessage):
-                            explorer_response = latest_message.content
-        except Exception as e:
-            print(f"\nError getting response from Explorer AI: {e}. Ending session.")
-            break  # If the explorer LLM crashes, just stop
+            max_history_turns_for_llm = (
+                10  # Keep last 10 turns (20 messages) + system prompt
+            )
+            messages_for_llm = [conversation_history_lc[0]] + conversation_history_lc[
+                -(max_history_turns_for_llm * 2) :
+            ]
 
-        if not explorer_response:
+            # Invoke the LLM directly
+            llm_response = explorer.llm.invoke(messages_for_llm)
+            explorer_response_content = llm_response.content.strip()
+        except Exception as e:
             print(
-                "\nError: Failed to get next action from Explorer AI. Ending session."
+                f"\nError getting response from Explorer AI LLM: {e}. Ending session."
+            )
+            break  # Stop if LLM fails
+
+        if not explorer_response_content:
+            print(
+                "\nError: Failed to get next action from Explorer AI LLM. Ending session."
             )
             break
 
-        print(f"\nExplorer: {explorer_response}")
+        print(f"\nExplorer: {explorer_response_content}")
 
         # If the explorer says it's done, just stop
-        if "EXPLORATION COMPLETE" in explorer_response.upper():
+        if "EXPLORATION COMPLETE" in explorer_response_content.upper():
             print(f"\nExplorer has finished session {session_num + 1} exploration.")
             break
 
         # Save what the explorer said before sending it to the chatbot
-        conversation_history.append({"role": "assistant", "content": explorer_response})
+        conversation_history_lc.append(AIMessage(content=explorer_response_content))
 
         # --- Send the explorer's message to the chatbot ---
-        is_ok, chatbot_message = the_chatbot.execute_with_input(explorer_response)
+        is_ok, chatbot_message = the_chatbot.execute_with_input(
+            explorer_response_content
+        )
 
         if not is_ok:
             print("\nError communicating with chatbot. Ending session.")
-            # Put an error in the chat history so we know what happened
-            conversation_history.append(
-                {"role": "user", "content": "[Chatbot communication error]"}
+            conversation_history_lc.append(
+                HumanMessage(content="[Chatbot communication error]")
             )
             break
 
@@ -700,9 +693,9 @@ def run_exploration_session(
                 f"\n   {failure_reason} detected. Attempting 1 retry with the *same* input..."
             )
 
-            print(f"   Retrying with the same input: '{explorer_response}'")
+            print(f"   Retrying with the same input: '{explorer_response_content}'")
             is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(
-                explorer_response
+                explorer_response_content
             )
 
             if is_ok_retry:
@@ -746,7 +739,7 @@ def run_exploration_session(
         )  # Show what the chatbot said (either original or retry)
 
         # Save the chatbot's response so the explorer can see it next time
-        conversation_history.append({"role": "user", "content": chatbot_message})
+        conversation_history_lc.append(HumanMessage(content=chatbot_message))
 
         # If the chatbot says bye, just stop
         if chatbot_message.lower() in ["quit", "exit", "q", "bye", "goodbye"]:
@@ -755,10 +748,22 @@ def run_exploration_session(
 
         turn_count += 1
 
+    # Convert LangChain messages back to simple dicts for analysis functions if needed
+    # TODO: Or adapt analysis functions to accept LangChain messages
+    conversation_history_dict = [
+        {
+            "role": "system"
+            if isinstance(m, SystemMessage)
+            else ("assistant" if isinstance(m, AIMessage) else "user"),
+            "content": m.content,
+        }
+        for m in conversation_history_lc
+    ]
+
     # Extract functionalities found in this session
     print("\nAnalyzing conversation for new functionalities...")
     new_functionality_nodes = extract_functionality_nodes(
-        conversation_history, explorer.llm, current_node
+        conversation_history_dict, explorer.llm, current_node
     )
 
     # Process newly found nodes
@@ -796,8 +801,8 @@ def run_exploration_session(
                     root_nodes.append(node)
                     print(f"  - '{node.name}' (root node for now)")
 
-                # Add all non-duplicate new nodes to the pending queue
-                pending_nodes.append(node)
+                if node.name not in explored_nodes:
+                    pending_nodes.append(node)
             else:
                 print(f"  - Skipped duplicate functionality: '{node.name}'")
 
@@ -813,7 +818,7 @@ def run_exploration_session(
 
     # Return all updated state
     return (
-        conversation_history,
+        conversation_history_dict,
         None,
         new_functionality_nodes,  # Nodes found *this* session
         root_nodes,  # Updated list of roots
