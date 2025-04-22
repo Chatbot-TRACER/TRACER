@@ -1,0 +1,82 @@
+test_name: Drink Addition
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to add drinks to their existing pizza
+    order.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You previously ordered a large pepperoni pizza and want to complement it with
+    a refreshing drink.
+  - You're planning a movie night at home and want to keep your guests satisfied with
+    plenty of beverage options.
+  - Your friend recommended trying the new craft sodas offered by the pizzeria, and
+    you're curious to see if they have any available.
+  goals:
+  - Add a {{quantity}} {{drink}} to my pizza order
+  - Get a list of available drink options and their prices
+  - Confirm my order for a large pizza with {{toppings}}
+  - toppings:
+      function: another(3)
+      type: string
+      data:
+      - pepperoni
+      - mushrooms
+      - green peppers
+      - olives
+      - onions
+      - sausage
+  - drink:
+      function: random()
+      type: string
+      data:
+      - cola
+      - lemonade
+      - iced tea
+      - orange juice
+      - water
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - available_drink_options:
+      type: str
+      description: The list of drink options provided by the chatbot, including names
+        and prices, which should be extracted from the chatbot's response when asked
+        for drink choices.
+  - order_summary:
+      type: str
+      description: A summary of the user's order details including pizza size, selected
+        toppings, drinks, total cost, and pickup time, as stated by the chatbot at
+        the end of the conversation to confirm the order.
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the entire order, which
+        includes both the pizza and any added drinks.
+  - pickup_time:
+      type: time
+      description: The time mentioned by the chatbot for when the order will be ready
+        for pickup, included in the order summary response to the user.
+conversation:
+  number: 3
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - change your mind
+  - single question

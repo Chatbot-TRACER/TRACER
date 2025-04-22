@@ -1,0 +1,68 @@
+test_name: Topping Inquiry
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user asking for available topping options for a custom
+    pizza.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You had a great experience customizing a pizza at this restaurant last month and
+    want to replicate it.
+  - You're planning a small gathering this weekend and want to ensure you have a variety
+    of toppings for everyone's preferences.
+  - You remember that the restaurant offers a selection of beverages and are curious
+    if they have any new drink options available to pair with your pizza.
+  goals:
+  - Inquire about the available toppings for a custom pizza
+  - Specify my choice of toppings as {{toppings}} for my pizza
+  - Ask about drink options to add to my pizza order
+  - Get the total cost for my order, including pizza and drinks
+  - toppings:
+      function: default()
+      type: string
+      data:
+      - Pepperoni
+      - Mushrooms
+      - Onions
+      - Sausage
+      - Bacon
+      - Extra cheese
+      - Black olives
+      - Green peppers
+      - Pineapple
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - available_toppings:
+      type: str
+      description: A list of the various topping options that the chatbot provides
+        for a custom pizza order.
+  - selected_drink_options:
+      type: str
+      description: Information about the available drink options that the chatbot
+        mentions when the user inquires about drinks to add to their pizza order.
+  - total_cost:
+      type: float
+      description: The final price provided by the chatbot for the complete order,
+        including the custom pizza and any selected drinks.
+  - estimated_pickup_time:
+      type: time
+      description: The time the chatbot suggests for when the user's order will be
+        ready for pickup, which appears in the summary of the order details.
+conversation:
+  number: 4
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question
+  - change your mind

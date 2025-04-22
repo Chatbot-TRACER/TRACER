@@ -1,0 +1,53 @@
+test_name: Complete Order Summary
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user requesting a complete summary of their order details.
+  context:
+  - 'personality: personalities/conversational-user.yml'
+  - You usually order a large pepperoni pizza and a root beer for your weekend gatherings.
+  - You've had issues in the past with orders being mixed up, so you want to ensure
+    everything is correct this time.
+  - You have a tight schedule and need to know the exact pickup time to plan your
+    arrival accordingly.
+  goals:
+  - Request a complete summary of my order including pizza type, drink selections,
+    total cost, pickup time, and location
+  - Confirm the details of my order before finalizing
+  - Inquire about the available drink options and their prices
+  - Ask for the expected pickup time for my order
+chatbot:
+  is_starter: false
+  fallback: '"I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+    "'
+  output:
+  - pizza_type:
+      type: str
+      description: The type of pizza selected by the user as confirmed by the chatbot,
+        typically found in the summary message detailing the order.
+  - drink_options:
+      type: str
+      description: The list of available drink options provided by the chatbot, including
+        their names and prices, which helps the user make selections for their order.
+  - total_cost:
+      type: float
+      description: The final price quoted by the chatbot for the entire order, including
+        pizza and drinks, which is included in the summary confirmation message.
+  - pickup_time:
+      type: time
+      description: The expected time for order pickup as stated by the chatbot in
+        the summary, ensuring the user knows when to collect their order.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question
