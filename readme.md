@@ -69,10 +69,9 @@ The system uses specialized graphs for different stages of analysis:
 flowchart LR
     A[Exploration data] --> B[structure_builder_node]
     B --> C{Classify chatbot}
-    C -->|Transactional| D[Build workflow with dependencies]
-    C -->|Informational| E[Build topic hierarchy]
-    D --> F[Output structured functionalities]
-    E --> F
+    C -->|Transactional Prompt| D[Build functionalities]
+    C -->|Informational Prompt| D[Build functionalities]
+    D --> E[Output structured functionalities]
 ```
 
 - Determines if the chatbot is transaction or information
