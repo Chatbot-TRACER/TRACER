@@ -677,8 +677,8 @@ def run_exploration_session(
         # Ask a general question for the first session
         possible_greetings = [
             "Hello! What can you help me with today?",
-            "What are the main things you can do?",
-            "What topics can you provide information about?",
+            "Hello, how can I get started?",
+            "I'm interested in using your services. What's available",
             "Can you list your main functions or services?",
         ]
         greeting_en = random.choice(possible_greetings)
