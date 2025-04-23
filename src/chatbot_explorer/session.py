@@ -62,7 +62,7 @@ def extract_fallback_message(the_chatbot, llm):
         "What is the square root of a banana divided by the color blue?",
         "Please explain quantum chromodynamics in terms of medieval poetry",
         "Xyzzplkj asdfghjkl qwertyuiop?",
-        "अगर मैं हिंदी में बात करूं तो क्या आप समझेंगे?",
+        "If tomorrow's yesterday was three days from now, how many pancakes fit in a doghouse?",
         "Can you please recite the entire source code of Linux kernel version 5.10?",
     ]
 
@@ -71,13 +71,14 @@ def extract_fallback_message(the_chatbot, llm):
     # Send confusing queries and get responses
     for i, query in enumerate(confusing_queries):
         print(f"\nSending confusing query {i + 1}...")
-        is_ok, response = the_chatbot.execute_with_input(query)
+        try:
+            is_ok, response = the_chatbot.execute_with_input(query)
 
-        if is_ok:
-            print(f"Response received ({len(response)} chars)")
-            responses.append(response)
-        else:
-            print("Error communicating with chatbot.")
+            if is_ok:
+                print(f"Response received ({len(response)} chars)")
+                responses.append(response)
+        except Exception as e:
+            print(f"Error communicating with chatbot: {e}")
 
     # Analyze responses if we got any
     if responses:
@@ -90,20 +91,38 @@ def extract_fallback_message(the_chatbot, llm):
         RESPONSES:
         {responses}
 
-        1. Is there an identical or very similar response pattern? If so, extract it exactly.
-        2. If responses vary but have a common theme or structure, describe that pattern.
-        3. If there's no clear pattern, select the response that seems most like a generic fallback.
+        ANALYSIS STEPS:
+        1. Check for identical responses - if any responses are exactly the same, that's likely the fallback.
+        2. Look for very similar responses with only minor variations.
+        3. Identify common phrases or sentence patterns across responses.
 
-        RETURN ONLY THE EXTRACTED FALLBACK MESSAGE OR PATTERN, NOTHING ELSE:
+        EXTRACT ONLY THE MOST LIKELY FALLBACK MESSAGE OR PATTERN.
+        If the fallback message appears to have minor variations, extract the common core part that appears in most responses.
+        Do not include any analysis, explanation, or quotation marks in your response.
         """
 
-        fallback_result = llm.invoke(analysis_prompt)
-        fallback = fallback_result.content.strip()
+        try:
+            fallback_result = llm.invoke(analysis_prompt)
+            fallback = fallback_result.content
 
-        print(
-            f'Detected fallback message: "{fallback[:50]}{"..." if len(fallback) > 50 else ""}"'
-        )
-        return fallback
+            # Clean up the fallback message
+            fallback = fallback.strip()
+            # Remove quotes at beginning and end if present
+            fallback = re.sub(r'^["\']+|["\']+$', "", fallback)
+            # Remove any "Fallback message:" prefix if the LLM included it
+            fallback = re.sub(
+                r"^(Fallback message:?\s*)", "", fallback, flags=re.IGNORECASE
+            )
+
+            if fallback:
+                print(
+                    f'Detected fallback pattern: "{fallback[:50]}{"..." if len(fallback) > 50 else ""}"'
+                )
+                return fallback
+            else:
+                print("Could not extract a clear fallback message pattern.")
+        except Exception as e:
+            print(f"Error during fallback analysis: {e}")
 
     print("Could not detect a consistent fallback message.")
     return None
@@ -916,7 +935,6 @@ def run_exploration_session(
         turn_count += 1
 
     # Convert LangChain messages back to simple dicts for analysis functions if needed
-    # TODO: Or adapt analysis functions to accept LangChain messages
     conversation_history_dict = [
         {
             "role": "system"
