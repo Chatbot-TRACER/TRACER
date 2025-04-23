@@ -190,9 +190,32 @@ def generate_graph_image(
         "graph", label="Chatbot Functionality Workflow", fontsize="18", labelloc="t"
     )
 
-    # Start processing from root nodes
+    # Add a start node (black dot)
+    start_node_name = "start_node"
+    dot.node(
+        start_node_name,
+        label="",  # No label
+        shape="circle",
+        width="0.3",
+        height="0.3",
+        style="filled",
+        fillcolor="black",
+        color="black",
+    )
+
+    # Process root nodes and connect them to the start node
+    root_node_names = []
     for root_node_dict in structured_data:
-        add_nodes_edges(dot, root_node_dict)
+        node_name = root_node_dict.get("name")
+        if node_name:
+            root_node_names.append(node_name)
+            add_nodes_edges(dot, root_node_dict)
+
+            # Connect start node to each root node
+            edge_key = (start_node_name, node_name)
+            if edge_key not in processed_edges:
+                dot.edge(start_node_name, node_name)
+                processed_edges.add(edge_key)
 
     try:
         # Render the graph to a file
