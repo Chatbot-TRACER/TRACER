@@ -109,6 +109,53 @@ def extract_fallback_message(the_chatbot, llm):
     return None
 
 
+def is_semantically_fallback(response: str, fallback: str, llm) -> bool:
+    """
+    Uses LLM to determine if a chatbot response is semantically equivalent
+    to a known fallback message.
+
+    Args:
+        response (str): The chatbot's current response.
+        fallback (str): The known fallback message pattern.
+        llm: The language model instance.
+
+    Returns:
+        bool: True if the response is considered a fallback, False otherwise.
+    """
+    if not response or not fallback:
+        return False  # Cannot compare if one is empty
+
+    prompt = f"""
+    Compare the following two messages. Determine if the "Chatbot Response" is semantically equivalent to the "Known Fallback Message".
+
+    "Semantically equivalent" means the response conveys the same core meaning as the fallback, such as:
+    - Not understanding the request.
+    - Being unable to process the request.
+    - Asking the user to rephrase.
+    - Stating a general limitation.
+
+    It does NOT have to be an exact word-for-word match.
+
+    Known Fallback Message:
+    "{fallback}"
+
+    Chatbot Response:
+    "{response}"
+
+    Is the "Chatbot Response" semantically equivalent to the "Known Fallback Message"?
+
+    Respond with ONLY "YES" or "NO".
+    """
+    try:
+        llm_decision = llm.invoke(prompt)
+        decision_text = llm_decision.content.strip().upper()
+
+        return decision_text.startswith("YES")
+    except Exception as e:
+        print(f"   LLM Fallback Check Error: {e}. Assuming not a fallback.")
+        return False  # Default to False if LLM fails
+
+
 def extract_functionality_nodes(conversation_history, llm, current_node=None):
     """
     Pull out FunctionalityNodes from the conversation.
@@ -572,10 +619,10 @@ def run_exploration_session(
     1. Ask ONE clear question or give ONE clear instruction/command at a time.
     2. Keep messages concise but focused on progressing the interaction or using a feature according to the current focus.
     3. **CRITICAL: If the chatbot offers clear interactive choices (e.g., buttons, numbered lists, "Option A or Option B?", "Yes or No?"), you MUST try to select one of the offered options in your next turn to explore that path.**
-    4. **ADAPTIVE EXPLORATION:**
+    4. **ADAPTIVE EXPLORATION (Handling Non-Progressing Turns):**
         - **If the chatbot provides information (like an explanation, contact details, status update) OR a fallback/error message, and does NOT ask a question or offer clear interactive choices:**
-            a) **Check for Repetitive Failure:** If the chatbot has given the **exact same fallback/error message** for the last 2-3 turns despite you asking different relevant questions about the *same topic*, **ABANDON this topic for this session**. Your next turn should be to ask about a **completely different capability** or topic you know exists or is plausible (e.g., switch from asking about custom pizza ingredients to asking about predefined pizzas or drinks), OR if no other path is obvious, respond with "EXPLORATION COMPLETE".
-            b) **If not repetitive failure:** Ask a specific, relevant clarifying question about the information/fallback provided OR ask about a NEW, specific, plausible topic/task relevant to the chatbot's likely domain (infer this domain). Do NOT just ask "What else?".
+            a) **Check for Repetitive Failure on the SAME GOAL:** If the chatbot has given the **same or very similar fallback/error message** for the last **2** turns despite you asking relevant questions about the *same underlying topic or goal*, **DO NOT REPHRASE the failed question/request again**. Instead, **ABANDON this topic/goal for this session**. Your next turn MUST be to ask about a **completely different capability** or topic you know exists or is plausible (e.g., switch from asking about custom pizza ingredients to asking about predefined pizzas or drinks), OR if no other path is obvious, respond with "EXPLORATION COMPLETE".
+            b) **If NOT Repetitive Failure (e.g., first fallback on this topic):** Ask a specific, relevant clarifying question about the information/fallback provided ONLY IF it seems likely to yield progress. Otherwise, or if clarification isn't obvious, **switch to a NEW, specific, plausible topic/task** relevant to the chatbot's likely domain (infer this domain). **Avoid simply rephrasing the previous failed request.** Do NOT just ask "What else?".
         - **Otherwise (if the bot asks a question or offers choices):** Respond appropriately to continue the current flow or make a selection as per Guideline 3.
     5. Prioritize actions/questions relevant to the `EXPLORATION FOCUS` below.
     6. Follow the chatbot's conversation flow naturally. {language_instruction}
@@ -655,6 +702,9 @@ def run_exploration_session(
         HumanMessage(content=chatbot_message)
     )  # Target Chatbot is 'user'/'human'
 
+    consecutive_failures = 0
+    force_topic_change_next_turn = False
+
     # Main loop
     turn_count = 1  # We already did the first question, so start at 1
     while True:
@@ -664,6 +714,21 @@ def run_exploration_session(
                 f"\nReached maximum turns ({max_turns}). Ending session {session_num + 1}."
             )
             break
+
+        # --- Check for forcing topic change (due to consecutive failures OR failed retry) ---
+        force_topic_change_instruction = None
+        # Check flag from previous turn's failed retry first
+        if force_topic_change_next_turn:
+            force_topic_change_instruction = "CRITICAL OVERRIDE: Your previous attempt AND a retry both failed (likely hit fallback). You MUST abandon the last topic/question now. Ask about a completely different, plausible capability"
+            print("\n Forcing topic change: Retry failed previously. !!!")
+            force_topic_change_next_turn = False  # Reset flag after using it
+        # Then check consecutive failures (if retry didn't trigger it)
+        elif consecutive_failures >= 2:
+            force_topic_change_instruction = f"CRITICAL OVERRIDE: The chatbot has failed to respond meaningfully {consecutive_failures} times in a row on the current topic/line of questioning. You MUST abandon this topic now. Ask about a completely different, plausible capability"
+            print(
+                f"\n Forcing topic change: {consecutive_failures} consecutive failures. !!!"
+            )
+        # ---
 
         # --- Get what the explorer wants to say next ---
         explorer_response_content = None
@@ -675,9 +740,18 @@ def run_exploration_session(
                 -(max_history_turns_for_llm * 2) :
             ]
 
+            # If forcing change, add a temporary system message for this turn
+            if force_topic_change_instruction:
+                messages_for_llm_this_turn = messages_for_llm + [
+                    SystemMessage(content=force_topic_change_instruction)
+                ]
+            else:
+                messages_for_llm_this_turn = messages_for_llm
+
             # Invoke the LLM directly
-            llm_response = explorer.llm.invoke(messages_for_llm)
+            llm_response = explorer.llm.invoke(messages_for_llm_this_turn)
             explorer_response_content = llm_response.content.strip()
+
         except Exception as e:
             print(
                 f"\nError getting response from Explorer AI LLM: {e}. Ending session."
@@ -710,6 +784,8 @@ def run_exploration_session(
             conversation_history_lc.append(
                 HumanMessage(content="[Chatbot communication error]")
             )
+            consecutive_failures += 1
+            force_topic_change_next_turn = True
             break
 
         # Save the chatbot's first response in case we need it later
@@ -718,29 +794,23 @@ def run_exploration_session(
         # Check if the chatbot gave us a fallback or error
         is_fallback = False
         if fallback_message and chatbot_message:
-            # Try to see if the chatbot's response looks like the fallback
-            fallback_norm = fallback_message.strip().lower()
-            response_norm = chatbot_message.strip().lower()
-            # Just check if the start matches a big chunk of the fallback
-            if fallback_norm and response_norm.startswith(
-                fallback_norm[: max(20, len(fallback_norm) // 2)]
-            ):
-                is_fallback = True
+            # Use LLM for semantic comparison
+            is_fallback = is_semantically_fallback(
+                chatbot_message, fallback_message, explorer.llm
+            )
 
         is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
 
         # --- Try the same message again if we hit a fallback or parsing error ---
+        retry_also_failed = False
         if is_fallback or is_parsing_error:
             failure_reason = (
                 "Fallback message"
                 if is_fallback
                 else "Potential chatbot error (OUTPUT_PARSING_FAILURE)"
             )
-            print(
-                f"\n   {failure_reason} detected. Attempting 1 retry with the *same* input..."
-            )
+            print(f"\n   ({failure_reason} detected. Retrying once...)")
 
-            print(f"   Retrying with the same input: '{explorer_response_content}'")
             is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(
                 explorer_response_content
             )
@@ -749,12 +819,9 @@ def run_exploration_session(
                 # See if the retry gave us something different and not another failure
                 is_retry_fallback = False
                 if fallback_message and chatbot_message_retry:
-                    retry_fallback_norm = fallback_message.strip().lower()
-                    retry_response_norm = chatbot_message_retry.strip().lower()
-                    if retry_fallback_norm and retry_response_norm.startswith(
-                        retry_fallback_norm[: max(20, len(retry_fallback_norm) // 2)]
-                    ):
-                        is_retry_fallback = True
+                    is_retry_fallback = is_semantically_fallback(
+                        chatbot_message_retry, fallback_message, explorer.llm
+                    )
 
                 is_retry_parsing_error = (
                     "OUTPUT_PARSING_FAILURE" in chatbot_message_retry
@@ -768,27 +835,50 @@ def run_exploration_session(
                     # Retry worked, use the new response
                     print("   Retry successful!")
                     chatbot_message = chatbot_message_retry
-                    print(f"   New Chatbot Response: {chatbot_message}")
+                    # print(f"   New Chatbot Response: {chatbot_message}")
+                    consecutive_failures = 0
                 else:
                     # Retry didn't help, just use the original
-                    print(
-                        "   Retry did not yield a different/successful response. Using original failure."
-                    )
+                    print("   Retry failed (still received fallback/error)")
                     chatbot_message = original_chatbot_message
+                    retry_also_failed = True
             else:
                 # Retry couldn't even talk to the chatbot
-                print("   Retry communication failed. Using original failure.")
+                print("   Retry failed (communication error)")
                 chatbot_message = original_chatbot_message
+                retry_also_failed = True
         # --- END Simple Retry Logic ---
 
-        print(
-            f"\nChatbot: {chatbot_message}"
-        )  # Show what the chatbot said (either original or retry)
+        # --- Update state based on FINAL outcome of the turn ---
+        final_is_fallback = False
+        if fallback_message and chatbot_message:
+            final_is_fallback = is_semantically_fallback(
+                chatbot_message, fallback_message, explorer.llm
+            )
+        final_is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
 
-        # Save the chatbot's response so the explorer can see it next time
+        if final_is_fallback or final_is_parsing_error:
+            # Increment consecutive failures ONLY IF the retry didn't already succeed
+            if not (is_fallback or is_parsing_error) or retry_also_failed:
+                consecutive_failures += 1
+                print(f"   (Consecutive failures: {consecutive_failures})")
+            # Set flag to force change next turn IF the retry specifically failed
+            if retry_also_failed:
+                force_topic_change_next_turn = True
+        else:
+            # Reset counter if the turn was successful
+            if consecutive_failures > 0:
+                print(
+                    f"   (Successful response this turn. Resetting consecutive failures from {consecutive_failures}.)"
+                )
+            consecutive_failures = 0
+            force_topic_change_next_turn = False  # Ensure flag is off on success
+        # ---
+
+        print(f"\nChatbot: {chatbot_message}")
+
         conversation_history_lc.append(HumanMessage(content=chatbot_message))
 
-        # If the chatbot says bye, just stop
         if chatbot_message.lower() in ["quit", "exit", "q", "bye", "goodbye"]:
             print("Chatbot ended the conversation. Ending session.")
             break
