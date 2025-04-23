@@ -519,11 +519,15 @@ class ChatbotExplorer:
         Returns:
             dict: A dictionary representing the YAML profile structure.
         """
-        # Find all {{variables}} used in the goals
+        # Find all {{variables}} used *only* in the string goals
         used_variables = set()
-        for goal in profile.get("goals", []):
-            variables_in_goals = VARIABLE_PATTERN.findall(goal)
-            used_variables.update(variables_in_goals)
+        original_goals_list = profile.get("goals", [])  # Get the mixed list
+
+        for goal_item in original_goals_list:
+            if isinstance(goal_item, str):
+                # Only apply findall to strings
+                variables_in_string_goal = VARIABLE_PATTERN.findall(goal_item)
+                used_variables.update(variables_in_string_goal)
 
         # Create the goals list for YAML (mix of strings and variable dicts)
         yaml_goals = list(profile.get("goals", []))
@@ -532,12 +536,12 @@ class ChatbotExplorer:
                 yaml_goals.append({var_name: profile[var_name]})
 
         # Build the chatbot section
-        chabot_section = {
+        chatbot_section = {
             "is_starter": False,  # Assuming chatbot doesn't start
             "fallback": fallback_message,
         }
         if "outputs" in profile:  # Add expected outputs if any
-            chabot_section["output"] = profile["outputs"]
+            chatbot_section["output"] = profile["outputs"]
 
         # Build the user context list
         user_context = []
@@ -574,7 +578,7 @@ class ChatbotExplorer:
                 "context": user_context,
                 "goals": yaml_goals,
             },
-            "chatbot": chabot_section,
+            "chatbot": chatbot_section,
             "conversation": conversation_section,
         }
 
