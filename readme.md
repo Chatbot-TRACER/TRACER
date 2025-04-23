@@ -14,8 +14,8 @@ The primary goal is to understand _how_ a user interacts with the chatbot sequen
 
 - **Automated Discovery:** Automatically interact with a chatbot to discover its features, capabilities, and limitations.
 - **Functionality Extraction:** Identify and structure the distinct actions or tasks the chatbot can perform.
-- **Workflow Modeling:** Model the user's journey through the chatbot as a directed graph, capturing sequential dependencies, branching logic, and optional steps. **Crucially, adapt the modeling approach based on whether the chatbot is primarily transactional or informational.**
-- **Profile Generation:** Generate standardized YAML user profiles based on discovered functionalities and workflows, suitable for automated testing frameworks.
+- **Workflow Modeling:** Model the user's journey through the chatbot as a directed graph, capturing sequential dependencies, branching logic, and optional steps, adapt the modeling approach based on whether the chatbot is primarily transactional or informational.
+- **Profile Generation:** Generate standardized YAML user profiles based on discovered functionalities and workflows, suitable for [Sensei](https://github.com/satori-chatbots/user-simulator).
 - **Reporting:** Produce comprehensive reports detailing discovered functionalities (in structured and graphical formats), limitations, supported languages, and fallback behavior.
 
 ## 2. Core Functionality
@@ -23,79 +23,100 @@ The primary goal is to understand _how_ a user interacts with the chatbot sequen
 The system follows a multi-phase approach implemented via a LangGraph structure:
 
 1. **Chatbot Interaction:** Connect to and converse with target chatbots (initially Taskyto, Ada-UAM) via provided connectors.
-2. **Exploration Sessions:** Conduct multiple, potentially guided, conversational sessions (`explorer_node`) to probe different aspects of the chatbot. This includes logic to handle repetitive failures and ensure the configured number of sessions are attempted.
-3. **Functionality Analysis (LLM-based):** Analyze conversation transcripts (`analyzer_node`) using an LLM to identify:
-   - Actionable functionalities (what the chatbot _does_) or informational topics (what the chatbot _knows_).
-   - Parameters required for each functionality.
-   - Observed limitations or failures.
-   - Primary language(s) supported and fallback behavior
-4. **Workflow Structure Inference (LLM-based):** Analyze the complete set of discovered functionalities and conversation flows (`structure_builder_node`) to determine dependencies and build a graph structure representing the user journey. **This step now includes classifying the chatbot type (transactional vs. informational) and using conditional logic to infer the structure appropriately.**
-5. **Profile Generation (LLM-based):** Generate diverse user profiles (roles, goals, context) based on the structured workflow (`goal_generator_node`, `conversation_params_node`, `profile_builder_node`), suitable for testing the chatbot's capabilities.
-6. **YAML Validation & Correction:** Validate generated YAML profiles against a schema and attempt LLM-based correction if errors are found (`profile_validator_node`).
-7. **Output Generation:**
-   - Save validated YAML profiles to disk.
-   - Generate a text report (`report.txt`).
-   - Generate a visual workflow graph (`workflow_graph.png`) using Graphviz.
+2. **Session Preparation:** Before starting the conversations the chatbot's language and fallback message are found by sending a few confusing messages.
+3. **Exploration Sessions:**
+   1. Conduct multiple conversational sessions to probe different aspects of the chatbot.
+   2. If a fallback is received during the conversation, the LLM will rephrase the sentence and if it is received again, the topic will be changed.
+   3. After each conversation the LLM tries to extract functionalities so that they can be further explored on the next sessions.
+4. **Bot Classification:** After running all the sessions, the conversations and the found functionalities are passed to an LLM which will determine if the chatbot is transactional or informative.
+   - **Transactional:** chatbots that allow you to perform actions, such as booking a flight or ordering food.
+   - **Informational:** chatbots that provide information, such as answering questions or providing customer support.
+5. **Functionality Analysis (LLM-based):** Depending on the chatbot's type a different prompt will be used, but in this section the LLM will receive conversations and functionalities and will try to merge functionalities that are the same, maybe find new ones, and find relationships between them. The output will be a structured representation of the discovered functionalities, including parent/child relationships and unique root nodes.
+   - **Transactional:** The LLM will look for sequential dependencies, branching logic, and optional steps.
+   - **Informational:** The LLM will look for independent topics and create separate root nodes for each topic.
+6. **Profile Generation (LLM-based):** After the functionalities have been found and a workflow is created, the LLM will proceed to create the profiles for Sensei taking into account the discovered things. It is in done in different sections where different prompts will be creating the goals, context, parameters and so on.
+7. **YAML Validation & Correction:** Validate generated YAML profiles with a script and if any error is found, pass it to the LLM to try to correct it.
+8. **Output Generation:**
+
+- Save validated YAML profiles to disk.
+- Generate a text report (`report.txt`).
+- Generate a visual workflow graph (`workflow_graph.png`) using Graphviz.
 
 ## 3. Architecture: LangGraph Flow
 
-The system operates in two main phases: Exploration (managed by `main.py`) followed by Analysis & Profile Generation (orchestrated by LangGraph).
+The system operates in two main phases: Exploration (managed by `main.py`) followed by Analysis & Profile Generation (LangGraph).
 
 ### Phase 1: Exploration (in `main.py`)
 
 - The `main.py` script controls the overall exploration process.
-- It calls `run_exploration_session` repeatedly (up to the specified number of sessions).
+- It starts by detecting the chatbot's language and fallback message.
+- It calls `run_exploration_session` repeatedly to conduct multiple sessions.
 - **`run_exploration_session`:**
-  - Conducts **one** conversational session between an LLM-driven "Explorer AI" and the target chatbot.
-  - Can either explore generally or focus on a specific known functionality (`current_node`).
-  - Uses a detailed system prompt to guide the Explorer AI, including logic for handling choices, informational responses, and repetitive failures.
-  - Calls `extract_functionality_nodes` to identify new functionalities discovered _during that specific session_.
-  - Updates the overall state: adds new unique nodes to the `pending_nodes` queue and `root_nodes` list, and marks explored nodes.
-  - Returns the session transcript and updated node lists/sets.
-- After all sessions are complete, `main.py` gathers the full `conversation_history` and the final list/structure of `discovered_functionalities` (represented as dictionaries). This collected data forms the input `analysis_state` for the next phase.
+  - Conducts a conversation session with the target chatbot.
+  - Can explore general capabilities or focus on a specific functionality.
+  - Handles fallbacks by rephrasing queries and changing topics if needed.
+  - Extracts new functionalities from each conversation.
+  - Updates the discovery state (pending_nodes, root_nodes, explored_nodes).
+- After all sessions, `main.py` collects all conversation history and discovered functionalities for analysis.
 
-### Phase 2: Analysis & Profile Generation (LangGraph)
+### Phase 2: Analysis & Profile Generation (Multiple LangGraphs)
 
-The core analysis and profile generation logic is orchestrated using LangGraph, starting with the results from the exploration phase:
+The system uses specialized graphs for different stages of analysis:
 
-```bash
-[Entry: analysis_state from main.py] → structure_builder_node → goal_generator_node → conversation_params_node → profile_builder_node → profile_validator_node → [Finish]
+#### 1. Structure Analysis Graph
 
+```mermaid
+flowchart TD
+    A[Input from exploration] --> B[structure_builder_node]
+    B --> C{Classify chatbot type}
+    C -->|Transactional| D[Apply transaction prompt]
+    C -->|Informational| E[Apply information prompt]
+    D --> F[Extract JSON structure]
+    E --> F
+    F --> G[Build parent-child hierarchy]
+    G --> H[Identify root nodes]
+    H --> I[Structured functionalities]
 ```
 
-- `structure_builder_node`: **Classifies the chatbot type (transactional/informational).** Based on the type, uses specific LLM prompts and logic to analyze all discovered functionalities and conversation snippets, inferring parent/child relationships (or lack thereof) and consolidating duplicate root nodes. Outputs the final structured graph representation (as a list of root dictionaries with children represented by name) and a map of all nodes.
-- `goal_generator_node`: Analyzes the final structured functionalities to generate high-level profile goals.
-- `conversation_params_node`: Generates specific conversational parameters based on the inferred workflow and goals.
-- `profile_builder_node`: Builds structured YAML profiles incorporating workflow steps and parameters.
-- `profile_validator_node`: Validates the generated YAML profile against a schema and attempts corrections.
+- Determines if the chatbot is transaction or information
+- Uses different structuring strategies based on chatbot classification:
+  - **Transactional:** Actively seeks dependencies, branches, and joins
+  - **Informational:** Defaults to independent topics, requires strong evidence for relationships
+- Builds functionality structure with clear parent/child hierarchies
+- Outputs a hierarchical representation of the chatbot's functionality workflow
 
-## 4. Key Feature: Workflow Graph Generation
+#### 2. Profile Generation Graph
 
-A critical output is the `workflow_graph.png`, representing the user's interaction flow. The system must move beyond a simple flat list of discovered functionalities and represent the _sequence_ and _dependencies_ (or lack thereof) of user interactions, **adapting its approach based on the chatbot type.**
+```mermaid
+flowchart TD
+    A[Structured functionalities] --> B[goal_generator]
+    B --> C[conversation_params]
+    C --> D[profile_yaml_builder]
+    D --> E[profile_yaml_validator]
+    E --> F[Validated profiles]
+```
 
-**Requirements:**
+- Creates user profile goals based on discovered functionality structure
+- Generates conversation parameters for each profile
+- Builds YAML profiles for the Sensei simulator
+- Validates profiles against schema and attempts to fix any validation errors
 
-- **Graph Representation:** The output must represent the user workflow as a directed graph. Nodes represent functionalities or interaction steps, and edges represent the flow between them.
-- **Handling Different Chatbot Types:**
-  - **Classification:** Before structuring (`structure_builder_node`), the system classifies the chatbot as primarily "transactional" (workflow-driven) or "informational" (Q&A style) based on conversation patterns and discovered functionalities.
-  - **Conditional Structuring:**
-    - For **transactional** bots, the structuring logic actively looks for sequences, branches, and joins, assuming a workflow exists. It uses an LLM prompt optimized for finding dependencies.
-    - For **informational** bots, the structuring logic defaults to creating independent root nodes for each topic, only creating links if conversational evidence for dependency is explicit and consistent. It uses an LLM prompt optimized for identifying independent topics. This avoids forcing artificial hierarchies.
-- **Sequential Dependencies (Transactional):** The graph must accurately capture prerequisites (e.g., edge from A to B if B requires A).
-- **Branching Logic (Transactional):** Clearly show points where the conversation can diverge (e.g., one parent leading to multiple mutually exclusive children).
-- **Joining Paths (Transactional):** Represent points where diverged paths converge back to a common step.
-- **Independent Topics (Informational):** Represent distinct informational capabilities as separate root nodes with no incoming edges, reflecting their independent nature.
-- **Root Nodes:** Identify the valid starting points (entry points) for workflows or topics.
-- **LLM Inference:** The structuring relies on LLM analysis of functionalities and conversation flow, guided by the appropriate prompt (transactional or informational) based on the classification.
-- **Root Node Consolidation:** Includes a step within `structure_builder_node` to merge or link root nodes that are identified by an LLM as semantically similar entry points, cleaning up potential duplicates.
-- **Visualization:** The generated `workflow_graph.png` should clearly visualize the inferred structure using nodes and directed edges via Graphviz.
+## 4. Workflow Graph Generation
+
+One of the main outputs of this tool is a visual graph (`workflow_graph.png`) showing how users interact with the chatbot. Although, the primary focus of this tool is to make the profiles, this was added to help visualize the discovered functionalities and their relationships.
+
+As it has been explained above, the system uses different approaches for transactional and informational chatbots.
 
 **Example Desired Flow (Transactional - Pizza Bot):**
 
-The goal is to capture flows like this: A user starts, sees menu items. This action (`list_pizza_options`) leads to selecting a type (`select_pizza_type`), then size (`select_pizza_size`), then potentially adding drinks (`order_drinks`), and finally confirming (`confirm_order`).
+The goal is to capture flows like this: A user starts, sees menu items. This action leads to selecting a predefined pizza or customizing one. The user then orders drinks, and then the chatbot confirms the order.
 
 ```mermaid
 graph LR
+    Start((•)) --> F
+    Start --> A
+    Start --> E
+
     A[provide opening hours]
     E[provide price info]
 
@@ -112,6 +133,14 @@ For an informational bot, the goal is to represent the different topics the user
 
 ```mermaid
 graph LR
+    Start((•)) --> A
+    Start --> B
+    Start --> C
+    Start --> D
+    Start --> E
+    Start --> F
+    Start --> G
+
     A[provide_contact_info];
     B[provide_opening_hours];
     C[explain_service_catalog];
@@ -158,10 +187,10 @@ All arguments are optional.
 ### Example Command
 
 ```bash
-python src/main.py -t ada-uam -s 5 -n 10 -o generated_profiles/ada-uam
+python src/main.py -t ada-uam -n 8 -s 12 -o generated_profiles/ada-uam
 ```
 
-This command runs 5 exploration sessions with a maximum of 10 turns each, targeting the `ada-uam` chatbot, and saves the output to `generated_profiles/ada-uam`.
+This command runs 12 exploration sessions with a maximum of 8 turns each, targeting the `ada-uam` chatbot, and saves the output to `generated_profiles/ada-uam`.
 
 ## 7. Technology Stack
 
