@@ -66,16 +66,13 @@ The system uses specialized graphs for different stages of analysis:
 #### 1. Structure Analysis Graph
 
 ```mermaid
-flowchart TD
-    A[Input from exploration] --> B[structure_builder_node]
-    B --> C{Classify chatbot type}
-    C -->|Transactional| D[Apply transaction prompt]
-    C -->|Informational| E[Apply information prompt]
-    D --> F[Extract JSON structure]
+flowchart LR
+    A[Exploration data] --> B[structure_builder_node]
+    B --> C{Classify chatbot}
+    C -->|Transactional| D[Build workflow with dependencies]
+    C -->|Informational| E[Build topic hierarchy]
+    D --> F[Output structured functionalities]
     E --> F
-    F --> G[Build parent-child hierarchy]
-    G --> H[Identify root nodes]
-    H --> I[Structured functionalities]
 ```
 
 - Determines if the chatbot is transaction or information
@@ -88,7 +85,7 @@ flowchart TD
 #### 2. Profile Generation Graph
 
 ```mermaid
-flowchart TD
+flowchart LR
     A[Structured functionalities] --> B[goal_generator]
     B --> C[conversation_params]
     C --> D[profile_yaml_builder]
@@ -120,9 +117,12 @@ graph LR
     A[provide opening hours]
     E[provide price info]
 
-    F[provide menu items] --> G[order predefined pizza\nParams: pizza_type];
-    F --> H[order custom pizza\nParams: toppings, size];
-    G --> I[order drinks\nParams: drink_type];
+    F[provide menu items] --> G[order predefined pizza
+    Params: pizza_type];
+    F --> H[order custom pizza
+    Params: toppings, size];
+    G --> I[order drinks
+    Params: drink_type];
     H --> I;
     I --> D[provide order information];
 ```
