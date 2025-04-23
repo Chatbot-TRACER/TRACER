@@ -801,7 +801,7 @@ def run_exploration_session(
 
         is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
 
-        # --- Try the same message again if we hit a fallback or parsing error ---
+        # --- Try rephrasing the message if we hit a fallback or parsing error ---
         retry_also_failed = False
         if is_fallback or is_parsing_error:
             failure_reason = (
@@ -809,11 +809,42 @@ def run_exploration_session(
                 if is_fallback
                 else "Potential chatbot error (OUTPUT_PARSING_FAILURE)"
             )
-            print(f"\n   ({failure_reason} detected. Retrying once...)")
+            print(f"\n   ({failure_reason} detected. Rephrasing and retrying...)")
 
-            is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(
-                explorer_response_content
-            )
+            # Generate a rephrased version of the original message
+            rephrase_prompt = f"""
+            The chatbot did not understand this message: "{explorer_response_content}"
+
+            Please rephrase this message to convey the same intent but with different wording.
+            Make the rephrased version simpler, more direct, and avoid complex structures.
+            ONLY return the rephrased message, nothing else.
+            """
+
+            try:
+                rephrased_response = explorer.llm.invoke(rephrase_prompt)
+                rephrased_message = rephrased_response.content.strip().strip("\"'")
+
+                if rephrased_message and rephrased_message != explorer_response_content:
+                    print(f"   Original: '{explorer_response_content}'")
+                    print(f"   Rephrased: '{rephrased_message}'")
+
+                    # Try with the rephrased message
+                    is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(
+                        rephrased_message
+                    )
+                else:
+                    # Fallback to original if rephrasing failed or returned identical text
+                    print(
+                        "   Failed to generate a different rephrasing. Retrying with original."
+                    )
+                    is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(
+                        explorer_response_content
+                    )
+            except Exception as e:
+                print(f"   Error rephrasing message: {e}. Retrying with original.")
+                is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(
+                    explorer_response_content
+                )
 
             if is_ok_retry:
                 # See if the retry gave us something different and not another failure
@@ -835,7 +866,6 @@ def run_exploration_session(
                     # Retry worked, use the new response
                     print("   Retry successful!")
                     chatbot_message = chatbot_message_retry
-                    # print(f"   New Chatbot Response: {chatbot_message}")
                     consecutive_failures = 0
                 else:
                     # Retry didn't help, just use the original
@@ -847,7 +877,7 @@ def run_exploration_session(
                 print("   Retry failed (communication error)")
                 chatbot_message = original_chatbot_message
                 retry_also_failed = True
-        # --- END Simple Retry Logic ---
+        # --- END Rephrasing Retry Logic ---
 
         # --- Update state based on FINAL outcome of the turn ---
         final_is_fallback = False
