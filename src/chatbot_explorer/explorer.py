@@ -5,6 +5,7 @@ import os
 import re
 import yaml
 import json
+import random
 
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import StateGraph
@@ -21,6 +22,20 @@ from .session import format_conversation
 
 # Regex to find {{variables}}
 VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
+
+# Personalities to choose one for the profile
+AVAILABLE_PERSONALITIES = [
+    "conversational-user",
+    "curious-user",
+    "direct-user",
+    "disorganized-user",
+    "elderly-user",
+    "formal-user",
+    "impatient-user",
+    "rude-user",
+    "sarcastic-user",
+    "skeptical-user",
+]
 
 
 class State(TypedDict):
@@ -525,9 +540,16 @@ class ChatbotExplorer:
             chabot_section["output"] = profile["outputs"]
 
         # Build the user context list
-        user_context = [
-            "personality: personalities/conversational-user.yml"
-        ]  # Default personality
+        user_context = []
+
+        # 75% with personalit
+        if random.random() < 0.75:
+            selected_personality = random.choice(AVAILABLE_PERSONALITIES)
+            user_context.append(f"personality: personalities/{selected_personality}")
+
+        # Choose a random temperature
+        temperature = round(random.uniform(0.3, 1.0), 1)
+
         context = profile.get("context", [])
         # Add other context items
         if isinstance(context, str):
@@ -541,8 +563,8 @@ class ChatbotExplorer:
         # Assemble the final profile dictionary
         return {
             "test_name": profile["name"],
-            "llm": {  # LLM settings for simulation
-                "temperature": 0.8,
+            "llm": {
+                "temperature": temperature,
                 "model": "gpt-4o-mini",
                 "format": {"type": "text"},
             },
