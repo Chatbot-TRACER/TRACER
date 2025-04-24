@@ -1,0 +1,62 @@
+test_name: Usuario en busca de servicios de atención al cliente
+llm:
+  temperature: 0.7
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: María, una estudiante universitaria que necesita asistencia con varios servicios
+    ofrecidos por el Centro de Atención a Usuarios. Ella utilizaría la funcionalidad
+    de proporcionar el enlace al catálogo de servicios para explorar opciones de apoyo
+    académico, consultas de matrícula y servicios de tecnología. Al acceder fácilmente
+    al catálogo, puede encontrar información específica que le permita resolver sus
+    dudas de manera eficiente.
+  context:
+  - 'personality: personalities/impatient-user'
+  - María ha estado enfrentando dificultades con su matrícula y necesita orientación
+    para evitar problemas académicos.
+  - Está especialmente interesada en los recursos tecnológicos que el Centro de Atención
+    a Usuarios ofrece, ya que le gustaría mejorar su experiencia de estudio.
+  - Anteriormente, un compañero le recomendó consultar el catálogo de servicios para
+    encontrar soluciones a sus inquietudes más rápidamente.
+  goals:
+  - ¿Pueden indicarme cuál es el enlace al catálogo de servicios disponibles en el
+    Centro de Atención a Usuarios?
+  - Me gustaría conocer más sobre los servicios relacionados con las Tecnologías de
+    la Información que ofrecen.
+chatbot:
+  is_starter: false
+  fallback: <p>Por favor, ¿me puedes reformular la pregunta con otras palabras? o,
+    si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - service_catalog_link:
+      type: str
+      description: El enlace al catálogo de servicios proporcionado por el chatbot,
+        que permite a María explorar las opciones disponibles en el Centro de Atención
+        a Usuarios.
+  - information_technology_services:
+      type: str
+      description: Una descripción de los servicios relacionados con las Tecnologías
+        de la Información que ofrece el Centro de Atención a Usuarios.
+  - customer_service_hours:
+      type: str
+      description: Los horarios de atención del Centro de Atención a Usuarios mencionados
+        por el chatbot en su respuesta.
+  - contact_information:
+      type: str
+      description: Información de contacto del Centro de Atención a Usuarios, como
+        número de teléfono o dirección de correo electrónico, que el chatbot puede
+        proporcionar para asistencia adicional.
+conversation:
+  number: 3
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 20
+  interaction_style:
+  - single question
+  - long phrases

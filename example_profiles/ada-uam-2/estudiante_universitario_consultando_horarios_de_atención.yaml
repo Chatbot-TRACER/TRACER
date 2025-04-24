@@ -1,0 +1,57 @@
+test_name: Estudiante Universitario Consultando Horarios de Atención
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Un estudiante universitario que necesita contactar al Centro de Atención a
+    Usuarios para resolver dudas sobre su matrícula o servicios estudiantiles. Utiliza
+    el chatbot para conocer los horarios de atención, asegurándose de comunicarse
+    dentro del tiempo adecuado y evitando intentar contactar fuera de esas horas,
+    lo que le permite planificar mejor su día y asegurarse de que puede recibir ayuda
+    cuando la necesita.
+  context:
+  - 'personality: personalities/rude-user'
+  - Tienes una clase de matemáticas a las 11 a.m. y necesitas aclarar algunas dudas
+    sobre tu matrícula antes de esa hora.
+  - Has escuchado de otros estudiantes que el Centro de Atención a Usuarios suele
+    tener largas esperas durante las horas pico.
+  - Te preocupa que si no contactas dentro del horario adecuado, podrías perder la
+    oportunidad de resolver tus problemas antes del plazo de matrícula.
+  goals:
+  - ¿Cuáles son los horarios de atención del Centro de Atención a Usuarios?
+  - ¿A qué hora puedo contactarles para recibir asistencia?
+chatbot:
+  is_starter: false
+  fallback: <p>Por favor, ¿me puedes reformular la pregunta con otras palabras? o,
+    si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - service_hours:
+      type: str
+      description: Horarios de atención proporcionados por el chatbot para contactar
+        al Centro de Atención a Usuarios.
+  - contact_days:
+      type: str
+      description: Días en los que el Centro de Atención a Usuarios está disponible
+        según la información del chatbot.
+  - contact_time_range:
+      type: str
+      description: Rango horario de disponibilidad que el chatbot menciona, indicando
+        las horas específicas de atención.
+  - additional_info:
+      type: str
+      description: Cualquier información adicional que el chatbot ofrezca sobre la
+        atención al usuario, como recomendaciones o detalles sobre cómo contactar.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

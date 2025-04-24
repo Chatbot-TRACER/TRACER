@@ -1,0 +1,56 @@
+test_name: Usuario en busca de soporte técnico
+llm:
+  temperature: 0.9
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: María es una estudiante universitaria que enfrenta problemas con su cuenta
+    en línea para acceder a materiales de estudio. Necesita contactar al Centro de
+    Atención a Usuarios para resolver su inconveniente y, por lo tanto, requiere información
+    específica sobre cómo comunicarse con ellos. Utiliza el chatbot para obtener rápidamente
+    el correo electrónico, el número de teléfono y la dirección física del centro,
+    buscando una solución efectiva y ágil a sus problemas técnicos.
+  context:
+  - María ha experimentado dificultades para acceder a materiales de estudio, lo que
+    le genera frustración y un sentido de urgencia para resolver el problema.
+  - Ha intentado restablecer su contraseña sin éxito y ahora necesita una solución
+    efectiva para poder continuar con sus estudios.
+  - Un amigo le recomendó que contactara al Centro de Atención a Usuarios, destacando
+    la importancia de obtener ayuda directa y rápida.
+  goals:
+  - ¿Me puedes proporcionar la información de contacto del Centro de Atención a Usuarios?
+  - ¿Cuál es la dirección física del Centro de Atención a Usuarios?
+chatbot:
+  is_starter: false
+  fallback: <p>Por favor, ¿me puedes reformular la pregunta con otras palabras? o,
+    si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - contacto_correo:
+      type: str
+      description: El correo electrónico proporcionado por el chatbot para contactar
+        al Centro de Atención a Usuarios.
+  - contacto_telefono:
+      type: str
+      description: El número de teléfono indicado por el chatbot para comunicarse
+        con el Centro de Atención a Usuarios.
+  - direccion_fisica:
+      type: str
+      description: La dirección física del Centro de Atención a Usuarios que menciona
+        el chatbot en su respuesta.
+  - horario_atencion:
+      type: str
+      description: Los horarios de atención del Centro de Atención a Usuarios que
+        el chatbot proporciona.
+conversation:
+  number: 3
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

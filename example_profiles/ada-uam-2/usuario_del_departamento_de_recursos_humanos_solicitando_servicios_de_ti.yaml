@@ -1,0 +1,59 @@
+test_name: Usuario del departamento de recursos humanos solicitando servicios de TI
+llm:
+  temperature: 0.9
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Una coordinadora de recursos humanos que necesita acceder rápidamente a los
+    servicios estratégicos del departamento de Tecnologías de la Información para
+    mejorar la gestión de personal y optimizar los procesos administrativos. Utiliza
+    la funcionalidad del chatbot para obtener un enlace directo a la lista de servicios
+    ofrecidos, facilitando la implementación de herramientas tecnológicas necesarias
+    para la capacitación y el desarrollo del personal. Su enfoque está en asegurar
+    que el equipo de recursos humanos cuente con las mejores soluciones tecnológicas
+    para un efectivo manejo del talento humano.
+  context:
+  - 'personality: personalities/elderly-user'
+  - Has estado buscando herramientas que faciliten la gestión del talento humano y
+    mejorar la comunicación interna en el equipo de recursos humanos.
+  - Recientemente, asististe a una reunión donde se habló de la importancia de la
+    digitalización de procesos administrativos para optimizar el flujo de trabajo.
+  - Estás familiarizada con las plataformas de capacitación en línea y deseas integrar
+    servicios de TI que apoyen el desarrollo continuo del personal.
+  goals:
+  - ¿Cuáles son las capacidades principales que ofrece el departamento de Tecnologías
+    de la Información?
+  - Me gustaría saber más sobre cómo puedo contactar con el Centro de Atención a Usuarios
+    (CAU).
+chatbot:
+  is_starter: false
+  fallback: <p>Por favor, ¿me puedes reformular la pregunta con otras palabras? o,
+    si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - servicios_ofrecidos_link:
+      type: str
+      description: Enlace directo proporcionado por el chatbot a la lista de servicios
+        ofrecidos por el departamento de Tecnologías de la Información.
+  - capacidades_principales:
+      type: str
+      description: Descripción de las capacidades principales que ofrece el departamento
+        de Tecnologías de la Información, mencionada por el chatbot en respuesta a
+        la consulta del usuario.
+  - contacto_cau:
+      type: str
+      description: Información sobre cómo contactar con el Centro de Atención a Usuarios
+        (CAU) que el chatbot proporciona al usuario.
+conversation:
+  number: 3
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - long phrases
+  - single question

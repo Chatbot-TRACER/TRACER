@@ -1,0 +1,74 @@
+test_name: Coffee Shop Customer Experience
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A frequent coffee shop patron who desires to explore various drink options
+    offered by the establishment. This individual values the convenience of easily
+    accessing a list of available drinks and their prices through a chatbot, enabling
+    quicker decision-making when ordering. They appreciate having detailed information
+    at their fingertips, especially during busy hours, to compare choices and make
+    an informed purchase without waiting in long queues.
+  context:
+  - You often visit the coffee shop during the morning rush and need a quick way to
+    decide on your order.
+  - You enjoy trying different seasonal drinks and appreciate detailed descriptions
+    to help make choices.
+  - You have a busy schedule and dislike waiting in line, so accessing drink options
+    through a chatbot is a priority.
+  goals:
+  - Can you show me the available drink options and their prices?
+  - I’d like to order a {{drink_type}} for {{drink_price}}.
+  - drink_price:
+      function: forward()
+      type: float
+      data:
+        min: 1.0
+        max: 5.0
+        step: 0.5
+  - drink_type:
+      function: forward()
+      type: string
+      data:
+      - Espresso
+      - Cappuccino
+      - Latte
+      - Americano
+      - Mocha
+      - Cold Brew
+      - Iced Tea
+      - Chai Latte
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks. For troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - available_drink_options:
+      type: str
+      description: A list of drink options that the chatbot provides, detailing the
+        names of the drinks available at the coffee shop.
+  - drink_prices:
+      type: str
+      description: A list of prices corresponding to each drink option provided by
+        the chatbot, allowing for easy comparison of costs.
+  - drink_details:
+      type: str
+      description: Descriptive information about specific drinks offered, including
+        ingredients or variations mentioned by the chatbot.
+  - order_confirmation:
+      type: str
+      description: Confirmation message provided by the chatbot that includes details
+        of the user's order, such as the selected drink and any customizations.
+conversation:
+  number: 3
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question
+  - change your mind

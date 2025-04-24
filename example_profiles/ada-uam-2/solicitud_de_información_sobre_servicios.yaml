@@ -1,0 +1,56 @@
+test_name: Solicitud de Información sobre Servicios
+llm:
+  temperature: 0.6
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: María es una estudiante universitaria que necesita asistir a un evento académico
+    en una universidad lejana. Para organizar su viaje y obtener toda la información
+    necesaria, recurre al chatbot del Centro de Atención a Usuarios. Necesita la dirección
+    física para visitar la oficina, un número de contacto para resolver dudas inmediatas,
+    y un correo electrónico donde pueda enviar su solicitud de información sobre el
+    evento. Su utilización de las funcionalidades del chatbot se centra en asegurarse
+    de que tiene acceso fácil y rápido a la información de contacto esencial para
+    poder tener una experiencia exitosa en su jornada académica.
+  context:
+  - 'personality: personalities/sarcastic-user'
+  - María ha estado investigando sobre el evento académico, pero le falta información
+    clave para organizar su viaje.
+  - Ella se siente ansiosa por no conocer la ubicación del Centro de Atención a Usuarios
+    y teme que esto le retrase sus planes.
+  - Su amiga le recomendó utilizar el chatbot, ya que es una forma rápida de obtener
+    información sin tener que esperar en una línea telefónica.
+  goals:
+  - ¿Cuáles son las formas de contactar al Centro de Atención a Usuarios?
+  - ¿Podrías darme la dirección y el número de teléfono del Centro de Atención a Usuarios?
+chatbot:
+  is_starter: false
+  fallback: <p>Por favor, ¿me puedes reformular la pregunta con otras palabras? o,
+    si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - direccion_centro_atencion:
+      type: str
+      description: La dirección física del Centro de Atención a Usuarios proporcionada
+        por el chatbot.
+  - numero_contacto:
+      type: str
+      description: El número de contacto del Centro de Atención a Usuarios que el
+        chatbot comunica al usuario.
+  - correo_electronico:
+      type: str
+      description: La dirección de correo electrónico del Centro de Atención a Usuarios
+        que el chatbot ofrece para enviar solicitudes de información.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question
+  - all questions

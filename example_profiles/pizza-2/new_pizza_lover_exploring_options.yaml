@@ -1,0 +1,56 @@
+test_name: New Pizza Lover Exploring Options
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A first-time user interested in trying out the pizza service, seeking a warm
+    welcome and guidance on what the chatbot can assist with. They are excited about
+    discovering a variety of pizza choices and would benefit from an introductory
+    interaction that outlines the available menu items, ordering process, and how
+    to navigate the service effectively. The "welcome_user" function is crucial for
+    making them feel comfortable and informed as they embark on their pizza journey.
+  context:
+  - 'personality: personalities/elderly-user'
+  - You are enthusiastic about trying different flavors and ingredients for your first
+    pizza experience.
+  - You appreciate friendly and informative interactions, especially when exploring
+    new services.
+  - You have heard positive reviews about the variety of pizzas and are eager for
+    recommendations on popular choices.
+  goals:
+  - Hello, can you welcome me to the Pizza service and tell me what I can do here?
+  - What types of pizzas can I choose from?
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks. For troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - welcome_message:
+      type: str
+      description: A warm welcome message from the chatbot, indicating that the user
+        is welcomed to the pizza service and highlighting its purpose.
+  - pizza_options:
+      type: str
+      description: A description of the variety of pizzas available, including types
+        or categories of pizzas that the user can choose from.
+  - ordering_process_overview:
+      type: str
+      description: An overview of the ordering process explained by the chatbot, outlining
+        how the user can place their order through the service.
+  - navigation_help:
+      type: str
+      description: Guidance on how to navigate the chatbot service effectively, including
+        tips on accessing different features or menus.
+conversation:
+  number: 3
+  max_cost: 2.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - long phrases
+  - single question
