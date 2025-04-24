@@ -11,7 +11,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import StateGraph
 from langgraph.graph.message import add_messages
 
-from .nodes.goals_node import generate_user_profiles_and_goals
+from .nodes.goals_node import generate_user_profiles
 from .nodes.analyzer_node import analyze_conversations
 from .nodes.conversation_parameters_node import generate_conversation_parameters
 
@@ -244,50 +244,39 @@ class ChatbotExplorer:
         if state.get("exploration_finished", False) and state.get(
             "discovered_functionalities"
         ):
-            print("\n--- Generating conversation goals from structured data ---")
+            print(
+                "\n--- Generating conversation goals from structured graph paths ---"
+            )  # Updated print
 
-            # Functionalities are now dicts
-            structured_root_dicts: List[Dict[str, Any]] = state[
-                "discovered_functionalities"
-            ]
+            # Functionalities are structured dicts (the graph)
+            structured_graph: List[Dict[str, Any]] = state["discovered_functionalities"]
 
-            # Helper to get all descriptions from the structure
-            def get_all_descriptions(nodes: List[Dict[str, Any]]) -> List[str]:
-                descriptions = []
-                for node in nodes:
-                    if node.get("description"):
-                        descriptions.append(node["description"])
-                    if node.get("children"):  # Recursively get children descriptions
-                        descriptions.extend(get_all_descriptions(node["children"]))
-                return descriptions
-
-            functionality_descriptions = get_all_descriptions(structured_root_dicts)
-
-            if not functionality_descriptions:
-                print(
-                    "   Warning: No descriptions found in structured functionalities."
-                )
-                return state
+            if not structured_graph:
+                print("   Warning: No structured functionalities found.")
+                return {**state, "conversation_goals": []}
 
             print(
-                f" -> Preparing {len(functionality_descriptions)} descriptions (from structure) for goal generation."
+                f" -> Using structured graph with {len(structured_graph)} root(s) for profile generation."
             )
 
             try:
-                # Call the goal generation function
-                profiles_with_goals = generate_user_profiles_and_goals(
-                    functionality_descriptions,
+                # Pass the structured graph directly
+                profiles_with_goals = generate_user_profiles(
+                    structured_graph,  # Pass the graph structure
                     state.get("discovered_limitations", []),
                     self.llm,
                     conversation_history=state.get("conversation_history", []),
                     supported_languages=state.get("supported_languages", []),
                 )
-                print(f" -> Generated {len(profiles_with_goals)} profiles with goals.")
+                print(f" -> Generated {len(profiles_with_goals)} profiles from paths.")
                 # Update state with goals
                 return {**state, "conversation_goals": profiles_with_goals}
 
             except Exception as e:
-                print(f"Error during goal generation: {e}")
+                print(f"Error during path-based goal generation: {e}")
+                import traceback
+
+                traceback.print_exc()  # Add traceback for debugging
                 return {**state, "conversation_goals": []}  # Return empty list on error
 
         elif state.get("exploration_finished", False):

@@ -1,7 +1,6 @@
 """Module to generate the goals and their variables"""
 
 import re
-import os
 from typing import Dict, Any, List, Optional, Set
 
 VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
@@ -385,171 +384,226 @@ def generate_variable_definitions(
     return profiles
 
 
-def generate_context(profiles, functionalities, llm, supported_languages=None):
-    """Generate additional context for the user simulator as multiple short entries."""
+def generate_context(
+    profile_name: str,
+    role: str,
+    sanitized_goals: List[str],
+    path_nodes: List[Dict[str, Any]],
+    llm,
+    language_instruction: str,
+) -> List[str]:
+    """
+    Generate additional context points for a user simulator based on a specific profile/path.
 
-    # Work in the detected primary language
-    primary_language = ""
-    language_instruction = ""
+    Args:
+        profile_name: The name of the profile being generated.
+        role: The role assigned to the user for this profile.
+        sanitized_goals: List of goal strings with variables replaced by placeholders.
+        path_nodes: The list of node dictionaries representing the specific path.
+        llm: The language model instance.
+        language_instruction: Instruction for the LLM regarding language.
 
-    if supported_languages and len(supported_languages) > 0:
-        primary_language = supported_languages[0]
-        language_instruction = f"Write the context in {primary_language}."
+    Returns:
+        A list of generated context strings. Returns an empty list on error.
+    """
+    print(f"   Generating context for profile: '{profile_name}'...")
 
-    for profile in profiles:
-        # Replace variables in goals with general terms for context generation
-        sanitized_goals = []
-        for goal in profile.get("goals", []):
-            # Replace {{variable}} with general terms
-            if isinstance(goal, str):
-                sanitized_goal = re.sub(VARIABLE_PATTERN, "[specific details]", goal)
-                sanitized_goals.append(sanitized_goal)
+    # Format node info for the prompt
+    nodes_info_str = "\n".join(
+        [
+            f"- {node.get('name', 'N/A')}: {node.get('description', 'N/A')[:100]}..."
+            for node in path_nodes
+        ]
+    )
+    if not nodes_info_str:
+        nodes_info_str = "N/A"  # Empty path case
 
-        context_prompt = f"""
-        Create 2-3 SHORT context points for a user simulator interacting with a chatbot.
-        Each point should be a separate piece of background information or context that helps the simulator.
+    # Build the LLM prompt with all our info
+    context_prompt = f"""
+    Create 2-3 SHORT context points for a user simulator interacting with a chatbot.
+    Each point should be a separate piece of background information or context that helps the simulator act according to its role and goals for this specific scenario.
 
-        CONVERSATION SCENARIO: {profile["name"]}
-        CURRENT USER ROLE: {profile["role"]}
-        USER GOALS (generalized):
-        {", ".join(sanitized_goals)}
+    CONVERSATION SCENARIO: {profile_name}
+    USER ROLE: {role}
+    USER GOALS (generalized):
+    {", ".join(sanitized_goals)}
 
-        {language_instruction}
+    RELEVANT FUNCTIONALITY/TOPIC(S) IN THIS SCENARIO:
+    {nodes_info_str}
 
-        GUIDELINES:
-        1. Write 2-3 SEPARATE short context points, each 1-2 sentences only
-        2. Each point should focus on ONE aspect (background info, knowledge, motivation)
-        3. NEVER include variables like {{date}} or {{amount}} - use specific examples instead
-        4. Keep each point brief and focused
-        5. Make each point distinctly different from the others
+    {language_instruction}
 
-        Examples of GOOD context points:
-        - "You tried calling the office yesterday but no one answered."
-        - "You need to finish this task before your meeting at 3pm."
-        - "Your colleague mentioned this service was very reliable."
+    GUIDELINES:
+    1. Write 2-3 SEPARATE short context points, each 1-2 sentences only.
+    2. Each point should focus on ONE aspect (background info, knowledge, motivation) relevant to the role, goals, and functionalities listed above.
+    3. NEVER include variables like {{date}} or {{amount}} - use specific examples instead if needed for realism.
+    4. Keep each point brief and focused.
+    5. Make each point distinctly different from the others.
 
-        FORMAT YOUR RESPONSE WITH ONE CONTEXT POINT PER LINE:
-        - First context point
-        - Second context point
-        - Third context point (optional)
+    Examples of GOOD context points:
+    - "You tried calling the office yesterday but no one answered."
+    - "You need to finish this task before your meeting at 3pm."
+    - "Your colleague mentioned this service was very reliable."
 
-        IMPORTANT: Each line should start with "- " and be a standalone piece of context.
-        """
+    FORMAT YOUR RESPONSE WITH ONE CONTEXT POINT PER LINE:
+    - First context point
+    - Second context point
+    - Third context point (optional)
 
+    IMPORTANT: Each line should start with "- " and be a standalone piece of context. Respond ONLY with the context points.
+    """
+
+    context_entries = []
+    try:
+        # Get response from LLM
         context_response = llm.invoke(context_prompt)
         context_content = context_response.content.strip()
+        print(f"      LLM response for context:\n{context_content[:200]}...")
 
-        # Process context into separate entries
-        context_entries = []
+        # Extract context points from response
         for line in context_content.split("\n"):
             line = line.strip()
             if line.startswith("- "):
-                entry = line[2:].strip()
+                entry = line[2:].strip().strip("\"'")  # Remove the dash and quotes
                 if entry:
                     context_entries.append(entry)
 
-        profile["context"] = context_entries
+        # Show warning if no context was found
+        if not context_entries:
+            print(f"   Warning: No context points parsed for profile '{profile_name}'.")
 
-    return profiles
+    except Exception as e:
+        # Error handling
+        print(f"   Error generating context for profile '{profile_name}': {e}")
+        return []
+
+    print(f"      Generated {len(context_entries)} context points.")
+    return context_entries
 
 
-def generate_outputs(profiles, functionalities, llm, supported_languages=None):
-    """Generate output fields to extract from chatbot responses."""
+def generate_outputs(
+    profile_name: str,
+    role: str,
+    sanitized_goals: List[str],
+    path_nodes: List[Dict[str, Any]],
+    llm,
+    language_instruction: str,
+) -> List[Dict[str, Any]]:
+    """
+    Generate output fields to extract from chatbot responses for a specific profile/path.
 
-    # Work in the detected primary language
-    primary_language = ""
-    language_instruction = ""
+    Args:
+        profile_name: The name of the profile being generated.
+        role: The role assigned to the user for this profile.
+        sanitized_goals: List of goal strings with variables replaced by placeholders.
+        path_nodes: The list of node dictionaries representing the specific path.
+        llm: The language model instance.
+        language_instruction: Instruction for the LLM regarding language.
 
-    if supported_languages and len(supported_languages) > 0:
-        primary_language = supported_languages[0]
-        language_instruction = f"Write the descriptions in {primary_language}."
+    Returns:
+        A list of generated output dictionaries (e.g., [{'output_name': {'type': 'str', 'description': ...}}]).
+        Returns an empty list on error.
+    """
+    print(f"   Generating outputs for profile: '{profile_name}'...")
 
-    for profile in profiles:
-        # Replace variables in goals with general terms for better LLM understanding
-        sanitized_goals = []
-        for goal in profile.get("goals", []):
-            # Replace {{variable}} with general terms
-            if isinstance(goal, str):
-                sanitized_goal = re.sub(VARIABLE_PATTERN, "[specific details]", goal)
-                sanitized_goals.append(sanitized_goal)
+    # Format node info for prompt
+    nodes_info_str = "\n".join(
+        [
+            f"- {node.get('name', 'N/A')}: {node.get('description', 'N/A')[:100]}..."
+            for node in path_nodes
+        ]
+    )
+    if not nodes_info_str:
+        nodes_info_str = "N/A"  # Handle empty path
 
-        outputs_prompt = f"""
-        Identify 2-4 key pieces of INFORMATION THE CHATBOT WILL PROVIDE that should be extracted from its responses.
-        These outputs help the tester validate data from the conversation once it is finished.
+    # Create the prompt for LLM with detailed instructions
+    outputs_prompt = f"""
+    Identify 2-4 key pieces of INFORMATION THE CHATBOT WILL PROVIDE that should be extracted from its responses for this specific scenario.
+    These outputs help the tester validate data from the conversation once it is finished.
 
-        CONVERSATION SCENARIO: {profile["name"]}
-        USER ROLE: {profile["role"]}
-        USER GOALS:
-        {", ".join(sanitized_goals)}
+    CONVERSATION SCENARIO: {profile_name}
+    USER ROLE: {role}
+    USER GOALS (generalized):
+    {", ".join(sanitized_goals)}
 
-        RELEVANT FUNCTIONALITIES:
-        {", ".join(functionalities[:5] if functionalities else ["Unknown"])}
+    RELEVANT FUNCTIONALITY/TOPIC(S) IN THIS SCENARIO:
+    {nodes_info_str}
 
-        {language_instruction}
+    {language_instruction}
 
-        PURPOSE OF OUTPUTS:
-        The tester needs to extract specific data points from the chatbot's responses to validate
-        the consistency and performance of the chatbot. These outputs represent information
-        that should appear in the chatbot's messages.
+    PURPOSE OF OUTPUTS:
+    The tester needs to extract specific data points from the chatbot's responses to validate
+    the consistency and performance of the chatbot *within this scenario*. These outputs represent information
+    that should appear in the chatbot's messages related to the user's goals and the involved functionalities.
 
-        EXTREMELY IMPORTANT:
-        - Outputs must be information THE CHATBOT GIVES TO THE USER, not what the user inputs
-        - Focus on information that validates whether the chatbot is working correctly
-        - Choose data points that would appear in the chatbot's responses
+    EXTREMELY IMPORTANT:
+    - Outputs must be information THE CHATBOT GIVES TO THE USER, not what the user inputs.
+    - Focus on information that validates whether the chatbot is working correctly for this scenario.
+    - Choose data points that would appear in the chatbot's responses during this interaction flow.
 
-        Examples of GOOD outputs:
-        - total_cost: The final price quoted by the chatbot for a service
-        - appointment_time: When the chatbot says an appointment is available
-        - confirmation_number: A reference number provided by the chatbot
-        - service_hours: Operating hours mentioned by the chatbot
+    Examples of GOOD outputs:
+    - total_cost: The final price quoted by the chatbot for a service
+    - appointment_time: When the chatbot says an appointment is available
+    - confirmation_number: A reference number provided by the chatbot
+    - service_hours: Operating hours mentioned by the chatbot
 
-        Examples of BAD outputs (these are user inputs, not chatbot outputs):
-        - selected_toppings: This is what the user tells the chatbot, not what we extract
-        - requested_appointment: This is the user's input, not chatbot's output
-        - user_query: This is what the user asks, not what we extract
+    Examples of BAD outputs (these are user inputs, not chatbot outputs):
+    - selected_toppings: This is what the user tells the chatbot, not what we extract
+    - requested_appointment: This is the user's input, not chatbot's output
+    - user_query: This is what the user asks, not what we extract
 
-        For each output:
-        1. Give it a SHORT, descriptive name (use underscores instead of spaces)
-        2. Assign an appropriate type from the following options:
-           - str: For text data (names, descriptions, IDs)
-           - int: For whole numbers
-           - float: For decimal numbers
-           - date: For calendar dates
-           - time: For time values
-        3. Write a brief description of what this output represents and how to find it in the chatbot's responses
+    For each output:
+    1. Give it a SHORT, descriptive name (use underscores instead of spaces).
+    2. Assign an appropriate type from the following options:
+       - str: For text data (names, descriptions, IDs)
+       - int: For whole numbers
+       - float: For decimal numbers
+       - date: For calendar dates
+       - time: For time values
+    3. Write a brief description of what this output represents and how to find it in the chatbot's responses.
 
-        THE OUTPUT STRUCTURE MUST FOLLOW THIS FORMAT:
-        OUTPUT: output_name_1
-        TYPE: output_type_1
-        DESCRIPTION: brief description of what to extract from chatbot responses
+    THE OUTPUT STRUCTURE MUST FOLLOW THIS EXACT FORMAT:
+    OUTPUT: output_name_1
+    TYPE: output_type_1
+    DESCRIPTION: brief description of what to extract from chatbot responses
 
-        OUTPUT: output_name_2
-        TYPE: output_type_2
-        DESCRIPTION: brief description of what to extract from chatbot responses
+    OUTPUT: output_name_2
+    TYPE: output_type_2
+    DESCRIPTION: brief description of what to extract from chatbot responses
 
-        PROVIDE 2-4 OUTPUTS, EACH FOLLOWING THIS EXACT FORMAT
-        """
+    PROVIDE 2-4 OUTPUTS, EACH FOLLOWING THIS EXACT FORMAT. Respond ONLY with the outputs.
+    """
 
+    outputs_list = []
+    try:
+        # Get LLM response
         outputs_response = llm.invoke(outputs_prompt)
+        response_content = outputs_response.content.strip()
+        print(f"      LLM response for outputs:\n{response_content[:200]}...")
 
-        # Parse the outputs
-        outputs_list = []
+        # Need to parse sections for each output
         current_output = None
         current_data = {}
 
-        for line in outputs_response.content.strip().split("\n"):
+        # Go through response line by line to extract outputs
+        for line in response_content.split("\n"):
             line = line.strip()
             if not line:
                 continue
 
+            # Start of a new output definition
             if line.startswith("OUTPUT:"):
-                # Save previous output if exists
+                # Save previous output if we have one
                 if current_output and current_data:
-                    outputs_list.append({current_output: current_data})
+                    if "type" in current_data and "description" in current_data:
+                        outputs_list.append({current_output: current_data})
+                    else:
+                        print(
+                            f"      Warning: Skipping incomplete output: '{current_output}'"
+                        )
 
                 # Start new output
                 current_output = line[len("OUTPUT:") :].strip()
-                # Ensure name has no spaces and is lowercase
                 current_output = current_output.replace(" ", "_").lower()
                 current_data = {}
 
@@ -559,250 +613,530 @@ def generate_outputs(profiles, functionalities, llm, supported_languages=None):
             elif line.startswith("DESCRIPTION:"):
                 current_data["description"] = line[len("DESCRIPTION:") :].strip()
 
-        # Save last output
+        # Don't forget to add the last output after loop ends
         if current_output and current_data:
-            outputs_list.append({current_output: current_data})
+            if "type" in current_data and "description" in current_data:
+                outputs_list.append({current_output: current_data})
+            else:
+                print(
+                    f"      Warning: Skipping incomplete output: '{current_output}'. Providing fallback values."
+                )
+                if current_output:
+                    # Provide fallback values for incomplete outputs
+                    current_data.setdefault("type", "str")  # Default type to 'str'
+                    current_data.setdefault("description", "No description provided.")
+                    outputs_list.append({current_output: current_data})
 
-        # Store outputs in the profile
-        profile["outputs"] = outputs_list
+        if not outputs_list:
+            print(f"   Warning: No outputs parsed for profile '{profile_name}'.")
 
-    return profiles
+    except Exception as e:
+        print(f"   Error generating outputs for profile '{profile_name}': {e}")
+        return []
+
+    print(f"      Generated {len(outputs_list)} output definitions.")
+    return outputs_list
 
 
-def generate_user_profiles_and_goals(
-    functionalities,
-    limitations,
+def extract_conversation_paths(
+    functionality_graph: List[Dict[str, Any]],
+) -> List[List[Dict[str, Any]]]:
+    """
+    Extract all possible conversation paths through the functionality graph,
+    including single-node paths for informational chatbots.
+
+    Args:
+        functionality_graph: A structured graph of chatbot functionalities
+
+    Returns:
+        A list of paths, where each path is a list of nodes
+    """
+    if not functionality_graph:
+        print("Warning: Empty functionality graph provided")
+        return []
+
+    # For quick node lookups
+    node_lookup = {
+        node.get("name"): node for node in functionality_graph if node.get("name")
+    }
+
+    # First find all possible starting points (roots)
+    root_nodes = []
+    for node in functionality_graph:
+        # Nodes without parents are roots
+        if not node.get("parents") or len(node.get("parents", [])) == 0:
+            root_nodes.append(node)
+
+    print(f"Found {len(root_nodes)} root nodes in the functionality graph")
+
+    # If no roots found, just use all nodes (fallback)
+    if not root_nodes and functionality_graph:
+        print("No explicit root nodes found, using all nodes as starting points")
+        root_nodes = functionality_graph
+
+    all_paths = []
+
+    # For each root, find all possible paths through DFS
+    for root in root_nodes:
+        print(f"Finding paths from root: {root.get('name', 'Unnamed')}")
+
+        # Need these for DFS
+        visited = set()
+        current_path = []
+
+        # Add single-node path (for info chatbots)
+        root_path = [root]
+        all_paths.append(root_path)
+
+        # Find all paths from this root to leaf nodes
+        paths_from_root = []
+        find_paths_dfs(root, node_lookup, visited, current_path, paths_from_root)
+
+        print(
+            f"  Found {len(paths_from_root)} paths from {root.get('name', 'Unnamed')}"
+        )
+        all_paths.extend(paths_from_root)
+
+    print(f"Total paths found: {len(all_paths)}")
+    return all_paths
+
+
+def find_paths_dfs(
+    current_node: Dict[str, Any],
+    node_lookup: Dict[str, Dict[str, Any]],
+    visited: Set[str],
+    current_path: List[Dict[str, Any]],
+    result_paths: List[List[Dict[str, Any]]],
+):
+    """
+    Recursively find all paths from current node to leaf nodes using DFS.
+
+    Args:
+        current_node: The current node being processed
+        node_lookup: Dictionary mapping node names to node objects
+        visited: Set of visited node names to prevent cycles
+        current_path: List of nodes in the current path
+        result_paths: List to store complete paths
+    """
+    node_name = current_node.get("name")
+
+    # Skip this node if we've seen it before (avoid cycles)
+    if not node_name or node_name in visited:
+        return
+
+    # Add to our current path
+    visited.add(node_name)
+    current_path.append(current_node)
+
+    # Get the children of this node
+    children = current_node.get("children", [])
+
+    if not children:
+        # We've hit a leaf node, save this path
+        result_paths.append(list(current_path))
+    else:
+        # Keep going deeper for each child
+        for child_info in children:
+            child_name = child_info.get("name")
+            if child_name and child_name in node_lookup:
+                child_node = node_lookup[child_name]
+                # Need to use copied collections to avoid side effects
+                find_paths_dfs(
+                    child_node,
+                    node_lookup,
+                    visited.copy(),
+                    current_path.copy(),
+                    result_paths,
+                )
+
+    # Clean up before returning (standard DFS backtracking)
+    current_path.pop()
+    visited.remove(node_name)
+
+
+def generate_profile_from_path(
+    path: List[Dict[str, Any]], llm, supported_languages=None
+):
+    """
+    Generate a user profile based on a specific path through the functionality graph.
+
+    Args:
+        path: A list of nodes representing a conversation path
+        llm: Language model to use for generation
+        supported_languages: List of languages supported by the chatbot
+
+    Returns:
+        A dictionary containing the profile information
+    """
+    # Extract function names and descriptions to understand the path
+    functionality_names = [node.get("name", "unnamed") for node in path]
+    functionality_descriptions = []
+
+    # Get descriptions or use the name as fallback
+    for node in path:
+        desc = node.get("description", "")
+        if desc:
+            functionality_descriptions.append(desc)
+        else:
+            # No description available, format the name instead
+            name = node.get("name", "")
+            if name:
+                functionality_descriptions.append(name.replace("_", " "))
+
+    # Set up language preference
+    primary_language = (
+        supported_languages[0]
+        if supported_languages and supported_languages[0]
+        else "English"
+    )
+    language_instruction = f"Write your response in {primary_language}."
+
+    # Create prompt for profile generation
+    prompt = f"""
+    Create a realistic user profile for someone who would follow this conversation path with a chatbot:
+
+    CONVERSATION PATH FUNCTIONALITIES:
+    {", ".join(functionality_names)}
+
+    FUNCTIONALITY DESCRIPTIONS:
+    {". ".join(functionality_descriptions)}
+
+    Based on these conversation functionalities, create a specific user profile with:
+    1. A CONVERSATION SCENARIO NAME that summarizes the overall user need/journey
+    2. A USER ROLE describing who this person is and their general motivation
+
+    The profile should represent a realistic user who would naturally need all these functionalities in sequence.
+
+    {language_instruction}
+
+    FORMAT YOUR RESPONSE EXACTLY AS:
+    PROFILE: [Conversation Scenario Name]
+    ROLE: [Brief description of who the user is and their motivation]
+    """
+
+    # Get profile information from LLM
+    response = llm.invoke(prompt)
+    response_content = response.content.strip()
+
+    # Extract profile name and role
+    profile_name = None
+    role = None
+
+    for line in response_content.split("\n"):
+        line = line.strip()
+        if line.startswith("PROFILE:"):
+            profile_name = line[len("PROFILE:") :].strip()
+        elif line.startswith("ROLE:"):
+            role = line[len("ROLE:") :].strip()
+
+    # Handle parsing failure with default values
+    if not profile_name or not role:
+        path_name = "_".join([n.get("name", "node")[:10] for n in path[:2]])
+        profile_name = f"User following path {path_name}"
+        role = "Customer seeking assistance with multiple related tasks"
+        print(
+            "Warning: Failed to parse profile name or role from LLM response. Using fallback values."
+        )
+
+    return {"name": profile_name, "role": role, "path": functionality_names}
+
+
+def generate_sequential_goals(
+    path: List[Dict[str, Any]],
+    llm,
+    supported_languages: Optional[List[str]] = None,
+    limitations: Optional[List[str]] = None,
+    conversation_history: Optional[List[List[Dict[str, str]]]] = None,
+) -> List[str]:
+    """
+    Generate a sequence of user-centric conversation goals that follows the given path.
+
+    Args:
+        path: A list of node dictionaries representing the conversation path.
+        llm: The language model instance.
+        supported_languages: Optional list of supported languages.
+        limitations: Optional list of known chatbot limitations.
+        conversation_history: Optional conversation history for context.
+
+    Returns:
+        A list of goal strings. Returns fallback goals if generation fails.
+    """
+    if not path:
+        print("Warning: Cannot generate goals from empty path.")
+        return []
+
+    # Format information about each node in the path
+    path_info_parts = []
+    all_param_names_in_path = set()  # Used for suggesting variables
+
+    for i, node in enumerate(path):
+        name = node.get("name", "Unnamed Step")
+        desc = node.get("description", "No description")
+
+        # Handle parameters - they can be in different formats
+        params_list = []
+        raw_params = node.get("parameters", [])
+
+        # Parameter can be a list of strings, dicts, or a single string
+        if isinstance(raw_params, list):
+            for p in raw_params:
+                if isinstance(p, dict) and "name" in p:
+                    param_name = p["name"]
+                    params_list.append(param_name)
+                    all_param_names_in_path.add(param_name)
+                elif isinstance(p, str):
+                    params_list.append(p)
+                    all_param_names_in_path.add(p)
+        elif isinstance(raw_params, str):
+            params_list.append(raw_params)
+            all_param_names_in_path.add(raw_params)
+
+        # Build description with parameters if available
+        params_str = f"(Params: {', '.join(params_list)})" if params_list else ""
+        path_info_parts.append(f"  {i + 1}. {name}: {desc} {params_str}")
+
+    # Combine all node information
+    path_description = "\n".join(path_info_parts)
+
+    # Add hint about variables if parameters exist
+    possible_variables_hint = (
+        f"Possible parameters to turn into {{variables}}: {', '.join(sorted(all_param_names_in_path))}"
+        if all_param_names_in_path
+        else ""
+    )
+
+    # Language setup
+    primary_language = supported_languages[0] if supported_languages else "English"
+    language_instruction = f"Write ALL goal text in {primary_language}. Keep formatting markers like 'GOALS:' in English."
+
+    # Include limitations to avoid generating goals about them
+    limitations_str = ""
+    if limitations:
+        limitations_str = (
+            "KNOWN CHATBOT LIMITATIONS (Avoid creating goals about these):\n"
+            + "\n".join(f"- {lim}" for lim in limitations)
+        )
+
+    # Add conversation examples for context
+    history_str = ""
+    if conversation_history:
+        history_str = "EXAMPLE CONVERSATION SNIPPETS (for context):\n"
+        snippet_count = 0
+        for session in conversation_history:
+            if snippet_count >= 2:
+                break  # Just need a couple of examples
+            session_text = ""
+            turn_count = 0
+            for turn in session:
+                if turn_count >= 4:
+                    break  # Keep snippets short
+                role = "Human" if turn.get("role") == "assistant" else "Chatbot"
+                session_text += f"{role}: {turn.get('content', '')[:80]}...\n"
+                turn_count += 1
+            if session_text:
+                history_str += f"---\n{session_text.strip()}\n"
+                snippet_count += 1
+        history_str = history_str[:1500]  # Limit length
+
+    # Determine appropriate number of goals
+    num_goals_to_generate = min(5, max(2, len(path)))
+
+    # Build the prompt
+    prompt = f"""
+    Generate a sequence of {num_goals_to_generate} realistic, user-centric conversation goals for a user simulator.
+    These goals MUST follow this specific sequence of chatbot functionalities IN ORDER:
+
+    Functionality Path:
+    {path_description}
+
+    {possible_variables_hint}
+
+    {limitations_str}
+
+    {history_str}
+
+    {language_instruction}
+
+    CRITICAL INSTRUCTIONS FOR GOALS:
+    1.  **Strict Sequence:** Each goal MUST correspond to the next step in the Functionality Path provided above. The first goal triggers step 1, the second triggers step 2 (if applicable), and so on.
+    2.  **User-Centric:** Write goals from the USER'S perspective – what they would actually SAY or ASK. Do NOT describe the functionality itself.
+    3.  **Specificity:** Goals should be concrete actions or questions, not vague requests like "Get help" or "Find information".
+    4.  **Variables:** Use `{{variable_name}}` placeholders ONLY for dynamic values related to the parameters listed for the corresponding step in the path. Base the `variable_name` on the parameter name (e.g., if param is `pizza_type`, use `{{pizza_type}}`). Ensure double curly braces `{{ }}`.
+    5.  **Realism:** Goals should sound like a real user interacting naturally.
+    6.  **Quantity:** Generate exactly {num_goals_to_generate} goals.
+
+    Example Goal Format:
+    - "I'd like to order a {{pizza_type}} pizza." (Corresponds to a step with 'pizza_type' param)
+    - "What toppings are available for that?" (Follows a pizza selection step)
+    - "Add a {{drink_size}} {{drink_type}} to my order." (Corresponds to a step with drink params)
+    - "Proceed to checkout." (Corresponds to a checkout step)
+
+    FORMAT YOUR RESPONSE AS A BULLETED LIST, with each goal starting with '- ':
+
+    GOALS:
+    - First specific goal...
+    - Second specific goal...
+    - etc.
+
+    Respond ONLY with the 'GOALS:' heading and the bulleted list of goals.
+    """
+
+    # Call LLM and extract goals
+    goals = []
+    try:
+        print(f"   Generating {num_goals_to_generate} goals for path...")
+        response = llm.invoke(prompt)
+        response_content = response.content.strip()
+        print(
+            f"   LLM response for goals:\n{response_content[:300]}..."
+        )  # Show preview
+
+        # Extract goals from response
+        in_goals_section = False
+        for line in response_content.split("\n"):
+            line = line.strip()
+            if line.startswith("GOALS:"):
+                in_goals_section = True
+                continue
+            if in_goals_section and (line.startswith("- ") or line.startswith("* ")):
+                goal_text = line[2:].strip().strip("\"'")  # Remove quotes if present
+                if goal_text:
+                    goal_text = ensure_double_curly(goal_text)  # Fix variable format
+                    goals.append(goal_text)
+
+        if not goals:
+            print("   Warning: No goals parsed from LLM response.")
+
+    except Exception as e:
+        print(f"   Error during goal generation LLM call: {e}")
+        goals = []
+
+    # Create fallback goals if needed
+    if not goals:
+        print("   Using fallback goals based on node names.")
+        fallback_goals = []
+        used_params_for_fallback = set()
+
+        # Create one goal per node (up to the limit)
+        for i, node in enumerate(path):
+            name = node.get("name", f"step {i + 1}")
+
+            # Find a parameter to use as variable in the goal
+            placeholder = "{{details}}"  # Default placeholder
+            raw_params = node.get("parameters", [])
+            if isinstance(raw_params, list):
+                for p in raw_params:
+                    p_name = None
+                    if isinstance(p, dict) and "name" in p:
+                        p_name = p["name"]
+                    elif isinstance(p, str):
+                        p_name = p
+                    # Use first unused parameter
+                    if p_name and p_name not in used_params_for_fallback:
+                        placeholder = f"{{{{{p_name}}}}}"
+                        used_params_for_fallback.add(p_name)
+                        break
+            elif (
+                isinstance(raw_params, str)
+                and raw_params not in used_params_for_fallback
+            ):
+                placeholder = f"{{{{{raw_params}}}}}"
+                used_params_for_fallback.add(raw_params)
+
+            fallback_goals.append(
+                f"Ask about or perform action: {name.replace('_', ' ')} using {placeholder}"
+            )
+            if len(fallback_goals) >= num_goals_to_generate:
+                break
+        goals = fallback_goals
+
+    print(f"   Generated goals: {goals}")
+    return goals
+
+
+def generate_user_profiles(
+    functionality_graph: List[Dict[str, Any]],
+    limitations: List[str],
     llm,
     conversation_history=None,
-    output_dir="profiles",
     supported_languages=None,
 ):
     """
-    Group functionalities into logical user profiles and generate coherent goal sets
-    for individual conversations
+    Generate user profiles based on paths through the functionality graph.
+
+    Args:
+        functionality_graph: A structured graph of chatbot functionalities
+        limitations: Known limitations of the chatbot
+        llm: Language model for generation
+        conversation_history: Optional historical conversations
+        supported_languages: Languages supported by the chatbot
+
+    Returns:
+        List of profile dictionaries with goals and variables
     """
+    # Get all conversation paths from the graph
+    paths = extract_conversation_paths(functionality_graph)
 
-    # Work in the given language with stronger instructions
-    primary_language = ""
-    language_instruction_grouping = ""
-    language_instruction_goals = ""
-
-    if supported_languages and len(supported_languages) > 0:
-        primary_language = supported_languages[0]
-        # More specific instruction with examples that will help the model follow format
-        language_instruction_grouping = f"""
-LANGUAGE REQUIREMENT:
-- Write ALL profile names, descriptions, and functionalities in {primary_language}
-- KEEP ONLY the formatting markers (##, PROFILE:, DESCRIPTION:, FUNCTIONALITIES:) in English
-- Example if the primary language was Spanish:
-  ## PROFILE: [Nombre del escenario en Spanish]
-  DESCRIPTION: [Descripción en Spanish]
-  FUNCTIONALITIES:
-  - [Funcionalidad en Spanish]
-"""
-
-        language_instruction_goals = f"""
-LANGUAGE REQUIREMENT:
-- Write ALL goals in {primary_language}
-- KEEP ONLY the formatting markers (GOALS:) in English
-- Keep variables in {{variable}} format
-- Example in Spanish:
-  GOALS:
-  - "Primer objetivo en Spanish con {{variable}}"
-"""
-
-    # Prepare a condensed version of conversation history if available
-    conversation_context = ""
-    if conversation_history:
-        conversation_context = (
-            "Here are some example conversations with the chatbot:\n\n"
-        )
-        for i, session in enumerate(conversation_history, 1):
-            conversation_context += f"--- SESSION {i} ---\n"
-            for turn in session:
-                if turn["role"] == "assistant":  # Explorer
-                    conversation_context += f"Human: {turn['content']}\n"
-                elif turn["role"] == "user":  # Chatbot's response
-                    conversation_context += f"Chatbot: {turn['content']}\n"
-            conversation_context += "\n"
-
-    # Ask the LLM to identify distinct conversation scenarios
-    # Calculate an appropriate number of profiles based on functionality count
-    num_functionalities = len(functionalities)
-    min_profiles = 3
-    max_profiles = 10
-
-    suggested_profiles = max(min_profiles, min(max_profiles, num_functionalities))
-
-    # Update the grouping prompt to use the calculated number
-    grouping_prompt = f"""
-    Based on these chatbot functionalities:
-    {", ".join(functionalities)}
-
-    {conversation_context}
-
-    {language_instruction_grouping}
-
-    Create {suggested_profiles} distinct user profiles, where each profile represents ONE specific conversation scenario.
-
-    EXTREMELY IMPORTANT RESTRICTIONS:
-    1. Create ONLY profiles for realistic end users with PRACTICAL GOALS
-    2. NEVER create profiles about users asking about chatbot capabilities or limitations
-    3. NEVER create profiles where the user is trying to test or evaluate the chatbot
-    4. Focus ONLY on real-world user tasks and objectives
-    5. The profiles should be genuine use cases, not meta-conversations about the chatbot itself
-
-    For example, if the functionalities are related to the CAU, the profiles should distinguish between tasks like:
-      - Asking for office hours,
-      - Opening a service ticket,
-      - Requesting information about specific services.
-    Do not mix in chatbot internal limitations (e.g., "supports only Spanish" or "handles complex questions").
-
-    Try to cover all the important functionality groups without overlap between profiles.
-
-    FORMAT YOUR RESPONSE AS:
-
-    ## PROFILE: [Conversation Scenario Name]
-    ROLE: [Write a prompt for the user simulator, e.g. "you have to act as a user ordering a pizza to a pizza shop."]
-    FUNCTIONALITIES:
-    - [functionality 1 relevant to this scenario]
-    - [functionality 2 relevant to this scenario]
-
-    ## PROFILE: [Another Conversation Scenario Name]
-    ROLE: [Write a prompt for the user simulator, e.g. "you have to act as a user ordering a pizza to a pizza shop."]
-    FUNCTIONALITIES:
-    - [functionality 3 relevant to this scenario]
-    - [functionality 4 relevant to this scenario]
-
-    ... and so on
-    """
-
-    # Get scenario groupings from the LLM
-    profiles_response = llm.invoke(grouping_prompt)
-    profiles_content = profiles_response.content
-
-    # Parse the profiles
-    profile_sections = profiles_content.split("## PROFILE:")
-
-    if not profile_sections[0].strip():
-        profile_sections = profile_sections[1:]
-
+    # Create list to store generated profiles
     profiles = []
 
-    for section in profile_sections:
-        lines = section.strip().split("\n")
-        profile_name = lines[0].strip()
+    # Setup language for context and outputs
+    primary_language = supported_languages[0] if supported_languages else "English"
+    language_instruction_context_outputs = f"Write content in {primary_language}."
 
-        role = ""
-        functionalities_list = []
+    # Process each path to create a profile
+    for path in paths:
+        try:
+            # Generate core profile information
+            profile = generate_profile_from_path(path, llm, supported_languages)
 
-        role_started = False
-        func_started = False
+            # Generate goals based on the path
+            profile["goals"] = generate_sequential_goals(
+                path,
+                llm,
+                supported_languages,
+                limitations,
+                conversation_history,
+            )
 
-        for line in lines[1:]:
-            if line.startswith("ROLE:"):
-                role_started = True
-                role = line[len("ROLE:") :].strip()
-                func_started = False
-            elif line.startswith("FUNCTIONALITIES:"):
-                role_started = False
-                func_started = True
-            elif func_started and line.strip().startswith("- "):
-                functionalities_list.append(line.strip()[2:].strip())
-            elif role_started:
-                role += " " + line.strip()
+            # Replace variables with placeholders for context/output generation
+            sanitized_goals = [
+                re.sub(VARIABLE_PATTERN, "[details]", goal)
+                for goal in profile.get("goals", [])
+                if isinstance(goal, str)
+            ]
 
-        profiles.append(
-            {
-                "name": profile_name,
-                "role": role.strip(),
-                "functionalities": functionalities_list,
-            }
-        )
+            # Generate additional profile components
+            profile["context"] = generate_context(
+                profile["name"],
+                profile["role"],
+                sanitized_goals,
+                path,
+                llm,
+                language_instruction_context_outputs,
+            )
 
-    # For each profile, generate user-centric goals
-    for profile in profiles:
-        goals_prompt = f"""
-        Generate a set of coherent **user-centric** goals for this conversation scenario:
+            profile["outputs"] = generate_outputs(
+                profile["name"],
+                profile["role"],
+                sanitized_goals,
+                path,
+                llm,
+                language_instruction_context_outputs,
+            )
 
-        CONVERSATION SCENARIO: {profile["name"]}
-        ROLE: {profile["role"]}
+            profiles.append(profile)
+        except Exception as e:
+            # Log errors but continue processing other paths
+            print(f"    ERROR processing path: {e}")
+            import traceback
 
-        RELEVANT FUNCTIONALITIES:
-        {", ".join(profile["functionalities"])}
+            traceback.print_exc()
+            continue
 
-        LIMITATIONS (keep in mind only; do NOT let these drive the goals):
-        {", ".join(limitations)}
+    # Generate definitions for all variables in the profiles
+    profiles_with_vars = generate_variable_definitions(
+        profiles, llm, supported_languages
+    )
 
-        {conversation_context}
-
-        {language_instruction_goals}
-
-        ABOUT VARIABLES:
-        - Only use {{variable}} where the user might provide different values each time (e.g. {{date}}, {{amount}}, {{phone_number}}, {{dog_breed}})
-        - These are purely placeholders for possible user input. For example, {{phone_number}} does not mean we must always request a phone number; it’s just a potential input that could vary.
-        - Do NOT put fixed names like "Centro de Atención a Usuarios" or "CAU" inside {{ }} (they are not interchangeable).
-        - Variables must be legitimate parameters the user could change (e.g., different dates, amounts, or IDs).
-
-        EXTREMELY IMPORTANT RESTRICTIONS:
-        1. NEVER create goals about asking for chatbot limitations or capabilities
-        2. NEVER create goals about testing the chatbot's understanding or knowledge
-        3. NEVER include meta-goals like "find out what the chatbot can do"
-        4. Goals MUST be about actual tasks a real user would want to accomplish
-        5. Focus on practical, realistic user tasks ONLY
-
-        Create 2-4 goals that focus strictly on what the user intends to achieve with the chatbot.
-        Avoid vague or indirect objectives like "consultar las limitaciones del chatbot" or "solicitar ejemplos sobre el CAU."
-
-        Examples of good goal sets:
-
-        Example 1 (Food ordering):
-        - "Order a {{size}} pizza with {{toppings}}"
-        - "Add {{quantity}} {{drink}} to my order"
-        - "Ask about delivery time"
-        - "Get my order total and confirmation number"
-
-        Example 2 (Municipal services):
-        - "Ask about property tax"
-        - "Find out how to pay it"
-
-        Example 3 (City registration):
-        - "Ask how to register as a resident"
-        - "Find out what documents are needed"
-        - "Ask if registration can be done online"
-
-        FORMAT YOUR RESPONSE AS:
-
-        GOALS:
-        - "first user-centric goal with {{variable}} if needed"
-        - "second related goal"
-        - "third goal that follows naturally"
-
-        DO NOT include any definitions for variables - just use {{varname}} placeholders.
-        Make sure all goals fit naturally in ONE conversation with the chatbot, and remain strictly focused on user tasks.
-        """
-
-        goals_response = llm.invoke(goals_prompt)
-        goals_content = goals_response.content
-
-        goals = []
-        if "GOALS:" in goals_content:
-            goals_section = goals_content.split("GOALS:")[1].strip()
-            for line in goals_section.split("\n"):
-                if line.strip().startswith("- "):
-                    goal = line.strip()[2:].strip().strip("\"'")
-                    if goal:
-                        goal = ensure_double_curly(goal)
-                        goals.append(goal)
-
-        profile["goals"] = goals
-
-    # Generate values for the variables
-    profiles = generate_variable_definitions(profiles, llm, supported_languages)
-
-    # Generate context
-    profiles = generate_context(profiles, functionalities, llm, supported_languages)
-
-    # Generate output fields
-    profiles = generate_outputs(profiles, functionalities, llm, supported_languages)
-    return profiles
+    return profiles_with_vars
