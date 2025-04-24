@@ -1,0 +1,56 @@
+test_name: Consulta de Horarios de Atención
+llm:
+  temperature: 0.7
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Juan es un estudiante universitario que está buscando resolver un problema
+    con su matrícula. Necesita saber los horarios de operación del Centro de Atención
+    a Usuarios para poder planificar su visita y asegurar que recibe la ayuda necesaria
+    antes del inicio del nuevo semestre. Su motivación principal es evitar contratiempos
+    y solucionar su situación académica a tiempo.
+  context:
+  - 'personality: personalities/sarcastic-user'
+  - Juan se siente frustrado porque no ha podido resolver su problema de matrícula
+    a tiempo y teme afectar su rendimiento académico.
+  - Ha consultado el sitio web de la universidad, pero no encontró información actualizada
+    sobre los horarios del Centro de Atención a Usuarios.
+  - Su compañero de clase le recomendó visitar el centro el sábado, pero no está seguro
+    de si estará abierto ese día.
+  goals:
+  - ¿Cuáles son los horarios de atención del Centro de Atención a Usuarios?
+  - ¿A qué horas está abierto los fines de semana?
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - service_hours_weekdays:
+      type: str
+      description: Horarios de atención del Centro de Atención a Usuarios durante
+        los días de semana, extraídos de la respuesta del chatbot.
+  - service_hours_weekends:
+      type: str
+      description: Horarios de atención del Centro de Atención a Usuarios durante
+        los fines de semana, extraídos de la respuesta del chatbot.
+  - location_details:
+      type: str
+      description: Información sobre la ubicación del Centro de Atención a Usuarios
+        que el chatbot proporciona para ayudar al usuario a planificar su visita.
+  - additional_information:
+      type: str
+      description: Cualquier información adicional que el chatbot pueda proporcionar
+        relacionada con el horario o la atención, como días festivos o cierres especiales.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - single question

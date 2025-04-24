@@ -1,0 +1,69 @@
+test_name: Exploración de Servicios de Marketing Digital
+llm:
+  temperature: 0.7
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Juan es un pequeño empresario que está buscando mejorar la presencia en línea
+    de su tienda de moda. Su motivación principal es encontrar servicios de marketing
+    digital que se adapten a su presupuesto y que puedan ayudarle a atraer más clientes
+    a través de las redes sociales y campañas publicitarias en línea.
+  context:
+  - 'personality: personalities/impatient-user'
+  - Juan ha estado investigando diferentes plataformas de marketing digital y ha oído
+    hablar positivamente de las campañas en Facebook e Instagram.
+  - Tiene un presupuesto limitado y busca soluciones efectivas que no comprometan
+    la calidad de su imagen de marca.
+  - Recientemente, asistió a un taller sobre marketing en redes sociales que le inspiró
+    a mejorar su presencia en línea y atraer a un público más amplio.
+  goals:
+  - ¿Hay algún servicio específico en el catálogo que te gustaría explorar más a fondo?
+  - Quisiera saber más sobre el servicio de {{nombre_servicio}}.
+  - nombre_servicio:
+      function: forward()
+      type: string
+      data:
+      - Gestión de redes sociales
+      - Publicidad en línea
+      - SEO (Optimización en motores de búsqueda)
+      - Marketing de contenido
+      - Email marketing
+      - Análisis de datos
+      - Creación de sitios web
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - detalles_servicio_seleccionado:
+      type: str
+      description: La información específica sobre el servicio de marketing digital
+        que el usuario está interesado en explorar más a fondo, como el nombre y una
+        breve descripción.
+  - costo_servicio:
+      type: float
+      description: El precio del servicio de marketing digital que se menciona en
+        la conversación, que ayuda a Juan a entender si se ajusta a su presupuesto.
+  - resultados_esperados:
+      type: str
+      description: La información que el chatbot proporciona sobre los resultados
+        que Juan puede esperar al utilizar el servicio, como el aumento en la presencia
+        en línea o tráfico a su tienda.
+  - disponibilidad_servicio:
+      type: str
+      description: Detalles acerca de la disponibilidad de los servicios mencionados,
+        como horarios o fechas en las que Juan puede empezar a utilizar el servicio.
+conversation:
+  number: 3
+  max_cost: 2.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question
+  - long phrases

@@ -1,0 +1,60 @@
+test_name: Configuración y recuperación de MFA
+llm:
+  temperature: 0.4
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Juan es un gerente de IT en una empresa mediana que busca mejorar la seguridad
+    de las cuentas de sus empleados mediante la implementación de Multi-Factor Authentication
+    (MFA). Su motivación principal es garantizar que la información confidencial de
+    la empresa esté protegida, así como facilitar un proceso de recuperación eficiente
+    en caso de que un empleado pierda o cambie su dispositivo móvil. Juan necesita
+    entender cómo configurar el MFA para su equipo y cómo manejar posibles incidencias
+    de acceso.
+  context:
+  - 'personality: personalities/impatient-user'
+  - Juan ha estado investigando diferentes soluciones de autenticación multifactor
+    y está particularmente interesado en las opciones que ofrecen una combinación
+    de token y aplicaciones de autenticación móvil.
+  - La empresa de Juan ha experimentado brechas de seguridad menores en el pasado,
+    lo que aumenta su urgencia para implementar MFA de manera efectiva.
+  - Juan se siente un poco abrumado por los detalles técnicos de la configuración
+    de MFA, por lo que busca una guía clara y sencilla para compartir con su equipo.
+  goals:
+  - ¿Cómo puedo configurar la Autenticación Multifactor (MFA) para mi cuenta?
+  - ¿Qué debo hacer si he perdido mi dispositivo móvil y no puedo acceder a la MFA?
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - mfa_configuration_steps:
+      type: str
+      description: Pasos detallados que el chatbot proporciona sobre cómo configurar
+        la Autenticación Multifactor (MFA) para las cuentas de los empleados.
+  - recovery_options:
+      type: str
+      description: Opciones que el chatbot menciona para la recuperación de acceso
+        en caso de que un usuario pierda su dispositivo móvil.
+  - mfa_tools_required:
+      type: str
+      description: Herramientas o aplicaciones recomendadas por el chatbot para implementar
+        la Autenticación Multifactor (MFA).
+  - support_contact_information:
+      type: str
+      description: Información de contacto del soporte en caso de que se necesite
+        ayuda adicional con la configuración o recuperación de la MFA.
+conversation:
+  number: 4
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question
+  - long phrases

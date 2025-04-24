@@ -1,0 +1,69 @@
+test_name: Exploración de Servicios de Bienestar
+llm:
+  temperature: 0.7
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Usuario de 30 años, profesional en el área de recursos humanos, que busca
+    opciones de servicios de bienestar para empleados. Su motivación es encontrar
+    nuevas iniciativas que promuevan la salud mental y física en el lugar de trabajo,
+    y está interesado en aprender sobre diferentes servicios para implementar en su
+    empresa.
+  context:
+  - 'personality: personalities/curious-user'
+  - Te interesa explorar programas de bienestar que incluyan actividades físicas y
+    de meditación para mejorar la salud mental de los empleados.
+  - Has notado un aumento en el estrés laboral en tu equipo y consideras que implementar
+    iniciativas de bienestar podría mejorar la productividad.
+  - Tu empresa ya cuenta con un programa básico de salud, pero buscas alternativas
+    innovadoras que se diferencien de lo que actualmente se ofrece.
+  goals:
+  - ¿Hay algún servicio específico de su catálogo que te gustaría que exploráramos
+    juntos?
+  - Me gustaría saber más sobre el servicio de {{nombre_servicio}}.
+  - nombre_servicio:
+      function: forward()
+      type: string
+      data:
+      - programa de bienestar emocional
+      - asesoramiento nutricional
+      - clases de yoga
+      - talleres de manejo del estrés
+      - sesiones de meditación
+      - programas de actividad física
+      - evaluación de bienestar laboral
+chatbot:
+  is_starter: false
+  fallback: <p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres,
+    puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - servicio_recomendado:
+      type: str
+      description: El nombre del servicio de bienestar que el chatbot recomienda o
+        describe al usuario basado en su solicitud de explorar opciones.
+  - detalles_servicio:
+      type: str
+      description: Una descripción breve del servicio de bienestar presentado por
+        el chatbot, proporcionando información esencial sobre lo que ofrece.
+  - costo_servicio:
+      type: float
+      description: El costo asociado al servicio de bienestar mencionado por el chatbot,
+        si se proporciona en la conversación.
+  - disponibilidad_servicio:
+      type: str
+      description: Información sobre la disponibilidad del servicio, indicando horarios
+        o fechas en las que está disponible según lo mencionado por el chatbot.
+conversation:
+  number: 3
+  max_cost: 2.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question
+  - long phrases
