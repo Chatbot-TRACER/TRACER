@@ -1074,25 +1074,138 @@ def generate_user_profiles(
     Returns:
         List of profile dictionaries with goals and variables
     """
-    # Get all conversation paths from the graph
+    # Extract all functionalities from the graph for grouping
+    all_functionalities = []
+    for node in functionality_graph:
+        name = node.get("name", "")
+        description = node.get("description", "")
+        if name:
+            func_text = f"{name}: {description[:100]}..." if description else name
+            all_functionalities.append(func_text)
+
+    # Extract paths for reference (but don't create a profile for each path)
     paths = extract_conversation_paths(functionality_graph)
+    print(f"Found {len(paths)} paths through the functionality graph")
 
-    # Create list to store generated profiles
-    profiles = []
+    # Calculate recommended number of profiles
+    num_functionalities = len(all_functionalities)
+    min_profiles = 3
+    max_profiles = 10
+    suggested_profiles = max(min_profiles, min(max_profiles, num_functionalities))
 
-    # Setup language for context and outputs
+    # Language setup
     primary_language = supported_languages[0] if supported_languages else "English"
-    language_instruction_context_outputs = f"Write content in {primary_language}."
+    language_instruction_grouping = f"""
+    LANGUAGE REQUIREMENT:
+    - Write ALL profile names, descriptions, and functionalities in {primary_language}
+    - KEEP ONLY the formatting markers (##, PROFILE:, DESCRIPTION:, FUNCTIONALITIES:) in English
+    """
 
-    # Process each path to create a profile
-    for path in paths:
+    # Prepare conversation history context
+    conversation_context = ""
+    if conversation_history and len(conversation_history) > 0:
+        conversation_context = (
+            "Here are some example conversations with the chatbot:\n\n"
+        )
+        for i, session in enumerate(conversation_history[:2], 1):  # Limit to 2 sessions
+            conversation_context += f"--- SESSION {i} ---\n"
+            for turn in session[:6]:  # Limit to 6 turns per session
+                if turn["role"] == "assistant":  # Explorer
+                    conversation_context += f"Human: {turn['content'][:150]}...\n"
+                elif turn["role"] == "user":  # Chatbot's response
+                    conversation_context += f"Chatbot: {turn['content'][:150]}...\n"
+            conversation_context += "\n"
+
+    # Create the grouping prompt
+    grouping_prompt = f"""
+    Based on these chatbot functionalities:
+    {", ".join(all_functionalities)}
+
+    {conversation_context}
+
+    {language_instruction_grouping}
+
+    Create {suggested_profiles} distinct user profiles, where each profile represents ONE specific conversation scenario.
+
+    EXTREMELY IMPORTANT RESTRICTIONS:
+    1. Create ONLY profiles for realistic end users with PRACTICAL GOALS
+    2. NEVER create profiles about users asking about chatbot capabilities or limitations
+    3. NEVER create profiles where the user is trying to test or evaluate the chatbot
+    4. Focus ONLY on real-world user tasks and objectives
+    5. The profiles should be genuine use cases, not meta-conversations about the chatbot itself
+    6. FOCUS ON THE ACTUAL FUNCTIONALITIES PROVIDED - don't make up unrelated scenarios
+
+    For example, if the functionalities are about ordering pizza, ALL profiles should be about pizza ordering (maybe different types of pizza orders or inquiries),
+    NOT about employee onboarding, travel booking, or other unrelated topics.
+
+    FORMAT YOUR RESPONSE AS:
+
+    ## PROFILE: [Specific Conversation Scenario Name]
+    ROLE: [Brief description of the user's role and motivation]
+    FUNCTIONALITIES:
+    - [functionality 1 relevant to this scenario]
+    - [functionality 2 relevant to this scenario]
+
+    ## PROFILE: [Another Specific Conversation Scenario Name]
+    ... and so on
+    """
+
+    # Get scenario groupings from the LLM
+    profiles_response = llm.invoke(grouping_prompt)
+    profiles_content = profiles_response.content
+
+    # Parse the profiles
+    profile_sections = profiles_content.split("## PROFILE:")
+    if not profile_sections[0].strip():
+        profile_sections = profile_sections[1:]
+
+    parsed_profiles = []
+    for section in profile_sections:
+        lines = section.strip().split("\n")
+        profile_name = lines[0].strip()
+
+        role = ""
+        functionalities_list = []
+
+        role_started = False
+        func_started = False
+
+        for line in lines[1:]:
+            if line.startswith("ROLE:"):
+                role_started = True
+                role = line[len("ROLE:") :].strip()
+                func_started = False
+            elif line.startswith("FUNCTIONALITIES:"):
+                role_started = False
+                func_started = True
+            elif func_started and line.strip().startswith("- "):
+                functionalities_list.append(line.strip()[2:].strip())
+            elif role_started:
+                role += " " + line.strip()
+
+        parsed_profiles.append(
+            {
+                "name": profile_name,
+                "role": role.strip(),
+                "functionalities": functionalities_list,
+            }
+        )
+
+    # For each profile, find the most relevant path from our extracted paths
+    final_profiles = []
+    for profile in parsed_profiles:
         try:
-            # Generate core profile information
-            profile = generate_profile_from_path(path, llm, supported_languages)
+            # Find the most relevant path for this profile's functionalities
+            profile_path = find_best_path_for_profile(
+                profile, paths, functionality_graph
+            )
 
-            # Generate goals based on the path
-            profile["goals"] = generate_sequential_goals(
-                path,
+            # Generate goals based on the path and the profile
+            profile["goals"] = generate_profile_goals(
+                profile["name"],
+                profile["role"],
+                profile["functionalities"],
+                profile_path,
                 llm,
                 supported_languages,
                 limitations,
@@ -1111,32 +1224,184 @@ def generate_user_profiles(
                 profile["name"],
                 profile["role"],
                 sanitized_goals,
-                path,
+                profile_path,
                 llm,
-                language_instruction_context_outputs,
+                f"Write content in {primary_language}.",
             )
 
             profile["outputs"] = generate_outputs(
                 profile["name"],
                 profile["role"],
                 sanitized_goals,
-                path,
+                profile_path,
                 llm,
-                language_instruction_context_outputs,
+                f"Write content in {primary_language}.",
             )
 
-            profiles.append(profile)
+            final_profiles.append(profile)
         except Exception as e:
-            # Log errors but continue processing other paths
-            print(f"    ERROR processing path: {e}")
-            import traceback
-
-            traceback.print_exc()
+            print(f"Error processing profile '{profile['name']}': {e}")
             continue
 
     # Generate definitions for all variables in the profiles
     profiles_with_vars = generate_variable_definitions(
-        profiles, llm, supported_languages
+        final_profiles, llm, supported_languages
     )
 
     return profiles_with_vars
+
+
+def find_best_path_for_profile(profile, paths, functionality_graph):
+    """Find the most relevant path for a profile based on its functionalities"""
+    profile_funcs = profile.get("functionalities", [])
+
+    # Normalize function names for comparison
+    norm_profile_funcs = [func.split(":")[0].strip().lower() for func in profile_funcs]
+
+    best_path = None
+    best_score = -1
+
+    for path in paths:
+        path_func_names = [node.get("name", "").lower() for node in path]
+
+        # Calculate match score: how many profile functions are in this path
+        score = sum(
+            1
+            for func in norm_profile_funcs
+            if any(func in path_name for path_name in path_func_names)
+        )
+
+        # Prefer longer paths if scores are equal
+        if score > best_score or (
+            score == best_score and len(path) > len(best_path or [])
+        ):
+            best_score = score
+            best_path = path
+
+    # If no good match, use the longest path available
+    if not best_path:
+        best_path = max(paths, key=len) if paths else []
+
+    return best_path
+
+
+def generate_profile_goals(
+    profile_name,
+    role,
+    profile_functionalities,
+    path,
+    llm,
+    supported_languages=None,
+    limitations=None,
+    conversation_history=None,
+):
+    """Generate goals for a profile based on its functionalities and corresponding path"""
+    primary_language = supported_languages[0] if supported_languages else "English"
+
+    language_instruction = f"""
+    LANGUAGE REQUIREMENT:
+    - Write ALL goals in {primary_language}
+    - KEEP ONLY the formatting markers (GOALS:) in English
+    - Keep variables in {{variable}} format
+    """
+
+    # Extract path information for context
+    path_details = []
+    for node in path:
+        name = node.get("name", "")
+        desc = node.get("description", "")
+        params = node.get("parameters", [])
+        param_str = ""
+        if params:
+            if isinstance(params, list):
+                param_str = f" (Parameters: {', '.join(str(p) for p in params)})"
+            else:
+                param_str = f" (Parameter: {params})"
+
+        if name:
+            path_details.append(f"- {name}: {desc}{param_str}")
+
+    path_info = (
+        "\n".join(path_details) if path_details else "No specific path available"
+    )
+
+    # Format conversation history snippet if available
+    conversation_snippet = ""
+    if conversation_history and len(conversation_history) > 0:
+        conversation_snippet = "EXAMPLE CONVERSATION:\n"
+        session = conversation_history[0][:6]  # First session, up to 6 turns
+        for turn in session:
+            role = "Human" if turn.get("role") == "assistant" else "Chatbot"
+            conversation_snippet += f"{role}: {turn.get('content', '')[:100]}...\n"
+
+    # Create the goals prompt
+    goals_prompt = f"""
+    Generate a set of coherent user-centric goals for this conversation scenario:
+
+    CONVERSATION SCENARIO: {profile_name}
+    USER ROLE: {role}
+
+    RELEVANT FUNCTIONALITIES:
+    {", ".join(profile_functionalities)}
+
+    CONVERSATION PATH DETAILS:
+    {path_info}
+
+    {conversation_snippet}
+
+    {language_instruction}
+
+    ABOUT VARIABLES:
+    - Use {{variable_name}} where the user might provide different values (e.g., {{pizza_type}}, {{size}})
+    - Variables should be based on parameters identified in the conversation path
+    - Use double curly braces for variables (e.g., {{variable}})
+
+    EXTREMELY IMPORTANT REQUIREMENTS:
+    1. Create 2-4 goals that form a NATURAL CONVERSATION FLOW
+    2. Goals must be strictly about {profile_name} - not about testing or evaluating the chatbot
+    3. Make goals specific to what a user would say or ask, not what the chatbot would do
+    4. Focus on practical, realistic user requests/questions
+    5. The goals should follow a logical sequence matching the conversation path
+
+    FORMAT YOUR RESPONSE AS:
+
+    GOALS:
+    - "First specific user goal with {{variable}} if needed"
+    - "Second related goal that progresses the conversation"
+    - "Third goal that follows logically"
+
+    Make goals sound like natural user utterances, not instructions or descriptions.
+    """
+
+    # Get goals from LLM
+    goals_response = llm.invoke(goals_prompt)
+    goals_content = goals_response.content
+
+    # Parse goals
+    goals = []
+    if "GOALS:" in goals_content:
+        goals_section = goals_content.split("GOALS:")[1].strip()
+        for line in goals_section.split("\n"):
+            if line.strip().startswith("- "):
+                goal = line.strip()[2:].strip().strip("\"'")
+                if goal:
+                    goal = ensure_double_curly(goal)
+                    goals.append(goal)
+
+    # If no goals parsed, create fallback goals
+    if not goals:
+        print(
+            f"Warning: No goals parsed for profile '{profile_name}'. Using fallback goals."
+        )
+        function_count = min(4, len(profile_functionalities))
+        for i in range(function_count):
+            if i < len(profile_functionalities):
+                func_text = profile_functionalities[i]
+                func_name = (
+                    func_text.split(":")[0].strip() if ":" in func_text else func_text
+                )
+                goals.append(
+                    f"I need help with {func_name.replace('_', ' ')} for {{{{parameter}}}}"
+                )
+
+    return goals
