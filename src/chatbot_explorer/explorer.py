@@ -51,6 +51,7 @@ class State(TypedDict):
     supported_languages: list  # Languages the bot speaks
     built_profiles: list  # Generated YAML profiles
     fallback_message: str  # Bot's fallback message
+    chatbot_type: str  # Type of chatbot: "transactional", "informational", or "unknown"
 
 
 class ChatbotExplorer:
@@ -753,6 +754,9 @@ class ChatbotExplorer:
         # Classify the bot type first
         bot_type = self._classify_chatbot_type(state)
 
+        # Store the bot type in the state
+        state = {**state, "chatbot_type": bot_type}
+
         # Prepare input for the LLM (functionality list and conversation snippets)
         func_list_str = "\n".join(
             [
@@ -805,7 +809,7 @@ class ChatbotExplorer:
         Conversation History Snippets (Context for Flow):
         {conversation_snippets}
 
-        CRITICAL TASK: Determine the sequential flow, including prerequisites, branches, and joins, based *primarily on the conversational evidence*. Assume a workflow exists unless proven otherwise.
+        CRITICAL TASK: Determine the sequential flow, including prerequisites, branches, and joins based *primarily on the conversational evidence*. Assume a workflow exists unless proven otherwise.
         - **Sequences:** Identify steps that consistently or logically happen *after* others based on the conversation flow (e.g., selecting size after choosing pizza type).
         - **Branches:** Identify points where the chatbot explicitly offers mutually exclusive choices leading to different subsequent steps (e.g., predefined vs. custom pizza).
         - **Joins:** Identify points where different interaction paths converge to the *same* common next step (e.g., adding drinks after either pizza type).
