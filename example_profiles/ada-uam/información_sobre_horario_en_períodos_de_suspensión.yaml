@@ -1,0 +1,57 @@
+test_name: Información sobre Horario en Períodos de Suspensión
+llm:
+  temperature: 0.9
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúas como un estudiante que necesita saber las horas de atención del CAU
+    durante períodos de suspensión de actividad laboral en la UAM.
+  context:
+  - 'personality: personalities/elderly-user'
+  - Tienes un examen importante la próxima semana y necesitas ayuda con información
+    relevante que ofrece el CAU.
+  - Te han comentado que el CAU suele responder rápidamente a consultas por correo
+    electrónico.
+  - La última vez que consultaste, el horario del CAU no era el habitual y te sorprendió
+    la falta de aviso.
+  goals:
+  - Consultar el horario del CAU durante períodos de suspensión de actividad laboral
+  - Solicitar información sobre los métodos de contacto disponibles para comunicarme
+    con el CAU
+  - Preguntar sobre los servicios específicos que ofrece el CAU
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - horario_cau:
+      type: str
+      description: Horario de atención del CAU durante períodos de suspensión de actividad
+        laboral, que el chatbot proporciona como respuesta a la consulta del usuario.
+  - metodo_contacto:
+      type: str
+      description: Métodos de contacto disponibles para comunicarse con el CAU, incluyendo
+        detalles como correo electrónico y número de teléfono, que el chatbot menciona
+        en su respuesta.
+  - servicios_ofrecidos:
+      type: str
+      description: Información sobre los servicios específicos que ofrece el CAU,
+        que el chatbot incluye al responder a la pregunta del usuario sobre los servicios
+        disponibles.
+  - mapa_campus:
+      type: str
+      description: Enlace proporcionado por el chatbot para visualizar un mapa del
+        campus, facilitando la localización del CAU para atención presencial.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

@@ -1,0 +1,71 @@
+test_name: Inquiring About Pizza Options
+llm:
+  temperature: 0.3
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to know more about the available pizza
+    options.
+  context:
+  - 'personality: personalities/conversational-user'
+  - You recently enjoyed a pepperoni pizza from this place and want to explore other
+    flavors.
+  - You are hosting a small gathering and need to order enough pizzas and drinks for
+    five friends.
+  - The latest promotions showed that certain pizza sizes come with discounts, so
+    you're eager to find the best deal.
+  goals:
+  - Inquire about the available predefined pizza options
+  - Select a pizza type and specify the size as {{size_option}}
+  - Order {{quantity}} drinks and select drink types from available options
+  - Request a summary of the final order details
+  - quantity:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 10
+        step: 1
+  - size_option:
+      function: random()
+      type: string
+      data:
+      - Small
+      - Medium
+      - Large
+      - Extra Large
+      - Personal
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks. For troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - predefined_pizza_options:
+      type: str
+      description: A list of the available predefined pizza options provided by the
+        chatbot, detailing the types of pizzas that can be ordered.
+  - selected_pizza_size:
+      type: str
+      description: The specific size of the pizza that the user selects, as confirmed
+        by the chatbot after the user's selection.
+  - number_of_drinks:
+      type: int
+      description: The total number of drinks the user wishes to order, as requested
+        and confirmed by the chatbot.
+  - final_order_summary:
+      type: str
+      description: A complete overview of the user's final order details, including
+        the selected pizza type, size, and drinks, as provided by the chatbot at the
+        end of the conversation.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question
+  - change your mind

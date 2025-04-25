@@ -1,0 +1,53 @@
+test_name: Checking Order Availability and Time
+llm:
+  temperature: 0.5
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user asking about the time it takes to prepare an order.
+  context:
+  - 'personality: personalities/rude-user'
+  - You just placed an order for a medium Hawaiian pizza and two soft drinks for a
+    family gathering this evening.
+  - You’re feeling a bit impatient since you have guests arriving in about an hour
+    and want to ensure the order is ready on time.
+  - You’ve visited this restaurant before and remember their service is generally
+    quick, but you want to confirm the details for peace of mind.
+  goals:
+  - Inquire about the preparation time for my order of a medium Hawaiian pizza and
+    two drinks
+  - Ask what the expected time for pickup is for my order
+  - Request a summary of my current order details, including total cost and pickup
+    location
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks. For troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - preparation_time:
+      type: time
+      description: The estimated time it takes to prepare the user's order as provided
+        by the chatbot.
+  - pickup_time:
+      type: time
+      description: The expected time for the user to pick up their order, as indicated
+        by the chatbot.
+  - order_summary:
+      type: str
+      description: A detailed summary of the user's current order, including items
+        ordered and their quantities, as communicated by the chatbot.
+  - total_cost:
+      type: float
+      description: The total cost for the user's order, including the medium Hawaiian
+        pizza and two drinks, as quoted by the chatbot.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question

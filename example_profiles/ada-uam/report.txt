@@ -1,109 +1,69 @@
 === CHATBOT FUNCTIONALITY ANALYSIS ===
 
 ## FUNCTIONALITIES (Workflow Structure)
-- provide_services_overview: The chatbot provides an overview of the services offered by Tecnologías de la Información at UAM, referring the user to the official website for detailed information.
-- provide_contact_info: The chatbot provides contact information for the Centro de Atención a Usuarios (CAU), including email, phone number, and physical address for assistance.
-- provide_support_services: The chatbot explains the types of support services available for technical problems at UAM, specifically regarding videoconferencing connections and software.
-- refer_to_service_catalog: The chatbot redirects the user to consult the service catalog for specific information on services offered by Tecnologías de la Información at UAM.
-- address_specific_support_requests: The chatbot attempts to address user requests for specific support services but primarily refers back to contact information and the service catalog.
-- provide_moodle_support_options: The chatbot offers options for specific issues related to Moodle, allowing the user to choose a particular problem they are experiencing.
-- provide_password_change_instructions: The chatbot provides instructions on how to change the password for the ID-UAM account and how to obtain a code for activation.
-- verify_user_identity: The chatbot offers information on how to retrieve the user identifier if forgotten and provides further instructions for changing the password.
-- reiterate_password_change_process: The chatbot repeats the instructions for changing the password and emphasizes the importance of password management.
-- clarify_support_for_moodle: The user seeks clarification on the type of technical help available for issues with Moodle, prompting a detailed referral to specific resources.
-- request_alternate_expression: Requests the user to rephrase their inquiry if not clearly understood, while offering a link to the service catalog as a resource.
-- offer_contact_support: Chatbot provides contact information for user support in case of further inquiries or issues.
-- select_change_password: The user chooses the option to change their password, resulting in detailed instructions for retrieving their user ID and changing their password.
+- provide_service_information: The chatbot provides relevant information about the services offered by Tecnologías de la Información at UAM, including contact details and service catalog.
+- provide_contact_methods: The chatbot supplies various ways to contact the Centro de Atención a Usuarios (CAU), including email, phone, and physical address.
+- share_campus_map_link: The chatbot offers a link to view a campus map for easier navigation to in-person service locations.
+- specify_service_hours: The chatbot communicates the operational hours for the CAU, detailing both regular and reduced hours.
+- prompt_for_topic_exploration: The chatbot invites the user to inquire about other related topics in Tecnologías de la Información.
+- clarify_chatbot_role: The chatbot reiterates its purpose, reminding the user that it is available to assist with questions regarding CAU services.
+- offer_information_access: The chatbot offers information access regarding the capabilities of the Center for User Attention in order to assist the user.
+- suggest_service_catalog: The chatbot encourages users to consult the catalog of services offered by the CAU for more detailed information.
 
 ## FUNCTIONALITIES (Raw JSON Structure)
 [
   {
-    "name": "provide_services_overview",
-    "description": "The chatbot provides an overview of the services offered by Tecnologías de la Información at UAM, referring the user to the official website for detailed information.",
+    "name": "provide_service_information",
+    "description": "The chatbot provides relevant information about the services offered by Tecnologías de la Información at UAM, including contact details and service catalog.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "provide_contact_info",
-    "description": "The chatbot provides contact information for the Centro de Atención a Usuarios (CAU), including email, phone number, and physical address for assistance.",
+    "name": "provide_contact_methods",
+    "description": "The chatbot supplies various ways to contact the Centro de Atención a Usuarios (CAU), including email, phone, and physical address.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "provide_support_services",
-    "description": "The chatbot explains the types of support services available for technical problems at UAM, specifically regarding videoconferencing connections and software.",
+    "name": "share_campus_map_link",
+    "description": "The chatbot offers a link to view a campus map for easier navigation to in-person service locations.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "refer_to_service_catalog",
-    "description": "The chatbot redirects the user to consult the service catalog for specific information on services offered by Tecnologías de la Información at UAM.",
+    "name": "specify_service_hours",
+    "description": "The chatbot communicates the operational hours for the CAU, detailing both regular and reduced hours.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "address_specific_support_requests",
-    "description": "The chatbot attempts to address user requests for specific support services but primarily refers back to contact information and the service catalog.",
+    "name": "prompt_for_topic_exploration",
+    "description": "The chatbot invites the user to inquire about other related topics in Tecnologías de la Información.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "provide_moodle_support_options",
-    "description": "The chatbot offers options for specific issues related to Moodle, allowing the user to choose a particular problem they are experiencing.",
+    "name": "clarify_chatbot_role",
+    "description": "The chatbot reiterates its purpose, reminding the user that it is available to assist with questions regarding CAU services.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "provide_password_change_instructions",
-    "description": "The chatbot provides instructions on how to change the password for the ID-UAM account and how to obtain a code for activation.",
+    "name": "offer_information_access",
+    "description": "The chatbot offers information access regarding the capabilities of the Center for User Attention in order to assist the user.",
     "parameters": [],
     "parent_names": [],
     "children": []
   },
   {
-    "name": "verify_user_identity",
-    "description": "The chatbot offers information on how to retrieve the user identifier if forgotten and provides further instructions for changing the password.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "reiterate_password_change_process",
-    "description": "The chatbot repeats the instructions for changing the password and emphasizes the importance of password management.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "clarify_support_for_moodle",
-    "description": "The user seeks clarification on the type of technical help available for issues with Moodle, prompting a detailed referral to specific resources.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "request_alternate_expression",
-    "description": "Requests the user to rephrase their inquiry if not clearly understood, while offering a link to the service catalog as a resource.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "offer_contact_support",
-    "description": "Chatbot provides contact information for user support in case of further inquiries or issues.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "select_change_password",
-    "description": "The user chooses the option to change their password, resulting in detailed instructions for retrieving their user ID and changing their password.",
+    "name": "suggest_service_catalog",
+    "description": "The chatbot encourages users to consult the catalog of services offered by the CAU for more detailed information.",
     "parameters": [],
     "parent_names": [],
     "children": []
@@ -116,4 +76,4 @@ No limitations discovered.
 1. Spanish
 
 ## FALLBACK MESSAGE
-<p>¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+<p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención a Usuarios del servicio de Tecnologías de la Información.</strong></p>

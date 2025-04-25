@@ -1,0 +1,54 @@
+test_name: Solicitud de Mapa del Campus
+llm:
+  temperature: 0.9
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúas como un alumno que necesita obtener un mapa del campus para encontrar
+    la oficina del CAU.
+  context:
+  - 'personality: personalities/impatient-user'
+  - Has escuchado que el CAU es muy útil para resolver problemas administrativos,
+    por lo que quieres visitarlos pronto.
+  - Te sientes un poco perdido en el campus porque es tu primera semana y no estás
+    familiarizado con la ubicación de las oficinas.
+  - Tienes una cita importante más tarde en el día y necesitas asegurarte de que el
+    CAU esté abierto cuando llegues.
+  goals:
+  - Solicitar el mapa del campus para encontrar la oficina del CAU
+  - Obtener información sobre la ubicación exacta de la oficina del CAU
+  - Preguntar sobre los horarios de atención del CAU para coordinar mi visita
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - mapa_campus_link:
+      type: str
+      description: Enlace proporcionado por el chatbot para acceder al mapa del campus
+        y facilitar la navegación hacia la oficina del CAU.
+  - ubicacion_cau:
+      type: str
+      description: Información sobre la ubicación exacta de la oficina del CAU que
+        el chatbot brinda al usuario.
+  - horarios_atencion_cau:
+      type: str
+      description: Horarios de atención del CAU que el chatbot menciona, incluyendo
+        detalles sobre horarios regulares y reducidos.
+  - contacto_cau:
+      type: str
+      description: Detalles de contacto del CAU, incluyendo correo electrónico, teléfono
+        y dirección física, que el chatbot ofrece al usuario.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 10
+  interaction_style:
+  - single question

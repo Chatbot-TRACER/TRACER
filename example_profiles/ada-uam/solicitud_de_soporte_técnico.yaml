@@ -1,0 +1,69 @@
+test_name: Solicitud de Soporte Técnico
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: Spanish
+  role: Actúas como un estudiante que necesita asistencia técnica y quiere solicitar
+    soporte a través del CAU.
+  context:
+  - 'personality: personalities/sarcastic-user'
+  - Estás teniendo problemas con la conexión a internet en tu residencia estudiantil,
+    lo que afecta tus clases en línea.
+  - Has escuchado que el CAU es accesible por correo electrónico, pero no estás seguro
+    de cuál es la dirección correcta.
+  - El horario habitual de atención del CAU es de 9 a 17 horas, pero te preocupa si
+    cambiará durante las vacaciones de invierno.
+  goals:
+  - Solicitar soporte técnico para mi {{tipo_de_dispositivo}} a través del CAU
+  - Preguntar sobre los horarios de atención del CAU en períodos de suspensión de
+    actividad
+  - Solicitar detalles sobre el catálogo de servicios ofrecidos por el CAU
+  - Consultar los métodos de contacto disponibles para el CAU
+  - tipo_de_dispositivo:
+      function: forward()
+      type: string
+      data:
+      - computadora portátil
+      - teléfono móvil
+      - tableta
+      - computadora de escritorio
+      - impresora
+chatbot:
+  is_starter: false
+  fallback: <p>¿Puedes preguntármelo de otra forma? o, si lo prefieres, puedes consultar
+    nuestro <a href="https://www.uam.es/uam/tecnologias-informacion/servicios-ti">catálogo
+    de servicios</a>.<br>Respondo a preguntas dirigidas al <strong>Centro de Atención
+    a Usuarios del servicio de Tecnologías de la Información.</strong></p>
+  output:
+  - horarios_atencion_cau:
+      type: str
+      description: Horarios operativos del CAU mencionados por el chatbot, que incluyen
+        los horarios regulares y cualquier horario reducido durante períodos de suspensión
+        de actividad.
+  - catalogo_servicios_cau:
+      type: str
+      description: Descripción o enlace al catálogo de servicios ofrecidos por el
+        CAU que proporciona el chatbot al usuario.
+  - metodos_contacto_cau:
+      type: str
+      description: Información sobre los diferentes métodos de contacto del CAU, como
+        correo electrónico, teléfono y dirección física, que el chatbot incluye en
+        su respuesta.
+  - enlace_mapa_campus:
+      type: str
+      description: URL o información sobre un enlace proporcionado por el chatbot
+        que lleva a un mapa del campus para facilitar la navegación hacia los lugares
+        de servicio en persona.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question
+  - long phrases

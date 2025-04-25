@@ -1,0 +1,80 @@
+test_name: Changing Pizza Order
+llm:
+  temperature: 0.7
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: You have to act as a user who wants to change an existing pizza order.
+  context:
+  - 'personality: personalities/conversational-user'
+  - You originally ordered a large pepperoni pizza but now want to change it to a
+    medium vegetarian pizza.
+  - You're hosting a small gathering tonight and need the order adjusted to accommodate
+    two additional guests.
+  - You want to make sure the new order still includes gluten-free crust, as you have
+    dietary restrictions.
+  goals:
+  - Change my existing order from {{current_pizza_type}} to {{new_pizza_type}}
+  - Specify the size of the new pizza order as {{pizza_size}}
+  - Request a summary of the updated order details
+  - current_pizza_type:
+      function: forward()
+      type: string
+      data:
+      - Margherita
+      - Pepperoni
+      - BBQ Chicken
+      - Veggie
+      - Hawaiian
+  - new_pizza_type:
+      function: random()
+      type: string
+      data:
+      - Margherita
+      - Pepperoni
+      - Hawaiian
+      - BBQ Chicken
+      - Veggie Deluxe
+  - pizza_size:
+      function: random()
+      type: string
+      data:
+      - Small
+      - Medium
+      - Large
+      - Extra Large
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks. For troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - updated_order_summary:
+      type: str
+      description: A concise summary of the user's updated pizza order details as
+        provided by the chatbot, including the type of pizza, size, and any additional
+        items requested.
+  - new_pizza_size:
+      type: str
+      description: The size of the new pizza order specified by the user that the
+        chatbot confirms after the user's request for a change in the order.
+  - previous_order_details:
+      type: str
+      description: Information about the original order that the chatbot repeats back
+        to the user before confirming the changes, ensuring clarity on what is being
+        modified.
+  - total_price:
+      type: float
+      description: The updated total cost of the new pizza order after the changes
+        have been confirmed, which is provided by the chatbot.
+conversation:
+  number: 3
+  max_cost: 1.0
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - change your mind
+  - single question
