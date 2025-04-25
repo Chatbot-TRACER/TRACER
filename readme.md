@@ -31,6 +31,7 @@ The system follows a multi-phase approach implemented via a LangGraph structure:
 4. **Bot Classification:** After running all the sessions, the conversations and the found functionalities are passed to an LLM which will determine if the chatbot is transactional or informative.
    - **Transactional:** chatbots that allow you to perform actions, such as booking a flight or ordering food.
    - **Informational:** chatbots that provide information, such as answering questions or providing customer support.
+   - The detected chatbot type is stored in the application state for use in subsequent processing steps.
 5. **Functionality Analysis (LLM-based):** Depending on the chatbot's type a different prompt will be used, but in this section the LLM will receive conversations and functionalities and will try to merge functionalities that are the same, maybe find new ones, and find relationships between them. The output will be a structured representation of the discovered functionalities, including parent/child relationships and unique root nodes.
    - **Transactional:** The LLM will look for sequential dependencies, branching logic, and optional steps.
    - **Informational:** The LLM will look for independent topics and create separate root nodes for each topic.
