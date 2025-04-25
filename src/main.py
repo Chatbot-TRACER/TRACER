@@ -494,9 +494,16 @@ def main():
         "discovered_functionalities"
     ]
 
+    # Store the workflow structure for usage in profile generation
+    workflow_structure = structure_result["discovered_functionalities"]
+
     # 2. Generate user profiles based on the inferred structure
     print("\n--- Generating user profiles ---")
     profile_graph = explorer._build_profile_generation_graph()
+
+    # Add workflow structure to the state
+    analysis_state["workflow_structure"] = workflow_structure
+
     result = profile_graph.invoke(
         analysis_state, config={"configurable": {"thread_id": "analysis_session"}}
     )

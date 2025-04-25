@@ -252,14 +252,22 @@ class ChatbotExplorer:
                 "discovered_functionalities"
             ]
 
+            # Get workflow structure from state if available
+            workflow_structure = state.get("workflow_structure", None)
+
+            # Get chatbot type from state if available
+            chatbot_type = state.get("chatbot_type", "unknown")
+            print(f"   Chatbot type for goal generation: {chatbot_type}")
+
             # Helper to get all descriptions from the structure
             def get_all_descriptions(nodes: List[Dict[str, Any]]) -> List[str]:
                 descriptions = []
                 for node in nodes:
-                    if node.get("description"):
+                    if "description" in node and node["description"]:
                         descriptions.append(node["description"])
-                    if node.get("children"):  # Recursively get children descriptions
-                        descriptions.extend(get_all_descriptions(node["children"]))
+                    if "children" in node and node["children"]:
+                        child_descriptions = get_all_descriptions(node["children"])
+                        descriptions.extend(child_descriptions)
                 return descriptions
 
             functionality_descriptions = get_all_descriptions(structured_root_dicts)
@@ -275,13 +283,15 @@ class ChatbotExplorer:
             )
 
             try:
-                # Call the goal generation function
+                # Call the goal generation function with workflow structure and chatbot type
                 profiles_with_goals = generate_user_profiles_and_goals(
                     functionality_descriptions,
                     state.get("discovered_limitations", []),
                     self.llm,
+                    workflow_structure=workflow_structure,
                     conversation_history=state.get("conversation_history", []),
                     supported_languages=state.get("supported_languages", []),
+                    chatbot_type=chatbot_type
                 )
                 print(f" -> Generated {len(profiles_with_goals)} profiles with goals.")
                 # Update state with goals
@@ -293,8 +303,10 @@ class ChatbotExplorer:
 
         elif state.get("exploration_finished", False):
             print("\n--- Skipping goal generation: No functionalities discovered. ---")
-
-        return state  # Return unchanged state if skipped
+            return state
+        else:
+            print("\n--- Skipping goal generation: Exploration not finished. ---")
+            return state
 
     def _conversation_params_node(self, state: State):
         """

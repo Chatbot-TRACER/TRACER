@@ -15,6 +15,7 @@ The primary goal is to understand _how_ a user interacts with the chatbot sequen
 - **Automated Discovery:** Automatically interact with a chatbot to discover its features, capabilities, and limitations.
 - **Functionality Extraction:** Identify and structure the distinct actions or tasks the chatbot can perform.
 - **Workflow Modeling:** Model the user's journey through the chatbot as a directed graph, capturing sequential dependencies, branching logic, and optional steps, adapt the modeling approach based on whether the chatbot is primarily transactional or informational.
+- **Workflow-Aware Profile Generation:** Generate realistic user profiles that follow natural conversation flows discovered during exploration, tailored to whether the chatbot is transactional or informational.
 - **Profile Generation:** Generate standardized YAML user profiles based on discovered functionalities and workflows, suitable for [Sensei](https://github.com/satori-chatbots/user-simulator).
 - **Reporting:** Produce comprehensive reports detailing discovered functionalities (in structured and graphical formats), limitations, supported languages, and fallback behavior.
 

@@ -573,13 +573,28 @@ def generate_user_profiles_and_goals(
     functionalities,
     limitations,
     llm,
+    workflow_structure=None,
     conversation_history=None,
     output_dir="profiles",
     supported_languages=None,
+    chatbot_type="unknown",
 ):
     """
     Group functionalities into logical user profiles and generate coherent goal sets
     for individual conversations
+
+    Args:
+        functionalities: List of discovered functionality descriptions
+        limitations: List of discovered limitations
+        llm: Language model to use for generation
+        workflow_structure: Optional structure representing workflow relationships between functionalities
+        conversation_history: Optional historical conversation data
+        output_dir: Directory to save output profiles
+        supported_languages: List of supported languages
+        chatbot_type: Type of chatbot ("transactional", "informational", or "unknown")
+
+    Returns:
+        List of profile dictionaries with goals and variable definitions
     """
 
     # Work in the given language with stronger instructions
@@ -626,6 +641,27 @@ LANGUAGE REQUIREMENT:
                     conversation_context += f"Chatbot: {turn['content']}\n"
             conversation_context += "\n"
 
+    # Prepare workflow information if available
+    workflow_context = ""
+    if workflow_structure:
+        workflow_context = "WORKFLOW INFORMATION (how functionalities connect):\n"
+
+        # Process the workflow structure to extract relationships
+        for node in workflow_structure:
+            if isinstance(node, dict):
+                node_name = node.get("name", "")
+                node_children = node.get("children", [])
+
+                if node_name and node_children:
+                    child_names = [child.get("name", "") for child in node_children if isinstance(child, dict) and "name" in child]
+                    if child_names:
+                        workflow_context += f"- {node_name} can lead to: {', '.join(child_names)}\n"
+                elif node_name:
+                    workflow_context += f"- {node_name} (standalone functionality)\n"
+
+    # Include chatbot type information
+    chatbot_type_context = f"CHATBOT TYPE: {chatbot_type.upper()}\n"
+
     # Ask the LLM to identify distinct conversation scenarios
     # Calculate an appropriate number of profiles based on functionality count
     num_functionalities = len(functionalities)
@@ -640,6 +676,8 @@ LANGUAGE REQUIREMENT:
     {", ".join(functionalities)}
 
     {conversation_context}
+    {workflow_context}
+    {chatbot_type_context}
 
     {language_instruction_grouping}
 
@@ -728,8 +766,12 @@ LANGUAGE REQUIREMENT:
         CONVERSATION SCENARIO: {profile["name"]}
         ROLE: {profile["role"]}
 
+        {chatbot_type_context}
+
         RELEVANT FUNCTIONALITIES:
         {", ".join(profile["functionalities"])}
+
+        {workflow_context}
 
         LIMITATIONS (keep in mind only; do NOT let these drive the goals):
         {", ".join(limitations)}
@@ -739,9 +781,9 @@ LANGUAGE REQUIREMENT:
         {language_instruction_goals}
 
         ABOUT VARIABLES:
-        - Only use {{variable}} where the user might provide different values each time (e.g. {{date}}, {{amount}}, {{phone_number}}, {{dog_breed}})
-        - These are purely placeholders for possible user input. For example, {{phone_number}} does not mean we must always request a phone number; it’s just a potential input that could vary.
-        - Do NOT put fixed names like "Centro de Atención a Usuarios" or "CAU" inside {{ }} (they are not interchangeable).
+        - Only use {{variable}} where the user might provide different values each time (e.g. {{date}}, {{amount}}, {{reference_number}})
+        - These are purely placeholders for possible user input. For example, {{employee_id}} does not mean we must always request an ID; it's just a potential input that could vary.
+        - Do NOT put fixed names like "IT Department" or organization names inside {{ }} (they are not interchangeable).
         - Variables must be legitimate parameters the user could change (e.g., different dates, amounts, or IDs).
 
         EXTREMELY IMPORTANT RESTRICTIONS:
@@ -752,24 +794,38 @@ LANGUAGE REQUIREMENT:
         5. Focus on practical, realistic user tasks ONLY
 
         Create 2-4 goals that focus strictly on what the user intends to achieve with the chatbot.
-        Avoid vague or indirect objectives like "consultar las limitaciones del chatbot" or "solicitar ejemplos sobre el CAU."
+        Avoid vague or indirect objectives like "understand the chatbot's capabilities" or "test the system's knowledge."
 
-        Examples of good goal sets:
+        IMPORTANT:
+        - If the chatbot is TRANSACTIONAL, goals should follow a natural workflow progression. Create goals that represent steps in completing a process or transaction.
+        - If the chatbot is INFORMATIONAL, goals can be more independent questions, but should still be related to the same general topic.
+        - If workflow information is provided, create goals that follow natural conversation flows discovered during exploration.
 
-        Example 1 (Food ordering):
-        - "Order a {{size}} pizza with {{toppings}}"
-        - "Add {{quantity}} {{drink}} to my order"
-        - "Ask about delivery time"
-        - "Get my order total and confirmation number"
+        Examples for TRANSACTIONAL chatbots:
 
-        Example 2 (Municipal services):
-        - "Ask about property tax"
-        - "Find out how to pay it"
+        Example 1 (IT Support):
+        - "Report a technical issue with my {{device_type}}"
+        - "Provide additional details about the problem"
+        - "Request an estimated resolution time"
+        - "Ask for a ticket confirmation number"
 
-        Example 3 (City registration):
-        - "Ask how to register as a resident"
-        - "Find out what documents are needed"
-        - "Ask if registration can be done online"
+        Example 2 (Appointment Scheduling):
+        - "Schedule an appointment for {{service_type}}"
+        - "Select a preferred date from {{available_dates}}"
+        - "Confirm the appointment details"
+        - "Request a reminder option"
+
+        Examples for INFORMATIONAL chatbots:
+
+        Example 1 (University Information):
+        - "Ask about admission requirements for {{program_name}}"
+        - "Request information about application deadlines"
+        - "Inquire about scholarship opportunities"
+
+        Example 2 (Government Services):
+        - "Ask about the process for renewing a {{document_type}}"
+        - "Inquire about required documentation"
+        - "Find out about processing times"
 
         FORMAT YOUR RESPONSE AS:
 
