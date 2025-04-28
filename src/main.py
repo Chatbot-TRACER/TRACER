@@ -8,14 +8,6 @@ from chatbot_explorer.cli import parse_arguments
 from chatbot_explorer.explorer import ChatbotExplorer
 from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
 
-# Import session utilities
-from chatbot_explorer.session import (
-    run_exploration_session,
-    extract_supported_languages,
-    extract_fallback_message,
-    _get_all_nodes,  # Internal use likely
-)
-from chatbot_explorer.functionality_node import FunctionalityNode
 from typing import List, Dict, Any, Set
 
 
@@ -322,15 +314,6 @@ def main():
     explorer = ChatbotExplorer(model_name)
 
     # Store results from multiple sessions
-    conversation_sessions = []
-    supported_languages = []
-    fallback_message = None
-
-    # Track graph exploration state
-    root_nodes = []  # List of root FunctionalityNode objects
-    pending_nodes = []  # Queue of nodes remaining to explore
-    explored_nodes = set()  # Set of node names already explored
-
     # Instantiate the correct chatbot connector based on technology
     if technology == "taskyto":
         the_chatbot = ChatbotTaskyto(chatbot_url)
@@ -341,125 +324,14 @@ def main():
         print(f"Error: Unknown technology '{args.technology}'")
         sys.exit(1)
 
-    # --- Initial Language Detection ---
-    print("\n--- Probing Chatbot Language ---")
-    initial_probe_query = "Hello"  # Simple initial query
-    is_ok, probe_response = the_chatbot.execute_with_input(initial_probe_query)
-    if is_ok and probe_response:
-        print(f"   Initial response received: '{probe_response[:60]}...'")
-        try:
-            # Attempt language detection via LLM
-            detected_langs = extract_supported_languages(probe_response, explorer.llm)
-            if detected_langs:
-                supported_languages = detected_langs
-                print(f"   Detected initial language(s): {supported_languages}")
-            else:
-                print(
-                    "   Could not detect language from initial probe, defaulting to English."
-                )
-        except Exception as lang_e:
-            print(
-                f"   Error during initial language detection: {lang_e}. Defaulting to English."
-            )
-    else:
-        print(
-            "   Could not get initial response from chatbot for language probe. Defaulting to English."
-        )
-    # --- End Initial Language Detection ---
-
-    # --- Initial Fallback Message Detection ---
-    print("\n--- Attempting to detect chatbot fallback message ---")
-    try:
-        # Call the function now defined in main.py
-        fallback_message = extract_fallback_message(the_chatbot, explorer.llm)
-        if fallback_message:
-            print(f'   Detected fallback message: "{fallback_message[:50]}..."')
-        else:
-            print("   Could not detect a fallback message.")
-    except Exception as fb_e:
-        print(
-            f"   Error during fallback detection: {fb_e}. Proceeding without fallback."
-        )
-        fallback_message = None
-    # --- End Fallback Message Detection ---
-
-    # --- Exploration Loop ---
-    session_num = 0  # Session counter (0-based)
-    while session_num < args.sessions:
-        current_session_index = session_num  # For logging (Session 1/N, etc.)
-        print(f"\n=== Starting Session {current_session_index + 1}/{args.sessions} ===")
-
-        explore_node = None  # Node to focus on this session (if any)
-        session_type_log = "General Exploration"
-
-        if pending_nodes:
-            # Prioritize exploring specific nodes from the queue
-            explore_node = pending_nodes.pop(0)
-            # Double-check if node was already explored (shouldn't happen with current logic, but safe)
-            if explore_node.name in explored_nodes:
-                print(f"--- Skipping already explored node: '{explore_node.name}' ---")
-                session_num += 1  # Consume a session slot
-                continue
-            session_type_log = f"Exploring functionality '{explore_node.name}'"
-        elif (
-            session_num > 0
-        ):  # If queue is empty after session 0, perform general exploration
-            print("   Pending nodes queue is empty. Performing general exploration.")
-        # Else: Session 0 and queue is empty is the initial state.
-
-        print(f"   Session Type: {session_type_log}")
-
-        # Execute one exploration session
-        (
-            conversation_history,
-            _,  # Languages
-            _,  # New nodes
-            updated_roots,  # Updated list of root nodes
-            updated_pending,  # Updated queue of nodes to explore
-            updated_explored,  # Updated set of explored node names
-        ) = run_exploration_session(
-            current_session_index,  # Pass 0-based index
-            args.sessions,
-            args.turns,
-            explorer,
-            the_chatbot,
-            fallback_message=fallback_message,
-            current_node=explore_node,  # None for general exploration
-            root_nodes=root_nodes,
-            pending_nodes=pending_nodes,  # Pass current queue
-            explored_nodes=explored_nodes,
-            supported_languages=supported_languages,  # Pass current languages
-        )
-
-        # Aggregate results
-        conversation_sessions.append(conversation_history)
-        root_nodes = updated_roots
-        pending_nodes = updated_pending  # Includes newly discovered nodes
-        explored_nodes = updated_explored
-
-        # Move to the next session
-        session_num += 1
-    # --- End Exploration Loop ---
-
-    # --- Post-Exploration Summary ---
-    if session_num == args.sessions:
-        print(f"\n=== Completed {args.sessions} exploration sessions ===")
-        if pending_nodes:
-            print(
-                f"   NOTE: {len(pending_nodes)} nodes still remain in the pending queue."
-            )
-        else:
-            print("   All discovered nodes were explored.")
-    else:
-        # Should not be reachable with the current loop structure
-        print(
-            f"\n--- WARNING: Exploration stopped unexpectedly after {session_num} sessions. ---"
-        )
-
-    print(f"Discovered {len(root_nodes)} root functionalities after exploration.")
-
-    # Convert FunctionalityNode objects to dictionaries for analysis
-    functionality_dicts = [node.to_dict() for node in root_nodes]
+    # --- Run Full Exploration ---
+    print("\n--- Starting Chatbot Exploration ---")
+    exploration_results = explorer.run_full_exploration(
+        chatbot_connector=the_chatbot,
+        max_sessions=args.sessions,
+        max_turns=args.turns,
+    )
+    print("--- Exploration Complete ---")
 
     # Prepare state for LangGraph analysis (structure inference and profile generation)
     print(
@@ -472,14 +344,16 @@ def main():
                 "content": "Analyze the conversation histories to identify functionalities",
             },
         ],
-        "conversation_history": conversation_sessions,
-        "discovered_functionalities": functionality_dicts,  # Initial structure from exploration
+        "conversation_history": exploration_results["conversation_sessions"],
+        "discovered_functionalities": exploration_results[
+            "root_nodes_dict"
+        ],  # Use results from exploration
         "discovered_limitations": [],  # Limitations are not currently extracted during exploration
-        "current_session": max_sessions,
+        "current_session": max_sessions,  # Keep max_sessions from args
         "exploration_finished": True,
         "conversation_goals": [],  # Not used in this flow currently
-        "supported_languages": supported_languages,
-        "fallback_message": fallback_message,
+        "supported_languages": exploration_results["supported_languages"],
+        "fallback_message": exploration_results["fallback_message"],
     }
 
     # 1. Infer the workflow structure using the dedicated graph
@@ -558,10 +432,9 @@ def main():
     print("\n--- Writing report to disk ---")
     write_report(
         output_dir,
-        # Pass the final structured functionalities and other collected data
         {"discovered_functionalities": functionality_dicts},
-        supported_languages,
-        fallback_message,
+        exploration_results["supported_languages"],
+        exploration_results["fallback_message"],
     )
 
     # --- Generate Workflow Graph Image ---
