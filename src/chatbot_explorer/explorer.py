@@ -76,8 +76,7 @@ class ChatbotExplorer:
             model_name (str): The name of the OpenAI model to use.
         """
         self.llm = ChatOpenAI(model=model_name)
-        self.memory = MemorySaver()  # For saving graph state
-        self.graph = self._build_graph()  # Build the main graph
+        self.memory = MemorySaver()
 
     def run_full_exploration(
         self, chatbot_connector, max_sessions: int, max_turns: int
@@ -242,37 +241,6 @@ class ChatbotExplorer:
             "supported_languages": supported_languages,
             "fallback_message": fallback_message,
         }
-
-    def _build_graph(self):
-        """
-        Builds the main LangGraph for exploration and analysis.
-
-        Returns:
-            CompiledGraph: The compiled LangGraph application.
-        """
-        graph_builder = StateGraph(State)
-
-        # Add graph nodes
-        graph_builder.add_node("explorer", self._explorer_node)
-        graph_builder.add_node("analyzer", self._analyzer_node)
-        graph_builder.add_node("structure_builder", self._structure_builder_node)
-        graph_builder.add_node("goal_generator", self._goal_generator_node)
-        graph_builder.add_node("conversation_params", self._conversation_params_node)
-        graph_builder.add_node("profile_builder", self._build_profiles_node)
-        graph_builder.add_node("profile_validator", self._validate_profiles_node)
-
-        # Define the flow (edges)
-        graph_builder.set_entry_point("explorer")
-        graph_builder.add_edge("explorer", "analyzer")
-        graph_builder.add_edge("analyzer", "structure_builder")
-        graph_builder.add_edge("structure_builder", "goal_generator")
-        graph_builder.add_edge("goal_generator", "conversation_params")
-        graph_builder.add_edge("conversation_params", "profile_builder")
-        graph_builder.add_edge("profile_builder", "profile_validator")
-        graph_builder.set_finish_point("profile_validator")
-
-        # Compile the graph
-        return graph_builder.compile(checkpointer=self.memory)
 
     def _build_profile_generation_graph(self):
         """
