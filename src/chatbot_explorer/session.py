@@ -73,9 +73,7 @@ def run_exploration_session(
         session_focus = f"Focus on actively using and exploring the '{current_node.name}' functionality ({current_node.description}). If it requires input, try providing plausible values. If it offers choices, select one to proceed."
         if current_node.parameters:
             param_names = [p.get("name", "unknown") for p in current_node.parameters]
-            session_focus += (
-                f" Attempt to provide values for parameters like: {', '.join(param_names)}."
-            )
+            session_focus += f" Attempt to provide values for parameters like: {', '.join(param_names)}."
     else:
         # General exploration focus
         session_focus = "Explore the chatbot's main capabilities. Ask what it can do or what topics it covers. If it offers options or asks questions requiring a choice, TRY to provide an answer or make a selection to see where it leads."
@@ -145,10 +143,10 @@ def run_exploration_session(
         # Translate if needed
         if lang_lower != "english":
             try:
-                translation_prompt = f"Translate '{greeting_en}' to {primary_language}. Respond ONLY with the translation."
-                translated_greeting = (
-                    explorer.llm.invoke(translation_prompt).content.strip().strip("\"'")
+                translation_prompt = (
+                    f"Translate '{greeting_en}' to {primary_language}. Respond ONLY with the translation."
                 )
+                translated_greeting = explorer.llm.invoke(translation_prompt).content.strip().strip("\"'")
                 # Check if translation looks okay
                 if translated_greeting and len(translated_greeting.split()) > 1:
                     initial_question = translated_greeting
@@ -169,12 +167,8 @@ def run_exploration_session(
     print(f"\nChatbot: {chatbot_message}")
 
     # Add first exchange to history
-    conversation_history_lc.append(
-        AIMessage(content=initial_question)
-    )  # Explorer AI is 'assistant'
-    conversation_history_lc.append(
-        HumanMessage(content=chatbot_message)
-    )  # Target Chatbot is 'user'/'human'
+    conversation_history_lc.append(AIMessage(content=initial_question))  # Explorer AI is 'assistant'
+    conversation_history_lc.append(HumanMessage(content=chatbot_message))  # Target Chatbot is 'user'/'human'
 
     consecutive_failures = 0
     force_topic_change_next_turn = False
@@ -210,9 +204,7 @@ def run_exploration_session(
 
             # If forcing change, add a temporary system message for this turn
             if force_topic_change_instruction:
-                messages_for_llm_this_turn = messages_for_llm + [
-                    SystemMessage(content=force_topic_change_instruction)
-                ]
+                messages_for_llm_this_turn = messages_for_llm + [SystemMessage(content=force_topic_change_instruction)]
             else:
                 messages_for_llm_this_turn = messages_for_llm
 
@@ -262,11 +254,7 @@ def run_exploration_session(
         # --- Try rephrasing the message if we hit a fallback or parsing error ---
         retry_also_failed = False
         if is_fallback or is_parsing_error:
-            failure_reason = (
-                "Fallback message"
-                if is_fallback
-                else "Potential chatbot error (OUTPUT_PARSING_FAILURE)"
-            )
+            failure_reason = "Fallback message" if is_fallback else "Potential chatbot error (OUTPUT_PARSING_FAILURE)"
             print(f"\n   ({failure_reason} detected. Rephrasing and retrying...)")
 
             # Generate a rephrased version of the original message
@@ -287,28 +275,20 @@ def run_exploration_session(
                     print(f"   Rephrased: '{rephrased_message}'")
 
                     # Try with the rephrased message
-                    is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(
-                        rephrased_message
-                    )
+                    is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(rephrased_message)
                 else:
                     # Fallback to original if rephrasing failed or returned identical text
                     print("   Failed to generate a different rephrasing. Retrying with original.")
-                    is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(
-                        explorer_response_content
-                    )
+                    is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(explorer_response_content)
             except Exception as e:
                 print(f"   Error rephrasing message: {e}. Retrying with original.")
-                is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(
-                    explorer_response_content
-                )
+                is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(explorer_response_content)
 
             if is_ok_retry:
                 # See if the retry gave us something different and not another failure
                 is_retry_fallback = False
                 if fallback_message and chatbot_message_retry:
-                    is_retry_fallback = is_semantically_fallback(
-                        chatbot_message_retry, fallback_message, explorer.llm
-                    )
+                    is_retry_fallback = is_semantically_fallback(chatbot_message_retry, fallback_message, explorer.llm)
 
                 is_retry_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message_retry
 
@@ -336,9 +316,7 @@ def run_exploration_session(
         # --- Update state based on FINAL outcome of the turn ---
         final_is_fallback = False
         if fallback_message and chatbot_message:
-            final_is_fallback = is_semantically_fallback(
-                chatbot_message, fallback_message, explorer.llm
-            )
+            final_is_fallback = is_semantically_fallback(chatbot_message, fallback_message, explorer.llm)
         final_is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
 
         if final_is_fallback or final_is_parsing_error:
@@ -372,9 +350,7 @@ def run_exploration_session(
     # Convert LangChain messages back to simple dicts for analysis functions if needed
     conversation_history_dict = [
         {
-            "role": "system"
-            if isinstance(m, SystemMessage)
-            else ("assistant" if isinstance(m, AIMessage) else "user"),
+            "role": "system" if isinstance(m, SystemMessage) else ("assistant" if isinstance(m, AIMessage) else "user"),
             "content": m.content,
         }
         for m in conversation_history_lc
@@ -382,18 +358,14 @@ def run_exploration_session(
 
     # Extract functionalities found in this session
     print("\nAnalyzing conversation for new functionalities...")
-    new_functionality_nodes = extract_functionality_nodes(
-        conversation_history_dict, explorer.llm, current_node
-    )
+    new_functionality_nodes = extract_functionality_nodes(conversation_history_dict, explorer.llm, current_node)
 
     # Process newly found nodes
     if new_functionality_nodes:
         print(f"Discovered {len(new_functionality_nodes)} new functionality nodes:")
 
         # Merge similar nodes found *within this session* first
-        new_functionality_nodes = merge_similar_functionalities(
-            new_functionality_nodes, explorer.llm
-        )
+        new_functionality_nodes = merge_similar_functionalities(new_functionality_nodes, explorer.llm)
 
         for node in new_functionality_nodes:
             # Check against *all* nodes found so far
@@ -404,9 +376,7 @@ def run_exploration_session(
             if not is_duplicate_functionality(node, all_existing, explorer.llm):
                 # If exploring a specific node, check if the new one is related
                 if current_node:
-                    relationship_valid = validate_parent_child_relationship(
-                        current_node, node, explorer.llm
-                    )
+                    relationship_valid = validate_parent_child_relationship(current_node, node, explorer.llm)
 
                     if relationship_valid:
                         # Add as child if valid relationship

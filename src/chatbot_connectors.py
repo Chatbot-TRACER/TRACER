@@ -119,9 +119,7 @@ class MillionBot(Chatbot):
         self.payload["message"]["text"] = user_msg
         timeout = self.timeout
         try:
-            response = requests.post(
-                self.url, headers=self.headers, json=self.payload, timeout=timeout
-            )
+            response = requests.post(self.url, headers=self.headers, json=self.payload, timeout=timeout)
             response_json = response.json()
             if response.status_code == 200:
                 text_response = ""

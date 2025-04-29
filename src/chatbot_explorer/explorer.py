@@ -30,9 +30,7 @@ class ChatbotExplorer:
         self.llm = ChatOpenAI(model=model_name)
         self.memory = MemorySaver()
 
-    def run_full_exploration(
-        self, chatbot_connector, max_sessions: int, max_turns: int
-    ) -> Dict[str, Any]:
+    def run_full_exploration(self, chatbot_connector, max_sessions: int, max_turns: int) -> Dict[str, Any]:
         """Runs the initial probing and the main exploration loop.
 
         Args:
@@ -70,13 +68,9 @@ class ChatbotExplorer:
                 else:
                     print("   Could not detect language from initial probe, defaulting to English.")
             except Exception as lang_e:
-                print(
-                    f"   Error during initial language detection: {lang_e}. Defaulting to English."
-                )
+                print(f"   Error during initial language detection: {lang_e}. Defaulting to English.")
         else:
-            print(
-                "   Could not get initial response from chatbot for language probe. Defaulting to English."
-            )
+            print("   Could not get initial response from chatbot for language probe. Defaulting to English.")
         # --- End Initial Language Detection ---
 
         # --- Initial Fallback Message Detection ---
@@ -155,9 +149,7 @@ class ChatbotExplorer:
             else:
                 print("   All discovered nodes were explored.")
         else:
-            print(
-                f"\n--- WARNING: Exploration stopped unexpectedly after {session_num} sessions. ---"
-            )
+            print(f"\n--- WARNING: Exploration stopped unexpectedly after {session_num} sessions. ---")
 
         print(f"Discovered {len(root_nodes)} root functionalities after exploration.")
 
@@ -186,9 +178,7 @@ class ChatbotExplorer:
             lambda state: conversation_params_node(state, self.llm),
         )
         graph_builder.add_node("profile_builder", profile_builder_node)  # Doesn't need llm
-        graph_builder.add_node(
-            "profile_validator", lambda state: profile_validator_node(state, self.llm)
-        )
+        graph_builder.add_node("profile_validator", lambda state: profile_validator_node(state, self.llm))
 
         # Define the flow
         graph_builder.set_entry_point("goal_generator")
@@ -209,9 +199,7 @@ class ChatbotExplorer:
         graph_builder = StateGraph(State)
 
         # Add only the structure builder node, passing self.llm
-        graph_builder.add_node(
-            "structure_builder", lambda state: structure_builder_node(state, self.llm)
-        )
+        graph_builder.add_node("structure_builder", lambda state: structure_builder_node(state, self.llm))
 
         # Start and end with this node
         graph_builder.set_entry_point("structure_builder")

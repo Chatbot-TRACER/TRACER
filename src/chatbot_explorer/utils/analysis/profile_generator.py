@@ -7,9 +7,7 @@ import yaml
 from ...utils.constants import AVAILABLE_PERSONALITIES, VARIABLE_PATTERN
 
 
-def build_profile_yaml(
-    profile: Dict[str, Any], fallback_message: str, primary_language: str
-) -> Dict[str, Any]:
+def build_profile_yaml(profile: Dict[str, Any], fallback_message: str, primary_language: str) -> Dict[str, Any]:
     """Create the YAML profile dictionary structure from a profile spec.
 
     Args:

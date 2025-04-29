@@ -32,17 +32,13 @@ def print_structured_functionalities(f, nodes: List[Dict[str, Any]], indent: str
         elif isinstance(params_data, str) and params_data.lower() not in ["none", ""]:
             param_str = f" (Params: {params_data})"
 
-        f.write(
-            f"{indent}- {node.get('name', 'N/A')}: {node.get('description', 'N/A')}{param_str}\n"
-        )
+        f.write(f"{indent}- {node.get('name', 'N/A')}: {node.get('description', 'N/A')}{param_str}\n")
         children_data = node.get("children", [])
         if children_data and isinstance(children_data, list):
             print_structured_functionalities(f, children_data, indent + "  ")
         elif children_data:
             # Log unexpected children type
-            f.write(
-                f"{indent}  WARN: Expected 'children' to be a list, found {type(children_data)}\n"
-            )
+            f.write(f"{indent}  WARN: Expected 'children' to be a list, found {type(children_data)}\n")
 
 
 def generate_graph_image(structured_data: List[Dict[str, Any]], output_filename_base: str):
@@ -144,9 +140,7 @@ def generate_graph_image(structured_data: List[Dict[str, Any]], output_filename_
                         graph.edge(node_name, child_name)
                         processed_edges.add(edge_key)
         elif children:
-            print(
-                f"WARN in graph: Expected 'children' for node '{node_name}' to be a list, found {type(children)}"
-            )
+            print(f"WARN in graph: Expected 'children' for node '{node_name}' to be a list, found {type(children)}")
 
     dot.attr("graph", label="Chatbot Functionality Workflow", fontsize="18", labelloc="t")
     start_node_name = "start_node"
@@ -205,9 +199,7 @@ def write_report(
             f.write("## FUNCTIONALITIES (Workflow Structure)\n")
             structured_functionalities = result.get("discovered_functionalities", [])
             if structured_functionalities and isinstance(structured_functionalities, list):
-                if not structured_functionalities or isinstance(
-                    structured_functionalities[0], dict
-                ):
+                if not structured_functionalities or isinstance(structured_functionalities[0], dict):
                     print_structured_functionalities(f, structured_functionalities)
                 else:
                     f.write("Functionality structure not in expected list-of-dicts format.\n")
@@ -272,16 +264,10 @@ def save_profiles(built_profiles: List[Dict[str, Any]], output_dir: str):
     error_count = 0
     for profile in built_profiles:
         # Generate a safe filename from the test_name
-        test_name = profile.get(
-            "test_name", f"profile_{hash(str(profile))}"
-        )  # Use hash as fallback
+        test_name = profile.get("test_name", f"profile_{hash(str(profile))}")  # Use hash as fallback
 
         if isinstance(test_name, dict):
-            if (
-                test_name.get("function") == "random()"
-                and "data" in test_name
-                and test_name["data"]
-            ):
+            if test_name.get("function") == "random()" and "data" in test_name and test_name["data"]:
                 # Use the first data element for a more descriptive random name
                 base_name = str(test_name["data"][0])
                 filename_base = f"random_profile_{base_name.lower().replace(' ', '_')}"
@@ -290,14 +276,10 @@ def save_profiles(built_profiles: List[Dict[str, Any]], output_dir: str):
                 filename_base = f"profile_{hash(str(test_name))}"
         else:
             # Sanitize string test names for filenames
-            filename_base = (
-                str(test_name).lower().replace(" ", "_").replace(",", "").replace("&", "and")
-            )
+            filename_base = str(test_name).lower().replace(" ", "_").replace(",", "").replace("&", "and")
 
         # Basic sanitization to remove potentially problematic characters
-        safe_filename_base = "".join(
-            c if c.isalnum() or c in ("_", "-") else "_" for c in filename_base
-        )
+        safe_filename_base = "".join(c if c.isalnum() or c in ("_", "-") else "_" for c in filename_base)
         filename = f"{safe_filename_base}.yaml"
 
         filepath = os.path.join(output_dir, filename)
@@ -321,9 +303,7 @@ def save_profiles(built_profiles: List[Dict[str, Any]], output_dir: str):
             print(f"   ERROR: Failed to write file '{filename}': {e}")
             error_count += 1
         except Exception as e:
-            print(
-                f"   ERROR: An unexpected error occurred while writing profile '{test_name}': {e}"
-            )
+            print(f"   ERROR: An unexpected error occurred while writing profile '{test_name}': {e}")
             error_count += 1
 
     print(f"   Finished saving profiles: {saved_count} successful, {error_count} errors.")

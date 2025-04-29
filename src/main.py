@@ -66,9 +66,7 @@ def main():
 
     # --- Run Analysis Pipeline ---
     print("\n--- Running Analysis Pipeline (Structure Inference & Profile Generation) ---")
-    analysis_results = run_analysis_pipeline(
-        explorer_instance=explorer, exploration_results=exploration_results
-    )
+    analysis_results = run_analysis_pipeline(explorer_instance=explorer, exploration_results=exploration_results)
 
     # Extract results for reporting and saving
     functionality_dicts = analysis_results["discovered_functionalities"]

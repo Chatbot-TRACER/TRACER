@@ -33,9 +33,7 @@ def extract_profile_variables(profile):
                     chain_descriptions.append(f"Chain: {chain_str}")
 
                 if chain_descriptions:
-                    nested_forward_info = "\nNested dependency chains detected:\n" + "\n".join(
-                        chain_descriptions
-                    )
+                    nested_forward_info = "\nNested dependency chains detected:\n" + "\n".join(chain_descriptions)
 
                     # Calculate potential combinations
                     combinations = 1
@@ -45,12 +43,7 @@ def extract_profile_variables(profile):
                             data = var_def.get("data", [])
                             if isinstance(data, list):
                                 combinations *= len(data)
-                            elif (
-                                isinstance(data, dict)
-                                and "min" in data
-                                and "max" in data
-                                and "step" in data
-                            ):
+                            elif isinstance(data, dict) and "min" in data and "max" in data and "step" in data:
                                 steps = (data["max"] - data["min"]) / data["step"] + 1
                                 combinations *= int(steps)
 
@@ -187,9 +180,7 @@ def prompt_for_number(llm, profile, variables_info, language_info, variables, ha
     return extracted_number
 
 
-def prompt_for_max_cost(
-    llm, profile, variables_info, language_info, number_value, has_nested_forwards
-):
+def prompt_for_max_cost(llm, profile, variables_info, language_info, number_value, has_nested_forwards):
     """Prompt LLM to determine the MAX_COST parameter."""
     prompt = f"""
     Determine the MAX_COST parameter for this conversation scenario.
@@ -427,16 +418,12 @@ def generate_conversation_parameters(profiles, functionalities, llm, supported_l
         ) = extract_profile_variables(profile)
 
         # Prepare language information
-        language_info, languages_example, supported_languages_text = prepare_language_info(
-            supported_languages
-        )
+        language_info, languages_example, supported_languages_text = prepare_language_info(supported_languages)
 
         # Sequential prompting for each parameter
 
         # Step 1: Determine NUMBER
-        number_value = prompt_for_number(
-            llm, profile, variables_info, language_info, variables, has_nested_forwards
-        )
+        number_value = prompt_for_number(llm, profile, variables_info, language_info, variables, has_nested_forwards)
 
         # Step 2: Determine MAX_COST
         max_cost = prompt_for_max_cost(
@@ -449,9 +436,7 @@ def generate_conversation_parameters(profiles, functionalities, llm, supported_l
         )
 
         # Step 3: Determine GOAL_STYLE
-        goal_style = prompt_for_goal_style(
-            llm, profile, variables_info, language_info, number_value, max_cost
-        )
+        goal_style = prompt_for_goal_style(llm, profile, variables_info, language_info, number_value, max_cost)
 
         # Step 4: Determine INTERACTION_STYLE
         interaction_styles = prompt_for_interaction_style(
@@ -494,9 +479,7 @@ def conversation_params_node(state: State, llm) -> Dict[str, Any]:
     """
     if not state.get("conversation_goals"):
         print("\n--- Skipping conversation parameters: No goals generated. ---")
-        return {
-            "conversation_goals": state.get("conversation_goals", [])
-        }  # Return existing goals or empty
+        return {"conversation_goals": state.get("conversation_goals", [])}  # Return existing goals or empty
 
     print("\n--- Generating conversation parameters ---")
 
@@ -528,6 +511,4 @@ def conversation_params_node(state: State, llm) -> Dict[str, Any]:
         return {"conversation_goals": profiles_with_params}
     except Exception as e:
         print(f"Error during parameter generation: {e}")
-        return {
-            "conversation_goals": state.get("conversation_goals", [])
-        }  # Return existing goals on error
+        return {"conversation_goals": state.get("conversation_goals", [])}  # Return existing goals on error

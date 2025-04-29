@@ -211,9 +211,7 @@ def extract_json_from_response(response_content: str) -> str:
 def build_node_hierarchy(structured_nodes_info: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Build a hierarchical structure from flat nodes with parent references."""
     # Map name to node info
-    nodes_map = {
-        node_info["name"]: node_info for node_info in structured_nodes_info if "name" in node_info
-    }
+    nodes_map = {node_info["name"]: node_info for node_info in structured_nodes_info if "name" in node_info}
 
     # Initialize children list for all nodes
     for node_info in nodes_map.values():
@@ -236,8 +234,6 @@ def build_node_hierarchy(structured_nodes_info: List[Dict[str, Any]]) -> List[Di
             if isinstance(child_info, dict) and "name" in child_info:
                 all_child_names.add(child_info["name"])
 
-    root_nodes = [
-        node_info for node_name, node_info in nodes_map.items() if node_name not in all_child_names
-    ]
+    root_nodes = [node_info for node_name, node_info in nodes_map.items() if node_name not in all_child_names]
 
     return root_nodes

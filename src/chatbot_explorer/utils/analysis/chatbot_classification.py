@@ -3,9 +3,7 @@ from typing import Any, Dict, List
 from ..conversation.conversation_utils import format_conversation
 
 
-def classify_chatbot_type(
-    functionalities: List[Dict[str, Any]], conversation_history: List[Any], llm
-) -> str:
+def classify_chatbot_type(functionalities: List[Dict[str, Any]], conversation_history: List[Any], llm) -> str:
     """Determine if the chatbot is transactional (task-oriented) or informational (Q&A).
 
     Args:

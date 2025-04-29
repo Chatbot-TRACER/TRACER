@@ -5,9 +5,7 @@ from typing import List
 from ...functionality_node import FunctionalityNode
 
 
-def is_duplicate_functionality(
-    node: FunctionalityNode, existing_nodes: List[FunctionalityNode], llm=None
-) -> bool:
+def is_duplicate_functionality(node: FunctionalityNode, existing_nodes: List[FunctionalityNode], llm=None) -> bool:
     """Check if this node is basically the same as one we already have.
 
     Args:
@@ -21,10 +19,7 @@ def is_duplicate_functionality(
     # Simple checks first
     for existing in existing_nodes:
         # Exact name or description match
-        if (
-            existing.name.lower() == node.name.lower()
-            or existing.description.lower() == node.description.lower()
-        ):
+        if existing.name.lower() == node.name.lower() or existing.description.lower() == node.description.lower():
             return True
 
     # Use LLM for smarter check if available
@@ -33,9 +28,7 @@ def is_duplicate_functionality(
         nodes_to_check = existing_nodes[:5]
 
         # Format existing nodes for prompt
-        existing_descriptions = [
-            f"Name: {n.name}, Description: {n.description}" for n in nodes_to_check
-        ]
+        existing_descriptions = [f"Name: {n.name}, Description: {n.description}" for n in nodes_to_check]
 
         # Prompt for LLM
         duplicate_check_prompt = f"""
@@ -116,13 +109,9 @@ def validate_parent_child_relationship(parent_node, child_node, llm) -> bool:
     is_valid = result.startswith("VALID")
 
     if is_valid:
-        print(
-            f"  ✓ Valid relationship: '{child_node.name}' is a sub-functionality of '{parent_node.name}'"
-        )
+        print(f"  ✓ Valid relationship: '{child_node.name}' is a sub-functionality of '{parent_node.name}'")
     else:
-        print(
-            f"  ✗ Invalid relationship: '{child_node.name}' is not related to '{parent_node.name}'"
-        )
+        print(f"  ✗ Invalid relationship: '{child_node.name}' is not related to '{parent_node.name}'")
 
     return is_valid
 
@@ -188,9 +177,7 @@ def merge_similar_functionalities(nodes: List[FunctionalityNode], llm) -> List[F
 
                 # Combine parameters and children from the group
                 all_params = []
-                merged_node = FunctionalityNode(
-                    name=best_name, description=best_desc, parameters=all_params
-                )
+                merged_node = FunctionalityNode(name=best_name, description=best_desc, parameters=all_params)
 
                 for node in group:
                     # Merge parameters (avoid duplicates)
@@ -205,9 +192,7 @@ def merge_similar_functionalities(nodes: List[FunctionalityNode], llm) -> List[F
                 result.append(merged_node)
             else:
                 # Fallback if parsing fails: keep the first node
-                print(
-                    f"  WARN: Could not parse merge suggestion for group '{name}'. Keeping first node."
-                )
+                print(f"  WARN: Could not parse merge suggestion for group '{name}'. Keeping first node.")
                 result.append(group[0])
         else:
             # Keep nodes separate if LLM says so

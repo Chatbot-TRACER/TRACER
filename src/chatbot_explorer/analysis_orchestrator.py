@@ -33,13 +33,9 @@ def run_analysis_pipeline(
             },
         ],
         "conversation_history": exploration_results["conversation_sessions"],
-        "discovered_functionalities": exploration_results[
-            "root_nodes_dict"
-        ],  # Use results from exploration
+        "discovered_functionalities": exploration_results["root_nodes_dict"],  # Use results from exploration
         "discovered_limitations": [],  # Limitations are not currently extracted during exploration
-        "current_session": len(
-            exploration_results["conversation_sessions"]
-        ),  # Use actual number of sessions run
+        "current_session": len(exploration_results["conversation_sessions"]),  # Use actual number of sessions run
         "exploration_finished": True,
         "conversation_goals": [],  # Not used in this flow currently
         "supported_languages": exploration_results["supported_languages"],
@@ -69,9 +65,7 @@ def run_analysis_pipeline(
     analysis_state["workflow_structure"] = workflow_structure
 
     profile_thread_id = f"profile_analysis_{uuid.uuid4()}"
-    profile_result = profile_graph.invoke(
-        analysis_state, config={"configurable": {"thread_id": profile_thread_id}}
-    )
+    profile_result = profile_graph.invoke(analysis_state, config={"configurable": {"thread_id": profile_thread_id}})
 
     # Extract the final generated profiles
     generated_profiles = profile_result.get("built_profiles", [])
