@@ -31,21 +31,7 @@ from .utils.analysis.profile_generator import (
     extract_yaml,
 )
 
-
-class State(TypedDict):
-    """Holds the state for the graph."""
-
-    messages: Annotated[list, add_messages]  # Chat messages
-    conversation_history: list  # History of all sessions
-    discovered_functionalities: List[FunctionalityNode]  # Found features
-    discovered_limitations: list  # Found limits
-    current_session: int  # Which session number we're on
-    exploration_finished: bool  # Flag if exploration is done
-    conversation_goals: list  # Goals for generating profiles
-    supported_languages: list  # Languages the bot speaks
-    built_profiles: list  # Generated YAML profiles
-    fallback_message: str  # Bot's fallback message
-    chatbot_type: str  # Type of chatbot: "transactional", "informational", or "unknown"
+from .state import State
 
 
 class ChatbotExplorer:
