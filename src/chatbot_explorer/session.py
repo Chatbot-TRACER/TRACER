@@ -1,18 +1,19 @@
 from typing import List, Dict, Any, Optional, Tuple, Set
 from .functionality_node import FunctionalityNode
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
-import re
-import json
+
 import random
 
-# Import utility functions from refactored modules
 from .utils.conversation.language_detection import extract_supported_languages
-from .utils.conversation.fallback_detection import extract_fallback_message, is_semantically_fallback
+from .utils.conversation.fallback_detection import (
+    extract_fallback_message,
+    is_semantically_fallback,
+)
 from .utils.analysis.functionality_extraction import extract_functionality_nodes
 from .utils.analysis.node_processing import (
     is_duplicate_functionality,
     validate_parent_child_relationship,
-    merge_similar_functionalities
+    merge_similar_functionalities,
 )
 from .utils.conversation.conversation_utils import format_conversation, _get_all_nodes
 
@@ -463,8 +464,6 @@ def run_exploration_session(
     # Return all updated state
     return (
         conversation_history_dict,
-        None,
-        new_functionality_nodes,  # Nodes found *this* session
         root_nodes,  # Updated list of roots
         pending_nodes,  # Updated pending queue
         explored_nodes,  # Updated set of explored names

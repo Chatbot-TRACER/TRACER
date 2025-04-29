@@ -2,6 +2,8 @@ import re
 import os
 from typing import Dict, Any, List, Optional, Set
 
+from ..state import State
+
 from ..utils.constants import VARIABLE_PATTERN
 
 
@@ -866,3 +868,78 @@ LANGUAGE REQUIREMENT:
     # Generate output fields
     profiles = generate_outputs(profiles, functionalities, llm, supported_languages)
     return profiles
+
+
+def goal_generator_node(state: State, llm) -> Dict[str, Any]:
+    """
+    Node that generates user profiles and conversation goals based on findings.
+
+    Args:
+        state (State): The current graph state.
+        llm: The language model instance.
+
+    Returns:
+        Dict[str, Any]: Dictionary with updated 'conversation_goals'.
+    """
+    # This node is part of the profile generation graph.
+    # It expects 'discovered_functionalities' (structured) and 'chatbot_type' from the previous graph.
+
+    if not state.get("discovered_functionalities"):
+        print(
+            "\n--- Skipping goal generation: No structured functionalities found. ---"
+        )
+        return {"conversation_goals": []}
+
+    print("\n--- Generating conversation goals from structured data ---")
+
+    # Functionalities are now dicts (structured from previous node)
+    structured_root_dicts: List[Dict[str, Any]] = state["discovered_functionalities"]
+
+    # Get workflow structure (which is the structured functionalities itself)
+    workflow_structure = structured_root_dicts  # Use the structured data directly
+
+    # Get chatbot type from state
+    chatbot_type = state.get("chatbot_type", "unknown")
+    print(f"   Chatbot type for goal generation: {chatbot_type}")
+
+    # Helper to get all descriptions from the structure
+    def get_all_descriptions(nodes: List[Dict[str, Any]]) -> List[str]:
+        descriptions = []
+        for node in nodes:
+            if "description" in node and node["description"]:
+                descriptions.append(node["description"])
+            if "children" in node and node["children"]:
+                child_descriptions = get_all_descriptions(node["children"])
+                descriptions.extend(child_descriptions)
+        return descriptions
+
+    functionality_descriptions = get_all_descriptions(structured_root_dicts)
+
+    if not functionality_descriptions:
+        print("   Warning: No descriptions found in structured functionalities.")
+        return {"conversation_goals": []}
+
+    print(
+        f" -> Preparing {len(functionality_descriptions)} descriptions (from structure) for goal generation."
+    )
+
+    try:
+        # Call the goal generation function
+        profiles_with_goals = generate_user_profiles_and_goals(
+            functionality_descriptions,
+            state.get(
+                "discovered_limitations", []
+            ),  # Limitations might not be populated
+            llm,
+            workflow_structure=workflow_structure,
+            conversation_history=state.get("conversation_history", []),
+            supported_languages=state.get("supported_languages", []),
+            chatbot_type=chatbot_type,
+        )
+        print(f" -> Generated {len(profiles_with_goals)} profiles with goals.")
+        # Update state with goals
+        return {"conversation_goals": profiles_with_goals}
+
+    except Exception as e:
+        print(f"Error during goal generation: {e}")
+        return {"conversation_goals": []}  # Return empty list on error

@@ -1,4 +1,5 @@
-"""Node for generating conversation parameters."""
+from typing import Dict, Any, List
+from ..state import State
 
 
 def extract_profile_variables(profile):
@@ -498,3 +499,55 @@ def generate_conversation_parameters(
         profile["conversation"] = conversation_params
 
     return profiles
+
+
+def conversation_params_node(state: State, llm) -> Dict[str, Any]:
+    """
+    Node that generates specific parameters needed for conversation goals.
+
+    Args:
+        state (State): The current graph state.
+        llm: The language model instance.
+
+    Returns:
+        dict: Updated state dictionary with parameters added to goals.
+    """
+    if not state.get("conversation_goals"):
+        print("\n--- Skipping conversation parameters: No goals generated. ---")
+        return {
+            "conversation_goals": state.get("conversation_goals", [])
+        }  # Return existing goals or empty
+
+    print("\n--- Generating conversation parameters ---")
+
+    # Functionalities are dicts (structured)
+    structured_root_dicts = state.get("discovered_functionalities", [])
+
+    # Helper to flatten the structure info
+    def get_all_func_info(nodes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        all_info = []
+        for node in nodes:
+            # Get node info (excluding children for flat list)
+            info = {k: v for k, v in node.items() if k != "children"}
+            all_info.append(info)
+            if node.get("children"):  # Recursively add children info
+                all_info.extend(get_all_func_info(node["children"]))
+        return all_info
+
+    flat_func_info = get_all_func_info(structured_root_dicts)
+
+    # Call parameter generation function
+    try:
+        profiles_with_params = generate_conversation_parameters(
+            state["conversation_goals"],
+            flat_func_info,  # Pass the flat list
+            llm,
+            supported_languages=state.get("supported_languages", []),
+        )
+        # Update state (only need to update goals)
+        return {"conversation_goals": profiles_with_params}
+    except Exception as e:
+        print(f"Error during parameter generation: {e}")
+        return {
+            "conversation_goals": state.get("conversation_goals", [])
+        }  # Return existing goals on error

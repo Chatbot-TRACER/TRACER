@@ -1,20 +1,15 @@
 import sys
 
-# import yaml # No longer needed here
-import os  # Still needed for makedirs and path.join
+import os
 
-# import re # No longer used
-import graphviz  # Keep graphviz for generate_graph_image
 from utils.cli import parse_arguments
 from chatbot_explorer.explorer import ChatbotExplorer
 from chatbot_explorer.analysis_orchestrator import (
     run_analysis_pipeline,
-)  # Import the new function
+)
 from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
 
-from typing import List, Dict, Any, Set  # Keep typing
 
-# Import the new save_profiles function
 from utils.reporting import write_report, generate_graph_image, save_profiles
 
 
@@ -32,20 +27,18 @@ def main():
     technology = args.technology
 
     # Validate technology choice
-    if args.technology not in valid_technologies:
-        print(
-            f"Invalid technology: {args.technology}. Must be one of: {valid_technologies}"
-        )
+    if technology not in valid_technologies:
+        print(f"Invalid technology: {technology}. Must be one of: {valid_technologies}")
         sys.exit(1)
 
     # Print configuration summary
     print("=== Chatbot Explorer Configuration ===")
-    print(f"Chatbot Technology: {args.technology}")
-    print(f"Chatbot URL: {args.url}")
-    print(f"Exploration sessions: {args.sessions}")
-    print(f"Max turns per session: {args.turns}")
-    print(f"Using model: {args.model}")
-    print(f"Output directory: {args.output}")
+    print(f"Chatbot Technology: {technology}")
+    print(f"Chatbot URL: {chatbot_url}")
+    print(f"Exploration sessions: {max_sessions}")
+    print(f"Max turns per session: {max_turns}")
+    print(f"Using model: {model_name}")
+    print(f"Output directory: {output_dir}")
     print("====================================")
 
     # Ensure output directory exists
@@ -62,15 +55,15 @@ def main():
         the_chatbot = ChatbotAdaUam(chatbot_url)
     else:
         # This check is redundant due to earlier validation, but good practice
-        print(f"Error: Unknown technology '{args.technology}'")
+        print(f"Error: Unknown technology '{technology}'")
         sys.exit(1)
 
     # --- Run Full Exploration ---
     print("\n--- Starting Chatbot Exploration ---")
     exploration_results = explorer.run_full_exploration(
         chatbot_connector=the_chatbot,
-        max_sessions=args.sessions,
-        max_turns=args.turns,
+        max_sessions=max_sessions,
+        max_turns=max_turns,
     )
     print("--- Exploration Complete ---")
 
@@ -90,7 +83,6 @@ def main():
     save_profiles(built_profiles, output_dir)
 
     # --- Write Final Report ---
-    # print("\n--- Writing report to disk ---") # Reporting function already prints status
     write_report(
         output_dir,
         {"discovered_functionalities": functionality_dicts},
