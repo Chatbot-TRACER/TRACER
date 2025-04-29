@@ -47,7 +47,7 @@ def build_workflow_structure(
             if not isinstance(session_history, list):
                 continue
 
-            from ..utils.conversation_utils import format_conversation
+            from .conversation_utils import format_conversation
             session_str = format_conversation(session_history)
             snippet_len = 1500
 

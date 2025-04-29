@@ -24,7 +24,7 @@ from .utils.language_detection import extract_supported_languages
 from .utils.fallback_detection import extract_fallback_message
 from .utils.conversation_utils import format_conversation
 from .utils.chatbot_classification import classify_chatbot_type
-from .utils.graph_builder import build_workflow_structure
+from .utils.workflow_builder import build_workflow_structure
 from .utils.profile_generator import (
     build_profile_yaml,
     validate_and_fix_profile,
