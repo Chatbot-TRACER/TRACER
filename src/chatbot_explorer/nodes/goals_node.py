@@ -2,7 +2,7 @@ import re
 import os
 from typing import Dict, Any, List, Optional, Set
 
-VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
+from ..utils.constants import VARIABLE_PATTERN
 
 
 def ensure_double_curly(text):

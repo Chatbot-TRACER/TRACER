@@ -3,22 +3,7 @@ import yaml
 import re
 from typing import List, Dict, Any, Optional
 
-# Regex to find {{variables}}
-VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
-
-# Personalities for profile generation
-AVAILABLE_PERSONALITIES = [
-    "conversational-user",
-    "curious-user",
-    "direct-user",
-    "disorganized-user",
-    "elderly-user",
-    "formal-user",
-    "impatient-user",
-    "rude-user",
-    "sarcastic-user",
-    "skeptical-user",
-]
+from ...utils.constants import VARIABLE_PATTERN, AVAILABLE_PERSONALITIES
 
 
 def build_profile_yaml(
