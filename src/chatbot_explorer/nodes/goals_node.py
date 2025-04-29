@@ -1,5 +1,3 @@
-"""Module to generate the goals and their variables"""
-
 import re
 import os
 from typing import Dict, Any, List, Optional, Set
@@ -653,9 +651,15 @@ LANGUAGE REQUIREMENT:
                 node_children = node.get("children", [])
 
                 if node_name and node_children:
-                    child_names = [child.get("name", "") for child in node_children if isinstance(child, dict) and "name" in child]
+                    child_names = [
+                        child.get("name", "")
+                        for child in node_children
+                        if isinstance(child, dict) and "name" in child
+                    ]
                     if child_names:
-                        workflow_context += f"- {node_name} can lead to: {', '.join(child_names)}\n"
+                        workflow_context += (
+                            f"- {node_name} can lead to: {', '.join(child_names)}\n"
+                        )
                 elif node_name:
                     workflow_context += f"- {node_name} (standalone functionality)\n"
 
