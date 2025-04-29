@@ -1,21 +1,19 @@
-from typing import List, Dict, Any, Optional, Tuple, Set
-from .functionality_node import FunctionalityNode
-from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
-
 import random
+from typing import List, Optional, Set
 
-from .utils.conversation.language_detection import extract_supported_languages
-from .utils.conversation.fallback_detection import (
-    extract_fallback_message,
-    is_semantically_fallback,
-)
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+
+from .functionality_node import FunctionalityNode
 from .utils.analysis.functionality_extraction import extract_functionality_nodes
 from .utils.analysis.node_processing import (
     is_duplicate_functionality,
-    validate_parent_child_relationship,
     merge_similar_functionalities,
+    validate_parent_child_relationship,
 )
-from .utils.conversation.conversation_utils import format_conversation, _get_all_nodes
+from .utils.conversation.conversation_utils import _get_all_nodes
+from .utils.conversation.fallback_detection import (
+    is_semantically_fallback,
+)
 
 
 def run_exploration_session(
@@ -31,8 +29,7 @@ def run_exploration_session(
     root_nodes: Optional[List[FunctionalityNode]] = None,
     supported_languages=None,
 ):
-    """
-    Runs one chat session to explore the bot.
+    """Runs one chat session to explore the bot.
     Can focus on a specific 'current_node' if provided. Includes retry logic on fallback.
 
     Args:
@@ -53,7 +50,6 @@ def run_exploration_session(
                new nodes found this session,
                updated root nodes list, updated pending nodes list, updated explored nodes set.
     """
-
     # Setup default values if needed
     if explored_nodes is None:
         explored_nodes = set()
@@ -76,7 +72,9 @@ def run_exploration_session(
         session_focus = f"Focus on actively using and exploring the '{current_node.name}' functionality ({current_node.description}). If it requires input, try providing plausible values. If it offers choices, select one to proceed."
         if current_node.parameters:
             param_names = [p.get("name", "unknown") for p in current_node.parameters]
-            session_focus += f" Attempt to provide values for parameters like: {', '.join(param_names)}."
+            session_focus += (
+                f" Attempt to provide values for parameters like: {', '.join(param_names)}."
+            )
     else:
         # General exploration focus
         session_focus = "Explore the chatbot's main capabilities. Ask what it can do or what topics it covers. If it offers options or asks questions requiring a choice, TRY to provide an answer or make a selection to see where it leads."
@@ -156,16 +154,12 @@ def run_exploration_session(
                 else:  # Use English if translation failed
                     initial_question = greeting_en
             except Exception as e:
-                print(
-                    f"Warning: Failed to translate initial greeting to {primary_language}: {e}"
-                )
+                print(f"Warning: Failed to translate initial greeting to {primary_language}: {e}")
                 initial_question = greeting_en  # Fallback
         else:
             initial_question = greeting_en  # Use English
 
-        print(
-            f"   (Starting session 0 with general capability question: '{initial_question}')"
-        )
+        print(f"   (Starting session 0 with general capability question: '{initial_question}')")
 
     print(f"\nExplorer: {initial_question}")
 
@@ -189,9 +183,7 @@ def run_exploration_session(
     while True:
         # Stop if we hit the max number of turns
         if turn_count >= max_turns:
-            print(
-                f"\nReached maximum turns ({max_turns}). Ending session {session_num + 1}."
-            )
+            print(f"\nReached maximum turns ({max_turns}). Ending session {session_num + 1}.")
             break
 
         # --- Check for forcing topic change (due to consecutive failures OR failed retry) ---
@@ -204,17 +196,13 @@ def run_exploration_session(
         # Then check consecutive failures (if retry didn't trigger it)
         elif consecutive_failures >= 2:
             force_topic_change_instruction = f"CRITICAL OVERRIDE: The chatbot has failed to respond meaningfully {consecutive_failures} times in a row on the current topic/line of questioning. You MUST abandon this topic now. Ask about a completely different, plausible capability"
-            print(
-                f"\n Forcing topic change: {consecutive_failures} consecutive failures. !!!"
-            )
+            print(f"\n Forcing topic change: {consecutive_failures} consecutive failures. !!!")
         # ---
 
         # --- Get what the explorer wants to say next ---
         explorer_response_content = None
         try:
-            max_history_turns_for_llm = (
-                10  # Keep last 10 turns (20 messages) + system prompt
-            )
+            max_history_turns_for_llm = 10  # Keep last 10 turns (20 messages) + system prompt
             messages_for_llm = [conversation_history_lc[0]] + conversation_history_lc[
                 -(max_history_turns_for_llm * 2) :
             ]
@@ -232,15 +220,11 @@ def run_exploration_session(
             explorer_response_content = llm_response.content.strip()
 
         except Exception as e:
-            print(
-                f"\nError getting response from Explorer AI LLM: {e}. Ending session."
-            )
+            print(f"\nError getting response from Explorer AI LLM: {e}. Ending session.")
             break  # Stop if LLM fails
 
         if not explorer_response_content:
-            print(
-                "\nError: Failed to get next action from Explorer AI LLM. Ending session."
-            )
+            print("\nError: Failed to get next action from Explorer AI LLM. Ending session.")
             break
 
         print(f"\nExplorer: {explorer_response_content}")
@@ -254,15 +238,11 @@ def run_exploration_session(
         conversation_history_lc.append(AIMessage(content=explorer_response_content))
 
         # --- Send the explorer's message to the chatbot ---
-        is_ok, chatbot_message = the_chatbot.execute_with_input(
-            explorer_response_content
-        )
+        is_ok, chatbot_message = the_chatbot.execute_with_input(explorer_response_content)
 
         if not is_ok:
             print("\nError communicating with chatbot. Ending session.")
-            conversation_history_lc.append(
-                HumanMessage(content="[Chatbot communication error]")
-            )
+            conversation_history_lc.append(HumanMessage(content="[Chatbot communication error]"))
             consecutive_failures += 1
             force_topic_change_next_turn = True
             break
@@ -274,9 +254,7 @@ def run_exploration_session(
         is_fallback = False
         if fallback_message and chatbot_message:
             # Use LLM for semantic comparison
-            is_fallback = is_semantically_fallback(
-                chatbot_message, fallback_message, explorer.llm
-            )
+            is_fallback = is_semantically_fallback(chatbot_message, fallback_message, explorer.llm)
 
         is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
 
@@ -313,9 +291,7 @@ def run_exploration_session(
                     )
                 else:
                     # Fallback to original if rephrasing failed or returned identical text
-                    print(
-                        "   Failed to generate a different rephrasing. Retrying with original."
-                    )
+                    print("   Failed to generate a different rephrasing. Retrying with original.")
                     is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(
                         explorer_response_content
                     )
@@ -333,9 +309,7 @@ def run_exploration_session(
                         chatbot_message_retry, fallback_message, explorer.llm
                     )
 
-                is_retry_parsing_error = (
-                    "OUTPUT_PARSING_FAILURE" in chatbot_message_retry
-                )
+                is_retry_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message_retry
 
                 if (
                     chatbot_message_retry != original_chatbot_message

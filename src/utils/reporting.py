@@ -1,11 +1,10 @@
 # src/utils/reporting.py
 
-import os
 import json
-import yaml
-import graphviz
-from typing import List, Dict, Any, Set, Optional
 import os
+from typing import Any, Dict, List, Optional, Set
+
+import graphviz
 import yaml
 
 
@@ -46,9 +45,7 @@ def print_structured_functionalities(f, nodes: List[Dict[str, Any]], indent: str
             )
 
 
-def generate_graph_image(
-    structured_data: List[Dict[str, Any]], output_filename_base: str
-):
+def generate_graph_image(structured_data: List[Dict[str, Any]], output_filename_base: str):
     """Generates a PNG visualization of the workflow graph using Graphviz.
 
     Args:
@@ -151,9 +148,7 @@ def generate_graph_image(
                 f"WARN in graph: Expected 'children' for node '{node_name}' to be a list, found {type(children)}"
             )
 
-    dot.attr(
-        "graph", label="Chatbot Functionality Workflow", fontsize="18", labelloc="t"
-    )
+    dot.attr("graph", label="Chatbot Functionality Workflow", fontsize="18", labelloc="t")
     start_node_name = "start_node"
     dot.node(
         start_node_name,
@@ -209,33 +204,23 @@ def write_report(
 
             f.write("## FUNCTIONALITIES (Workflow Structure)\n")
             structured_functionalities = result.get("discovered_functionalities", [])
-            if structured_functionalities and isinstance(
-                structured_functionalities, list
-            ):
+            if structured_functionalities and isinstance(structured_functionalities, list):
                 if not structured_functionalities or isinstance(
                     structured_functionalities[0], dict
                 ):
                     print_structured_functionalities(f, structured_functionalities)
                 else:
-                    f.write(
-                        "Functionality structure not in expected list-of-dicts format.\n"
-                    )
-                    f.write(
-                        f"Raw data:\n{json.dumps(structured_functionalities, indent=2)}\n"
-                    )
+                    f.write("Functionality structure not in expected list-of-dicts format.\n")
+                    f.write(f"Raw data:\n{json.dumps(structured_functionalities, indent=2)}\n")
             elif structured_functionalities:
                 f.write("Functionality structure not in expected list format.\n")
-                f.write(
-                    f"Raw data:\n{json.dumps(structured_functionalities, indent=2)}\n"
-                )
+                f.write(f"Raw data:\n{json.dumps(structured_functionalities, indent=2)}\n")
             else:
                 f.write("No functionalities structure discovered.\n")
 
             f.write("\n## FUNCTIONALITIES (Raw JSON Structure)\n")
             if structured_functionalities:
-                f.write(
-                    json.dumps(structured_functionalities, indent=2, ensure_ascii=False)
-                )
+                f.write(json.dumps(structured_functionalities, indent=2, ensure_ascii=False))
             else:
                 f.write("N/A\n")
 
@@ -258,11 +243,7 @@ def write_report(
                 f.write("No specific language support detected.\n")
 
             f.write("\n## FALLBACK MESSAGE\n")
-            f.write(
-                fallback_message
-                if fallback_message
-                else "No fallback message detected.\n"
-            )
+            f.write(fallback_message if fallback_message else "No fallback message detected.\n")
         print(f"   Successfully wrote report: {report_path}")
     except IOError as e:
         print(f"   ERROR: Failed to write report file: {e}")
@@ -282,9 +263,7 @@ def save_profiles(built_profiles: List[Dict[str, Any]], output_dir: str):
         print("\n--- Skipping profile saving: No profiles generated ---")
         return
 
-    print(
-        f"\n--- Saving {len(built_profiles)} user profiles to disk ({output_dir}) ---"
-    )
+    print(f"\n--- Saving {len(built_profiles)} user profiles to disk ({output_dir}) ---")
 
     # Ensure the output directory exists (it might already exist from main.py, but double-check)
     os.makedirs(output_dir, exist_ok=True)
@@ -312,11 +291,7 @@ def save_profiles(built_profiles: List[Dict[str, Any]], output_dir: str):
         else:
             # Sanitize string test names for filenames
             filename_base = (
-                str(test_name)
-                .lower()
-                .replace(" ", "_")
-                .replace(",", "")
-                .replace("&", "and")
+                str(test_name).lower().replace(" ", "_").replace(",", "").replace("&", "and")
             )
 
         # Basic sanitization to remove potentially problematic characters
@@ -351,6 +326,4 @@ def save_profiles(built_profiles: List[Dict[str, Any]], output_dir: str):
             )
             error_count += 1
 
-    print(
-        f"   Finished saving profiles: {saved_count} successful, {error_count} errors."
-    )
+    print(f"   Finished saving profiles: {saved_count} successful, {error_count} errors.")

@@ -1,16 +1,16 @@
 import random
-import yaml
 import re
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict
 
-from ...utils.constants import VARIABLE_PATTERN, AVAILABLE_PERSONALITIES
+import yaml
+
+from ...utils.constants import AVAILABLE_PERSONALITIES, VARIABLE_PATTERN
 
 
 def build_profile_yaml(
     profile: Dict[str, Any], fallback_message: str, primary_language: str
 ) -> Dict[str, Any]:
-    """
-    Create the YAML profile dictionary structure from a profile spec.
+    """Create the YAML profile dictionary structure from a profile spec.
 
     Args:
         profile: Profile data including goals and parameters
@@ -84,8 +84,7 @@ def build_profile_yaml(
 
 
 def validate_and_fix_profile(profile: Dict[str, Any], validator, llm) -> Dict[str, Any]:
-    """
-    Validate a profile and try to fix it using LLM if needed.
+    """Validate a profile and try to fix it using LLM if needed.
 
     Args:
         profile: Profile dictionary to validate
@@ -106,9 +105,7 @@ def validate_and_fix_profile(profile: Dict[str, Any], validator, llm) -> Dict[st
     else:
         # Profile has errors
         error_count = len(errors)
-        print(
-            f"\n⚠ Profile '{profile['test_name']}' has {error_count} validation errors"
-        )
+        print(f"\n⚠ Profile '{profile['test_name']}' has {error_count} validation errors")
 
         # Print first few errors
         for e in errors[:3]:
@@ -158,8 +155,7 @@ def validate_and_fix_profile(profile: Dict[str, Any], validator, llm) -> Dict[st
 
 
 def extract_yaml(text: str) -> str:
-    """
-    Extract YAML content from LLM response text.
+    """Extract YAML content from LLM response text.
 
     Args:
         text: Text potentially containing YAML

@@ -1,11 +1,11 @@
-from typing import Annotated, List, Dict, Any
-from typing_extensions import TypedDict
+from typing import Annotated, Any, Dict, List
+
 from langgraph.graph.message import add_messages
+from typing_extensions import TypedDict
 
 
 class State(TypedDict):
-    """
-    Holds the state for the graph.
+    """Holds the state for the graph.
 
     This class holds all the necessary information about the current state of the
     chatbot exploration process, including chat messages, conversation history,

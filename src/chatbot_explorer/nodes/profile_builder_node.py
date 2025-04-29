@@ -1,11 +1,11 @@
-from typing import Dict, Any, List
+from typing import Any, Dict
+
 from ..state import State
 from ..utils.analysis.profile_generator import build_profile_yaml
 
 
 def profile_builder_node(state: State) -> Dict[str, Any]:
-    """
-    Node that takes conversation goals and builds the final YAML profile dictionaries.
+    """Node that takes conversation goals and builds the final YAML profile dictionaries.
 
     Args:
         state (State): The current graph state.
@@ -39,9 +39,7 @@ def profile_builder_node(state: State) -> Dict[str, Any]:
             )
             built_profiles.append(profile_yaml_content)
         except Exception as e:
-            print(
-                f"Error building profile for goal: {profile.get('name', 'N/A')}. Error: {e}"
-            )
+            print(f"Error building profile for goal: {profile.get('name', 'N/A')}. Error: {e}")
             # Optionally skip this profile or add a placeholder error
 
     # Update state with the list of profile dicts/strings

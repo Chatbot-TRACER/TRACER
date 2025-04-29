@@ -2,8 +2,7 @@ from typing import List
 
 
 def extract_supported_languages(chatbot_response: str, llm) -> List[str]:
-    """
-    Try to figure out what languages the chatbot knows.
+    """Try to figure out what languages the chatbot knows.
 
     Args:
         chatbot_response (str): The chatbot's message.

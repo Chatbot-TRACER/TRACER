@@ -1,9 +1,7 @@
 import re
-import os
-from typing import Dict, Any, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 from ..state import State
-
 from ..utils.constants import VARIABLE_PATTERN
 
 
@@ -21,8 +19,7 @@ def _build_single_variable_prompt(
     all_other_variables: List[str],
     language_instruction: str,
 ) -> str:
-    """
-    Creates the specific text prompt to ask the LLM about one variable.
+    """Creates the specific text prompt to ask the LLM about one variable.
 
     Args:
         profile_name: The name of the user profile we're working on.
@@ -37,7 +34,6 @@ def _build_single_variable_prompt(
     Returns:
         A big string containing the full prompt to send to the LLM.
     """
-
     other_vars_text = (
         f"OTHER VARIABLES IN THIS PROFILE: {', '.join(sorted(all_other_variables))}"
         if all_other_variables
@@ -122,8 +118,7 @@ def _build_single_variable_prompt(
 def _parse_single_variable_definition(
     response_content: str, expected_type: Optional[str] = None
 ) -> Optional[Dict[str, Any]]:
-    """
-    Takes the LLM's text answer for one variable and tries to turn it into a Python dictionary.
+    """Takes the LLM's text answer for one variable and tries to turn it into a Python dictionary.
 
     Args:
         response_content: The raw text string that the LLM sent back.
@@ -179,11 +174,7 @@ def _parse_single_variable_definition(
         elif in_data_section:
             data_lines.append(line)
 
-    if (
-        not definition.get("function")
-        or not definition.get("type")
-        or "data" not in definition
-    ):
+    if not definition.get("function") or not definition.get("type") or "data" not in definition:
         print(
             f"Warning: Failed to parse essential fields (FUNCTION, TYPE, DATA) from LLM response:\n{response_content}"
         )
@@ -202,9 +193,7 @@ def _parse_single_variable_definition(
                 value = item_line[2:].strip().strip("'\"")
                 raw_data.append(value)
         if not raw_data:
-            print(
-                f"Warning: String variable data is empty. LLM response:\n{response_content}"
-            )
+            print(f"Warning: String variable data is empty. LLM response:\n{response_content}")
             return None  # String needs data
         definition["data"] = raw_data
 
@@ -237,17 +226,11 @@ def _parse_single_variable_definition(
             return None
         definition["data"] = raw_data
     else:
-        print(
-            f"Warning: Unknown variable type '{data_type}'. Cannot parse data correctly."
-        )
+        print(f"Warning: Unknown variable type '{data_type}'. Cannot parse data correctly.")
         return None  # Unknown type
 
     # Basic validation
-    if (
-        not definition.get("function")
-        or not definition.get("type")
-        or not definition.get("data")
-    ):
+    if not definition.get("function") or not definition.get("type") or not definition.get("data"):
         print(
             f"Warning: Post-parsing validation failed. Missing fields or empty data. Parsed: {definition}"
         )
@@ -256,11 +239,8 @@ def _parse_single_variable_definition(
     return definition
 
 
-def generate_variable_definitions(
-    profiles, llm, supported_languages=None, max_retries=3
-):
-    """
-    Goes through user profiles, finds variables like {{this}} in their goals,
+def generate_variable_definitions(profiles, llm, supported_languages=None, max_retries=3):
+    """Goes through user profiles, finds variables like {{this}} in their goals,
     and asks the LLM to define them (type, function, data).
 
     Args:
@@ -281,9 +261,7 @@ def generate_variable_definitions(
     language_instruction = ""
     if supported_languages and len(supported_languages) > 0:
         primary_language = supported_languages[0]
-        language_instruction = (
-            f"Generate examples/values in {primary_language} where appropriate."
-        )
+        language_instruction = f"Generate examples/values in {primary_language} where appropriate."
 
     # Process each profile
     for profile in profiles:
@@ -308,9 +286,7 @@ def generate_variable_definitions(
             )
             continue
 
-        print(
-            f"\n--- Defining variables for profile: {profile.get('name', 'Unnamed')} ---"
-        )
+        print(f"\n--- Defining variables for profile: {profile.get('name', 'Unnamed')} ---")
         print(f"   Found variables: {', '.join(sorted(all_variables))}")
 
         goals_text = ""
@@ -340,9 +316,7 @@ def generate_variable_definitions(
                     parsed_def = _parse_single_variable_definition(response_content)
 
                     if parsed_def:
-                        print(
-                            f"      Successfully parsed definition for '{variable_name}'."
-                        )
+                        print(f"      Successfully parsed definition for '{variable_name}'.")
                         break  # Success
                     else:
                         print(
@@ -370,9 +344,7 @@ def generate_variable_definitions(
                     goals_list[existing_def_index] = {variable_name: parsed_def}
                 else:
                     print(f"      Adding new definition for '{variable_name}'.")
-                    goals_list.append(
-                        {variable_name: parsed_def}
-                    )  # Append new definition dict
+                    goals_list.append({variable_name: parsed_def})  # Append new definition dict
 
             else:
                 print(
@@ -387,7 +359,6 @@ def generate_variable_definitions(
 
 def generate_context(profiles, functionalities, llm, supported_languages=None):
     """Generate additional context for the user simulator as multiple short entries."""
-
     # Work in the detected primary language
     primary_language = ""
     language_instruction = ""
@@ -455,7 +426,6 @@ def generate_context(profiles, functionalities, llm, supported_languages=None):
 
 def generate_outputs(profiles, functionalities, llm, supported_languages=None):
     """Generate output fields to extract from chatbot responses."""
-
     # Work in the detected primary language
     primary_language = ""
     language_instruction = ""
@@ -579,8 +549,7 @@ def generate_user_profiles_and_goals(
     supported_languages=None,
     chatbot_type="unknown",
 ):
-    """
-    Group functionalities into logical user profiles and generate coherent goal sets
+    """Group functionalities into logical user profiles and generate coherent goal sets
     for individual conversations
 
     Args:
@@ -596,7 +565,6 @@ def generate_user_profiles_and_goals(
     Returns:
         List of profile dictionaries with goals and variable definitions
     """
-
     # Work in the given language with stronger instructions
     primary_language = ""
     language_instruction_grouping = ""
@@ -629,9 +597,7 @@ LANGUAGE REQUIREMENT:
     # Prepare a condensed version of conversation history if available
     conversation_context = ""
     if conversation_history:
-        conversation_context = (
-            "Here are some example conversations with the chatbot:\n\n"
-        )
+        conversation_context = "Here are some example conversations with the chatbot:\n\n"
         for i, session in enumerate(conversation_history, 1):
             conversation_context += f"--- SESSION {i} ---\n"
             for turn in session:
@@ -659,9 +625,7 @@ LANGUAGE REQUIREMENT:
                         if isinstance(child, dict) and "name" in child
                     ]
                     if child_names:
-                        workflow_context += (
-                            f"- {node_name} can lead to: {', '.join(child_names)}\n"
-                        )
+                        workflow_context += f"- {node_name} can lead to: {', '.join(child_names)}\n"
                 elif node_name:
                     workflow_context += f"- {node_name} (standalone functionality)\n"
 
@@ -871,8 +835,7 @@ LANGUAGE REQUIREMENT:
 
 
 def goal_generator_node(state: State, llm) -> Dict[str, Any]:
-    """
-    Node that generates user profiles and conversation goals based on findings.
+    """Node that generates user profiles and conversation goals based on findings.
 
     Args:
         state (State): The current graph state.
@@ -885,9 +848,7 @@ def goal_generator_node(state: State, llm) -> Dict[str, Any]:
     # It expects 'discovered_functionalities' (structured) and 'chatbot_type' from the previous graph.
 
     if not state.get("discovered_functionalities"):
-        print(
-            "\n--- Skipping goal generation: No structured functionalities found. ---"
-        )
+        print("\n--- Skipping goal generation: No structured functionalities found. ---")
         return {"conversation_goals": []}
 
     print("\n--- Generating conversation goals from structured data ---")
@@ -927,9 +888,7 @@ def goal_generator_node(state: State, llm) -> Dict[str, Any]:
         # Call the goal generation function
         profiles_with_goals = generate_user_profiles_and_goals(
             functionality_descriptions,
-            state.get(
-                "discovered_limitations", []
-            ),  # Limitations might not be populated
+            state.get("discovered_limitations", []),  # Limitations might not be populated
             llm,
             workflow_structure=workflow_structure,
             conversation_history=state.get("conversation_history", []),

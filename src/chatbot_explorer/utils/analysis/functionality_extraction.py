@@ -1,5 +1,6 @@
 import re
 from typing import List
+
 from ...functionality_node import FunctionalityNode
 from ..conversation.conversation_utils import format_conversation
 
@@ -7,8 +8,7 @@ from ..conversation.conversation_utils import format_conversation
 def extract_functionality_nodes(
     conversation_history, llm, current_node=None
 ) -> List[FunctionalityNode]:
-    """
-    Pull out FunctionalityNodes from the conversation.
+    """Pull out FunctionalityNodes from the conversation.
     Tries to find steps in the user's workflow.
 
     Args:

@@ -1,9 +1,8 @@
-from typing import List, Dict
+from typing import Dict, List
 
 
 def format_conversation(messages: List[Dict[str, str]]) -> str:
-    """
-    Make the conversation history easy to read.
+    """Make the conversation history easy to read.
 
     Args:
         messages (List[Dict[str, str]]): The list of message dictionaries.
@@ -21,8 +20,7 @@ def format_conversation(messages: List[Dict[str, str]]) -> str:
 
 
 def _get_all_nodes(root_node):
-    """
-    Helper to get a flat list of nodes in a tree.
+    """Helper to get a flat list of nodes in a tree.
 
     Args:
         root_node: The starting node of the tree/subtree.

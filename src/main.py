@@ -1,16 +1,13 @@
+import os
 import sys
 
-import os
-
-from utils.cli import parse_arguments
-from chatbot_explorer.explorer import ChatbotExplorer
+from chatbot_connectors import ChatbotAdaUam, ChatbotTaskyto
 from chatbot_explorer.analysis_orchestrator import (
     run_analysis_pipeline,
 )
-from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
-
-
-from utils.reporting import write_report, generate_graph_image, save_profiles
+from chatbot_explorer.explorer import ChatbotExplorer
+from utils.cli import parse_arguments
+from utils.reporting import generate_graph_image, save_profiles, write_report
 
 
 def main():
@@ -68,9 +65,7 @@ def main():
     print("--- Exploration Complete ---")
 
     # --- Run Analysis Pipeline ---
-    print(
-        "\n--- Running Analysis Pipeline (Structure Inference & Profile Generation) ---"
-    )
+    print("\n--- Running Analysis Pipeline (Structure Inference & Profile Generation) ---")
     analysis_results = run_analysis_pipeline(
         explorer_instance=explorer, exploration_results=exploration_results
     )

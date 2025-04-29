@@ -1,4 +1,5 @@
-from typing import Dict, Any, List
+from typing import Any, Dict, List
+
 from ..state import State
 
 
@@ -32,9 +33,8 @@ def extract_profile_variables(profile):
                     chain_descriptions.append(f"Chain: {chain_str}")
 
                 if chain_descriptions:
-                    nested_forward_info = (
-                        "\nNested dependency chains detected:\n"
-                        + "\n".join(chain_descriptions)
+                    nested_forward_info = "\nNested dependency chains detected:\n" + "\n".join(
+                        chain_descriptions
                     )
 
                     # Calculate potential combinations
@@ -54,9 +54,7 @@ def extract_profile_variables(profile):
                                 steps = (data["max"] - data["min"]) / data["step"] + 1
                                 combinations *= int(steps)
 
-                    nested_forward_info += (
-                        f"\nPotential combinations: approximately {combinations}"
-                    )
+                    nested_forward_info += f"\nPotential combinations: approximately {combinations}"
         else:
             # Fallback method for forward dependencies
             for var_name, var_def in profile.items():
@@ -75,9 +73,7 @@ def extract_profile_variables(profile):
     # Build profile information for the prompt
     variables_info = ""
     if variables:
-        variables_info = (
-            f"\nThis profile has {len(variables)} variables: {', '.join(variables)}"
-        )
+        variables_info = f"\nThis profile has {len(variables)} variables: {', '.join(variables)}"
 
         if forward_with_dependencies:
             variables_info += f"\n{len(forward_with_dependencies)} variables have dependencies: {', '.join(forward_with_dependencies)}"
@@ -112,11 +108,8 @@ def prepare_language_info(supported_languages):
     return language_info, languages_example, supported_languages_text
 
 
-def prompt_for_number(
-    llm, profile, variables_info, language_info, variables, has_nested_forwards
-):
+def prompt_for_number(llm, profile, variables_info, language_info, variables, has_nested_forwards):
     """Prompt LLM to determine the NUMBER parameter."""
-
     # Select the appropriate number section based on profile type
     if has_nested_forwards:
         number_section = """
@@ -198,7 +191,6 @@ def prompt_for_max_cost(
     llm, profile, variables_info, language_info, number_value, has_nested_forwards
 ):
     """Prompt LLM to determine the MAX_COST parameter."""
-
     prompt = f"""
     Determine the MAX_COST parameter for this conversation scenario.
 
@@ -250,11 +242,8 @@ def prompt_for_max_cost(
     return max_cost
 
 
-def prompt_for_goal_style(
-    llm, profile, variables_info, language_info, number_value, max_cost
-):
+def prompt_for_goal_style(llm, profile, variables_info, language_info, number_value, max_cost):
     """Prompt LLM to determine the GOAL_STYLE parameter."""
-
     prompt = f"""
     Determine the GOAL_STYLE parameter for this conversation scenario.
 
@@ -310,9 +299,7 @@ def prompt_for_goal_style(
                 if selected_style == "steps":
                     goal_style = {"steps": goal_style_value}
                 elif selected_style == "all_answered":
-                    goal_style = {
-                        "all_answered": {"export": False, "limit": goal_style_value}
-                    }
+                    goal_style = {"all_answered": {"export": False, "limit": goal_style_value}}
                 elif selected_style == "random_steps":
                     goal_style = {"random_steps": goal_style_value}
         elif key == "goal_style_value":
@@ -322,9 +309,7 @@ def prompt_for_goal_style(
                 if selected_style == "steps":
                     goal_style = {"steps": goal_style_value}
                 elif selected_style == "all_answered":
-                    goal_style = {
-                        "all_answered": {"export": False, "limit": goal_style_value}
-                    }
+                    goal_style = {"all_answered": {"export": False, "limit": goal_style_value}}
                 elif selected_style == "random_steps":
                     goal_style = {"random_steps": goal_style_value}
             except ValueError:
@@ -345,7 +330,6 @@ def prompt_for_interaction_style(
     languages_example,
 ):
     """Prompt LLM to determine the INTERACTION_STYLE parameter."""
-
     # Convert goal_style to string representation for prompt
     if "steps" in goal_style:
         goal_style_str = f"{{'steps': {goal_style['steps']}}}"
@@ -430,11 +414,8 @@ def prompt_for_interaction_style(
     return interaction_styles
 
 
-def generate_conversation_parameters(
-    profiles, functionalities, llm, supported_languages=None
-):
+def generate_conversation_parameters(profiles, functionalities, llm, supported_languages=None):
     """Generate conversation parameters for test profiles using sequential prompting."""
-
     for profile in profiles:
         # Extract profile variables and build info
         (
@@ -446,8 +427,8 @@ def generate_conversation_parameters(
         ) = extract_profile_variables(profile)
 
         # Prepare language information
-        language_info, languages_example, supported_languages_text = (
-            prepare_language_info(supported_languages)
+        language_info, languages_example, supported_languages_text = prepare_language_info(
+            supported_languages
         )
 
         # Sequential prompting for each parameter
@@ -502,8 +483,7 @@ def generate_conversation_parameters(
 
 
 def conversation_params_node(state: State, llm) -> Dict[str, Any]:
-    """
-    Node that generates specific parameters needed for conversation goals.
+    """Node that generates specific parameters needed for conversation goals.
 
     Args:
         state (State): The current graph state.

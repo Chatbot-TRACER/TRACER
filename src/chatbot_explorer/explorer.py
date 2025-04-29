@@ -1,31 +1,28 @@
-from typing import Dict, List, Any, Optional, Set
-from langchain_openai import ChatOpenAI
+from typing import Any, Dict, List, Optional, Set
 
+from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import StateGraph
-
-from .state import State
-
-from .nodes.structure_builder_node import structure_builder_node
-from .nodes.goal_generator_node import goal_generator_node
-from .nodes.conversation_params_node import conversation_params_node
-from .nodes.profile_builder_node import profile_builder_node
-from .nodes.profile_validator_node import profile_validator_node
 
 from .functionality_node import (
     FunctionalityNode,
 )
+from .nodes.conversation_params_node import conversation_params_node
+from .nodes.goal_generator_node import goal_generator_node
+from .nodes.profile_builder_node import profile_builder_node
+from .nodes.profile_validator_node import profile_validator_node
+from .nodes.structure_builder_node import structure_builder_node
 from .session import run_exploration_session
-from .utils.conversation.language_detection import extract_supported_languages
+from .state import State
 from .utils.conversation.fallback_detection import extract_fallback_message
+from .utils.conversation.language_detection import extract_supported_languages
 
 
 class ChatbotExplorer:
     """Uses LangGraph to explore chatbots and orchestrate analysis."""
 
     def __init__(self, model_name: str):
-        """
-        Sets up the explorer.
+        """Sets up the explorer.
 
         Args:
             model_name (str): The name of the OpenAI model to use.
@@ -36,8 +33,7 @@ class ChatbotExplorer:
     def run_full_exploration(
         self, chatbot_connector, max_sessions: int, max_turns: int
     ) -> Dict[str, Any]:
-        """
-        Runs the initial probing and the main exploration loop.
+        """Runs the initial probing and the main exploration loop.
 
         Args:
             chatbot_connector: An instance of a chatbot connector class.
@@ -62,9 +58,7 @@ class ChatbotExplorer:
         # --- Initial Language Detection ---
         print("\n--- Probing Chatbot Language ---")
         initial_probe_query = "Hello"  # Simple initial query
-        is_ok, probe_response = chatbot_connector.execute_with_input(
-            initial_probe_query
-        )
+        is_ok, probe_response = chatbot_connector.execute_with_input(initial_probe_query)
         if is_ok and probe_response:
             print(f"   Initial response received: '{probe_response[:60]}...'")
             try:
@@ -74,9 +68,7 @@ class ChatbotExplorer:
                     supported_languages = detected_langs
                     print(f"   Detected initial language(s): {supported_languages}")
                 else:
-                    print(
-                        "   Could not detect language from initial probe, defaulting to English."
-                    )
+                    print("   Could not detect language from initial probe, defaulting to English.")
             except Exception as lang_e:
                 print(
                     f"   Error during initial language detection: {lang_e}. Defaulting to English."
@@ -97,9 +89,7 @@ class ChatbotExplorer:
             else:
                 print("   Could not detect a fallback message.")
         except Exception as fb_e:
-            print(
-                f"   Error during fallback detection: {fb_e}. Proceeding without fallback."
-            )
+            print(f"   Error during fallback detection: {fb_e}. Proceeding without fallback.")
             fallback_message = None
         # --- End Fallback Message Detection ---
 
@@ -107,9 +97,7 @@ class ChatbotExplorer:
         session_num = 0
         while session_num < max_sessions:
             current_session_index = session_num
-            print(
-                f"\n=== Starting Session {current_session_index + 1}/{max_sessions} ==="
-            )
+            print(f"\n=== Starting Session {current_session_index + 1}/{max_sessions} ===")
 
             explore_node = None  # Node to focus on this session
             session_type_log = "General Exploration"
@@ -119,18 +107,12 @@ class ChatbotExplorer:
                 explore_node = pending_nodes.pop(0)
                 # Double-check if node was already explored
                 if explore_node.name in explored_nodes:
-                    print(
-                        f"--- Skipping already explored node: '{explore_node.name}' ---"
-                    )
+                    print(f"--- Skipping already explored node: '{explore_node.name}' ---")
                     session_num += 1  # Consume a session slot
                     continue
                 session_type_log = f"Exploring functionality '{explore_node.name}'"
-            elif (
-                session_num > 0
-            ):  # If queue is empty after session 0, perform general exploration
-                print(
-                    "   Pending nodes queue is empty. Performing general exploration."
-                )
+            elif session_num > 0:  # If queue is empty after session 0, perform general exploration
+                print("   Pending nodes queue is empty. Performing general exploration.")
             # Else: Session 0 and queue is empty is the initial state.
 
             print(f"   Session Type: {session_type_log}")
@@ -169,9 +151,7 @@ class ChatbotExplorer:
         if session_num == max_sessions:
             print(f"\n=== Completed {max_sessions} exploration sessions ===")
             if pending_nodes:
-                print(
-                    f"   NOTE: {len(pending_nodes)} nodes still remain in the pending queue."
-                )
+                print(f"   NOTE: {len(pending_nodes)} nodes still remain in the pending queue.")
             else:
                 print("   All discovered nodes were explored.")
         else:
@@ -193,24 +173,19 @@ class ChatbotExplorer:
         }
 
     def _build_profile_generation_graph(self):
-        """
-        Builds a smaller graph just for generating profiles from existing structure.
+        """Builds a smaller graph just for generating profiles from existing structure.
 
         Returns:
             CompiledGraph: The compiled LangGraph application for profile generation.
         """
         graph_builder = StateGraph(State)
 
-        graph_builder.add_node(
-            "goal_generator", lambda state: goal_generator_node(state, self.llm)
-        )
+        graph_builder.add_node("goal_generator", lambda state: goal_generator_node(state, self.llm))
         graph_builder.add_node(
             "conversation_params",
             lambda state: conversation_params_node(state, self.llm),
         )
-        graph_builder.add_node(
-            "profile_builder", profile_builder_node
-        )  # Doesn't need llm
+        graph_builder.add_node("profile_builder", profile_builder_node)  # Doesn't need llm
         graph_builder.add_node(
             "profile_validator", lambda state: profile_validator_node(state, self.llm)
         )
@@ -226,8 +201,7 @@ class ChatbotExplorer:
         return graph_builder.compile(checkpointer=self.memory)
 
     def _build_structure_graph(self):
-        """
-        Builds a graph that only runs the structure building part.
+        """Builds a graph that only runs the structure building part.
 
         Returns:
             CompiledGraph: The compiled LangGraph application for structure building.

@@ -3,8 +3,7 @@ from typing import Optional
 
 
 def extract_fallback_message(the_chatbot, llm) -> Optional[str]:
-    """
-    Try to get the chatbot's "I don't understand" message.
+    """Try to get the chatbot's "I don't understand" message.
     Sends confusing messages to trigger it. These aren't part of the main chat history.
 
     Args:
@@ -14,9 +13,7 @@ def extract_fallback_message(the_chatbot, llm) -> Optional[str]:
     Returns:
         Optional[str]: The detected fallback message, or None if not found.
     """
-    print(
-        "\n--- Attempting to detect chatbot fallback message (won't be included in analysis) ---"
-    )
+    print("\n--- Attempting to detect chatbot fallback message (won't be included in analysis) ---")
 
     # Some weird questions to confuse the bot
     confusing_queries = [
@@ -71,9 +68,7 @@ def extract_fallback_message(the_chatbot, llm) -> Optional[str]:
             # Remove quotes at beginning and end if present
             fallback = re.sub(r'^["\']+|["\']+$', "", fallback)
             # Remove any "Fallback message:" prefix if the LLM included it
-            fallback = re.sub(
-                r"^(Fallback message:?\s*)", "", fallback, flags=re.IGNORECASE
-            )
+            fallback = re.sub(r"^(Fallback message:?\s*)", "", fallback, flags=re.IGNORECASE)
 
             if fallback:
                 print(
@@ -90,8 +85,7 @@ def extract_fallback_message(the_chatbot, llm) -> Optional[str]:
 
 
 def is_semantically_fallback(response: str, fallback: str, llm) -> bool:
-    """
-    Uses LLM to determine if a chatbot response is semantically equivalent
+    """Uses LLM to determine if a chatbot response is semantically equivalent
     to a known fallback message.
 
     Args:

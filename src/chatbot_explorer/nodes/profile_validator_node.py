@@ -1,12 +1,12 @@
-from typing import Dict, Any, List
+from typing import Any, Dict
+
 from ..state import State
-from ..validation_script import YamlValidator
 from ..utils.analysis.profile_generator import validate_and_fix_profile
+from ..validation_script import YamlValidator
 
 
 def profile_validator_node(state: State, llm) -> Dict[str, Any]:
-    """
-    Node that validates generated YAML profiles and tries to fix them using LLM if needed.
+    """Node that validates generated YAML profiles and tries to fix them using LLM if needed.
 
     Args:
         state (State): The current graph state.
@@ -26,9 +26,7 @@ def profile_validator_node(state: State, llm) -> Dict[str, Any]:
     for profile_content in state["built_profiles"]:
         try:
             # validate_and_fix_profile takes the content (dict/string), validator, llm
-            validated_profile = validate_and_fix_profile(
-                profile_content, validator, llm
-            )
+            validated_profile = validate_and_fix_profile(profile_content, validator, llm)
             if validated_profile:  # Only add if validation/fixing was successful
                 validated_profiles.append(validated_profile)
             else:

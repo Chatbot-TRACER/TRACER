@@ -1,10 +1,8 @@
-from typing import Dict, Any, Optional, List
+from typing import Any, Dict, List, Optional
 
 
 class FunctionalityNode:
-    """
-    Represents a discovered chatbot functionality.
-    """
+    """Represents a discovered chatbot functionality."""
 
     def __init__(
         self,
@@ -18,9 +16,7 @@ class FunctionalityNode:
         self.description: str = description
         self.parameters: List[Dict[str, Any]] = parameters if parameters else []
         self.parent: Optional["FunctionalityNode"] = parent
-        self.children: List["FunctionalityNode"] = (
-            children if children is not None else []
-        )
+        self.children: List["FunctionalityNode"] = children if children is not None else []
 
     def add_child(self, child_node: "FunctionalityNode"):
         """Adds a child node to this node."""
@@ -29,8 +25,7 @@ class FunctionalityNode:
             self.children.append(child_node)
 
     def to_dict(self) -> Dict[str, Any]:
-        """
-        Converts the FunctionalityNode instance to a serializable dictionary.
+        """Converts the FunctionalityNode instance to a serializable dictionary.
         Excludes the 'parent' attribute to prevent circular references.
         Recursively converts children.
         """

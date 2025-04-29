@@ -1,18 +1,17 @@
 """Functions for building the workflow graph structure using LLM analysis."""
 
-import re
 import json
-from typing import List, Dict, Any
+import re
+from typing import Any, Dict, List
 
 
 def build_workflow_structure(
     flat_functionality_dicts: List[Dict[str, Any]],
     conversation_history: List[Any],
     chatbot_type: str,
-    llm
+    llm,
 ) -> List[Dict[str, Any]]:
-    """
-    Build a hierarchical structure of chatbot functionalities.
+    """Build a hierarchical structure of chatbot functionalities.
 
     Args:
         flat_functionality_dicts: List of functionality dictionaries
@@ -48,14 +47,13 @@ def build_workflow_structure(
                 continue
 
             from ..conversation.conversation_utils import format_conversation
+
             session_str = format_conversation(session_history)
             snippet_len = 1500
 
             # Take beginning and end if too long
             session_snippet = (
-                session_str[: snippet_len // 2]
-                + "\n...\n"
-                + session_str[-snippet_len // 2 :]
+                session_str[: snippet_len // 2] + "\n...\n" + session_str[-snippet_len // 2 :]
                 if len(session_str) > snippet_len
                 else session_str
             )
@@ -190,8 +188,8 @@ def extract_json_from_response(response_content: str) -> str:
     json_str = None
     json_patterns = [
         r"```json\s*([\s\S]+?)\s*```",  # ```json ... ```
-        r"```\s*([\s\S]+?)\s*```",       # ``` ... ```
-        r"\[\s*\{.*?\}\s*\]",            # Starts with [ { and ends with } ]
+        r"```\s*([\s\S]+?)\s*```",  # ``` ... ```
+        r"\[\s*\{.*?\}\s*\]",  # Starts with [ { and ends with } ]
     ]
 
     for pattern in json_patterns:
@@ -214,9 +212,7 @@ def build_node_hierarchy(structured_nodes_info: List[Dict[str, Any]]) -> List[Di
     """Build a hierarchical structure from flat nodes with parent references."""
     # Map name to node info
     nodes_map = {
-        node_info["name"]: node_info
-        for node_info in structured_nodes_info
-        if "name" in node_info
+        node_info["name"]: node_info for node_info in structured_nodes_info if "name" in node_info
     }
 
     # Initialize children list for all nodes
@@ -241,9 +237,7 @@ def build_node_hierarchy(structured_nodes_info: List[Dict[str, Any]]) -> List[Di
                 all_child_names.add(child_info["name"])
 
     root_nodes = [
-        node_info
-        for node_name, node_info in nodes_map.items()
-        if node_name not in all_child_names
+        node_info for node_name, node_info in nodes_map.items() if node_name not in all_child_names
     ]
 
     return root_nodes

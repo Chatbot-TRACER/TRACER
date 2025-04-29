@@ -36,7 +36,7 @@ class ChatbotTaskyto(Chatbot):
                     )
                 except requests.Timeout:
                     return False, "timeout"
-                except requests.exceptions.ConnectionError as e:
+                except requests.exceptions.ConnectionError:
                     return False, "chatbot internal error"
 
                 post_response_json = post_response.json()
@@ -49,7 +49,7 @@ class ChatbotTaskyto(Chatbot):
                 else:
                     # There is an error, but it is an internal error
                     return False, post_response_json.get("error")
-            except requests.exceptions.JSONDecodeError as e:
+            except requests.exceptions.JSONDecodeError:
                 return False, "chatbot internal error"
 
         return True, ""
@@ -65,9 +65,7 @@ class MillionBot(Chatbot):
         self.reset_url = None
         self.reset_payload = None
 
-    def init_chatbot(
-        self, bot_id, conversation_id, url, sender="671ab2931382d56e5140f023"
-    ):
+    def init_chatbot(self, bot_id, conversation_id, url, sender="671ab2931382d56e5140f023"):
         self.url = "https://api.1millionbot.com/api/public/messages"
         self.headers = {
             "Content-Type": "application/json",
@@ -113,9 +111,7 @@ class MillionBot(Chatbot):
 
     def execute_with_input(self, user_msg):
         if self.reset_payload is not None:
-            response = requests.post(
-                self.reset_url, headers=self.headers, json=self.reset_payload
-            )
+            response = requests.post(self.reset_url, headers=self.headers, json=self.reset_payload)
             # print(response)
             assert response.status_code == 200
             self.reset_payload = None
@@ -134,17 +130,13 @@ class MillionBot(Chatbot):
                     if "text" in answer:
                         text_response += answer["text"] + "\n"
                     elif "payload" in answer:
-                        text_response += f"\n\nAVAILABLE BUTTONS:\n\n"
+                        text_response += "\n\nAVAILABLE BUTTONS:\n\n"
                         if "cards" in answer["payload"]:
                             for card in answer["payload"]["cards"]:
                                 if "buttons" in card:
-                                    text_response += self.__translate_buttons(
-                                        card["buttons"]
-                                    )
+                                    text_response += self.__translate_buttons(card["buttons"])
                         elif "buttons" in answer["payload"]:
-                            text_response += self.__translate_buttons(
-                                answer["payload"]["buttons"]
-                            )
+                            text_response += self.__translate_buttons(answer["payload"]["buttons"])
 
                 return True, text_response
             else:
@@ -152,7 +144,7 @@ class MillionBot(Chatbot):
                 print(f"Server error {response_json.get('error')}")
                 # errors.append({500: f"Couldn't get response from the server"})
                 return False, response_json.get("error")
-        except requests.exceptions.JSONDecodeError as e:
+        except requests.exceptions.JSONDecodeError:
             # logger = logging.getLogger("my_app_logger")
             # logger.error(f"Couldn't get response from the server: {e}")
             return False, "chatbot internal error"
@@ -176,7 +168,7 @@ class MillionBot(Chatbot):
             if "value" in button:
                 text_response += f" LINK: {button['value']}\n"
             else:
-                text_response += f" LINK: <empty>\n"
+                text_response += " LINK: <empty>\n"
         return text_response
 
 

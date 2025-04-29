@@ -1,7 +1,8 @@
-from typing import Dict, List, Union, Optional
-from dataclasses import dataclass
-import yaml
 import re
+from dataclasses import dataclass
+from typing import Dict, List, Optional
+
+import yaml
 
 
 @dataclass
@@ -223,9 +224,7 @@ class YamlValidator:
 
         for field in self.required_top_level:
             if field not in data:
-                errors.append(
-                    ValidationError(f"Missing required field: {field}", f"/{field}")
-                )
+                errors.append(ValidationError(f"Missing required field: {field}", f"/{field}"))
 
         # Check nested required fields
         for path, fields in self.required_nested.items():
@@ -543,10 +542,7 @@ class YamlValidator:
                                 elif func.startswith("forward(") and func.endswith(")"):
                                     nested_length = len("forward(")
                                     nested_var = func[nested_length:-1]
-                                    if (
-                                        nested_var in defined_variables
-                                        or nested_var == ""
-                                    ):
+                                    if nested_var in defined_variables or nested_var == "":
                                         valid_function = True
                                     else:
                                         errors.append(
@@ -571,9 +567,7 @@ class YamlValidator:
                                 var_type = var_def["type"]
 
                                 # For numeric types with range definition
-                                if var_type in ["int", "float"] and isinstance(
-                                    data, dict
-                                ):
+                                if var_type in ["int", "float"] and isinstance(data, dict):
                                     # Check for min/max
                                     if "min" not in data:
                                         errors.append(
@@ -627,9 +621,7 @@ class YamlValidator:
                                         )
 
                                 # For list data, check that it's actually a list
-                                elif not isinstance(data, list) and not isinstance(
-                                    data, dict
-                                ):
+                                elif not isinstance(data, list) and not isinstance(data, dict):
                                     errors.append(
                                         ValidationError(
                                             "Data must be a list, range definition, or custom function",
@@ -667,9 +659,7 @@ class YamlValidator:
                                                             f"/user/goals/{i}/{var_name}/data/{j}",
                                                         )
                                                     )
-                                                elif (
-                                                    len(item) <= 5
-                                                ):  # "any()" has length 5
+                                                elif len(item) <= 5:  # "any()" has length 5
                                                     errors.append(
                                                         ValidationError(
                                                             "Empty any() function: Must contain instructions",
@@ -684,9 +674,7 @@ class YamlValidator:
                                                             f"/user/goals/{i}/{var_name}/data/{j}",
                                                         )
                                                     )
-                                        elif not isinstance(
-                                            item, (str, int, float, bool)
-                                        ):
+                                        elif not isinstance(item, (str, int, float, bool)):
                                             errors.append(
                                                 ValidationError(
                                                     f"Invalid data list item type: {type(item).__name__}. Must be a primitive value or any() function",
@@ -711,11 +699,7 @@ class YamlValidator:
 
                 func = var_info["function"]
                 # Check if this is a forward function with a variable reference
-                if (
-                    func.startswith("forward(")
-                    and func.endswith(")")
-                    and func != "forward()"
-                ):
+                if func.startswith("forward(") and func.endswith(")") and func != "forward()":
                     # Extract the referenced variable name
                     referenced_var = func[len("forward(") : -1].strip()
                     if referenced_var:
@@ -793,15 +777,11 @@ class YamlValidator:
         if "fallback" in chatbot:
             fallback = chatbot["fallback"]
             if not isinstance(fallback, str):
-                errors.append(
-                    ValidationError("Fallback must be a string", "/chatbot/fallback")
-                )
+                errors.append(ValidationError("Fallback must be a string", "/chatbot/fallback"))
 
         if "output" in chatbot:
             if not isinstance(chatbot["output"], list):
-                errors.append(
-                    ValidationError("Output must be a list", "/chatbot/output")
-                )
+                errors.append(ValidationError("Output must be a list", "/chatbot/output"))
             else:
                 for i, output_item in enumerate(chatbot["output"]):
                     # Each output item should be a dictionary with a single key (output name)
@@ -855,10 +835,7 @@ class YamlValidator:
                         )
 
                     # Validate output type
-                    if (
-                        "type" in output_def
-                        and output_def["type"] not in self.valid_output_types
-                    ):
+                    if "type" in output_def and output_def["type"] not in self.valid_output_types:
                         errors.append(
                             ValidationError(
                                 f"Invalid output type '{output_def['type']}'. Must be one of: {', '.join(self.valid_output_types)}",
@@ -879,9 +856,7 @@ class YamlValidator:
 
         return errors
 
-    def _validate_conversation_section(
-        self, conversation: Dict
-    ) -> List[ValidationError]:
+    def _validate_conversation_section(self, conversation: Dict) -> List[ValidationError]:
         """Validate conversation section configuration."""
         errors = []
 
@@ -940,9 +915,7 @@ class YamlValidator:
             cost = conversation["max_cost"]
             if not isinstance(cost, (int, float)) or cost <= 0:
                 errors.append(
-                    ValidationError(
-                        "Max cost must be a positive number", "/conversation/max_cost"
-                    )
+                    ValidationError("Max cost must be a positive number", "/conversation/max_cost")
                 )
 
         # Validate goal_style
@@ -1120,10 +1093,7 @@ class YamlValidator:
                                                 f"/conversation/interaction_style/{i}/random/{j}",
                                             )
                                         )
-                                    elif (
-                                        random_style
-                                        not in self.valid_interaction_styles
-                                    ):
+                                    elif random_style not in self.valid_interaction_styles:
                                         errors.append(
                                             ValidationError(
                                                 f"Invalid style in random list: '{random_style}'",

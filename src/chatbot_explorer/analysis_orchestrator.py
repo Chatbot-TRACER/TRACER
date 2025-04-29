@@ -1,5 +1,6 @@
 import uuid
-from typing import Dict, Any, List
+from typing import Any, Dict, List
+
 from chatbot_explorer.explorer import (
     ChatbotExplorer,
 )
@@ -8,8 +9,7 @@ from chatbot_explorer.explorer import (
 def run_analysis_pipeline(
     explorer_instance: ChatbotExplorer, exploration_results: Dict[str, Any]
 ) -> Dict[str, List[Any]]:
-    """
-    Runs the LangGraph analysis pipeline to infer workflow structure and generate user profiles.
+    """Runs the LangGraph analysis pipeline to infer workflow structure and generate user profiles.
 
     Args:
         explorer_instance: An instance of ChatbotExplorer
@@ -22,10 +22,7 @@ def run_analysis_pipeline(
         - 'discovered_functionalities': The final structured functionalities after analysis.
         - 'built_profiles': The list of generated user profiles.
     """
-
-    print(
-        "\n--- Preparing to infer complete workflow structure and generate user profiles ---"
-    )
+    print("\n--- Preparing to infer complete workflow structure and generate user profiles ---")
 
     # Prepare initial state for LangGraph analysis using exploration results
     analysis_state = {
@@ -59,9 +56,7 @@ def run_analysis_pipeline(
     )
 
     # Update state with the refined structure from the structure graph
-    analysis_state["discovered_functionalities"] = structure_result[
-        "discovered_functionalities"
-    ]
+    analysis_state["discovered_functionalities"] = structure_result["discovered_functionalities"]
 
     # Store the workflow structure for usage in profile generation
     workflow_structure = structure_result["discovered_functionalities"]

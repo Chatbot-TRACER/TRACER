@@ -1,12 +1,12 @@
-from typing import List, Dict, Any
+from typing import Any, Dict, List
+
 from ..conversation.conversation_utils import format_conversation
 
 
 def classify_chatbot_type(
     functionalities: List[Dict[str, Any]], conversation_history: List[Any], llm
 ) -> str:
-    """
-    Determine if the chatbot is transactional (task-oriented) or informational (Q&A).
+    """Determine if the chatbot is transactional (task-oriented) or informational (Q&A).
 
     Args:
         functionalities: List of functionality dictionaries
@@ -45,18 +45,14 @@ def classify_chatbot_type(
 
             # Take beginning and end if too long
             session_snippet = (
-                session_str[: snippet_len // 2]
-                + "\n...\n"
-                + session_str[-snippet_len // 2 :]
+                session_str[: snippet_len // 2] + "\n...\n" + session_str[-snippet_len // 2 :]
                 if len(session_str) > snippet_len
                 else session_str
             )
 
             # Add snippet if within total length limit
             if total_snippet_length + len(session_snippet) < max_total_snippet_length:
-                snippets.append(
-                    f"\n--- Snippet from Session {i + 1} ---\n{session_snippet}"
-                )
+                snippets.append(f"\n--- Snippet from Session {i + 1} ---\n{session_snippet}")
                 total_snippet_length += len(session_snippet)
             else:
                 break  # Stop if limit reached
@@ -92,9 +88,7 @@ def classify_chatbot_type(
             return classification
         else:
             # Handle unclear response
-            print(
-                f"   LLM response unclear ('{classification}'), defaulting to informational."
-            )
+            print(f"   LLM response unclear ('{classification}'), defaulting to informational.")
             return "informational"
     except Exception as e:
         # Handle LLM error

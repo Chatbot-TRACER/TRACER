@@ -1,14 +1,14 @@
 import json
-from typing import List
 import re
+from typing import List
+
 from ...functionality_node import FunctionalityNode
 
 
 def is_duplicate_functionality(
     node: FunctionalityNode, existing_nodes: List[FunctionalityNode], llm=None
 ) -> bool:
-    """
-    Check if this node is basically the same as one we already have.
+    """Check if this node is basically the same as one we already have.
 
     Args:
         node (FunctionalityNode): The new node to check.
@@ -63,8 +63,7 @@ def is_duplicate_functionality(
 
 
 def validate_parent_child_relationship(parent_node, child_node, llm) -> bool:
-    """
-    Check if the child node makes sense as a sub-step of the parent node.
+    """Check if the child node makes sense as a sub-step of the parent node.
 
     Args:
         parent_node (FunctionalityNode): The potential parent node.
@@ -128,11 +127,8 @@ def validate_parent_child_relationship(parent_node, child_node, llm) -> bool:
     return is_valid
 
 
-def merge_similar_functionalities(
-    nodes: List[FunctionalityNode], llm
-) -> List[FunctionalityNode]:
-    """
-    Use LLM to find and merge similar nodes. Returns a new list.
+def merge_similar_functionalities(nodes: List[FunctionalityNode], llm) -> List[FunctionalityNode]:
+    """Use LLM to find and merge similar nodes. Returns a new list.
 
     Args:
         nodes (list): List of FunctionalityNode objects to check.
@@ -199,9 +195,7 @@ def merge_similar_functionalities(
                 for node in group:
                     # Merge parameters (avoid duplicates)
                     for param in node.parameters:
-                        if not any(
-                            p.get("name") == param.get("name") for p in all_params
-                        ):
+                        if not any(p.get("name") == param.get("name") for p in all_params):
                             all_params.append(param)
                     # Add all children
                     for child in node.children:
