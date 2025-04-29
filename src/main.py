@@ -5,7 +5,7 @@ import os  # Still needed for makedirs and path.join
 
 # import re # No longer used
 import graphviz  # Keep graphviz for generate_graph_image
-from chatbot_explorer.cli import parse_arguments
+from utils.cli import parse_arguments
 from chatbot_explorer.explorer import ChatbotExplorer
 from chatbot_explorer.analysis_orchestrator import (
     run_analysis_pipeline,
