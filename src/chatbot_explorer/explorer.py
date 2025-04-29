@@ -18,12 +18,11 @@ from .nodes.conversation_parameters_node import generate_conversation_parameters
 from .validation_script import YamlValidator
 
 from .functionality_node import FunctionalityNode
-from .session import (
-    format_conversation,
-    run_exploration_session,
-    extract_supported_languages,
-    extract_fallback_message,
-)
+from .session import run_exploration_session
+
+from .utils.language_detection import extract_supported_languages
+from .utils.fallback_detection import extract_fallback_message
+from .utils.conversation_utils import format_conversation
 
 # Regex to find {{variables}}
 VARIABLE_PATTERN = re.compile(r"\{\{([^{}]+)\}\}")
