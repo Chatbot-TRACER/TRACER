@@ -1,5 +1,5 @@
 from typing import List, Dict, Any
-from ..utils.conversation_utils import format_conversation
+from ..conversation.conversation_utils import format_conversation
 
 
 def classify_chatbot_type(

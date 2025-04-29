@@ -1,7 +1,7 @@
 import re
 from typing import List
-from ..functionality_node import FunctionalityNode
-from ..utils.conversation_utils import format_conversation
+from ...functionality_node import FunctionalityNode
+from ..conversation.conversation_utils import format_conversation
 
 
 def extract_functionality_nodes(

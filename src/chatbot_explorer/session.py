@@ -6,15 +6,15 @@ import json
 import random
 
 # Import utility functions from refactored modules
-from .utils.language_detection import extract_supported_languages
-from .utils.fallback_detection import extract_fallback_message, is_semantically_fallback
-from .utils.functionality_extraction import extract_functionality_nodes
-from .utils.node_processing import (
+from .utils.conversation.language_detection import extract_supported_languages
+from .utils.conversation.fallback_detection import extract_fallback_message, is_semantically_fallback
+from .utils.analysis.functionality_extraction import extract_functionality_nodes
+from .utils.analysis.node_processing import (
     is_duplicate_functionality,
     validate_parent_child_relationship,
     merge_similar_functionalities
 )
-from .utils.conversation_utils import format_conversation, _get_all_nodes
+from .utils.conversation.conversation_utils import format_conversation, _get_all_nodes
 
 
 def run_exploration_session(

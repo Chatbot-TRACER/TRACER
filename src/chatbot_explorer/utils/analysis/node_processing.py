@@ -1,7 +1,7 @@
 import json
 from typing import List
 import re
-from ..functionality_node import FunctionalityNode
+from ...functionality_node import FunctionalityNode
 
 
 def is_duplicate_functionality(

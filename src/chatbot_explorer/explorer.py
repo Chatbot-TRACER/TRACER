@@ -20,12 +20,12 @@ from .validation_script import YamlValidator
 from .functionality_node import FunctionalityNode
 from .session import run_exploration_session
 
-from .utils.language_detection import extract_supported_languages
-from .utils.fallback_detection import extract_fallback_message
-from .utils.conversation_utils import format_conversation
-from .utils.chatbot_classification import classify_chatbot_type
-from .utils.workflow_builder import build_workflow_structure
-from .utils.profile_generator import (
+from .utils.conversation.language_detection import extract_supported_languages
+from .utils.conversation.fallback_detection import extract_fallback_message
+from .utils.conversation.conversation_utils import format_conversation
+from .utils.analysis.chatbot_classification import classify_chatbot_type
+from .utils.analysis.workflow_builder import build_workflow_structure
+from .utils.analysis.profile_generator import (
     build_profile_yaml,
     validate_and_fix_profile,
     extract_yaml,
