@@ -1,16 +1,21 @@
 import sys
-import yaml
-import os
-import re
-import json
-import graphviz
+
+# import yaml # No longer needed here
+import os  # Still needed for makedirs and path.join
+
+# import re # No longer used
+import graphviz  # Keep graphviz for generate_graph_image
 from chatbot_explorer.cli import parse_arguments
 from chatbot_explorer.explorer import ChatbotExplorer
+from chatbot_explorer.analysis_orchestrator import (
+    run_analysis_pipeline,
+)  # Import the new function
 from chatbot_connectors import ChatbotTaskyto, ChatbotAdaUam
 
-from typing import List, Dict, Any, Set
+from typing import List, Dict, Any, Set  # Keep typing
 
-from utils.reporting import write_report, generate_graph_image
+# Import the new save_profiles function
+from utils.reporting import write_report, generate_graph_image, save_profiles
 
 
 def main():
@@ -69,103 +74,23 @@ def main():
     )
     print("--- Exploration Complete ---")
 
-    # Prepare state for LangGraph analysis (structure inference and profile generation)
+    # --- Run Analysis Pipeline ---
     print(
-        "\n--- Preparing to infer complete workflow structure and generate user profiles ---"
+        "\n--- Running Analysis Pipeline (Structure Inference & Profile Generation) ---"
     )
-    analysis_state = {
-        "messages": [
-            {
-                "role": "system",
-                "content": "Analyze the conversation histories to identify functionalities",
-            },
-        ],
-        "conversation_history": exploration_results["conversation_sessions"],
-        "discovered_functionalities": exploration_results[
-            "root_nodes_dict"
-        ],  # Use results from exploration
-        "discovered_limitations": [],  # Limitations are not currently extracted during exploration
-        "current_session": max_sessions,  # Keep max_sessions from args
-        "exploration_finished": True,
-        "conversation_goals": [],  # Not used in this flow currently
-        "supported_languages": exploration_results["supported_languages"],
-        "fallback_message": exploration_results["fallback_message"],
-    }
-
-    # 1. Infer the workflow structure using the dedicated graph
-    print("\n--- Running workflow structure inference ---")
-    structure_graph = explorer._build_structure_graph()
-    structure_result = structure_graph.invoke(
-        analysis_state, config={"configurable": {"thread_id": "structure_analysis"}}
+    analysis_results = run_analysis_pipeline(
+        explorer_instance=explorer, exploration_results=exploration_results
     )
 
-    # Use the refined structure from the structure graph for profile generation
-    analysis_state["discovered_functionalities"] = structure_result[
-        "discovered_functionalities"
-    ]
+    # Extract results for reporting and saving
+    functionality_dicts = analysis_results["discovered_functionalities"]
+    built_profiles = analysis_results["built_profiles"]
 
-    # Store the workflow structure for usage in profile generation
-    workflow_structure = structure_result["discovered_functionalities"]
-
-    # 2. Generate user profiles based on the inferred structure
-    print("\n--- Generating user profiles ---")
-    profile_graph = explorer._build_profile_generation_graph()
-
-    # Add workflow structure to the state
-    analysis_state["workflow_structure"] = workflow_structure
-
-    result = profile_graph.invoke(
-        analysis_state, config={"configurable": {"thread_id": "analysis_session"}}
-    )
-
-    # Update functionality_dicts with the final, structured version for reporting
-    functionality_dicts = structure_result.get("discovered_functionalities", [])
-
-    # --- Save Generated Profiles ---
-    built_profiles = result.get("built_profiles", [])
-    if built_profiles:
-        print(f"\n--- Saving {len(built_profiles)} user profiles to disk ---")
-
-        profiles_dir = output_dir  # Save profiles in the main output directory
-        os.makedirs(profiles_dir, exist_ok=True)
-
-        for profile in built_profiles:
-            # Generate a safe filename from the test_name
-            test_name = profile["test_name"]
-
-            if isinstance(test_name, dict):
-                # Handle structured test names (e.g., from random generation)
-                if (
-                    test_name.get("function") == "random()"
-                    and "data" in test_name
-                    and test_name["data"]
-                ):
-                    # Use the first data element for a more descriptive random name
-                    base_name = str(test_name["data"][0])
-                    filename = (
-                        f"random_profile_{base_name.lower().replace(' ', '_')}.yaml"
-                    )
-                else:
-                    # Fallback for other dict structures
-                    filename = f"profile_{hash(str(test_name))}.yaml"
-            else:
-                # Sanitize string test names for filenames
-                filename = (
-                    str(test_name)
-                    .lower()
-                    .replace(" ", "_")
-                    .replace(",", "")
-                    .replace("&", "and")
-                    + ".yaml"
-                )
-
-            filepath = os.path.join(profiles_dir, filename)
-            with open(filepath, "w", encoding="utf-8") as yf:
-                yaml.dump(profile, yf, sort_keys=False, allow_unicode=True)
-            print(f"  Saved profile: {filename}")
+    # --- Save Generated Profiles using the new function ---
+    save_profiles(built_profiles, output_dir)
 
     # --- Write Final Report ---
-    print("\n--- Writing report to disk ---")
+    # print("\n--- Writing report to disk ---") # Reporting function already prints status
     write_report(
         output_dir,
         {"discovered_functionalities": functionality_dicts},
