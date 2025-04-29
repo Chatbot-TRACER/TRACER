@@ -132,6 +132,7 @@ class YamlValidator:
 
     def validate(self, yaml_content: str) -> List[ValidationError]:
         """Validate YAML content against schema rules.
+
         Checks that all required fields are present and have the correct type.
         """
         errors = []
@@ -158,20 +159,14 @@ class YamlValidator:
                 errors.extend(self._validate_conversation_section(data["conversation"]))
 
             if "user" in data and "conversation" in data:
-                errors.extend(
-                    self._validate_conversation_variable_dependencies(
-                        data["user"], data["conversation"]
-                    )
-                )
+                errors.extend(self._validate_conversation_variable_dependencies(data["user"], data["conversation"]))
 
             return errors
 
         except yaml.YAMLError as e:
             return [ValidationError(f"Invalid YAML syntax: {str(e)}", "/")]
 
-    def _validate_conversation_variable_dependencies(
-        self, user: Dict, conversation: Dict
-    ) -> List[ValidationError]:
+    def _validate_conversation_variable_dependencies(self, user: Dict, conversation: Dict) -> List[ValidationError]:
         """Validate that sample() or all_combinations is only used when there are nested forwards."""
         errors = []
 
@@ -180,9 +175,7 @@ class YamlValidator:
         if "number" in conversation:
             num = conversation["number"]
             if isinstance(num, str):
-                if num == "all_combinations" or (
-                    isinstance(num, str) and num.startswith("sample(")
-                ):
+                if num == "all_combinations" or (isinstance(num, str) and num.startswith("sample(")):
                     using_combinations = True
 
         # If using combinations, check for nested forwards
@@ -199,11 +192,7 @@ class YamlValidator:
                         if isinstance(var_def, dict) and "function" in var_def:
                             func = var_def["function"]
                             # Check if this is a forward function referring to another variable
-                            if (
-                                func.startswith("forward(")
-                                and func.endswith(")")
-                                and func != "forward()"
-                            ):
+                            if func.startswith("forward(") and func.endswith(")") and func != "forward()":
                                 has_nested_forwards = True
                                 break
 
@@ -336,10 +325,7 @@ class YamlValidator:
                             has_personality = True
 
                             # Validate that personality points to a path
-                            if (
-                                not isinstance(item["personality"], str)
-                                or item["personality"] == ""
-                            ):
+                            if not isinstance(item["personality"], str) or item["personality"] == "":
                                 errors.append(
                                     ValidationError(
                                         "Personality must be a non-empty string path",
@@ -359,10 +345,7 @@ class YamlValidator:
             if user["language"] not in languages:
                 errors.append(
                     ValidationError(
-                        message=(
-                            f"Invalid language '{user['language']}'. "
-                            f"Must be one of: {', '.join(languages)}"
-                        ),
+                        message=(f"Invalid language '{user['language']}'. Must be one of: {', '.join(languages)}"),
                         path="/user/language",
                     )
                 )
@@ -599,11 +582,7 @@ class YamlValidator:
                                             )
 
                                     # Check that either step or linspace is provided for float
-                                    if (
-                                        var_type == "float"
-                                        and "step" not in data
-                                        and "linspace" not in data
-                                    ):
+                                    if var_type == "float" and "step" not in data and "linspace" not in data:
                                         errors.append(
                                             ValidationError(
                                                 "Float range must define either 'step' or 'linspace'",
@@ -914,9 +893,7 @@ class YamlValidator:
         if "max_cost" in conversation:
             cost = conversation["max_cost"]
             if not isinstance(cost, (int, float)) or cost <= 0:
-                errors.append(
-                    ValidationError("Max cost must be a positive number", "/conversation/max_cost")
-                )
+                errors.append(ValidationError("Max cost must be a positive number", "/conversation/max_cost"))
 
         # Validate goal_style
         if "goal_style" in conversation:
@@ -982,9 +959,7 @@ class YamlValidator:
                         pass
                     elif isinstance(all_answered, dict):
                         # Validate export field if present, is optional
-                        if "export" in all_answered and not isinstance(
-                            all_answered["export"], bool
-                        ):
+                        if "export" in all_answered and not isinstance(all_answered["export"], bool):
                             errors.append(
                                 ValidationError(
                                     "Export field must be a boolean",
@@ -1102,10 +1077,7 @@ class YamlValidator:
                                         )
                                 elif isinstance(random_style, dict):
                                     # Handle nested styles within random list
-                                    if (
-                                        len(random_style) != 1
-                                        or "change language" not in random_style
-                                    ):
+                                    if len(random_style) != 1 or "change language" not in random_style:
                                         errors.append(
                                             ValidationError(
                                                 "Only 'change language' can be a nested dictionary in random list",

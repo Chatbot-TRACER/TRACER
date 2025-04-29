@@ -5,11 +5,8 @@ from ...functionality_node import FunctionalityNode
 from ..conversation.conversation_utils import format_conversation
 
 
-def extract_functionality_nodes(
-    conversation_history, llm, current_node=None
-) -> List[FunctionalityNode]:
-    """Pull out FunctionalityNodes from the conversation.
-    Tries to find steps in the user's workflow.
+def extract_functionality_nodes(conversation_history, llm, current_node=None) -> List[FunctionalityNode]:
+    """Find out FunctionalityNodes from the conversation.
 
     Args:
         conversation_history (list): The list of chat messages.
@@ -146,10 +143,7 @@ def extract_functionality_nodes(
             if params_str.lower() != "none":
                 param_names = [p.strip() for p in params_str.split(",") if p.strip()]
                 # Basic parameter structure
-                parameters = [
-                    {"name": p, "type": "string", "description": f"Parameter {p}"}
-                    for p in param_names
-                ]
+                parameters = [{"name": p, "type": "string", "description": f"Parameter {p}"} for p in param_names]
 
             new_node = FunctionalityNode(
                 name=name,
@@ -163,8 +157,6 @@ def extract_functionality_nodes(
             print(f"  WARN: Could not parse functionality block:\n{block}")
 
     if not functionality_nodes and "NO_NEW_FUNCTIONALITY" not in content.upper():
-        print(
-            "  WARN: LLM response did not contain 'NO_NEW_FUNCTIONALITY' but no functionalities were parsed."
-        )
+        print("  WARN: LLM response did not contain 'NO_NEW_FUNCTIONALITY' but no functionalities were parsed.")
 
     return functionality_nodes

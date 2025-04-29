@@ -3,7 +3,8 @@ from typing import Optional
 
 
 def extract_fallback_message(the_chatbot, llm) -> Optional[str]:
-    """Try to get the chatbot's "I don't understand" message.
+    """Try to get the chatbot's fallback message.
+
     Sends confusing messages to trigger it. These aren't part of the main chat history.
 
     Args:
@@ -71,9 +72,7 @@ def extract_fallback_message(the_chatbot, llm) -> Optional[str]:
             fallback = re.sub(r"^(Fallback message:?\s*)", "", fallback, flags=re.IGNORECASE)
 
             if fallback:
-                print(
-                    f'Detected fallback pattern: "{fallback[:50]}{"..." if len(fallback) > 50 else ""}"'
-                )
+                print(f'Detected fallback pattern: "{fallback[:50]}{"..." if len(fallback) > 50 else ""}"')
                 return fallback
             else:
                 print("Could not extract a clear fallback message pattern.")
@@ -85,8 +84,7 @@ def extract_fallback_message(the_chatbot, llm) -> Optional[str]:
 
 
 def is_semantically_fallback(response: str, fallback: str, llm) -> bool:
-    """Uses LLM to determine if a chatbot response is semantically equivalent
-    to a known fallback message.
+    """Check if the chatbot's response is semantically equivalent to a known fallback message.
 
     Args:
         response (str): The chatbot's current response.

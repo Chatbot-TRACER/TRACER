@@ -35,9 +35,7 @@ def _build_single_variable_prompt(
         A big string containing the full prompt to send to the LLM.
     """
     other_vars_text = (
-        f"OTHER VARIABLES IN THIS PROFILE: {', '.join(sorted(all_other_variables))}"
-        if all_other_variables
-        else ""
+        f"OTHER VARIABLES IN THIS PROFILE: {', '.join(sorted(all_other_variables))}" if all_other_variables else ""
     )
 
     prompt = f"""
@@ -210,15 +208,9 @@ def _parse_single_variable_definition(
                     value = int(value_str) if data_type == "int" else float(value_str)
                     raw_data[key] = value
                 except ValueError:
-                    print(
-                        f"Warning: Could not parse numeric value for key '{key}': '{value_str}'. Skipping."
-                    )
+                    print(f"Warning: Could not parse numeric value for key '{key}': '{value_str}'. Skipping.")
         # Validate numeric data structure
-        if not (
-            "min" in raw_data
-            and "max" in raw_data
-            and ("step" in raw_data or "linspace" in raw_data)
-        ):
+        if not ("min" in raw_data and "max" in raw_data and ("step" in raw_data or "linspace" in raw_data)):
             print(
                 f"Warning: Numeric variable data missing min/max/step or min/max/linspace. LLM response:\n{response_content}"
             )
@@ -231,16 +223,16 @@ def _parse_single_variable_definition(
 
     # Basic validation
     if not definition.get("function") or not definition.get("type") or not definition.get("data"):
-        print(
-            f"Warning: Post-parsing validation failed. Missing fields or empty data. Parsed: {definition}"
-        )
+        print(f"Warning: Post-parsing validation failed. Missing fields or empty data. Parsed: {definition}")
         return None
 
     return definition
 
 
 def generate_variable_definitions(profiles, llm, supported_languages=None, max_retries=3):
-    """Goes through user profiles, finds variables like {{this}} in their goals,
+    """Generate the {{variable}} definitions.
+
+    Goes through user profiles, finds variables like {{this}} in their goals,
     and asks the LLM to define them (type, function, data).
 
     Args:
@@ -281,9 +273,7 @@ def generate_variable_definitions(profiles, llm, supported_languages=None, max_r
             # Ignore non-string goals (like existing variable definitions if run multiple times)
 
         if not all_variables:
-            print(
-                f"Info: No variables found in goals for profile '{profile.get('name', 'Unnamed')}'."
-            )
+            print(f"Info: No variables found in goals for profile '{profile.get('name', 'Unnamed')}'.")
             continue
 
         print(f"\n--- Defining variables for profile: {profile.get('name', 'Unnamed')} ---")
@@ -549,7 +539,9 @@ def generate_user_profiles_and_goals(
     supported_languages=None,
     chatbot_type="unknown",
 ):
-    """Group functionalities into logical user profiles and generate coherent goal sets
+    """Generate user profiles and goals based on functionalities and limitations.
+
+    Group functionalities into logical user profiles and generate coherent goal sets
     for individual conversations
 
     Args:
@@ -620,9 +612,7 @@ LANGUAGE REQUIREMENT:
 
                 if node_name and node_children:
                     child_names = [
-                        child.get("name", "")
-                        for child in node_children
-                        if isinstance(child, dict) and "name" in child
+                        child.get("name", "") for child in node_children if isinstance(child, dict) and "name" in child
                     ]
                     if child_names:
                         workflow_context += f"- {node_name} can lead to: {', '.join(child_names)}\n"
@@ -880,9 +870,7 @@ def goal_generator_node(state: State, llm) -> Dict[str, Any]:
         print("   Warning: No descriptions found in structured functionalities.")
         return {"conversation_goals": []}
 
-    print(
-        f" -> Preparing {len(functionality_descriptions)} descriptions (from structure) for goal generation."
-    )
+    print(f" -> Preparing {len(functionality_descriptions)} descriptions (from structure) for goal generation.")
 
     try:
         # Call the goal generation function

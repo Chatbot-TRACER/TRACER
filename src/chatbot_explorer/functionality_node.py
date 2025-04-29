@@ -25,7 +25,9 @@ class FunctionalityNode:
             self.children.append(child_node)
 
     def to_dict(self) -> Dict[str, Any]:
-        """Converts the FunctionalityNode instance to a serializable dictionary.
+        """Convert to dictionary.
+
+        Converts the FunctionalityNode instance to a serializable dictionary.
         Excludes the 'parent' attribute to prevent circular references.
         Recursively converts children.
         """

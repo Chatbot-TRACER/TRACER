@@ -7,6 +7,7 @@ from ..utils.analysis.workflow_builder import build_workflow_structure
 
 def structure_builder_node(state: State, llm) -> Dict[str, Any]:
     """Node that analyzes functionalities and history to build the workflow structure.
+
     Uses different logic based on whether the bot seems transactional or informational.
 
     Args:
@@ -38,9 +39,7 @@ def structure_builder_node(state: State, llm) -> Dict[str, Any]:
 
     # Use the imported build_workflow_structure function
     try:
-        structured_nodes = build_workflow_structure(
-            flat_functionality_dicts, conversation_history, bot_type, llm
-        )
+        structured_nodes = build_workflow_structure(flat_functionality_dicts, conversation_history, bot_type, llm)
 
         print(f"   Built structure with {len(structured_nodes)} root node(s).")
 

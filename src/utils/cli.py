@@ -2,10 +2,8 @@ import argparse
 
 
 def parse_arguments():
-    """Parse command line arguments"""
-    parser = argparse.ArgumentParser(
-        description="Chatbot Explorer - Discover functionalities of another chatbot"
-    )
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description="Chatbot Explorer - Discover functionalities of another chatbot")
 
     default_sessions = 3
     default_turns = 8
