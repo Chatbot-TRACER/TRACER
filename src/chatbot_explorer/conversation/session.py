@@ -1,6 +1,7 @@
 import random
+from typing import Any
 
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 
 from chatbot_explorer.analysis.functionality_extraction import extract_functionality_nodes
 from chatbot_explorer.analysis.functionality_refinement import (
@@ -23,6 +24,256 @@ from .conversation_utils import _get_all_nodes
 from .fallback_detection import (
     is_semantically_fallback,
 )
+
+
+def _generate_initial_question(current_node, primary_language, llm):
+    """Generates the initial question for the exploration session."""
+    lang_lower = primary_language.lower()
+    if current_node:
+        # Ask about the specific node
+        question_prompt = get_initial_question_prompt(current_node, primary_language)
+        question_response = llm.invoke(question_prompt)
+        initial_question = question_response.content.strip().strip("\"'")
+    else:
+        # Ask a general question for the first session
+        possible_greetings = [
+            "Hello! What can you help me with today?",
+            "Hello, how can I get started?",
+            "I'm interested in using your services. What's available",
+            "Can you list your main functions or services?",
+        ]
+        greeting_en = random.choice(possible_greetings)
+
+        # Translate if needed
+        if lang_lower != "english":
+            try:
+                translation_prompt = get_translation_prompt(greeting_en, primary_language)
+                translated_greeting = llm.invoke(translation_prompt).content.strip().strip("\"'")
+                # Check if translation looks okay
+                if translated_greeting and len(translated_greeting.split()) > 1:
+                    initial_question = translated_greeting
+                else:  # Use English if translation failed
+                    initial_question = greeting_en
+            except Exception as e:
+                print(f"Warning: Failed to translate initial greeting to {primary_language}: {e}")
+                initial_question = greeting_en  # Fallback
+        else:
+            initial_question = greeting_en  # Use English
+
+        print(f"   (Starting session 0 with general capability question: '{initial_question}')")
+    return initial_question
+
+
+def _analyze_session_and_update_nodes(
+    conversation_history_lc: list[BaseMessage],
+    llm: Any,
+    current_node: FunctionalityNode | None,
+    root_nodes: list[FunctionalityNode],
+    pending_nodes: list[FunctionalityNode],
+    explored_nodes: set[str],
+) -> tuple[list[dict[str, str]], list[FunctionalityNode], list[FunctionalityNode], set[str]]:
+    """Analyzes conversation, extracts/processes nodes, and updates node lists."""
+    # Convert LangChain messages back to simple dicts
+    conversation_history_dict = [
+        {
+            "role": "system" if isinstance(m, SystemMessage) else ("assistant" if isinstance(m, AIMessage) else "user"),
+            "content": m.content,
+        }
+        for m in conversation_history_lc
+    ]
+
+    # Extract functionalities found in this session
+    print("\nAnalyzing conversation for new functionalities...")
+    new_functionality_nodes = extract_functionality_nodes(conversation_history_dict, llm, current_node)
+
+    # Process newly found nodes
+    if new_functionality_nodes:
+        print(f"Discovered {len(new_functionality_nodes)} new functionality nodes:")
+        new_functionality_nodes = merge_similar_functionalities(
+            new_functionality_nodes, llm
+        )  # Merge within session first
+        all_existing_nodes = []
+        for root in root_nodes:
+            all_existing_nodes.extend(_get_all_nodes(root))
+
+        for node in new_functionality_nodes:
+            if not is_duplicate_functionality(node, all_existing_nodes, llm):
+                is_added_as_child = False
+                if current_node:
+                    relationship_valid = validate_parent_child_relationship(current_node, node, llm)
+                    if relationship_valid:
+                        current_node.add_child(node)
+                        print(f"  - '{node.name}' (child of '{current_node.name}')")
+                        is_added_as_child = True
+
+                if not is_added_as_child:
+                    print(f"  - '{node.name}' (new root/standalone functionality)")
+                    root_nodes.append(node)
+
+                # Add to pending only if it's truly new (not duplicate) and not already explored
+                if node.name not in explored_nodes:
+                    pending_nodes.append(node)
+                # Update all_existing_nodes for subsequent checks in this loop
+                all_existing_nodes.append(node)  # Add the newly added node
+            else:
+                print(f"  - Skipped duplicate functionality: '{node.name}'")
+
+        # Merge similar root nodes after adding new ones
+        if root_nodes:
+            root_nodes = merge_similar_functionalities(root_nodes, llm)
+
+    # Mark the node we focused on as explored
+    if current_node:
+        explored_nodes.add(current_node.name)
+
+    return conversation_history_dict, root_nodes, pending_nodes, explored_nodes
+
+
+def _run_conversation_loop(
+    session_num: int,
+    max_turns: int,
+    llm,
+    the_chatbot,
+    fallback_message: str | None,
+    initial_history,
+):
+    """Runs the main conversation loop for a single session."""
+    conversation_history_lc = initial_history[:]  # Work on a copy
+    consecutive_failures = 0
+    force_topic_change_next_turn = False
+    turn_count = 1  # Start at 1 because the initial exchange is already in history
+
+    while True:
+        # Stop if we hit the max number of turns
+        if turn_count >= max_turns:
+            print(f"\nReached maximum turns ({max_turns}). Ending session {session_num + 1}.")
+            break
+
+        # --- Check for forcing topic change ---
+        force_topic_change_instruction = get_force_topic_change_instruction(
+            force_topic_change_next_turn, consecutive_failures
+        )
+        if force_topic_change_instruction:
+            print(f"\n Forcing topic change: {force_topic_change_instruction.split(':')[1].strip()} !!!")
+            if force_topic_change_next_turn:
+                force_topic_change_next_turn = False
+
+        # --- Get explorer's next message ---
+        explorer_response_content = None
+        try:
+            max_history_turns_for_llm = 10
+            messages_for_llm = [conversation_history_lc[0]] + conversation_history_lc[
+                -(max_history_turns_for_llm * 2) :
+            ]
+            messages_for_llm_this_turn = (
+                [*messages_for_llm, SystemMessage(content=force_topic_change_instruction)]
+                if force_topic_change_instruction
+                else messages_for_llm
+            )
+            llm_response = llm.invoke(messages_for_llm_this_turn)
+            explorer_response_content = llm_response.content.strip()
+        except Exception as e:
+            print(f"\nError getting response from Explorer AI LLM: {e}. Ending session.")
+            break
+
+        if not explorer_response_content:
+            print("\nError: Failed to get next action from Explorer AI LLM. Ending session.")
+            break
+
+        print(f"\nExplorer: {explorer_response_content}")
+
+        if "EXPLORATION COMPLETE" in explorer_response_content.upper():
+            print(f"\nExplorer has finished session {session_num + 1} exploration.")
+            break
+
+        conversation_history_lc.append(AIMessage(content=explorer_response_content))
+
+        # --- Interact with the chatbot and handle potential failures/retries ---
+        is_ok, chatbot_message = the_chatbot.execute_with_input(explorer_response_content)
+
+        if not is_ok:
+            print("\nError communicating with chatbot. Ending session.")
+            conversation_history_lc.append(HumanMessage(content="[Chatbot communication error]"))
+            consecutive_failures += 1
+            force_topic_change_next_turn = True
+            break  # End session on communication error
+
+        original_chatbot_message = chatbot_message
+        is_fallback = fallback_message and is_semantically_fallback(chatbot_message, fallback_message, llm)
+        is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
+        retry_also_failed = False
+
+        if is_fallback or is_parsing_error:
+            failure_reason = "Fallback message" if is_fallback else "Potential chatbot error (OUTPUT_PARSING_FAILURE)"
+            print(f"\n   ({failure_reason} detected. Rephrasing and retrying...)")
+            rephrase_prompt = get_rephrase_prompt(explorer_response_content)
+            try:
+                rephrased_response = llm.invoke(rephrase_prompt)
+                rephrased_message = rephrased_response.content.strip().strip("\"'")
+                if rephrased_message and rephrased_message != explorer_response_content:
+                    print(f"   Original: '{explorer_response_content}'")
+                    print(f"   Rephrased: '{rephrased_message}'")
+                    is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(rephrased_message)
+                else:
+                    print("   Failed to generate a different rephrasing. Retrying with original.")
+                    is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(explorer_response_content)
+            except Exception as e:
+                print(f"   Error rephrasing message: {e}. Retrying with original.")
+                is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(explorer_response_content)
+
+            if is_ok_retry:
+                is_retry_fallback = fallback_message and is_semantically_fallback(
+                    chatbot_message_retry, fallback_message, llm
+                )
+                is_retry_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message_retry
+                if (
+                    chatbot_message_retry != original_chatbot_message
+                    and not is_retry_fallback
+                    and not is_retry_parsing_error
+                ):
+                    print("   Retry successful!")
+                    chatbot_message = chatbot_message_retry
+                    consecutive_failures = 0  # Reset on successful retry
+                else:
+                    print("   Retry failed (still received fallback/error)")
+                    chatbot_message = original_chatbot_message
+                    retry_also_failed = True
+            else:
+                print("   Retry failed (communication error)")
+                chatbot_message = original_chatbot_message
+                retry_also_failed = True
+        # --- END Rephrasing Retry Logic ---
+
+        # --- Update state based on FINAL outcome of the turn ---
+        final_is_fallback = fallback_message and is_semantically_fallback(chatbot_message, fallback_message, llm)
+        final_is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
+
+        if final_is_fallback or final_is_parsing_error:
+            # Increment failures only if the initial attempt failed AND the retry also failed (or wasn't needed)
+            if retry_also_failed or not (is_fallback or is_parsing_error):
+                consecutive_failures += 1
+                print(f"   (Consecutive failures: {consecutive_failures})")
+            # Force change next turn only if the retry specifically failed
+            if retry_also_failed:
+                force_topic_change_next_turn = True
+        else:
+            # Reset counter if the turn was successful (even if it was a successful retry)
+            if consecutive_failures > 0:
+                print(f"   (Successful response. Resetting consecutive failures from {consecutive_failures}.)")
+            consecutive_failures = 0
+            force_topic_change_next_turn = False
+        # ---
+
+        print(f"\nChatbot: {chatbot_message}")
+        conversation_history_lc.append(HumanMessage(content=chatbot_message))
+
+        if chatbot_message.lower() in ["quit", "exit", "q", "bye", "goodbye"]:
+            print("Chatbot ended the conversation. Ending session.")
+            break
+
+        turn_count += 1
+
+    return conversation_history_lc, turn_count
 
 
 def run_exploration_session(
@@ -76,297 +327,62 @@ def run_exploration_session(
     else:
         print("Exploring general capabilities")
 
-    # Determine the focus for this session
+    # Determine focus, language, system prompt
     session_focus = get_session_focus(current_node)
-
-    # Determine primary language for interaction
     primary_language = supported_languages[0] if supported_languages else "English"
-    lang_lower = primary_language.lower()
-
-    # Add language info to system prompt
     language_instruction = get_language_instruction(supported_languages, primary_language)
-
     system_content = get_explorer_system_prompt(session_focus, language_instruction, max_turns)
 
-    # Start fresh conversation history
+    # --- Initial Setup and First Exchange ---
     conversation_history_lc = [SystemMessage(content=system_content)]
-
-    # Generate the first question
-    if current_node:
-        # Ask about the specific node
-        question_prompt = get_initial_question_prompt(current_node, primary_language)
-        question_response = llm.invoke(question_prompt)
-        initial_question = question_response.content.strip().strip("\"'")
-    else:
-        # Ask a general question for the first session
-        possible_greetings = [
-            "Hello! What can you help me with today?",
-            "Hello, how can I get started?",
-            "I'm interested in using your services. What's available",
-            "Can you list your main functions or services?",
-        ]
-        greeting_en = random.choice(possible_greetings)
-
-        # Translate if needed
-        if lang_lower != "english":
-            try:
-                translation_prompt = get_translation_prompt(greeting_en, primary_language)
-                translated_greeting = llm.invoke(translation_prompt).content.strip().strip("\"'")
-                # Check if translation looks okay
-                if translated_greeting and len(translated_greeting.split()) > 1:
-                    initial_question = translated_greeting
-                else:  # Use English if translation failed
-                    initial_question = greeting_en
-            except Exception as e:
-                print(f"Warning: Failed to translate initial greeting to {primary_language}: {e}")
-                initial_question = greeting_en  # Fallback
-        else:
-            initial_question = greeting_en  # Use English
-
-        print(f"   (Starting session 0 with general capability question: '{initial_question}')")
-
+    initial_question = _generate_initial_question(current_node, primary_language, llm)
     print(f"\nExplorer: {initial_question}")
-
-    # Send first question to the chatbot
     is_ok, chatbot_message = the_chatbot.execute_with_input(initial_question)
     print(f"\nChatbot: {chatbot_message}")
 
-    # Add first exchange to history
-    conversation_history_lc.append(AIMessage(content=initial_question))  # Explorer AI is 'assistant'
-    conversation_history_lc.append(HumanMessage(content=chatbot_message))  # Target Chatbot is 'user'/'human'
-
-    consecutive_failures = 0
-    force_topic_change_next_turn = False
-
-    # Main loop
-    turn_count = 1  # We already did the first question, so start at 1
-    while True:
-        # Stop if we hit the max number of turns
-        if turn_count >= max_turns:
-            print(f"\nReached maximum turns ({max_turns}). Ending session {session_num + 1}.")
-            break
-
-        # --- Check for forcing topic change (due to consecutive failures OR failed retry) ---
-        force_topic_change_instruction = get_force_topic_change_instruction(
-            force_topic_change_next_turn, consecutive_failures
-        )
-        if force_topic_change_instruction:
-            print(f"\n Forcing topic change: {force_topic_change_instruction.split(':')[1].strip()} !!!")
-            # Reset flag if it was set due to failed retry
-            if force_topic_change_next_turn:
-                force_topic_change_next_turn = False
-        # ---
-
-        # --- Get what the explorer wants to say next ---
-        explorer_response_content = None
-        try:
-            max_history_turns_for_llm = 10  # Keep last 10 turns (20 messages) + system prompt
-            messages_for_llm = [conversation_history_lc[0]] + conversation_history_lc[
-                -(max_history_turns_for_llm * 2) :
-            ]
-
-            # If forcing change, add a temporary system message for this turn
-            if force_topic_change_instruction:
-                messages_for_llm_this_turn = [*messages_for_llm, SystemMessage(content=force_topic_change_instruction)]
-            else:
-                messages_for_llm_this_turn = messages_for_llm
-
-            # Invoke the LLM directly
-            llm_response = llm.invoke(messages_for_llm_this_turn)
-            explorer_response_content = llm_response.content.strip()
-
-        except Exception as e:
-            print(f"\nError getting response from Explorer AI LLM: {e}. Ending session.")
-            break  # Stop if LLM fails
-
-        if not explorer_response_content:
-            print("\nError: Failed to get next action from Explorer AI LLM. Ending session.")
-            break
-
-        print(f"\nExplorer: {explorer_response_content}")
-
-        # If the explorer says it's done, just stop
-        if "EXPLORATION COMPLETE" in explorer_response_content.upper():
-            print(f"\nExplorer has finished session {session_num + 1} exploration.")
-            break
-
-        # Save what the explorer said before sending it to the chatbot
-        conversation_history_lc.append(AIMessage(content=explorer_response_content))
-
-        # --- Send the explorer's message to the chatbot ---
-        is_ok, chatbot_message = the_chatbot.execute_with_input(explorer_response_content)
-
-        if not is_ok:
-            print("\nError communicating with chatbot. Ending session.")
-            conversation_history_lc.append(HumanMessage(content="[Chatbot communication error]"))
-            consecutive_failures += 1
-            force_topic_change_next_turn = True
-            break
-
-        # Save the chatbot's first response in case we need it later
-        original_chatbot_message = chatbot_message
-
-        # Check if the chatbot gave us a fallback or error
-        is_fallback = False
-        if fallback_message and chatbot_message:
-            # Use LLM for semantic comparison
-            is_fallback = is_semantically_fallback(chatbot_message, fallback_message, llm)
-
-        is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
-
-        # --- Try rephrasing the message if we hit a fallback or parsing error ---
-        retry_also_failed = False
-        if is_fallback or is_parsing_error:
-            failure_reason = "Fallback message" if is_fallback else "Potential chatbot error (OUTPUT_PARSING_FAILURE)"
-            print(f"\n   ({failure_reason} detected. Rephrasing and retrying...)")
-
-            # Generate a rephrased version of the original message
-            rephrase_prompt = get_rephrase_prompt(explorer_response_content)
-
-            try:
-                rephrased_response = llm.invoke(rephrase_prompt)
-                rephrased_message = rephrased_response.content.strip().strip("\"'")
-
-                if rephrased_message and rephrased_message != explorer_response_content:
-                    print(f"   Original: '{explorer_response_content}'")
-                    print(f"   Rephrased: '{rephrased_message}'")
-
-                    # Try with the rephrased message
-                    is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(rephrased_message)
-                else:
-                    # Fallback to original if rephrasing failed or returned identical text
-                    print("   Failed to generate a different rephrasing. Retrying with original.")
-                    is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(explorer_response_content)
-            except Exception as e:
-                print(f"   Error rephrasing message: {e}. Retrying with original.")
-                is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(explorer_response_content)
-
-            if is_ok_retry:
-                # See if the retry gave us something different and not another failure
-                is_retry_fallback = False
-                if fallback_message and chatbot_message_retry:
-                    is_retry_fallback = is_semantically_fallback(chatbot_message_retry, fallback_message, llm)
-
-                is_retry_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message_retry
-
-                if (
-                    chatbot_message_retry != original_chatbot_message
-                    and not is_retry_fallback
-                    and not is_retry_parsing_error
-                ):
-                    # Retry worked, use the new response
-                    print("   Retry successful!")
-                    chatbot_message = chatbot_message_retry
-                    consecutive_failures = 0
-                else:
-                    # Retry didn't help, just use the original
-                    print("   Retry failed (still received fallback/error)")
-                    chatbot_message = original_chatbot_message
-                    retry_also_failed = True
-            else:
-                # Retry couldn't even talk to the chatbot
-                print("   Retry failed (communication error)")
-                chatbot_message = original_chatbot_message
-                retry_also_failed = True
-        # --- END Rephrasing Retry Logic ---
-
-        # --- Update state based on FINAL outcome of the turn ---
-        final_is_fallback = False
-        if fallback_message and chatbot_message:
-            final_is_fallback = is_semantically_fallback(chatbot_message, fallback_message, llm)
-        final_is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
-
-        if final_is_fallback or final_is_parsing_error:
-            # Increment consecutive failures ONLY IF the retry didn't already succeed
-            if not (is_fallback or is_parsing_error) or retry_also_failed:
-                consecutive_failures += 1
-                print(f"   (Consecutive failures: {consecutive_failures})")
-            # Set flag to force change next turn IF the retry specifically failed
-            if retry_also_failed:
-                force_topic_change_next_turn = True
-        else:
-            # Reset counter if the turn was successful
-            if consecutive_failures > 0:
-                print(
-                    f"   (Successful response this turn. Resetting consecutive failures from {consecutive_failures}.)",
-                )
-            consecutive_failures = 0
-            force_topic_change_next_turn = False  # Ensure flag is off on success
-        # ---
-
-        print(f"\nChatbot: {chatbot_message}")
-
+    turn_count = 0  # Initialize turn count
+    if not is_ok:
+        print("\nError communicating with chatbot on initial message. Ending session.")
+        conversation_history_lc.append(AIMessage(content=initial_question))
+        conversation_history_lc.append(HumanMessage(content="[Chatbot communication error on initial message]"))
+        # turn_count remains 0
+    else:
+        conversation_history_lc.append(AIMessage(content=initial_question))
         conversation_history_lc.append(HumanMessage(content=chatbot_message))
+        turn_count = 1  # First exchange successful
 
-        if chatbot_message.lower() in ["quit", "exit", "q", "bye", "goodbye"]:
-            print("Chatbot ended the conversation. Ending session.")
-            break
+        # --- Run the main conversation loop ---
+        if turn_count < max_turns:  # Only run loop if max_turns allows more turns
+            conversation_history_lc, turn_count = _run_conversation_loop(
+                session_num=session_num,
+                max_turns=max_turns,
+                llm=llm,
+                the_chatbot=the_chatbot,
+                fallback_message=fallback_message,
+                initial_history=conversation_history_lc,
+            )
 
-        turn_count += 1
-
-    # Convert LangChain messages back to simple dicts for analysis functions if needed
-    conversation_history_dict = [
-        {
-            "role": "system" if isinstance(m, SystemMessage) else ("assistant" if isinstance(m, AIMessage) else "user"),
-            "content": m.content,
-        }
-        for m in conversation_history_lc
-    ]
-
-    # Extract functionalities found in this session
-    print("\nAnalyzing conversation for new functionalities...")
-    new_functionality_nodes = extract_functionality_nodes(conversation_history_dict, llm, current_node)
-
-    # Process newly found nodes
-    if new_functionality_nodes:
-        print(f"Discovered {len(new_functionality_nodes)} new functionality nodes:")
-
-        # Merge similar nodes found *within this session* first
-        new_functionality_nodes = merge_similar_functionalities(new_functionality_nodes, llm)
-
-        for node in new_functionality_nodes:
-            # Check against *all* nodes found so far
-            all_existing = []
-            for root in root_nodes:
-                all_existing.extend(_get_all_nodes(root))  # Get all descendants
-
-            if not is_duplicate_functionality(node, all_existing, llm):
-                # If exploring a specific node, check if the new one is related
-                if current_node:
-                    relationship_valid = validate_parent_child_relationship(current_node, node, llm)
-
-                    if relationship_valid:
-                        # Add as child if valid relationship
-                        current_node.add_child(node)
-                        print(f"  - '{node.name}' (child of '{current_node.name}')")
-                    else:
-                        # Add as a new root if not related
-                        print(f"  - '{node.name}' (standalone functionality)")
-                        root_nodes.append(node)
-                else:
-                    # Add as a new root if not exploring a specific node
-                    root_nodes.append(node)
-                    print(f"  - '{node.name}' (root node for now)")
-
-                if node.name not in explored_nodes:
-                    pending_nodes.append(node)
-            else:
-                print(f"  - Skipped duplicate functionality: '{node.name}'")
-
-        # Merge similar root nodes after adding new ones
-        if root_nodes:
-            root_nodes = merge_similar_functionalities(root_nodes, llm)
-
-    # Mark the node we focused on as explored
-    if current_node:
-        explored_nodes.add(current_node.name)
+    # --- Post-Session Analysis ---
+    (
+        conversation_history_dict,
+        root_nodes,
+        pending_nodes,
+        explored_nodes,
+    ) = _analyze_session_and_update_nodes(
+        conversation_history_lc,
+        llm,
+        current_node,
+        root_nodes,
+        pending_nodes,
+        explored_nodes,
+    )
 
     print(f"\nSession {session_num + 1} complete with {turn_count} exchanges")
 
     # Return all updated state
     return (
         conversation_history_dict,
-        root_nodes,  # Updated list of roots
-        pending_nodes,  # Updated pending queue
-        explored_nodes,  # Updated set of explored names
+        root_nodes,
+        pending_nodes,
+        explored_nodes,
     )
