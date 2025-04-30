@@ -1,240 +1,262 @@
-from typing import Any
+"""Generates structured definitions for variables found in user profile goals."""
+
+from typing import Any, TypedDict
+
+from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.constants import VARIABLE_PATTERN
 from chatbot_explorer.prompts.variable_definition_prompts import get_variable_definition_prompt
 
-# --- Variable Definition Logic ---
+
+class VariableDefinitionContext(TypedDict):
+    """Context needed to define a single variable.
+
+    Arguments:
+        profile: A dictionary containing user profile information.
+        goals_text: A string representing the user's goals.
+        all_variables: A set of variable names available in the context.
+        language_instruction: A string for language model instructions.
+        llm: An instance of the language model used for generation.
+        max_retries: An integer specifying the maximum number of retry attempts.
+    """
+
+    profile: dict[str, Any]
+    goals_text: str
+    all_variables: set[str]
+    language_instruction: str
+    llm: BaseLanguageModel
+    max_retries: int
+
+
+def _guess_data_structure(lines: list[str], current_index: int) -> list | dict:
+    """Guesses if the DATA section is a list or dict based on the next line."""
+    next_line_index = current_index + 1
+    if next_line_index < len(lines):
+        next_line = lines[next_line_index].strip()
+        if ":" in next_line and not next_line.startswith("-"):
+            return {}
+    return []
+
+
+def _parse_base_definition(lines: list[str], expected_type: str | None) -> tuple[dict | None, list[str]]:
+    """Parses the initial structure (FUNCTION, TYPE, DATA start) from LLM response lines."""
+    definition = {}
+    data_lines = []
+    in_data_section = False
+
+    for i, line in enumerate(lines):
+        line_content = line.strip()
+        if not line_content:
+            continue
+
+        if line_content.startswith("FUNCTION:"):
+            definition["function"] = line_content[len("FUNCTION:") :].strip()
+            in_data_section = False
+        elif line_content.startswith("TYPE:"):
+            parsed_type = line_content[len("TYPE:") :].strip()
+            definition["type"] = parsed_type
+            in_data_section = False
+            if expected_type and parsed_type != expected_type:
+                print(
+                    f"Warning: LLM returned type '{parsed_type}' but expected '{expected_type}'. Will use '{parsed_type}'.",
+                )
+        elif line_content.startswith("DATA:"):
+            in_data_section = True
+            definition["data"] = _guess_data_structure(lines, i)
+        elif in_data_section:
+            data_lines.append(line_content)
+
+    if not definition.get("function") or not definition.get("type") or "data" not in definition:
+        return None, []
+
+    return definition, data_lines
+
+
+def _process_string_data(data_lines: list[str], response_content: str) -> list[str] | None:
+    """Processes data lines for a 'string' type variable."""
+    processed_data = [
+        item_line[2:].strip().strip("'\"")
+        for item_line in data_lines
+        if item_line.startswith("- ") and item_line[2:].strip().strip("'\"")
+    ]
+    if not processed_data:
+        print(f"Warning: String variable data is empty. LLM response:\n{response_content}")
+        return None
+    return processed_data
+
+
+def _process_numeric_data(data_lines: list[str], data_type: str, response_content: str) -> dict[str, Any] | None:
+    """Processes data lines for 'int' or 'float' type variables."""
+    processed_data = {}
+    for item_line in data_lines:
+        if ":" in item_line:
+            try:
+                key, value_str = item_line.split(":", 1)
+                key = key.strip()
+                value_str = value_str.strip()
+                value = int(value_str) if data_type == "int" else float(value_str)
+                processed_data[key] = value
+            except ValueError:
+                print(f"Warning: Could not parse numeric value for key '{key}': '{value_str}'. Skipping.")
+
+    has_min_max = "min" in processed_data and "max" in processed_data
+    has_step_or_linspace = "step" in processed_data or "linspace" in processed_data
+    if not (has_min_max and has_step_or_linspace):
+        print(
+            f"Warning: Numeric variable data missing min/max/step or min/max/linspace. LLM response:\n{response_content}",
+        )
+        return None
+    return processed_data
 
 
 def _parse_single_variable_definition(
     response_content: str,
     expected_type: str | None = None,
 ) -> dict[str, Any] | None:
-    """Takes the LLM's text answer for one variable and tries to turn it into a Python dictionary.
-
-    Args:
-        response_content: The raw text string that the LLM sent back.
-        expected_type: (Optional) If we think we know the type (like 'string'),
-                       we can pass it. It's mostly just for printing a warning
-                       if the LLM gives something different. Defaults to None.
-
-    Returns:
-        A dictionary with 'function', 'type', and 'data' keys if parsing worked
-        (e.g., {'function': 'random()', 'type': 'string', 'data': ['A', 'B']}).
-        Returns None if the LLM's response was messed up or missing required parts.
-    """
-    definition = {}
-    data_lines = []
-    in_data_section = False
-    parsed_type = None
-
+    """Parses the LLM response for one variable into a structured dictionary."""
     lines = response_content.strip().split("\n")
+    definition, data_lines = _parse_base_definition(lines, expected_type)
 
-    for i, line in enumerate(lines):
-        line = line.strip()
-        if not line:
-            continue
-
-        if line.startswith("FUNCTION:"):
-            definition["function"] = line[len("FUNCTION:") :].strip()
-            in_data_section = False
-        elif line.startswith("TYPE:"):
-            parsed_type = line[len("TYPE:") :].strip()
-            definition["type"] = parsed_type
-            in_data_section = False
-            # If expected_type is provided, check for mismatch early
-            if expected_type and parsed_type != expected_type:
-                print(
-                    f"Warning: LLM returned type '{parsed_type}' but expected '{expected_type}'. Will attempt to parse as '{parsed_type}'.",
-                )
-        elif line.startswith("DATA:"):
-            in_data_section = True
-            # Determine if data will be list (string) or dict (numeric)
-            # Peek at the next line if available to guess format
-            next_line_index = i + 1
-            if next_line_index < len(lines):
-                next_line = lines[next_line_index].strip()
-                if ":" in next_line and not next_line.startswith("-"):
-                    # Numeric (i.e. min: 1.0 max: ...)
-                    definition["data"] = {}
-                else:
-                    # String (i.e. - value1)
-                    definition["data"] = []
-            else:
-                # Default to list if unsure
-                definition["data"] = []
-        elif in_data_section:
-            data_lines.append(line)
-
-    if not definition.get("function") or not definition.get("type") or "data" not in definition:
-        print(
-            f"Warning: Failed to parse essential fields (FUNCTION, TYPE, DATA) from LLM response:\n{response_content}",
-        )
-        return None  # Essential fields missing
-
-    # --- Post-process DATA based on TYPE ---
-    data_type = definition.get("type")
-    raw_data = definition["data"]  # This is either [] or {} initially
-
-    if data_type == "string":
-        # Expecting a list
-        if not isinstance(raw_data, list):
-            raw_data = []  # Ensure it's a list
-        for item_line in data_lines:
-            if item_line.startswith("- "):
-                value = item_line[2:].strip().strip("'\"")
-                raw_data.append(value)
-        if not raw_data:
-            print(f"Warning: String variable data is empty. LLM response:\n{response_content}")
-            return None  # String needs data
-        definition["data"] = raw_data
-
-    elif data_type in ["int", "float"]:
-        # Expecting a dict
-        if not isinstance(raw_data, dict):
-            raw_data = {}  # Ensure it's a dict
-        for item_line in data_lines:
-            if ":" in item_line:
-                key, value_str = item_line.split(":", 1)
-                key = key.strip()
-                value_str = value_str.strip()
-                try:
-                    value = int(value_str) if data_type == "int" else float(value_str)
-                    raw_data[key] = value
-                except ValueError:
-                    print(f"Warning: Could not parse numeric value for key '{key}': '{value_str}'. Skipping.")
-        # Validate numeric data structure
-        if not ("min" in raw_data and "max" in raw_data and ("step" in raw_data or "linspace" in raw_data)):
-            print(
-                f"Warning: Numeric variable data missing min/max/step or min/max/linspace. LLM response:\n{response_content}",
-            )
-            # Allow partial definition for potential fixing later? Or return None? Let's return None for now.
-            return None
-        definition["data"] = raw_data
-    else:
-        print(f"Warning: Unknown variable type '{data_type}'. Cannot parse data correctly.")
-        return None  # Unknown type
-
-    # Basic validation
-    if not definition.get("function") or not definition.get("type") or not definition.get("data"):
-        print(f"Warning: Post-parsing validation failed. Missing fields or empty data. Parsed: {definition}")
+    if not definition:
+        print(f"Warning: Failed to parse base fields (FUNCTION, TYPE, DATA) from LLM response:\n{response_content}")
         return None
 
+    data_type = definition.get("type")
+    processed_data = None
+
+    if data_type == "string":
+        processed_data = _process_string_data(data_lines, response_content)
+    elif data_type in ["int", "float"]:
+        processed_data = _process_numeric_data(data_lines, data_type, response_content)
+    else:
+        print(f"Warning: Unknown variable type '{data_type}'. Cannot parse data.")
+        return None
+
+    if processed_data is None:
+        return None
+
+    definition["data"] = processed_data
     return definition
 
 
-def generate_variable_definitions(profiles, llm, supported_languages=None, max_retries=3):
-    """Generate the {{variable}} definitions.
-
-    Goes through user profiles, finds variables like {{this}} in their goals,
-    and asks the LLM to define them (type, function, data).
+def _define_single_variable_with_retry(
+    variable_name: str,
+    context: VariableDefinitionContext,
+) -> dict[str, Any] | None:
+    """Attempts to define a single variable using the LLM with retries.
 
     Args:
-        profiles: A list where each item is a dictionary representing a user profile.
-                  Needs to have a 'goals' key containing a list of strings.
-        llm: The language model object (like ChatOpenAI) used to get definitions.
-        supported_languages: (Optional) A list of languages the chatbot knows.
-                             The first one is used for examples. Defaults to None.
-        max_retries: (Optional) How many times to try asking the LLM again if
-                     parsing its response fails for a variable. Defaults to 3.
+        variable_name: The name of the variable to define (e.g., 'location').
+        context: A dictionary containing profile info, goals, other variables, LLM, etc.
 
     Returns:
-        The same list of profiles that was passed in, but now the 'goals' list
-        inside each profile dictionary also contains the variable definition
-        dictionaries (e.g., {'variable_name': {'function': ..., 'type': ..., 'data': ...}}).
+        The parsed variable definition dictionary if successful, otherwise None.
+    """
+    print(f"   Defining variable: '{variable_name}'...")
+    other_variables = list(context["all_variables"] - {variable_name})
+    parsed_def = None
+
+    for attempt in range(context["max_retries"]):
+        prompt = get_variable_definition_prompt(
+            context["profile"].get("name", "Unnamed Profile"),
+            context["profile"].get("role", "Unknown Role"),
+            context["goals_text"],
+            variable_name,
+            other_variables,
+            context["language_instruction"],
+        )
+        try:
+            response = context["llm"].invoke(prompt)
+            parsed_def = _parse_single_variable_definition(response.content)
+            if parsed_def:
+                print(f"      Successfully parsed definition for '{variable_name}'.")
+                return parsed_def  # Success
+            print(f"      Warning: Failed parse attempt {attempt + 1} for '{variable_name}'. Retrying...")
+        except (ValueError, KeyError, AttributeError) as e:
+            print(f"      Error on attempt {attempt + 1} for '{variable_name}': {e}. Retrying...")
+            parsed_def = None  # Ensure reset on error
+
+    print(f"ERROR: Failed to define '{variable_name}' after {context['max_retries']} attempts.")
+    return None
+
+
+def _update_goals_with_definition(goals_list: list[Any], variable_name: str, definition: dict[str, Any]) -> None:
+    """Updates or appends the variable definition in the goals list."""
+    existing_def_index = -1
+    for i, goal_item in enumerate(goals_list):
+        if isinstance(goal_item, dict) and variable_name in goal_item:
+            existing_def_index = i
+            break
+    if existing_def_index != -1:
+        print(f"      Updating existing definition for '{variable_name}'.")
+        goals_list[existing_def_index] = {variable_name: definition}
+    else:
+        print(f"      Adding new definition for '{variable_name}'.")
+        goals_list.append({variable_name: definition})
+
+
+def generate_variable_definitions(
+    profiles: list[dict[str, Any]],
+    llm: BaseLanguageModel,
+    supported_languages: list[str] | None = None,
+    max_retries: int = 3,
+) -> list[dict[str, Any]]:
+    """Generates and adds variable definitions to user profile goals using an LLM.
+
+    Iterates through profiles, extracts {{variables}} from string goals,
+    prompts the LLM to define each variable's generation method (function, type, data),
+    parses the response, and adds the structured definition back into the profile's
+    'goals' list as a dictionary. Includes retry logic for LLM calls/parsing.
+
+    Args:
+        profiles: A list of profile dictionaries, each expected to have a 'goals' key
+                  containing a list of strings and potentially existing definition dicts.
+        llm: The language model instance for generating definitions.
+        supported_languages: Optional list of languages; the first is used for examples.
+        max_retries: Maximum attempts to get a valid definition for each variable in case of failure.
+
+    Returns:
+        The input list of profiles, modified in-place, where the 'goals' list
+        within each profile now includes dictionaries defining the found variables.
     """
     primary_language = ""
     language_instruction = ""
-    if supported_languages and len(supported_languages) > 0:
+    if supported_languages:
         primary_language = supported_languages[0]
         language_instruction = f"Generate examples/values in {primary_language} where appropriate."
 
-    # Process each profile
     for profile in profiles:
-        # Extract all unique variables from the goals
-        all_variables: set[str] = set()
         goals_list = profile.get("goals", [])
-        if not isinstance(goals_list, list):  # Ensure goals is a list
-            print(
-                f"Warning: Profile '{profile.get('name', 'Unnamed')}' has invalid 'goals' format. Skipping variable definition.",
-            )
+        if not isinstance(goals_list, list):
+            print(f"Warning: Profile '{profile.get('name', 'Unnamed')}' has invalid 'goals'. Skipping.")
             continue
 
-        for goal in goals_list:
-            if isinstance(goal, str):
-                variables_in_goal = VARIABLE_PATTERN.findall(goal)
-                all_variables.update(variables_in_goal)
-            # Ignore non-string goals (like existing variable definitions if run multiple times)
+        string_goals = [goal for goal in goals_list if isinstance(goal, str)]
+        all_variables: set[str] = set().union(*(VARIABLE_PATTERN.findall(goal) for goal in string_goals))
 
         if not all_variables:
-            print(f"Info: No variables found in goals for profile '{profile.get('name', 'Unnamed')}'.")
             continue
 
         print(f"\n--- Defining variables for profile: {profile.get('name', 'Unnamed')} ---")
         print(f"   Found variables: {', '.join(sorted(all_variables))}")
+        goals_text = "".join(f"- {goal}\n" for goal in string_goals)
 
-        goals_text = ""
-        for goal in goals_list:
-            if isinstance(goal, str):
-                goals_text += f"- {goal}\n"  # Only include string goals in the context
+        # Prepare context dictionary once per profile
+        var_def_context: VariableDefinitionContext = {
+            "profile": profile,
+            "goals_text": goals_text,
+            "all_variables": all_variables,
+            "language_instruction": language_instruction,
+            "llm": llm,
+            "max_retries": max_retries,
+        }
 
-        # Define each variable individually
-        for variable_name in sorted(all_variables):  # Sort for consistent order
-            print(f"   Defining variable: '{variable_name}'...")
-            other_variables = list(all_variables - {variable_name})
-            parsed_def = None
-
-            for attempt in range(max_retries):
-                prompt = get_variable_definition_prompt(
-                    profile.get("name", "Unnamed Profile"),
-                    profile.get("role", "Unknown Role"),
-                    goals_text,
-                    variable_name,
-                    other_variables,
-                    language_instruction,
-                )
-                try:
-                    response = llm.invoke(prompt)
-                    response_content = response.content
-
-                    parsed_def = _parse_single_variable_definition(response_content)
-
-                    if parsed_def:
-                        print(f"      Successfully parsed definition for '{variable_name}'.")
-                        break  # Success
-                    print(
-                        f"      Warning: Failed to parse definition for '{variable_name}' on attempt {attempt + 1}. Retrying...",
-                    )
-
-                except Exception as e:
-                    print(
-                        f"      Error during LLM call or parsing for '{variable_name}' on attempt {attempt + 1}: {e}. Retrying...",
-                    )
-                    parsed_def = None  # Ensure reset on error
-
-            # Store the result (or handle failure)
+        for variable_name in sorted(all_variables):
+            parsed_def = _define_single_variable_with_retry(
+                variable_name,
+                var_def_context,  # Pass the context dictionary
+            )
             if parsed_def:
-                # Add the definition as a dictionary under the variable name key
-                # Check if a definition already exists (e.g., from a previous run or manual entry)
-                existing_def_index = -1
-                for i, goal_item in enumerate(goals_list):
-                    if isinstance(goal_item, dict) and variable_name in goal_item:
-                        existing_def_index = i
-                        break
-
-                if existing_def_index != -1:
-                    print(f"      Updating existing definition for '{variable_name}'.")
-                    goals_list[existing_def_index] = {variable_name: parsed_def}
-                else:
-                    print(f"      Adding new definition for '{variable_name}'.")
-                    goals_list.append({variable_name: parsed_def})  # Append new definition dict
-
-            else:
-                print(
-                    f"      ERROR: Failed to generate valid definition for variable '{variable_name}' after {max_retries} attempts.",
-                )
-
-        # Update the profile's goals list with the added/updated definitions
-        profile["goals"] = goals_list
+                _update_goals_with_definition(goals_list, variable_name, parsed_def)
 
     return profiles
