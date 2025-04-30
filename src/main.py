@@ -1,12 +1,10 @@
 import os
 import sys
 
-from connectors.chatbot_connectors import ChatbotAdaUam, ChatbotTaskyto
-from chatbot_explorer.analysis_orchestrator import (
-    run_analysis_pipeline,
-)
-from chatbot_explorer.exploration_orchestrator import run_exploration_phase
 from chatbot_explorer.agent import ChatbotExplorationAgent
+
+from connectors.chatbot_connectors import ChatbotAdaUam, ChatbotTaskyto
+
 from utils.cli import parse_arguments
 from utils.reporting import generate_graph_image, save_profiles, write_report
 
@@ -26,7 +24,7 @@ def main() -> None:
 
     # Validate technology choice
     if technology not in valid_technologies:
-        print(f"Invalid technology: {technology}. Must be one of: {valid_technologies}")
+        print(f"Error: Invalid technology '{technology}'. Must be one of: {valid_technologies}")
         sys.exit(1)
 
     # Print configuration summary
@@ -39,57 +37,87 @@ def main() -> None:
     print(f"Output directory: {output_dir}")
     print("====================================")
 
-    # Ensure output directory exists
     os.makedirs(output_dir, exist_ok=True)
 
-    # Initialize the main explorer class
-    explorer = ChatbotExplorationAgent(model_name)
+    # --- Initialize the Agent ---
+    print(f"\nInitializing Chatbot Exploration Agent with model: {model_name}...")
+    try:
+        agent = ChatbotExplorationAgent(model_name)
+    except Exception as e:
+        print(f"Error initializing Chatbot Exploration Agent: {e}")
+        print("Please ensure your API keys (e.g., OPENAI_API_KEY) are set correctly in your environment or .env file.")
+        sys.exit(1)
+    print("Agent initialized successfully.")
 
-    # Store results from multiple sessions
-    # Instantiate the correct chatbot connector based on technology
+    # --- Instantiate the Chatbot Connector ---
+    print(f"Instantiating connector for technology: {technology}")
     if technology == "taskyto":
         the_chatbot = ChatbotTaskyto(chatbot_url)
     elif technology == "ada-uam":
         the_chatbot = ChatbotAdaUam(chatbot_url)
     else:
-        # This check is redundant due to earlier validation, but good practice
-        print(f"Error: Unknown technology '{technology}'")
+        # This case should not be reachable due to earlier validation
+        print(f"Internal Error: Unknown technology '{technology}'")
         sys.exit(1)
 
-    # --- Run Full Exploration ---
-    print("\n--- Starting Chatbot Exploration ---")
-    exploration_results = run_exploration_phase(
-        explorer_instance=explorer,
-        chatbot_connector=the_chatbot,
-        max_sessions=max_sessions,
-        max_turns=max_turns,
-    )
-    print("--- Exploration Complete ---")
+    # --- Run Exploration ---
+    print("\n--- Starting Chatbot Exploration Phase ---")
+    try:
+        exploration_results = agent.run_exploration(
+            chatbot_connector=the_chatbot,
+            max_sessions=max_sessions,
+            max_turns=max_turns,
+        )
+        print("--- Exploration Phase Complete ---")
+    except Exception as e:
+        print("\n--- Error during Exploration Phase ---")
+        print(f"Error: {e}")
+        sys.exit(1)
 
-    # --- Run Analysis Pipeline ---
-    print("\n--- Running Analysis Pipeline (Structure Inference & Profile Generation) ---")
-    analysis_results = run_analysis_pipeline(explorer_instance=explorer, exploration_results=exploration_results)
+    # --- Run Analysis ---
+    print("\n--- Starting Analysis Phase (Structure Inference & Profile Generation) ---")
+    try:
+        # Pass the results from the exploration phase to the analysis method
+        analysis_results = agent.run_analysis(exploration_results=exploration_results)
+        print("--- Analysis Phase Complete ---")
+    except Exception as e:
+        print("\n--- Error during Analysis Phase ---")
+        print(f"Error: {e}")
+        sys.exit(1)
 
     # Extract results for reporting and saving
-    functionality_dicts = analysis_results["discovered_functionalities"]
-    built_profiles = analysis_results["built_profiles"]
+    built_profiles = analysis_results.get("built_profiles", [])
 
-    # --- Save Generated Profiles using the new function ---
+    # --- Save Generated Profiles ---
+    print(f"\n--- Saving {len(built_profiles)} generated profiles ---")
     save_profiles(built_profiles, output_dir)
 
     # --- Write Final Report ---
+    print("--- Writing final report ---")
+
+    functionality_dicts = analysis_results.get("discovered_functionalities", {})
+    limitations = analysis_results.get("discovered_limitations", [])
+    supported_languages = exploration_results.get("supported_languages", ["N/A"])
+    fallback_message = exploration_results.get("fallback_message", "N/A")
+
     write_report(
         output_dir,
-        {"discovered_functionalities": functionality_dicts},
-        exploration_results["supported_languages"],
-        exploration_results["fallback_message"],
+        structured_functionalities=functionality_dicts,
+        limitations=limitations,
+        supported_languages=supported_languages,
+        fallback_message=fallback_message,
     )
 
     # --- Generate Workflow Graph Image ---
-    graph_output_base = os.path.join(output_dir, "workflow_graph")
-    generate_graph_image(functionality_dicts, graph_output_base)
+    if functionality_dicts:
+        print("--- Generating workflow graph image ---")
+        graph_output_base = os.path.join(output_dir, "workflow_graph")
+        generate_graph_image(functionality_dicts, graph_output_base)
+    else:
+        print("--- Skipping workflow graph image (no functionalities discovered) ---")
 
-    print("\n--- Exploration and Analysis Complete ---")
+    print("\n--- Chatbot Explorer Finished ---")
+    print(f"Results saved in: {output_dir}")
 
 
 if __name__ == "__main__":

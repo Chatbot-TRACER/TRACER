@@ -20,7 +20,7 @@ def run_exploration_session(
     session_num,
     max_sessions,
     max_turns,
-    explorer,
+    llm,
     the_chatbot,
     fallback_message: Optional[str] = None,
     current_node: Optional[FunctionalityNode] = None,
@@ -37,7 +37,7 @@ def run_exploration_session(
         session_num (int): The current session number (0-based).
         max_sessions (int): Total sessions to run.
         max_turns (int): Max chat turns per session.
-        explorer: The ChatbotExplorer instance.
+        llm: The language model instance.
         the_chatbot: The chatbot connector instance.
         fallback_message (str, optional): The detected fallback message of the chatbot. Defaults to None.
         current_node (FunctionalityNode, optional): Node to focus exploration on. Defaults to None.
@@ -128,7 +128,7 @@ def run_exploration_session(
         Generate a simple, direct question or command relevant to initiating this functionality.
         Example: If exploring 'provide_contact_info', ask 'How can I contact support?' or 'What is the support email?'.
         """
-        question_response = explorer.llm.invoke(question_prompt)
+        question_response = llm.invoke(question_prompt)
         initial_question = question_response.content.strip().strip("\"'")
     else:
         # Ask a general question for the first session
@@ -146,7 +146,7 @@ def run_exploration_session(
                 translation_prompt = (
                     f"Translate '{greeting_en}' to {primary_language}. Respond ONLY with the translation."
                 )
-                translated_greeting = explorer.llm.invoke(translation_prompt).content.strip().strip("\"'")
+                translated_greeting = llm.invoke(translation_prompt).content.strip().strip("\"'")
                 # Check if translation looks okay
                 if translated_greeting and len(translated_greeting.split()) > 1:
                     initial_question = translated_greeting
@@ -209,7 +209,7 @@ def run_exploration_session(
                 messages_for_llm_this_turn = messages_for_llm
 
             # Invoke the LLM directly
-            llm_response = explorer.llm.invoke(messages_for_llm_this_turn)
+            llm_response = llm.invoke(messages_for_llm_this_turn)
             explorer_response_content = llm_response.content.strip()
 
         except Exception as e:
@@ -247,7 +247,7 @@ def run_exploration_session(
         is_fallback = False
         if fallback_message and chatbot_message:
             # Use LLM for semantic comparison
-            is_fallback = is_semantically_fallback(chatbot_message, fallback_message, explorer.llm)
+            is_fallback = is_semantically_fallback(chatbot_message, fallback_message, llm)
 
         is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
 
@@ -267,7 +267,7 @@ def run_exploration_session(
             """
 
             try:
-                rephrased_response = explorer.llm.invoke(rephrase_prompt)
+                rephrased_response = llm.invoke(rephrase_prompt)
                 rephrased_message = rephrased_response.content.strip().strip("\"'")
 
                 if rephrased_message and rephrased_message != explorer_response_content:
@@ -288,7 +288,7 @@ def run_exploration_session(
                 # See if the retry gave us something different and not another failure
                 is_retry_fallback = False
                 if fallback_message and chatbot_message_retry:
-                    is_retry_fallback = is_semantically_fallback(chatbot_message_retry, fallback_message, explorer.llm)
+                    is_retry_fallback = is_semantically_fallback(chatbot_message_retry, fallback_message, llm)
 
                 is_retry_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message_retry
 
@@ -316,7 +316,7 @@ def run_exploration_session(
         # --- Update state based on FINAL outcome of the turn ---
         final_is_fallback = False
         if fallback_message and chatbot_message:
-            final_is_fallback = is_semantically_fallback(chatbot_message, fallback_message, explorer.llm)
+            final_is_fallback = is_semantically_fallback(chatbot_message, fallback_message, llm)
         final_is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
 
         if final_is_fallback or final_is_parsing_error:
@@ -358,14 +358,14 @@ def run_exploration_session(
 
     # Extract functionalities found in this session
     print("\nAnalyzing conversation for new functionalities...")
-    new_functionality_nodes = extract_functionality_nodes(conversation_history_dict, explorer.llm, current_node)
+    new_functionality_nodes = extract_functionality_nodes(conversation_history_dict, llm, current_node)
 
     # Process newly found nodes
     if new_functionality_nodes:
         print(f"Discovered {len(new_functionality_nodes)} new functionality nodes:")
 
         # Merge similar nodes found *within this session* first
-        new_functionality_nodes = merge_similar_functionalities(new_functionality_nodes, explorer.llm)
+        new_functionality_nodes = merge_similar_functionalities(new_functionality_nodes, llm)
 
         for node in new_functionality_nodes:
             # Check against *all* nodes found so far
@@ -373,10 +373,10 @@ def run_exploration_session(
             for root in root_nodes:
                 all_existing.extend(_get_all_nodes(root))  # Get all descendants
 
-            if not is_duplicate_functionality(node, all_existing, explorer.llm):
+            if not is_duplicate_functionality(node, all_existing, llm):
                 # If exploring a specific node, check if the new one is related
                 if current_node:
-                    relationship_valid = validate_parent_child_relationship(current_node, node, explorer.llm)
+                    relationship_valid = validate_parent_child_relationship(current_node, node, llm)
 
                     if relationship_valid:
                         # Add as child if valid relationship
@@ -398,7 +398,7 @@ def run_exploration_session(
 
         # Merge similar root nodes after adding new ones
         if root_nodes:
-            root_nodes = merge_similar_functionalities(root_nodes, explorer.llm)
+            root_nodes = merge_similar_functionalities(root_nodes, llm)
 
     # Mark the node we focused on as explored
     if current_node:

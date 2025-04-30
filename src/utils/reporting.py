@@ -1,5 +1,3 @@
-# src/utils/reporting.py
-
 import json
 import os
 from typing import Any, Dict, List, Optional, Set
@@ -7,38 +5,11 @@ from typing import Any, Dict, List, Optional, Set
 import graphviz
 import yaml
 
+import traceback
 
-def print_structured_functionalities(f, nodes: List[Dict[str, Any]], indent: str = ""):
-    """Recursively print the structured functionalities to a file object.
-
-    Args:
-        f: The file object to write to.
-        nodes: A list of node dictionaries representing the functionalities.
-        indent: The string used for indentation (e.g., "  ").
-    """
-    for node in nodes:
-        param_str = ""
-        params_data = node.get("parameters", [])
-
-        if isinstance(params_data, list):
-            param_str_list = []
-            for p in params_data:
-                if isinstance(p, dict):
-                    param_str_list.append(p.get("name", "?"))
-                elif isinstance(p, str):
-                    param_str_list.append(p)
-            if param_str_list:
-                param_str = f" (Params: {', '.join(param_str_list)})"
-        elif isinstance(params_data, str) and params_data.lower() not in ["none", ""]:
-            param_str = f" (Params: {params_data})"
-
-        f.write(f"{indent}- {node.get('name', 'N/A')}: {node.get('description', 'N/A')}{param_str}\n")
-        children_data = node.get("children", [])
-        if children_data and isinstance(children_data, list):
-            print_structured_functionalities(f, children_data, indent + "  ")
-        elif children_data:
-            # Log unexpected children type
-            f.write(f"{indent}  WARN: Expected 'children' to be a list, found {type(children_data)}\n")
+# --------------------------------------------------- #
+# ---------------------- GRAPH ---------------------- #
+# --------------------------------------------------- #
 
 
 def generate_graph_image(structured_data: List[Dict[str, Any]], output_filename_base: str):
@@ -175,9 +146,60 @@ def generate_graph_image(structured_data: List[Dict[str, Any]], output_filename_
         print(f"\n   ERROR: Failed to generate graph image: {e}")
 
 
+# ------------------------------------------------ #
+# -------------------- REPORT -------------------- #
+# ------------------------------------------------ #
+
+
+def print_structured_functionalities(f, nodes: List[Dict[str, Any]], indent: str = ""):
+    """Recursively print the structured functionalities to a file object.
+
+    Args:
+        f: The file object to write to.
+        nodes: A list of node dictionaries representing the functionalities.
+        indent: The string used for indentation (e.g., "  ").
+    """
+    for i, node in enumerate(nodes):
+        # Defensive check: Ensure node is actually a dictionary
+        if not isinstance(node, dict):
+            f.write(f"{indent}ERROR: Expected a dictionary at index {i}, but got {type(node)}\n")
+            continue  # Skip this element
+
+        param_str = ""
+        params_data = node.get("parameters", [])
+        if params_data and isinstance(params_data, list):
+            param_details = []
+            for param in params_data:
+                if isinstance(param, dict):
+                    p_name = param.get("name", "N/A")
+                    p_type = param.get("type", "N/A")
+                    p_desc = param.get("description", "N/A")
+                    param_details.append(f"{p_name} ({p_type}): {p_desc}")
+                else:
+                    param_details.append(f"InvalidParamFormat({type(param)})")
+            param_str = f" | Params: [{'; '.join(param_details)}]"
+        elif params_data:  # If not a list but exists
+            param_str = f" | Params: InvalidFormat({type(params_data)})"
+
+        node_name = node.get("name", "Unnamed Node")
+        node_desc = node.get("description", "No description")
+        f.write(f"{indent}- {node_name}: {node_desc}{param_str}\n")
+
+        children = node.get("children", [])
+        if children and isinstance(children, list):
+            # Recursive call - ensure children is also List[Dict] before calling
+            if all(isinstance(child, dict) for child in children):
+                print_structured_functionalities(f, children, indent + "  ")
+            else:
+                f.write(f"{indent}  ERROR: Children of '{node_name}' contains non-dictionary elements.\n")
+        elif children:  # If not a list but exists
+            f.write(f"{indent}  ERROR: Children of '{node_name}' is not a list ({type(children)}).\n")
+
+
 def write_report(
     output_dir: str,
-    result: Dict[str, Any],
+    structured_functionalities: List[Dict[str, Any]],
+    limitations: List[str],
     supported_languages: List[str],
     fallback_message: Optional[str],
 ):
@@ -185,8 +207,8 @@ def write_report(
 
     Args:
         output_dir: The directory to write the report file to.
-        result: The dictionary containing analysis results (e.g., from LangGraph).
-                Expected keys: 'discovered_functionalities', 'discovered_limitations'.
+        structured_functionalities: A list of dictionaries representing the workflow structure.
+        limitations: A list of discovered limitations strings.
         supported_languages: A list of detected supported languages.
         fallback_message: The detected fallback message, or None.
     """
@@ -197,50 +219,122 @@ def write_report(
             f.write("=== CHATBOT FUNCTIONALITY ANALYSIS ===\n\n")
 
             f.write("## FUNCTIONALITIES (Workflow Structure)\n")
-            structured_functionalities = result.get("discovered_functionalities", [])
-            if structured_functionalities and isinstance(structured_functionalities, list):
-                if not structured_functionalities or isinstance(structured_functionalities[0], dict):
-                    print_structured_functionalities(f, structured_functionalities)
+            # Check if it's a list AND if its elements are dicts (if not empty)
+            if isinstance(structured_functionalities, list):
+                if structured_functionalities:
+                    # Check the first element's type rigorously before calling print_structured
+                    if isinstance(structured_functionalities[0], dict):
+                        print_structured_functionalities(f, structured_functionalities)
+                    else:
+                        f.write("Functionality structure is a list, but elements are not dictionaries.\n")
+                        f.write(f"First element type: {type(structured_functionalities[0])}\n")
+                        try:
+                            f.write(f"Raw data:\n{json.dumps(structured_functionalities, indent=2)}\n")
+                        except TypeError:
+                            f.write(f"Raw data (repr):\n{structured_functionalities!r}\n")
                 else:
-                    f.write("Functionality structure not in expected list-of-dicts format.\n")
-                    f.write(f"Raw data:\n{json.dumps(structured_functionalities, indent=2)}\n")
-            elif structured_functionalities:
+                    f.write("No functionalities structure discovered (empty list).\n")
+            elif structured_functionalities is not None:  # Handle case where it's not None but not a list
                 f.write("Functionality structure not in expected list format.\n")
-                f.write(f"Raw data:\n{json.dumps(structured_functionalities, indent=2)}\n")
-            else:
-                f.write("No functionalities structure discovered.\n")
+                f.write(f"Type received: {type(structured_functionalities)}\n")
+                try:
+                    f.write(f"Raw data:\n{json.dumps(structured_functionalities, indent=2)}\n")
+                except TypeError:
+                    f.write(f"Raw data (repr):\n{structured_functionalities!r}\n")
+            else:  # Handle None case
+                f.write("No functionalities structure discovered (None).\n")
 
             f.write("\n## FUNCTIONALITIES (Raw JSON Structure)\n")
-            if structured_functionalities:
-                f.write(json.dumps(structured_functionalities, indent=2, ensure_ascii=False))
+            # Check type before attempting JSON dump
+            if isinstance(structured_functionalities, list):
+                try:
+                    f.write(json.dumps(structured_functionalities, indent=2, ensure_ascii=False))
+                except TypeError as json_e:
+                    f.write(f"Could not serialize functionalities to JSON: {json_e}\n")
+                    f.write(f"Data (repr): {structured_functionalities!r}\n")  # Raw repr
+            elif structured_functionalities is not None:
+                f.write("Functionality structure not in list format, cannot dump as JSON array.\n")
+                f.write(f"Raw data (repr):\n{structured_functionalities!r}\n")
             else:
                 f.write("N/A\n")
 
             f.write("\n## LIMITATIONS\n")
-            limitations = result.get("discovered_limitations", [])
-            if limitations and isinstance(limitations, list):
-                for i, limitation in enumerate(limitations, 1):
-                    f.write(f"{i}. {limitation}\n")
-            elif limitations:
+            # Check if it's a list AND if its elements are strings (if not empty)
+            if isinstance(limitations, list):
+                if limitations:
+                    # Check the first element's type rigorously
+                    if isinstance(limitations[0], str):
+                        for i, limitation in enumerate(limitations, 1):
+                            f.write(f"{i}. {limitation}\n")
+                    else:
+                        f.write("Limitations list elements are not strings.\n")
+                        f.write(f"First element type: {type(limitations[0])}\n")
+                        try:
+                            f.write(f"Raw data:\n{json.dumps(limitations, indent=2)}\n")
+                        except TypeError:
+                            f.write(f"Raw data (repr):\n{limitations!r}\n")
+                else:
+                    f.write("No limitations discovered (empty list).\n")
+            elif limitations is not None:  # Handle case where it's not None but not a list
                 f.write("Limitations data not in expected list format.\n")
-                f.write(f"Raw data:\n{json.dumps(limitations, indent=2)}\n")
-            else:
-                f.write("No limitations discovered.\n")
+                f.write(f"Type received: {type(limitations)}\n")
+                try:
+                    f.write(f"Raw data:\n{json.dumps(limitations, indent=2)}\n")
+                except TypeError:
+                    f.write(f"Raw data (repr):\n{limitations!r}\n")
+            else:  # Handle None case
+                f.write("No limitations discovered (None).\n")
 
             f.write("\n## SUPPORTED LANGUAGES\n")
-            if supported_languages:
-                for i, lang in enumerate(supported_languages, 1):
-                    f.write(f"{i}. {lang}\n")
+            # Check if it's a list AND if its elements are strings (if not empty)
+            if isinstance(supported_languages, list):
+                if supported_languages:
+                    if isinstance(supported_languages[0], str):
+                        for i, lang in enumerate(supported_languages, 1):
+                            f.write(f"{i}. {lang}\n")
+                    else:
+                        f.write("Supported languages list elements are not strings.\n")
+                        f.write(f"First element type: {type(supported_languages[0])}\n")
+                        try:
+                            f.write(f"Raw data:\n{json.dumps(supported_languages, indent=2)}\n")
+                        except TypeError:
+                            f.write(f"Raw data (repr):\n{supported_languages!r}\n")
+                else:
+                    f.write("No specific language support detected (empty list).\n")
+            elif supported_languages is not None:
+                f.write("Supported languages data not in expected list format.\n")
+                f.write(f"Type received: {type(supported_languages)}\n")
+                try:
+                    f.write(f"Raw data:\n{json.dumps(supported_languages, indent=2)}\n")
+                except TypeError:
+                    f.write(f"Raw data (repr):\n{supported_languages!r}\n")
             else:
-                f.write("No specific language support detected.\n")
+                f.write("No specific language support detected (None).\n")
 
             f.write("\n## FALLBACK MESSAGE\n")
-            f.write(fallback_message if fallback_message else "No fallback message detected.\n")
+            # Check type before writing
+            if isinstance(fallback_message, str):
+                f.write(fallback_message)
+            elif fallback_message is None:
+                f.write("No fallback message detected.")
+            else:
+                f.write("Fallback message data is not a string or None.\n")
+                f.write(f"Type received: {type(fallback_message)}\n")
+                f.write(f"Raw data: {fallback_message!r}\n")
+
         print(f"   Successfully wrote report: {report_path}")
     except IOError as e:
         print(f"   ERROR: Failed to write report file: {e}")
     except Exception as e:
         print(f"   ERROR: An unexpected error occurred while writing report: {e}")
+        print("--- Traceback ---")
+        traceback.print_exc()
+        print("-----------------")
+
+
+# -------------------------------------------------- #
+# -------------------- PROFILES -------------------- #
+# -------------------------------------------------- #
 
 
 def save_profiles(built_profiles: List[Dict[str, Any]], output_dir: str):
