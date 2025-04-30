@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 from ..schemas.state import State
-from ..utils.analysis.profile_generator import validate_and_fix_profile
+from ..analysis.profile_generator import validate_and_fix_profile
 from scripts.validation_script import YamlValidator
 
 

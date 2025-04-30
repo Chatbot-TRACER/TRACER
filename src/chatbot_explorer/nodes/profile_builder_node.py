@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 from ..schemas.state import State
-from ..utils.analysis.profile_generator import build_profile_yaml
+from ..analysis.profile_generator import build_profile_yaml
 
 
 def profile_builder_node(state: State) -> Dict[str, Any]:

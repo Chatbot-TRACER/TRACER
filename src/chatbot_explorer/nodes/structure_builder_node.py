@@ -1,8 +1,8 @@
 from typing import Any, Dict
 
 from ..schemas.state import State
-from ..utils.analysis.chatbot_classification import classify_chatbot_type
-from ..utils.analysis.workflow_builder import build_workflow_structure
+from ..analysis.chatbot_classification import classify_chatbot_type
+from ..analysis.workflow_builder import build_workflow_structure
 
 
 def structure_builder_node(state: State, llm) -> Dict[str, Any]:

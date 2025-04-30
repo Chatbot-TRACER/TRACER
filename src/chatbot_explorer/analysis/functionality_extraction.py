@@ -1,7 +1,7 @@
 import re
 from typing import List
 
-from ...schemas.functionality_node import FunctionalityNode
+from ..schemas.functionality_node import FunctionalityNode
 from ..conversation.conversation_utils import format_conversation
 
 

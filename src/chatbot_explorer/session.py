@@ -4,14 +4,14 @@ from typing import List, Optional, Set
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 from .schemas.functionality_node import FunctionalityNode
-from .utils.analysis.functionality_extraction import extract_functionality_nodes
-from .utils.analysis.node_processing import (
+from .analysis.functionality_extraction import extract_functionality_nodes
+from .analysis.node_processing import (
     is_duplicate_functionality,
     merge_similar_functionalities,
     validate_parent_child_relationship,
 )
-from .utils.conversation.conversation_utils import _get_all_nodes
-from .utils.conversation.fallback_detection import (
+from .conversation.conversation_utils import _get_all_nodes
+from .conversation.fallback_detection import (
     is_semantically_fallback,
 )
 

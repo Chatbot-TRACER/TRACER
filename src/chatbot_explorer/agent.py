@@ -3,8 +3,8 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import StateGraph
 
 from chatbot_explorer.session import run_exploration_session
-from chatbot_explorer.utils.conversation.fallback_detection import extract_fallback_message
-from chatbot_explorer.utils.conversation.language_detection import extract_supported_languages
+from chatbot_explorer.conversation.fallback_detection import extract_fallback_message
+from chatbot_explorer.conversation.language_detection import extract_supported_languages
 
 from .nodes.conversation_params_node import conversation_params_node
 from .nodes.goal_generator_node import goal_generator_node

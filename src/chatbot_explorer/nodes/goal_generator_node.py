@@ -2,7 +2,7 @@ import re
 from typing import Any, Dict, List, Optional, Set
 
 from ..schemas.state import State
-from ..utils.constants import VARIABLE_PATTERN
+from ..constants import VARIABLE_PATTERN
 
 
 def ensure_double_curly(text):
