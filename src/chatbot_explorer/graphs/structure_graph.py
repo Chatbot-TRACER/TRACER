@@ -1,14 +1,13 @@
 from langchain_core.language_models import BaseLanguageModel
 from langgraph.checkpoint.base import BaseCheckpointSaver
-from langgraph.graph import StateGraph, END
+from langgraph.graph import END, StateGraph
 
 from ..nodes.structure_builder_node import structure_builder_node
-
 from ..schemas.state import State
 
+
 def build_structure_graph(llm: BaseLanguageModel, checkpointer: BaseCheckpointSaver):
-    """
-    Builds and compiles the LangGraph for inferring workflow structure.
+    """Builds and compiles the LangGraph for inferring workflow structure.
 
     Args:
         llm: The language model instance to be used by nodes.

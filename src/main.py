@@ -2,9 +2,7 @@ import os
 import sys
 
 from chatbot_explorer.agent import ChatbotExplorationAgent
-
 from connectors.chatbot_connectors import ChatbotAdaUam, ChatbotTaskyto
-
 from utils.cli import parse_arguments
 from utils.reporting import generate_graph_image, save_profiles, write_report
 

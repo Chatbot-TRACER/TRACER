@@ -1,8 +1,9 @@
 from typing import Any, Dict
 
-from ..schemas.state import State
-from ..analysis.profile_generator import validate_and_fix_profile
 from scripts.validation_script import YamlValidator
+
+from ..analysis.profile_generator import validate_and_fix_profile
+from ..schemas.state import State
 
 
 def profile_validator_node(state: State, llm) -> Dict[str, Any]:

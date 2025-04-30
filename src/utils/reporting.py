@@ -1,11 +1,10 @@
 import json
 import os
+import traceback
 from typing import Any, Dict, List, Optional, Set
 
 import graphviz
 import yaml
-
-import traceback
 
 # --------------------------------------------------- #
 # ---------------------- GRAPH ---------------------- #

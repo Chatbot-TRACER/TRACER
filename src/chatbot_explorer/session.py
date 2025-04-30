@@ -3,7 +3,6 @@ from typing import List, Optional, Set
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
-from .schemas.functionality_node import FunctionalityNode
 from .analysis.functionality_extraction import extract_functionality_nodes
 from .analysis.node_processing import (
     is_duplicate_functionality,
@@ -14,6 +13,7 @@ from .conversation.conversation_utils import _get_all_nodes
 from .conversation.fallback_detection import (
     is_semantically_fallback,
 )
+from .schemas.functionality_node import FunctionalityNode
 
 
 def run_exploration_session(

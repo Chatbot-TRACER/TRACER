@@ -1,8 +1,8 @@
 from typing import Any, Dict
 
-from ..schemas.state import State
 from ..analysis.chatbot_classification import classify_chatbot_type
 from ..analysis.workflow_builder import build_workflow_structure
+from ..schemas.state import State
 
 
 def structure_builder_node(state: State, llm) -> Dict[str, Any]:
@@ -17,7 +17,6 @@ def structure_builder_node(state: State, llm) -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: Dictionary with updated 'discovered_functionalities' and 'chatbot_type'.
     """
-
     print("\n--- Building Workflow Structure ---")
     # Functionalities are expected as dicts from run_full_exploration results
     flat_functionality_dicts = state.get("discovered_functionalities", [])

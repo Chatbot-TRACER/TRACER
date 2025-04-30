@@ -1,18 +1,16 @@
 from langchain_core.language_models import BaseLanguageModel  # Use base class
 from langgraph.checkpoint.base import BaseCheckpointSaver
-from langgraph.graph import StateGraph, END
+from langgraph.graph import END, StateGraph
 
-from ..nodes.goal_generator_node import goal_generator_node
 from ..nodes.conversation_params_node import conversation_params_node
+from ..nodes.goal_generator_node import goal_generator_node
 from ..nodes.profile_builder_node import profile_builder_node
 from ..nodes.profile_validator_node import profile_validator_node
-
 from ..schemas.state import State
 
 
 def build_profile_generation_graph(llm: BaseLanguageModel, checkpointer: BaseCheckpointSaver):
-    """
-    Builds and compiles the LangGraph for generating user profiles.
+    """Builds and compiles the LangGraph for generating user profiles.
 
     Args:
         llm: The language model instance to be used by nodes.

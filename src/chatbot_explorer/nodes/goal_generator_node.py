@@ -1,8 +1,8 @@
 import re
 from typing import Any, Dict, List, Optional, Set
 
-from ..schemas.state import State
 from ..constants import VARIABLE_PATTERN
+from ..schemas.state import State
 
 
 def ensure_double_curly(text):

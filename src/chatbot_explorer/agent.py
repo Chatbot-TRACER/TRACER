@@ -1,23 +1,16 @@
+import uuid
+from typing import Any, Dict, List, Optional, Set
+
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
-from langgraph.graph import StateGraph
 
-from chatbot_explorer.session import run_exploration_session
 from chatbot_explorer.conversation.fallback_detection import extract_fallback_message
 from chatbot_explorer.conversation.language_detection import extract_supported_languages
+from chatbot_explorer.session import run_exploration_session
 
-from .nodes.conversation_params_node import conversation_params_node
-from .nodes.goal_generator_node import goal_generator_node
-from .nodes.profile_builder_node import profile_builder_node
-from .nodes.profile_validator_node import profile_validator_node
-from .nodes.structure_builder_node import structure_builder_node
-from .schemas.state import State
-
-from .graphs.structure_graph import build_structure_graph
 from .graphs.profile_graph import build_profile_generation_graph
-
-from typing import Any, Dict, List, Optional, Set
-import uuid
+from .graphs.structure_graph import build_structure_graph
+from .schemas.state import State
 
 
 class ChatbotExplorationAgent:
@@ -36,8 +29,7 @@ class ChatbotExplorationAgent:
         self._profile_graph = build_profile_generation_graph(self.llm, self.memory)
 
     def run_exploration(self, chatbot_connector, max_sessions: int, max_turns: int) -> Dict[str, Any]:
-        """
-        Runs the initial probing and the main exploration loop.
+        """Runs the initial probing and the main exploration loop.
 
         Args:
             chatbot_connector: An instance of a chatbot connector class.
@@ -157,8 +149,7 @@ class ChatbotExplorationAgent:
         }
 
     def run_analysis(self, exploration_results: Dict[str, Any]) -> Dict[str, List[Any]]:
-        """
-        Runs the LangGraph analysis pipeline using pre-compiled graphs.
+        """Runs the LangGraph analysis pipeline using pre-compiled graphs.
 
         Args:
             exploration_results: A dictionary containing results from the exploration phase.
