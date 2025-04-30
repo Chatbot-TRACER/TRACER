@@ -1,11 +1,10 @@
 import re
-from typing import List
 
 from ..conversation.conversation_utils import format_conversation
 from ..schemas.functionality_node import FunctionalityNode
 
 
-def extract_functionality_nodes(conversation_history, llm, current_node=None) -> List[FunctionalityNode]:
+def extract_functionality_nodes(conversation_history, llm, current_node=None) -> list[FunctionalityNode]:
     """Find out FunctionalityNodes from the conversation.
 
     Args:

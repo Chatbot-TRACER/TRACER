@@ -1,7 +1,7 @@
 import json
 import os
 import traceback
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 import graphviz
 import yaml
@@ -11,7 +11,7 @@ import yaml
 # --------------------------------------------------- #
 
 
-def generate_graph_image(structured_data: List[Dict[str, Any]], output_filename_base: str):
+def generate_graph_image(structured_data: list[dict[str, Any]], output_filename_base: str):
     """Generates a PNG visualization of the workflow graph using Graphviz.
 
     Args:
@@ -54,10 +54,10 @@ def generate_graph_image(structured_data: List[Dict[str, Any]], output_filename_
         arrowsize="0.7",
     )
 
-    processed_nodes: Set[str] = set()
-    processed_edges: Set[tuple[str, str]] = set()
+    processed_nodes: set[str] = set()
+    processed_edges: set[tuple[str, str]] = set()
 
-    def add_nodes_edges(graph: graphviz.Digraph, node_dict: Dict[str, Any], depth=0):
+    def add_nodes_edges(graph: graphviz.Digraph, node_dict: dict[str, Any], depth=0):
         """Recursive helper to add nodes and edges to the graph."""
         node_name = node_dict.get("name")
         if not node_name:
@@ -150,7 +150,7 @@ def generate_graph_image(structured_data: List[Dict[str, Any]], output_filename_
 # ------------------------------------------------ #
 
 
-def print_structured_functionalities(f, nodes: List[Dict[str, Any]], indent: str = ""):
+def print_structured_functionalities(f, nodes: list[dict[str, Any]], indent: str = ""):
     """Recursively print the structured functionalities to a file object.
 
     Args:
@@ -197,10 +197,10 @@ def print_structured_functionalities(f, nodes: List[Dict[str, Any]], indent: str
 
 def write_report(
     output_dir: str,
-    structured_functionalities: List[Dict[str, Any]],
-    limitations: List[str],
-    supported_languages: List[str],
-    fallback_message: Optional[str],
+    structured_functionalities: list[dict[str, Any]],
+    limitations: list[str],
+    supported_languages: list[str],
+    fallback_message: str | None,
 ):
     """Writes the analysis results to report.txt.
 
@@ -322,7 +322,7 @@ def write_report(
                 f.write(f"Raw data: {fallback_message!r}\n")
 
         print(f"   Successfully wrote report: {report_path}")
-    except IOError as e:
+    except OSError as e:
         print(f"   ERROR: Failed to write report file: {e}")
     except Exception as e:
         print(f"   ERROR: An unexpected error occurred while writing report: {e}")
@@ -336,7 +336,7 @@ def write_report(
 # -------------------------------------------------- #
 
 
-def save_profiles(built_profiles: List[Dict[str, Any]], output_dir: str):
+def save_profiles(built_profiles: list[dict[str, Any]], output_dir: str):
     """Saves the generated user profiles to individual YAML files in the specified directory.
 
     Args:
@@ -392,7 +392,7 @@ def save_profiles(built_profiles: List[Dict[str, Any]], output_dir: str):
         except yaml.YAMLError as e:
             print(f"   ERROR: Failed to dump YAML for profile '{test_name}': {e}")
             error_count += 1
-        except IOError as e:
+        except OSError as e:
             print(f"   ERROR: Failed to write file '{filename}': {e}")
             error_count += 1
         except Exception as e:

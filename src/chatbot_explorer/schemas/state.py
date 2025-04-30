@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Dict, List
+from typing import Annotated, Any
 
 from langgraph.graph.message import add_messages
 from typing_extensions import TypedDict
@@ -30,7 +30,7 @@ class State(TypedDict):
 
     messages: Annotated[list, add_messages]
     conversation_history: list
-    discovered_functionalities: List[Dict[str, Any]]
+    discovered_functionalities: list[dict[str, Any]]
     discovered_limitations: list
     current_session: int
     exploration_finished: bool
@@ -39,4 +39,4 @@ class State(TypedDict):
     built_profiles: list
     fallback_message: str
     chatbot_type: str
-    workflow_structure: List[Dict[str, Any]]
+    workflow_structure: list[dict[str, Any]]

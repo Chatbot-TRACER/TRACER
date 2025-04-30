@@ -1,9 +1,9 @@
-from typing import Any, Dict, List
+from typing import Any
 
 from ..conversation.conversation_utils import format_conversation
 
 
-def classify_chatbot_type(functionalities: List[Dict[str, Any]], conversation_history: List[Any], llm) -> str:
+def classify_chatbot_type(functionalities: list[dict[str, Any]], conversation_history: list[Any], llm) -> str:
     """Determine if the chatbot is transactional (task-oriented) or informational (Q&A).
 
     Args:
@@ -25,7 +25,7 @@ def classify_chatbot_type(functionalities: List[Dict[str, Any]], conversation_hi
         [
             f"- {f.get('name', 'N/A')}: {f.get('description', 'N/A')[:100]}..."
             for f in functionalities[:10]  # Limit to first 10 for summary
-        ]
+        ],
     )
 
     # Get conversation snippets
@@ -84,10 +84,9 @@ def classify_chatbot_type(functionalities: List[Dict[str, Any]], conversation_hi
         if classification in ["transactional", "informational"]:
             print(f"   LLM classified as: {classification}")
             return classification
-        else:
-            # Handle unclear response
-            print(f"   LLM response unclear ('{classification}'), defaulting to informational.")
-            return "informational"
+        # Handle unclear response
+        print(f"   LLM response unclear ('{classification}'), defaulting to informational.")
+        return "informational"
     except Exception as e:
         # Handle LLM error
         print(f"   Error during classification: {e}. Defaulting to informational.")

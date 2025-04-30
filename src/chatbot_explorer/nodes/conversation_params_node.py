@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any
 
 from ..schemas.state import State
 
@@ -467,7 +467,7 @@ def generate_conversation_parameters(profiles, functionalities, llm, supported_l
     return profiles
 
 
-def conversation_params_node(state: State, llm) -> Dict[str, Any]:
+def conversation_params_node(state: State, llm) -> dict[str, Any]:
     """Node that generates specific parameters needed for conversation goals.
 
     Args:
@@ -487,7 +487,7 @@ def conversation_params_node(state: State, llm) -> Dict[str, Any]:
     structured_root_dicts = state.get("discovered_functionalities", [])
 
     # Helper to flatten the structure info
-    def get_all_func_info(nodes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def get_all_func_info(nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
         all_info = []
         for node in nodes:
             # Get node info (excluding children for flat list)

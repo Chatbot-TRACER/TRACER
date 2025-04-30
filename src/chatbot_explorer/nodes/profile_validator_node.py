@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 from scripts.validation_script import YamlValidator
 
@@ -6,7 +6,7 @@ from ..analysis.profile_generator import validate_and_fix_profile
 from ..schemas.state import State
 
 
-def profile_validator_node(state: State, llm) -> Dict[str, Any]:
+def profile_validator_node(state: State, llm) -> dict[str, Any]:
     """Node that validates generated YAML profiles and tries to fix them using LLM if needed.
 
     Args:

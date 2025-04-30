@@ -1,5 +1,5 @@
 import uuid
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
@@ -28,7 +28,7 @@ class ChatbotExplorationAgent:
         self._structure_graph = build_structure_graph(self.llm, self.memory)
         self._profile_graph = build_profile_generation_graph(self.llm, self.memory)
 
-    def run_exploration(self, chatbot_connector, max_sessions: int, max_turns: int) -> Dict[str, Any]:
+    def run_exploration(self, chatbot_connector, max_sessions: int, max_turns: int) -> dict[str, Any]:
         """Runs the initial probing and the main exploration loop.
 
         Args:
@@ -44,12 +44,12 @@ class ChatbotExplorationAgent:
                             - fallback_message: Detected fallback message string.
         """
         # Initialize results and state tracking
-        conversation_sessions: List[List[Dict[str, str]]] = []
-        supported_languages: List[str] = []
-        fallback_message: Optional[str] = None
-        root_nodes: List[FunctionalityNode] = []
-        pending_nodes: List[FunctionalityNode] = []
-        explored_nodes: Set[str] = set()
+        conversation_sessions: list[list[dict[str, str]]] = []
+        supported_languages: list[str] = []
+        fallback_message: str | None = None
+        root_nodes: list[FunctionalityNode] = []
+        pending_nodes: list[FunctionalityNode] = []
+        explored_nodes: set[str] = set()
 
         # --- Initial Language Detection ---
         print("\n--- Probing Chatbot Language ---")
@@ -148,7 +148,7 @@ class ChatbotExplorationAgent:
             "fallback_message": fallback_message,
         }
 
-    def run_analysis(self, exploration_results: Dict[str, Any]) -> Dict[str, List[Any]]:
+    def run_analysis(self, exploration_results: dict[str, Any]) -> dict[str, list[Any]]:
         """Runs the LangGraph analysis pipeline using pre-compiled graphs.
 
         Args:
@@ -180,7 +180,7 @@ class ChatbotExplorationAgent:
         structure_thread_id = f"structure_analysis_{uuid.uuid4()}"
         # Access the pre-compiled graph directly via self
         structure_result = self._structure_graph.invoke(
-            structure_initial_state, config={"configurable": {"thread_id": structure_thread_id}}
+            structure_initial_state, config={"configurable": {"thread_id": structure_thread_id}},
         )
         workflow_structure = structure_result.get("discovered_functionalities", {})
         print("--- Structure inference complete ---")
@@ -200,7 +200,7 @@ class ChatbotExplorationAgent:
         profile_thread_id = f"profile_analysis_{uuid.uuid4()}"
         # Access the pre-compiled graph directly via self
         profile_result = self._profile_graph.invoke(
-            profile_initial_state, config={"configurable": {"thread_id": profile_thread_id}}
+            profile_initial_state, config={"configurable": {"thread_id": profile_thread_id}},
         )
 
         generated_profiles = profile_result.get("built_profiles", [])

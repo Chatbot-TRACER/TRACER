@@ -46,9 +46,8 @@ class ChatbotTaskyto(Chatbot):
                     # message = get_content(assistant_message) # get content process the message looking for images, pdf, or webpages
                     return True, message
 
-                else:
-                    # There is an error, but it is an internal error
-                    return False, post_response_json.get("error")
+                # There is an error, but it is an internal error
+                return False, post_response_json.get("error")
             except requests.exceptions.JSONDecodeError:
                 return False, "chatbot internal error"
 
@@ -137,11 +136,10 @@ class MillionBot(Chatbot):
                             text_response += self.__translate_buttons(answer["payload"]["buttons"])
 
                 return True, text_response
-            else:
-                # There is an error, but it is an internal error
-                print(f"Server error {response_json.get('error')}")
-                # errors.append({500: f"Couldn't get response from the server"})
-                return False, response_json.get("error")
+            # There is an error, but it is an internal error
+            print(f"Server error {response_json.get('error')}")
+            # errors.append({500: f"Couldn't get response from the server"})
+            return False, response_json.get("error")
         except requests.exceptions.JSONDecodeError:
             # logger = logging.getLogger("my_app_logger")
             # logger.error(f"Couldn't get response from the server: {e}")

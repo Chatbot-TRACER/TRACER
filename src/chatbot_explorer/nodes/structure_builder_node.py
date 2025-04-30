@@ -1,11 +1,11 @@
-from typing import Any, Dict
+from typing import Any
 
 from ..analysis.chatbot_classification import classify_chatbot_type
 from ..analysis.workflow_builder import build_workflow_structure
 from ..schemas.state import State
 
 
-def structure_builder_node(state: State, llm) -> Dict[str, Any]:
+def structure_builder_node(state: State, llm) -> dict[str, Any]:
     """Node that analyzes functionalities and history to build the workflow structure.
 
     Uses different logic based on whether the bot seems transactional or informational.

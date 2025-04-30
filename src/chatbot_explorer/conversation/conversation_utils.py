@@ -1,7 +1,6 @@
-from typing import Dict, List
 
 
-def format_conversation(messages: List[Dict[str, str]]) -> str:
+def format_conversation(messages: list[dict[str, str]]) -> str:
     """Make the conversation history easy to read.
 
     Args:

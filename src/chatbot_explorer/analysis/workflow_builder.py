@@ -1,16 +1,14 @@
-"""Functions for building the workflow graph structure using LLM analysis."""
-
 import json
 import re
-from typing import Any, Dict, List
+from typing import Any
 
 
 def build_workflow_structure(
-    flat_functionality_dicts: List[Dict[str, Any]],
-    conversation_history: List[Any],
+    flat_functionality_dicts: list[dict[str, Any]],
+    conversation_history: list[Any],
     chatbot_type: str,
     llm,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Build a hierarchical structure of chatbot functionalities.
 
     Args:
@@ -33,7 +31,7 @@ def build_workflow_structure(
         [
             f"- Name: {f.get('name', 'N/A')}\n  Description: {f.get('description', 'N/A')}\n  Parameters: {', '.join(p.get('name', '?') for p in f.get('parameters', [])) or 'None'}"
             for f in flat_functionality_dicts
-        ]
+        ],
     )
 
     # Get conversation snippets for context
@@ -208,7 +206,7 @@ def extract_json_from_response(response_content: str) -> str:
     return json_str
 
 
-def build_node_hierarchy(structured_nodes_info: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def build_node_hierarchy(structured_nodes_info: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Build a hierarchical structure from flat nodes with parent references."""
     # Map name to node info
     nodes_map = {node_info["name"]: node_info for node_info in structured_nodes_info if "name" in node_info}

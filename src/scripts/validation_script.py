@@ -1,6 +1,5 @@
 import re
 from dataclasses import dataclass
-from typing import Dict, List, Optional
 
 import yaml
 
@@ -9,7 +8,7 @@ import yaml
 class ValidationError:
     message: str
     path: str
-    line: Optional[int] = None
+    line: int | None = None
 
 
 languages = [
@@ -130,7 +129,7 @@ class YamlValidator:
             "default",
         ]
 
-    def validate(self, yaml_content: str) -> List[ValidationError]:
+    def validate(self, yaml_content: str) -> list[ValidationError]:
         """Validate YAML content against schema rules.
 
         Checks that all required fields are present and have the correct type.
@@ -164,9 +163,9 @@ class YamlValidator:
             return errors
 
         except yaml.YAMLError as e:
-            return [ValidationError(f"Invalid YAML syntax: {str(e)}", "/")]
+            return [ValidationError(f"Invalid YAML syntax: {e!s}", "/")]
 
-    def _validate_conversation_variable_dependencies(self, user: Dict, conversation: Dict) -> List[ValidationError]:
+    def _validate_conversation_variable_dependencies(self, user: dict, conversation: dict) -> list[ValidationError]:
         """Validate that sample() or all_combinations is only used when there are nested forwards."""
         errors = []
 
@@ -202,12 +201,12 @@ class YamlValidator:
                     ValidationError(
                         "Using 'all_combinations' or 'sample()' requires at least one variable with nested forward() dependency",
                         "/conversation/number",
-                    )
+                    ),
                 )
 
         return errors
 
-    def _validate_required_fields(self, data: Dict) -> List[ValidationError]:
+    def _validate_required_fields(self, data: dict) -> list[ValidationError]:
         """Validate that all required fields are present."""
         errors = []
 
@@ -230,12 +229,12 @@ class YamlValidator:
                             ValidationError(
                                 f"Missing required field: {field} in {path}",
                                 f"/{path}/{field}",
-                            )
+                            ),
                         )
 
         return errors
 
-    def _validate_llm_section(self, llm: Dict) -> List[ValidationError]:
+    def _validate_llm_section(self, llm: dict) -> list[ValidationError]:
         """Validate LLM section configuration."""
         errors = []
 
@@ -246,7 +245,7 @@ class YamlValidator:
                     ValidationError(
                         f"Unexpected field '{field}' in llm section. Did you mean one of: {', '.join(self.allowed_fields['llm'])}?",
                         f"/llm/{field}",
-                    )
+                    ),
                 )
 
         # Check that temperature is a number between 0 and 1
@@ -257,7 +256,7 @@ class YamlValidator:
                     ValidationError(
                         "Temperature must be a number between 0 and 1",
                         "/llm/temperature",
-                    )
+                    ),
                 )
 
         # Validate format section
@@ -271,30 +270,22 @@ class YamlValidator:
                     ValidationError(
                         f"Invalid format type. Must be one of: {', '.join(self.valid_formats)}",
                         "/llm/format/type",
-                    )
+                    ),
                 )
 
             # If type is speech, check for config
             if format_type == "speech":
-                if "config" not in format_section:
+                if "config" not in format_section or format_section["config"] == "":
                     errors.append(
                         ValidationError(
                             "Speech format requires 'config' field with path to configuration file",
                             "/llm/format/config",
-                        )
-                    )
-                # Check that the string is a path
-                elif format_section["config"] == "":
-                    errors.append(
-                        ValidationError(
-                            "Speech format requires 'config' field with path to configuration file",
-                            "/llm/format/config",
-                        )
+                        ),
                     )
 
         return errors
 
-    def _validate_user_section(self, user: Dict) -> List[ValidationError]:
+    def _validate_user_section(self, user: dict) -> list[ValidationError]:
         """Validate user section configuration."""
         errors = []
 
@@ -305,7 +296,7 @@ class YamlValidator:
                     ValidationError(
                         "User context must be a list",
                         "/user/context",
-                    )
+                    ),
                 )
             else:
                 # Track if we've seen a personality item
@@ -320,7 +311,7 @@ class YamlValidator:
                                     ValidationError(
                                         "Only one personality entry is allowed in context",
                                         f"/user/context/{i}",
-                                    )
+                                    ),
                                 )
                             has_personality = True
 
@@ -330,7 +321,7 @@ class YamlValidator:
                                     ValidationError(
                                         "Personality must be a non-empty string path",
                                         f"/user/context/{i}/personality",
-                                    )
+                                    ),
                                 )
                     # All non-dictionary items must be strings
                     elif not isinstance(item, str):
@@ -338,7 +329,7 @@ class YamlValidator:
                             ValidationError(
                                 "Context items must be either a personality dictionary or string",
                                 f"/user/context/{i}",
-                            )
+                            ),
                         )
 
         if "language" in user:
@@ -347,7 +338,7 @@ class YamlValidator:
                     ValidationError(
                         message=(f"Invalid language '{user['language']}'. Must be one of: {', '.join(languages)}"),
                         path="/user/language",
-                    )
+                    ),
                 )
 
         # Validate goals structure
@@ -357,7 +348,7 @@ class YamlValidator:
                     ValidationError(
                         "User goals must be a list",
                         "/user/goals",
-                    )
+                    ),
                 )
             else:
                 # First pass: collect all defined variables and their functions
@@ -398,7 +389,7 @@ class YamlValidator:
                                         f"Invalid use of curly braces: '{pattern_text}'. "
                                         f"Curly braces can only be used for variable placeholders with exactly two opening and two closing braces, e.g., '{{ variable }}'.",
                                         f"/user/goals/{i}",
-                                    )
+                                    ),
                                 )
 
                         # Check if properly formatted variables are defined (as before)
@@ -408,7 +399,7 @@ class YamlValidator:
                                     ValidationError(
                                         f"Variable '{var}' used in goal but not defined",
                                         f"/user/goals/{i}",
-                                    )
+                                    ),
                                 )
 
                         # Now if there are any remaining curly braces, they are invalid
@@ -423,7 +414,7 @@ class YamlValidator:
                                         f"Curly braces can only be used for variables with exactly two opening and two closing braces: '{{{{variable}}}}'. "
                                         f"Variables must be single words without spaces.",
                                         f"/user/goals/{i}",
-                                    )
+                                    ),
                                 )
 
                         # Check if properly formatted variables are defined (as before)
@@ -433,7 +424,7 @@ class YamlValidator:
                                     ValidationError(
                                         f"Variable '{var}' used in goal but not defined",
                                         f"/user/goals/{i}",
-                                    )
+                                    ),
                                 )
 
                         # Then check properly formatted variables are defined
@@ -445,7 +436,7 @@ class YamlValidator:
                                     ValidationError(
                                         f"Variable '{var}' used in goal but not defined",
                                         f"/user/goals/{i}",
-                                    )
+                                    ),
                                 )
 
                     elif isinstance(goal, dict):
@@ -455,7 +446,7 @@ class YamlValidator:
                                 ValidationError(
                                     "Each variable definition must have exactly one key",
                                     f"/user/goals/{i}",
-                                )
+                                ),
                             )
                         else:
                             var_name = list(goal.keys())[0]
@@ -467,7 +458,7 @@ class YamlValidator:
                                     ValidationError(
                                         f"Variable '{var_name}' definition must be a dictionary",
                                         f"/user/goals/{i}/{var_name}",
-                                    )
+                                    ),
                                 )
                                 continue
 
@@ -478,7 +469,7 @@ class YamlValidator:
                                         ValidationError(
                                             f"Missing required field '{field}' in variable '{var_name}'",
                                             f"/user/goals/{i}/{var_name}",
-                                        )
+                                        ),
                                     )
 
                             # Validate type
@@ -489,7 +480,7 @@ class YamlValidator:
                                         ValidationError(
                                             f"Invalid variable type '{var_type}'. Must be 'string', 'int', or 'float'",
                                             f"/user/goals/{i}/{var_name}/type",
-                                        )
+                                        ),
                                     )
 
                             # Validate function
@@ -500,11 +491,7 @@ class YamlValidator:
                                 valid_function = False
 
                                 # Check for default(), another(), forward() without parameters
-                                if func in ["default()", "another()", "forward()"]:
-                                    valid_function = True
-
-                                # Check for random() with different formats
-                                elif func == "random()":
+                                if func in ["default()", "another()", "forward()"] or func == "random()":
                                     valid_function = True
                                 elif func.startswith("random(") and func.endswith(")"):
                                     # Extract the parameter
@@ -532,7 +519,7 @@ class YamlValidator:
                                             ValidationError(
                                                 f"Forward function references undefined variable '{nested_var}'",
                                                 f"/user/goals/{i}/{var_name}/function",
-                                            )
+                                            ),
                                         )
                                         valid_function = True  # Avoid duplicate error
 
@@ -541,7 +528,7 @@ class YamlValidator:
                                         ValidationError(
                                             f"Invalid function '{func}'. Must be one of: default(), random(), random(n), random(rand), another(), forward() or forward(var)",
                                             f"/user/goals/{i}/{var_name}/function",
-                                        )
+                                        ),
                                     )
 
                             # Validate data structure based on type
@@ -557,14 +544,14 @@ class YamlValidator:
                                             ValidationError(
                                                 "Missing 'min' in numeric range definition",
                                                 f"/user/goals/{i}/{var_name}/data",
-                                            )
+                                            ),
                                         )
                                     if "max" not in data:
                                         errors.append(
                                             ValidationError(
                                                 "Missing 'max' in numeric range definition",
                                                 f"/user/goals/{i}/{var_name}/data",
-                                            )
+                                            ),
                                         )
                                     # Check that min is smaller than max
                                     if (
@@ -578,7 +565,7 @@ class YamlValidator:
                                                 ValidationError(
                                                     "Minimum value must be smaller than maximum value",
                                                     f"/user/goals/{i}/{var_name}/data",
-                                                )
+                                                ),
                                             )
 
                                     # Check that either step or linspace is provided for float
@@ -587,7 +574,7 @@ class YamlValidator:
                                             ValidationError(
                                                 "Float range must define either 'step' or 'linspace'",
                                                 f"/user/goals/{i}/{var_name}/data",
-                                            )
+                                            ),
                                         )
 
                                     # For int, check that step is provided
@@ -596,7 +583,7 @@ class YamlValidator:
                                             ValidationError(
                                                 "Integer range must define 'step'",
                                                 f"/user/goals/{i}/{var_name}/data",
-                                            )
+                                            ),
                                         )
 
                                 # For list data, check that it's actually a list
@@ -605,7 +592,7 @@ class YamlValidator:
                                         ValidationError(
                                             "Data must be a list, range definition, or custom function",
                                             f"/user/goals/{i}/{var_name}/data",
-                                        )
+                                        ),
                                     )
 
                                 # For custom function data
@@ -615,14 +602,14 @@ class YamlValidator:
                                             ValidationError(
                                                 "Custom function data must include 'function_name'",
                                                 f"/user/goals/{i}/{var_name}/data",
-                                            )
+                                            ),
                                         )
                                     if "args" not in data:
                                         errors.append(
                                             ValidationError(
                                                 "Custom function data must include 'args'",
                                                 f"/user/goals/{i}/{var_name}/data",
-                                            )
+                                            ),
                                         )
 
                                 # For list data, validate any() functions if present
@@ -636,14 +623,14 @@ class YamlValidator:
                                                         ValidationError(
                                                             f"Malformed any() function: Missing closing parenthesis in '{item}'",
                                                             f"/user/goals/{i}/{var_name}/data/{j}",
-                                                        )
+                                                        ),
                                                     )
                                                 elif len(item) <= 5:  # "any()" has length 5
                                                     errors.append(
                                                         ValidationError(
                                                             "Empty any() function: Must contain instructions",
                                                             f"/user/goals/{i}/{var_name}/data/{j}",
-                                                        )
+                                                        ),
                                                     )
                                                 # Check for balanced parentheses within any()
                                                 elif item.count("(") != item.count(")"):
@@ -651,14 +638,14 @@ class YamlValidator:
                                                         ValidationError(
                                                             f"Unbalanced parentheses in any() function: '{item}'",
                                                             f"/user/goals/{i}/{var_name}/data/{j}",
-                                                        )
+                                                        ),
                                                     )
                                         elif not isinstance(item, (str, int, float, bool)):
                                             errors.append(
                                                 ValidationError(
                                                     f"Invalid data list item type: {type(item).__name__}. Must be a primitive value or any() function",
                                                     f"/user/goals/{i}/{var_name}/data/{j}",
-                                                )
+                                                ),
                                             )
 
                     else:
@@ -666,7 +653,7 @@ class YamlValidator:
                             ValidationError(
                                 "Goals must be either strings or dictionaries",
                                 f"/user/goals/{i}",
-                            )
+                            ),
                         )
 
             # Third pass: validate forward dependencies
@@ -697,7 +684,7 @@ class YamlValidator:
                         ValidationError(
                             f"Variable '{referenced_var}' is referenced by forward() but doesn't use forward() itself",
                             f"/user/goals/{defined_variables[referenced_var]['index']}/{referenced_var}/function",
-                        )
+                        ),
                     )
 
             # Detect circular dependencies
@@ -718,7 +705,7 @@ class YamlValidator:
                 path.pop()
 
             # Find all cycles in the dependencies
-            visited = {var: False for var in defined_variables}
+            visited = dict.fromkeys(defined_variables, False)
             cycles = []
 
             for var in forward_dependencies:
@@ -732,12 +719,12 @@ class YamlValidator:
                     ValidationError(
                         f"Circular forward dependencies detected: {cycle_descriptions}. Forward references must form a directed acyclic graph.",
                         "/user/goals",
-                    )
+                    ),
                 )
 
         return errors
 
-    def _validate_chatbot_section(self, chatbot: Dict) -> List[ValidationError]:
+    def _validate_chatbot_section(self, chatbot: dict) -> list[ValidationError]:
         """Validate chatbot section configuration."""
         errors = []
 
@@ -749,7 +736,7 @@ class YamlValidator:
                     ValidationError(
                         "is_starter must be a boolean (true or false)",
                         "/chatbot/is_starter",
-                    )
+                    ),
                 )
 
         # fallback can only be string
@@ -769,7 +756,7 @@ class YamlValidator:
                             ValidationError(
                                 "Each output item must be a dictionary",
                                 f"/chatbot/output/{i}",
-                            )
+                            ),
                         )
                         continue
 
@@ -779,7 +766,7 @@ class YamlValidator:
                             ValidationError(
                                 "Each output item must have exactly one key (the output name)",
                                 f"/chatbot/output/{i}",
-                            )
+                            ),
                         )
                         continue
 
@@ -792,7 +779,7 @@ class YamlValidator:
                             ValidationError(
                                 f"Output definition for '{output_name}' must be a dictionary",
                                 f"/chatbot/output/{i}/{output_name}",
-                            )
+                            ),
                         )
                         continue
 
@@ -802,7 +789,7 @@ class YamlValidator:
                             ValidationError(
                                 f"Output '{output_name}' must have a type",
                                 f"/chatbot/output/{i}/{output_name}",
-                            )
+                            ),
                         )
 
                     if "description" not in output_def:
@@ -810,7 +797,7 @@ class YamlValidator:
                             ValidationError(
                                 f"Output '{output_name}' must have a description",
                                 f"/chatbot/output/{i}/{output_name}",
-                            )
+                            ),
                         )
 
                     # Validate output type
@@ -819,7 +806,7 @@ class YamlValidator:
                             ValidationError(
                                 f"Invalid output type '{output_def['type']}'. Must be one of: {', '.join(self.valid_output_types)}",
                                 f"/chatbot/output/{i}/{output_name}/type",
-                            )
+                            ),
                         )
 
                     # Validate description is a non-empty string
@@ -830,12 +817,12 @@ class YamlValidator:
                                 ValidationError(
                                     "Description must be a non-empty string",
                                     f"/chatbot/output/{i}/{output_name}/description",
-                                )
+                                ),
                             )
 
         return errors
 
-    def _validate_conversation_section(self, conversation: Dict) -> List[ValidationError]:
+    def _validate_conversation_section(self, conversation: dict) -> list[ValidationError]:
         """Validate conversation section configuration."""
         errors = []
 
@@ -848,7 +835,7 @@ class YamlValidator:
                         ValidationError(
                             "Number of conversations must be a positive integer",
                             "/conversation/number",
-                        )
+                        ),
                     )
             elif isinstance(num, str):
                 # Check for "all_combinations" string
@@ -866,28 +853,28 @@ class YamlValidator:
                                 ValidationError(
                                     "Sample value must be between 0 and 1",
                                     "/conversation/number",
-                                )
+                                ),
                             )
                     except ValueError:
                         errors.append(
                             ValidationError(
                                 "Invalid sample value, must be a decimal between 0 and 1",
                                 "/conversation/number",
-                            )
+                            ),
                         )
                 else:
                     errors.append(
                         ValidationError(
                             "Number must be a positive integer, 'all_combinations', or sample(0.0-1.0)",
                             "/conversation/number",
-                        )
+                        ),
                     )
             else:
                 errors.append(
                     ValidationError(
                         "Number must be a positive integer, 'all_combinations', or sample(0.0-1.0)",
                         "/conversation/number",
-                    )
+                    ),
                 )
 
         if "max_cost" in conversation:
@@ -907,7 +894,7 @@ class YamlValidator:
                         ValidationError(
                             "When goal_style is a string, it must be 'default'",
                             "/conversation/goal_style",
-                        )
+                        ),
                     )
             elif isinstance(goal_style, dict):
                 # Check for valid goal style options
@@ -917,7 +904,7 @@ class YamlValidator:
                             ValidationError(
                                 f"Invalid goal_style option: {key}\nValid options: {', '.join(self.valid_goal_styles)}",
                                 f"/conversation/goal_style/{key}",
-                            )
+                            ),
                         )
 
                 # Validate steps (must be positive integer)
@@ -928,7 +915,7 @@ class YamlValidator:
                             ValidationError(
                                 "Steps must be a positive integer",
                                 "/conversation/goal_style/steps",
-                            )
+                            ),
                         )
 
                 # Validate random_steps (must be positive integer <= 20)
@@ -939,14 +926,14 @@ class YamlValidator:
                             ValidationError(
                                 "Random steps must be a positive integer",
                                 "/conversation/goal_style/random_steps",
-                            )
+                            ),
                         )
                     elif random_steps > 20:
                         errors.append(
                             ValidationError(
                                 "Random steps cannot exceed 20",
                                 "/conversation/goal_style/random_steps",
-                            )
+                            ),
                         )
 
                 # Validate all_answered
@@ -964,7 +951,7 @@ class YamlValidator:
                                 ValidationError(
                                     "Export field must be a boolean",
                                     "/conversation/goal_style/all_answered/export",
-                                )
+                                ),
                             )
 
                         # Validate limit field if present
@@ -975,14 +962,14 @@ class YamlValidator:
                                     ValidationError(
                                         "Limit must be a positive integer",
                                         "/conversation/goal_style/all_answered/limit",
-                                    )
+                                    ),
                                 )
                     else:
                         errors.append(
                             ValidationError(
                                 "all_answered must be a boolean or a dictionary",
                                 "/conversation/goal_style/all_answered",
-                            )
+                            ),
                         )
 
                 # Validate max_cost (per conversation cost limit), optional
@@ -993,14 +980,14 @@ class YamlValidator:
                             ValidationError(
                                 "Goal style max_cost must be a positive number",
                                 "/conversation/goal_style/max_cost",
-                            )
+                            ),
                         )
             else:
                 errors.append(
                     ValidationError(
                         "Goal style must be either 'default' or a dictionary",
                         "/conversation/goal_style",
-                    )
+                    ),
                 )
 
         # Validate interaction_style
@@ -1012,7 +999,7 @@ class YamlValidator:
                     ValidationError(
                         "Interaction style must be a list",
                         "/conversation/interaction_style",
-                    )
+                    ),
                 )
             else:
                 for i, style in enumerate(interaction_style):
@@ -1023,14 +1010,14 @@ class YamlValidator:
                                 ValidationError(
                                     "'change language' must be a dictionary with a list of languages",
                                     f"/conversation/interaction_style/{i}",
-                                )
+                                ),
                             )
                         elif style not in self.valid_interaction_styles:
                             errors.append(
                                 ValidationError(
                                     f"Invalid interaction style: '{style}'. Must be one of: {', '.join(self.valid_interaction_styles)}",
                                     f"/conversation/interaction_style/{i}",
-                                )
+                                ),
                             )
 
                     # Complex dictionary style
@@ -1040,7 +1027,7 @@ class YamlValidator:
                                 ValidationError(
                                     "Each complex style must have exactly one key",
                                     f"/conversation/interaction_style/{i}",
-                                )
+                                ),
                             )
                             continue
 
@@ -1054,7 +1041,7 @@ class YamlValidator:
                                     ValidationError(
                                         "Random style must be a list of other styles",
                                         f"/conversation/interaction_style/{i}/random",
-                                    )
+                                    ),
                                 )
                                 continue
 
@@ -1066,14 +1053,14 @@ class YamlValidator:
                                             ValidationError(
                                                 "'change language' must be a dictionary with a list of languages",
                                                 f"/conversation/interaction_style/{i}/random/{j}",
-                                            )
+                                            ),
                                         )
                                     elif random_style not in self.valid_interaction_styles:
                                         errors.append(
                                             ValidationError(
                                                 f"Invalid style in random list: '{random_style}'",
                                                 f"/conversation/interaction_style/{i}/random/{j}",
-                                            )
+                                            ),
                                         )
                                 elif isinstance(random_style, dict):
                                     # Handle nested styles within random list
@@ -1082,7 +1069,7 @@ class YamlValidator:
                                             ValidationError(
                                                 "Only 'change language' can be a nested dictionary in random list",
                                                 f"/conversation/interaction_style/{i}/random/{j}",
-                                            )
+                                            ),
                                         )
                                     else:
                                         lang_list = random_style["change language"]
@@ -1091,7 +1078,7 @@ class YamlValidator:
                                                 ValidationError(
                                                     "Change language must specify a list of languages",
                                                     f"/conversation/interaction_style/{i}/random/{j}/change language",
-                                                )
+                                                ),
                                             )
                                         else:
                                             # Just check that each item is a string
@@ -1101,14 +1088,14 @@ class YamlValidator:
                                                         ValidationError(
                                                             f"Language must be a string, got {type(lang).__name__}",
                                                             f"/conversation/interaction_style/{i}/random/{j}/change language/{k}",
-                                                        )
+                                                        ),
                                                     )
                                 else:
                                     errors.append(
                                         ValidationError(
                                             "Random style items must be strings or 'change language' dictionary",
                                             f"/conversation/interaction_style/{i}/random/{j}",
-                                        )
+                                        ),
                                     )
 
                         # Handle "change language" style - must be a list of languages
@@ -1118,7 +1105,7 @@ class YamlValidator:
                                     ValidationError(
                                         "Change language must be a list of languages",
                                         f"/conversation/interaction_style/{i}/change language",
-                                    )
+                                    ),
                                 )
                                 continue
 
@@ -1129,7 +1116,7 @@ class YamlValidator:
                                         ValidationError(
                                             f"Language must be a string, got {type(language).__name__}",
                                             f"/conversation/interaction_style/{i}/change language/{j}",
-                                        )
+                                        ),
                                     )
 
                         # Any other complex style is invalid
@@ -1138,7 +1125,7 @@ class YamlValidator:
                                 ValidationError(
                                     f"Invalid complex style: '{style_type}'. Must be 'random' or 'change language'",
                                     f"/conversation/interaction_style/{i}",
-                                )
+                                ),
                             )
 
                     # Not a string or dictionary
@@ -1147,7 +1134,7 @@ class YamlValidator:
                             ValidationError(
                                 f"Interaction style item must be a string or dictionary, got {type(style).__name__}",
                                 f"/conversation/interaction_style/{i}",
-                            )
+                            ),
                         )
         return errors
 

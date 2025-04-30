@@ -1,8 +1,7 @@
 import re
-from typing import Optional
 
 
-def extract_fallback_message(the_chatbot, llm) -> Optional[str]:
+def extract_fallback_message(the_chatbot, llm) -> str | None:
     """Try to get the chatbot's fallback message.
 
     Sends confusing messages to trigger it. These aren't part of the main chat history.
@@ -74,8 +73,7 @@ def extract_fallback_message(the_chatbot, llm) -> Optional[str]:
             if fallback:
                 print(f'Detected fallback pattern: "{fallback[:50]}{"..." if len(fallback) > 50 else ""}"')
                 return fallback
-            else:
-                print("Could not extract a clear fallback message pattern.")
+            print("Could not extract a clear fallback message pattern.")
         except Exception as e:
             print(f"Error during fallback analysis: {e}")
 

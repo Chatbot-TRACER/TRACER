@@ -1,7 +1,6 @@
-from typing import List
 
 
-def extract_supported_languages(chatbot_response: str, llm) -> List[str]:
+def extract_supported_languages(chatbot_response: str, llm) -> list[str]:
     """Try to figure out what languages the chatbot knows.
 
     Args:

@@ -1,10 +1,10 @@
-from typing import Any, Dict
+from typing import Any
 
 from ..analysis.profile_generator import build_profile_yaml
 from ..schemas.state import State
 
 
-def profile_builder_node(state: State) -> Dict[str, Any]:
+def profile_builder_node(state: State) -> dict[str, Any]:
     """Node that takes conversation goals and builds the final YAML profile dictionaries.
 
     Args:

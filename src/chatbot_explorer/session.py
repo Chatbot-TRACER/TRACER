@@ -1,5 +1,4 @@
 import random
-from typing import List, Optional, Set
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
@@ -22,11 +21,11 @@ def run_exploration_session(
     max_turns,
     llm,
     the_chatbot,
-    fallback_message: Optional[str] = None,
-    current_node: Optional[FunctionalityNode] = None,
-    explored_nodes: Optional[Set[str]] = None,
-    pending_nodes: Optional[List[FunctionalityNode]] = None,
-    root_nodes: Optional[List[FunctionalityNode]] = None,
+    fallback_message: str | None = None,
+    current_node: FunctionalityNode | None = None,
+    explored_nodes: set[str] | None = None,
+    pending_nodes: list[FunctionalityNode] | None = None,
+    root_nodes: list[FunctionalityNode] | None = None,
     supported_languages=None,
 ):
     """Runs one chat session to explore the bot.
@@ -331,7 +330,7 @@ def run_exploration_session(
             # Reset counter if the turn was successful
             if consecutive_failures > 0:
                 print(
-                    f"   (Successful response this turn. Resetting consecutive failures from {consecutive_failures}.)"
+                    f"   (Successful response this turn. Resetting consecutive failures from {consecutive_failures}.)",
                 )
             consecutive_failures = 0
             force_topic_change_next_turn = False  # Ensure flag is off on success

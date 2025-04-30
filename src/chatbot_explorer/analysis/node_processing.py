@@ -1,11 +1,10 @@
 import json
 import re
-from typing import List
 
 from ..schemas.functionality_node import FunctionalityNode
 
 
-def is_duplicate_functionality(node: FunctionalityNode, existing_nodes: List[FunctionalityNode], llm=None) -> bool:
+def is_duplicate_functionality(node: FunctionalityNode, existing_nodes: list[FunctionalityNode], llm=None) -> bool:
     """Check if this node is basically the same as one we already have.
 
     Args:
@@ -116,7 +115,7 @@ def validate_parent_child_relationship(parent_node, child_node, llm) -> bool:
     return is_valid
 
 
-def merge_similar_functionalities(nodes: List[FunctionalityNode], llm) -> List[FunctionalityNode]:
+def merge_similar_functionalities(nodes: list[FunctionalityNode], llm) -> list[FunctionalityNode]:
     """Use LLM to find and merge similar nodes. Returns a new list.
 
     Args:

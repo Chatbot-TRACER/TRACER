@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 class FunctionalityNode:
@@ -8,15 +8,15 @@ class FunctionalityNode:
         self,
         name: str,
         description: str,
-        parameters: Optional[List[Dict[str, Any]]] = None,
+        parameters: list[dict[str, Any]] | None = None,
         parent: Optional["FunctionalityNode"] = None,
-        children: Optional[List["FunctionalityNode"]] = None,
+        children: list["FunctionalityNode"] | None = None,
     ):
         self.name: str = name
         self.description: str = description
-        self.parameters: List[Dict[str, Any]] = parameters if parameters else []
-        self.parent: Optional["FunctionalityNode"] = parent
-        self.children: List["FunctionalityNode"] = children if children is not None else []
+        self.parameters: list[dict[str, Any]] = parameters if parameters else []
+        self.parent: FunctionalityNode | None = parent
+        self.children: list[FunctionalityNode] = children if children is not None else []
 
     def add_child(self, child_node: "FunctionalityNode"):
         """Adds a child node to this node."""
@@ -24,7 +24,7 @@ class FunctionalityNode:
         if child_node not in self.children:
             self.children.append(child_node)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary.
 
         Converts the FunctionalityNode instance to a serializable dictionary.

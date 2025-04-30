@@ -1,5 +1,5 @@
 import re
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 from ..constants import VARIABLE_PATTERN
 from ..schemas.state import State
@@ -16,7 +16,7 @@ def _build_single_variable_prompt(
     role: str,
     goals_text: str,
     variable_name: str,
-    all_other_variables: List[str],
+    all_other_variables: list[str],
     language_instruction: str,
 ) -> str:
     """Creates the specific text prompt to ask the LLM about one variable.
@@ -114,8 +114,8 @@ def _build_single_variable_prompt(
 
 
 def _parse_single_variable_definition(
-    response_content: str, expected_type: Optional[str] = None
-) -> Optional[Dict[str, Any]]:
+    response_content: str, expected_type: str | None = None,
+) -> dict[str, Any] | None:
     """Takes the LLM's text answer for one variable and tries to turn it into a Python dictionary.
 
     Args:
@@ -151,7 +151,7 @@ def _parse_single_variable_definition(
             # If expected_type is provided, check for mismatch early
             if expected_type and parsed_type != expected_type:
                 print(
-                    f"Warning: LLM returned type '{parsed_type}' but expected '{expected_type}'. Will attempt to parse as '{parsed_type}'."
+                    f"Warning: LLM returned type '{parsed_type}' but expected '{expected_type}'. Will attempt to parse as '{parsed_type}'.",
                 )
         elif line.startswith("DATA:"):
             in_data_section = True
@@ -174,7 +174,7 @@ def _parse_single_variable_definition(
 
     if not definition.get("function") or not definition.get("type") or "data" not in definition:
         print(
-            f"Warning: Failed to parse essential fields (FUNCTION, TYPE, DATA) from LLM response:\n{response_content}"
+            f"Warning: Failed to parse essential fields (FUNCTION, TYPE, DATA) from LLM response:\n{response_content}",
         )
         return None  # Essential fields missing
 
@@ -212,7 +212,7 @@ def _parse_single_variable_definition(
         # Validate numeric data structure
         if not ("min" in raw_data and "max" in raw_data and ("step" in raw_data or "linspace" in raw_data)):
             print(
-                f"Warning: Numeric variable data missing min/max/step or min/max/linspace. LLM response:\n{response_content}"
+                f"Warning: Numeric variable data missing min/max/step or min/max/linspace. LLM response:\n{response_content}",
             )
             # Allow partial definition for potential fixing later? Or return None? Let's return None for now.
             return None
@@ -258,11 +258,11 @@ def generate_variable_definitions(profiles, llm, supported_languages=None, max_r
     # Process each profile
     for profile in profiles:
         # Extract all unique variables from the goals
-        all_variables: Set[str] = set()
+        all_variables: set[str] = set()
         goals_list = profile.get("goals", [])
         if not isinstance(goals_list, list):  # Ensure goals is a list
             print(
-                f"Warning: Profile '{profile.get('name', 'Unnamed')}' has invalid 'goals' format. Skipping variable definition."
+                f"Warning: Profile '{profile.get('name', 'Unnamed')}' has invalid 'goals' format. Skipping variable definition.",
             )
             continue
 
@@ -308,14 +308,13 @@ def generate_variable_definitions(profiles, llm, supported_languages=None, max_r
                     if parsed_def:
                         print(f"      Successfully parsed definition for '{variable_name}'.")
                         break  # Success
-                    else:
-                        print(
-                            f"      Warning: Failed to parse definition for '{variable_name}' on attempt {attempt + 1}. Retrying..."
-                        )
+                    print(
+                        f"      Warning: Failed to parse definition for '{variable_name}' on attempt {attempt + 1}. Retrying...",
+                    )
 
                 except Exception as e:
                     print(
-                        f"      Error during LLM call or parsing for '{variable_name}' on attempt {attempt + 1}: {e}. Retrying..."
+                        f"      Error during LLM call or parsing for '{variable_name}' on attempt {attempt + 1}: {e}. Retrying...",
                     )
                     parsed_def = None  # Ensure reset on error
 
@@ -338,7 +337,7 @@ def generate_variable_definitions(profiles, llm, supported_languages=None, max_r
 
             else:
                 print(
-                    f"      ERROR: Failed to generate valid definition for variable '{variable_name}' after {max_retries} attempts."
+                    f"      ERROR: Failed to generate valid definition for variable '{variable_name}' after {max_retries} attempts.",
                 )
 
         # Update the profile's goals list with the added/updated definitions
@@ -715,7 +714,7 @@ LANGUAGE REQUIREMENT:
                 "name": profile_name,
                 "role": role.strip(),
                 "functionalities": functionalities_list,
-            }
+            },
         )
 
     # For each profile, generate user-centric goals
@@ -824,7 +823,7 @@ LANGUAGE REQUIREMENT:
     return profiles
 
 
-def goal_generator_node(state: State, llm) -> Dict[str, Any]:
+def goal_generator_node(state: State, llm) -> dict[str, Any]:
     """Node that generates user profiles and conversation goals based on findings.
 
     Args:
@@ -844,7 +843,7 @@ def goal_generator_node(state: State, llm) -> Dict[str, Any]:
     print("\n--- Generating conversation goals from structured data ---")
 
     # Functionalities are now dicts (structured from previous node)
-    structured_root_dicts: List[Dict[str, Any]] = state["discovered_functionalities"]
+    structured_root_dicts: list[dict[str, Any]] = state["discovered_functionalities"]
 
     # Get workflow structure (which is the structured functionalities itself)
     workflow_structure = structured_root_dicts  # Use the structured data directly
@@ -854,12 +853,12 @@ def goal_generator_node(state: State, llm) -> Dict[str, Any]:
     print(f"   Chatbot type for goal generation: {chatbot_type}")
 
     # Helper to get all descriptions from the structure
-    def get_all_descriptions(nodes: List[Dict[str, Any]]) -> List[str]:
+    def get_all_descriptions(nodes: list[dict[str, Any]]) -> list[str]:
         descriptions = []
         for node in nodes:
-            if "description" in node and node["description"]:
+            if node.get("description"):
                 descriptions.append(node["description"])
-            if "children" in node and node["children"]:
+            if node.get("children"):
                 child_descriptions = get_all_descriptions(node["children"])
                 descriptions.extend(child_descriptions)
         return descriptions
