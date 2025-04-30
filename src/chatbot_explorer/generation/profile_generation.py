@@ -11,7 +11,7 @@ def ensure_double_curly(text):
     return pattern.sub(r"{{\1}}", text)
 
 
-def generate_user_profiles_and_goals(
+def generate_profile_content(
     functionalities,
     limitations,
     llm,
@@ -21,23 +21,26 @@ def generate_user_profiles_and_goals(
     supported_languages=None,
     chatbot_type="unknown",
 ):
-    """Generate user profiles and goals based on functionalities and limitations.
+    """Generates the content of what the profile contains.
 
-    Group functionalities into logical user profiles and generate coherent goal sets
-    for individual conversations
+    Orchestrates the generation of:
+    - Profile scenarios (name, role) based on functionality grouping.
+    - User-centric goals for each scenario.
+    - Variable definitions ({{variable}}) within goals.
+    - Context points for the simulator.
+    - Expected output fields to extract from chatbot responses.
 
     Args:
-        functionalities: List of discovered functionality descriptions
-        limitations: List of discovered limitations
-        llm: Language model to use for generation
-        workflow_structure: Optional structure representing workflow relationships between functionalities
-        conversation_history: Optional historical conversation data
-        output_dir: Directory to save output profiles
-        supported_languages: List of supported languages
-        chatbot_type: Type of chatbot ("transactional", "informational", or "unknown")
+        functionalities: List of discovered functionality descriptions.
+        limitations: List of discovered limitations.
+        llm: Language model to use for generation.
+        workflow_structure: Optional structure representing workflow relationships.
+        conversation_history: Optional historical conversation data.
+        supported_languages: List of supported languages.
+        chatbot_type: Type of chatbot ("transactional", "informational", or "unknown").
 
     Returns:
-        List of profile dictionaries with goals and variable definitions
+        List of dictionaries, where each dictionary represents a complete profile's content.
     """
     # Work in the given language with stronger instructions
     primary_language = ""
