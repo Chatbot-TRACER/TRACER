@@ -1,3 +1,5 @@
+"""Module to generate the context for the profiles."""
+
 import re
 from typing import Any
 
@@ -42,9 +44,9 @@ def generate_context(
         # Process context into separate entries
         context_entries = []
         for line in context_content.split("\n"):
-            line = line.strip()
-            if line.startswith("- "):
-                entry = line[2:].strip()
+            line_content = line.strip()
+            if line_content.startswith("- "):
+                entry = line_content[2:].strip()
                 if entry:
                     context_entries.append(entry)
 

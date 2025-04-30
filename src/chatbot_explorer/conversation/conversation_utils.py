@@ -1,3 +1,5 @@
+"""Utility functions for formatting conversations and handling functionality nodes."""
+
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 
 

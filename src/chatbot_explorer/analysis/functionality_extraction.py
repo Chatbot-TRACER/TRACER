@@ -1,3 +1,5 @@
+"""Module to extract functionalities (as Functionality Nodes) from conversations."""
+
 import re
 from typing import Any
 

@@ -1,3 +1,5 @@
+"""Module to detect the supported language of the chatbot."""
+
 from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.prompts.language_detection_prompts import get_language_detection_prompt

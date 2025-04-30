@@ -1,3 +1,5 @@
+"""Module to detect and analyze fallback messages from the chatbot."""
+
 import re
 
 from langchain_core.language_models import BaseLanguageModel

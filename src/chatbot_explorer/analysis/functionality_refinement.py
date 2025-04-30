@@ -1,3 +1,5 @@
+"""Module to check for duplicate functionalities, merge them and validate relationships between them."""
+
 import re
 from typing import Any
 

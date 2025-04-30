@@ -1,3 +1,5 @@
+"""Module to build workflow structures from chatbot functionalities."""
+
 import json
 import re
 from typing import Any

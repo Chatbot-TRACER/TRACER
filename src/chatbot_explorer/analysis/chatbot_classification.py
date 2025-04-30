@@ -1,3 +1,5 @@
+"""Classify chatbots as transactional or informational based on their functionalities and conversation history."""
+
 from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
