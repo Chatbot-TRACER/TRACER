@@ -1,7 +1,7 @@
 from typing import Any
 
 from chatbot_explorer.generation.profile_builder import validate_and_fix_profile
-from chatbot_explorer.schemas.state import State
+from chatbot_explorer.schemas.graph_state_model import State
 from scripts.validation_script import YamlValidator
 
 

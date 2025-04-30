@@ -3,7 +3,7 @@ from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, StateGraph
 
 from chatbot_explorer.nodes.workflow_builder_node import workflow_builder_node
-from chatbot_explorer.schemas.state import State
+from chatbot_explorer.schemas.graph_state_model import State
 
 
 def build_structure_graph(llm: BaseLanguageModel, checkpointer: BaseCheckpointSaver):

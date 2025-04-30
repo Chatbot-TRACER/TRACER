@@ -1,7 +1,7 @@
 import contextlib
 from typing import Any
 
-from chatbot_explorer.schemas.state import State
+from chatbot_explorer.schemas.graph_state_model import State
 
 
 def extract_profile_variables(profile):

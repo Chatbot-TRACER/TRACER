@@ -2,12 +2,16 @@ import json
 import re
 from typing import Any
 
+from langchain_core.language_models import BaseLanguageModel
+
+from chatbot_explorer.utils.parsing_utils import extract_json_from_response
+
 
 def build_workflow_structure(
     flat_functionality_dicts: list[dict[str, Any]],
     conversation_history: list[Any],
     chatbot_type: str,
-    llm,
+    llm: BaseLanguageModel,
 ) -> list[dict[str, Any]]:
     """Build a hierarchical structure of chatbot functionalities.
 
@@ -180,32 +184,6 @@ def create_informational_prompt(func_list_str: str, conversation_snippets: str) 
 
     Generate the JSON list representing the interaction flow structure:
     """
-
-
-def extract_json_from_response(response_content: str) -> str:
-    """Extract JSON content from the LLM response."""
-    json_str = None
-    json_patterns = [
-        r"```json\s*([\s\S]+?)\s*```",  # ```json ... ```
-        r"```\s*([\s\S]+?)\s*```",  # ``` ... ```
-        r"\[\s*\{.*?\}\s*\]",  # Starts with [ { and ends with } ]
-    ]
-
-    for pattern in json_patterns:
-        match = re.search(pattern, response_content, re.DOTALL)
-        if match:
-            json_str = match.group(1) if "```" in pattern else match.group(0)
-            break
-
-    # Fallback if no pattern matched
-    if not json_str:
-        if response_content.strip().startswith("[") and response_content.strip().endswith("]"):
-            json_str = response_content.strip()
-        else:
-            msg = "Could not extract JSON block from LLM response."
-            raise ValueError(msg)
-
-    return json_str
 
 
 def build_node_hierarchy(structured_nodes_info: list[dict[str, Any]]) -> list[dict[str, Any]]:

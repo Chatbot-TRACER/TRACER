@@ -1,4 +1,4 @@
-from langchain_core.language_models import BaseLanguageModel  # Use base class
+from langchain_core.language_models import BaseLanguageModel
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, StateGraph
 
@@ -6,7 +6,7 @@ from chatbot_explorer.nodes.conversation_params_node import conversation_params_
 from chatbot_explorer.nodes.profile_builder_node import profile_builder_node
 from chatbot_explorer.nodes.profile_generator_node import profile_generator_node
 from chatbot_explorer.nodes.profile_validator_node import profile_validator_node
-from chatbot_explorer.schemas.state import State
+from chatbot_explorer.schemas.graph_state_model import State
 
 
 def build_profile_generation_graph(llm: BaseLanguageModel, checkpointer: BaseCheckpointSaver):

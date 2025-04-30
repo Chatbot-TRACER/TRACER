@@ -3,7 +3,7 @@ from typing import Any
 from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.generation.profile_generation import generate_user_profiles_and_goals
-from chatbot_explorer.schemas.state import State
+from chatbot_explorer.schemas.graph_state_model import State
 
 
 def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, Any]:

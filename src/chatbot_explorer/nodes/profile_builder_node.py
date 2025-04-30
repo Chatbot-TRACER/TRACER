@@ -1,7 +1,7 @@
 from typing import Any
 
 from chatbot_explorer.generation.profile_builder import build_profile_yaml
-from chatbot_explorer.schemas.state import State
+from chatbot_explorer.schemas.graph_state_model import State
 
 
 def profile_builder_node(state: State) -> dict[str, Any]:

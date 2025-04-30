@@ -8,7 +8,7 @@ from chatbot_explorer.analysis.functionality_refinement import (
     merge_similar_functionalities,
     validate_parent_child_relationship,
 )
-from chatbot_explorer.schemas.functionality_node import FunctionalityNode
+from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 
 from .conversation_utils import _get_all_nodes
 from .fallback_detection import (

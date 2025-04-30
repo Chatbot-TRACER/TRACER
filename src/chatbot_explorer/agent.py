@@ -10,7 +10,7 @@ from chatbot_explorer.conversation.session import run_exploration_session
 
 from .graphs.profile_graph import build_profile_generation_graph
 from .graphs.structure_graph import build_structure_graph
-from .schemas.state import State
+from .schemas.graph_state_model import State
 
 
 class ChatbotExplorationAgent:

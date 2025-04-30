@@ -1,7 +1,7 @@
 import re
 
 from chatbot_explorer.conversation.conversation_utils import format_conversation
-from chatbot_explorer.schemas.functionality_node import FunctionalityNode
+from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 
 
 def extract_functionality_nodes(conversation_history, llm, current_node=None) -> list[FunctionalityNode]:
