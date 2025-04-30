@@ -6,7 +6,7 @@ from langgraph.checkpoint.memory import MemorySaver
 
 from chatbot_explorer.conversation.fallback_detection import extract_fallback_message
 from chatbot_explorer.conversation.language_detection import extract_supported_languages
-from chatbot_explorer.session import run_exploration_session
+from chatbot_explorer.conversation.session import run_exploration_session
 
 from .graphs.profile_graph import build_profile_generation_graph
 from .graphs.structure_graph import build_structure_graph
