@@ -25,6 +25,21 @@ def _get_profile_variables(profile: dict[str, Any]) -> list[str]:
     ]
 
 
+def _calculate_combinations(profile: dict[str, Any], variables: list[str]) -> int:
+    """Calculates the potential number of combinations based on variable definitions."""
+    combinations = 1
+    for var_name in variables:
+        var_def = profile.get(var_name, {})
+        if isinstance(var_def, dict) and "data" in var_def:
+            data = var_def.get("data", [])
+            if isinstance(data, list):
+                combinations *= len(data) if data else 1
+            elif isinstance(data, dict) and all(k in data for k in ["min", "max", "step"]) and data["step"] != 0:
+                steps = (data["max"] - data["min"]) / data["step"] + 1
+                combinations *= int(steps) if steps >= 1 else 1
+    return combinations
+
+
 def _check_nested_forwards(profile: dict[str, Any], variables: list[str]) -> tuple[bool, list[str], str]:
     """Checks for nested forward dependencies and calculates related info."""
     has_nested_forwards = profile.get("has_nested_forwards", False)
@@ -41,17 +56,7 @@ def _check_nested_forwards(profile: dict[str, Any], variables: list[str]) -> tup
 
             if chain_descriptions:
                 nested_forward_info = "\nNested dependency chains detected:\n" + "\n".join(chain_descriptions)
-                combinations = 1
-                for var_name in variables:
-                    var_def = profile.get(var_name, {})
-                    if isinstance(var_def, dict) and "data" in var_def:
-                        data = var_def.get("data", [])
-                        if isinstance(data, list):
-                            combinations *= len(data) if data else 1
-                        elif isinstance(data, dict) and all(k in data for k in ["min", "max", "step"]):
-                            if data["step"] != 0:
-                                steps = (data["max"] - data["min"]) / data["step"] + 1
-                                combinations *= int(steps) if steps >= 1 else 1
+                combinations = _calculate_combinations(profile, variables)
                 nested_forward_info += f"\nPotential combinations: approximately {combinations}"
     else:  # Fallback if structured dependencies aren't present
         for var_name, var_def in profile.items():
@@ -139,7 +144,6 @@ class ParamRequestContext(TypedDict):
     profile: dict[str, Any]
     variables_info: str
     language_info: str
-    has_nested_forwards: bool
     supported_languages_text: str
     languages_example: str
 
@@ -162,7 +166,9 @@ def _parse_number_response(response_text: str, default_number: str | int) -> str
             elif "sample" in value.lower() and "(" in value and ")" in value:
                 with contextlib.suppress(ValueError):
                     sample_value = float(value.split("(")[1].split(")")[0])
-                    if 0.1 <= sample_value <= 1.0:
+                    min_sample_value = 0.1
+                    max_sample_value = 1.0
+                    if min_sample_value <= sample_value <= max_sample_value:
                         extracted_number = f"sample({sample_value})"
             elif value.isdigit():
                 extracted_number = int(value)
@@ -196,10 +202,10 @@ def request_max_cost_from_llm(context: ParamRequestContext, number_value: str | 
     default_cost = 1.0 if not context["has_nested_forwards"] else 2.0
     max_cost = default_cost
     for line in response_text.split("\n"):
-        line = line.strip()
-        if not line or ":" not in line:
+        line_content = line.strip()
+        if not line_content or ":" not in line_content:
             continue
-        key, value = line.split(":", 1)
+        key, value = line_content.split(":", 1)
         if key.strip().lower() == "max_cost":
             with contextlib.suppress(ValueError):
                 max_cost = float(value.strip())
@@ -294,7 +300,7 @@ def request_interaction_style_from_llm(
 
 def generate_conversation_parameters(
     profiles: list[dict[str, Any]],
-    functionalities: list[dict[str, Any]],  # Keep functionalities for potential future use
+    functionalities: list[dict[str, Any]],
     llm: BaseLanguageModel,
     supported_languages: list[str] | None = None,
 ) -> list[dict[str, Any]]:
@@ -379,8 +385,8 @@ def conversation_params_node(state: State, llm: BaseLanguageModel) -> dict[str, 
             llm,
             supported_languages=state.get("supported_languages"),
         )
-        return {"conversation_goals": profiles_with_params}
-    except Exception as e:  # Catch broader exceptions during generation
+    except (ValueError, KeyError, TypeError) as e:
         print(f"Error during parameter generation: {e}")
-        # Return original goals on error to avoid losing them
         return {"conversation_goals": conversation_goals}
+    else:
+        return {"conversation_goals": profiles_with_params}
