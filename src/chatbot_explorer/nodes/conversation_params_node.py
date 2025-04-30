@@ -1,6 +1,8 @@
 import contextlib
 from typing import Any
 
+from langchain_core.language_models.base import BaseLanguageModel
+
 from chatbot_explorer.prompts.conversation_params_prompts import (
     get_goal_style_prompt,
     get_interaction_style_prompt,
@@ -100,9 +102,7 @@ def prepare_language_info(supported_languages):
         language_info = f"\nSUPPORTED LANGUAGES: {', '.join(supported_languages)}"
         supported_languages_text = f"({', '.join(supported_languages)})"
 
-        language_lines = []
-        for lang in supported_languages:
-            language_lines.append(f"- {lang.lower()}")
+        language_lines = [f"- {lang.lower()}" for lang in supported_languages]
         languages_example = "\n".join(language_lines)
 
     return language_info, languages_example, supported_languages_text
@@ -126,11 +126,11 @@ def request_number_from_llm(llm, profile, variables_info, language_info, variabl
     # Extract number from response
     extracted_number = None
     for line in response_text.split("\n"):
-        line = line.strip()
-        if not line or ":" not in line:
+        line_content = line.strip()
+        if not line_content or ":" not in line_content:
             continue
 
-        key, value = line.split(":", 1)
+        key, value = line_content.split(":", 1)
         key = key.strip().lower()
         value = value.strip()
 
@@ -204,11 +204,11 @@ def request_goal_style_from_llm(llm, profile, variables_info, language_info, num
 
     # Extract goal style from response
     for line in response_text.split("\n"):
-        line = line.strip()
-        if not line or ":" not in line:
+        line_content = line.strip()
+        if not line_content or ":" not in line_content:
             continue
 
-        key, value = line.split(":", 1)
+        key, value = line_content.split(":", 1)
         key = key.strip().lower()
         value = value.strip()
 
@@ -268,11 +268,11 @@ def request_interaction_style_from_llm(
     interaction_styles = []
 
     for line in response_text.split("\n"):
-        line = line.strip()
-        if not line or ":" not in line:
+        line_content = line.strip()
+        if not line_content or ":" not in line_content:
             continue
 
-        key, value = line.split(":", 1)
+        key, value = line_content.split(":", 1)
         key = key.strip().lower()
         value = value.strip()
 
@@ -353,7 +353,7 @@ def generate_conversation_parameters(profiles, functionalities, llm, supported_l
     return profiles
 
 
-def conversation_params_node(state: State, llm) -> dict[str, Any]:
+def conversation_params_node(state: State, llm: BaseLanguageModel) -> dict[str, Any]:
     """Node that generates specific parameters needed for conversation goals.
 
     Args:
@@ -394,7 +394,8 @@ def conversation_params_node(state: State, llm) -> dict[str, Any]:
             supported_languages=state.get("supported_languages", []),
         )
         # Update state (only need to update goals)
-        return {"conversation_goals": profiles_with_params}
-    except Exception as e:
+    except RuntimeError as e:
         print(f"Error during parameter generation: {e}")
         return {"conversation_goals": state.get("conversation_goals", [])}  # Return existing goals on error
+    else:
+        return {"conversation_goals": profiles_with_params}

@@ -1,4 +1,7 @@
+"""Module to generate the graph for user profile generation."""
+
 from langchain_core.language_models import BaseLanguageModel
+from langchain_core.runnables import Runnable
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, StateGraph
 
@@ -9,7 +12,7 @@ from chatbot_explorer.nodes.profile_validator_node import profile_validator_node
 from chatbot_explorer.schemas.graph_state_model import State
 
 
-def build_profile_generation_graph(llm: BaseLanguageModel, checkpointer: BaseCheckpointSaver):
+def build_profile_generation_graph(llm: BaseLanguageModel, checkpointer: BaseCheckpointSaver) -> Runnable:
     """Builds and compiles the LangGraph for generating user profiles.
 
     Args:
