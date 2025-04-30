@@ -1,5 +1,5 @@
 import secrets
-from typing import Any
+from typing import Any, TypedDict
 
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
@@ -26,6 +26,12 @@ from .conversation_utils import _get_all_nodes
 from .fallback_detection import (
     is_semantically_fallback,
 )
+
+
+class ExplorationGraphState(TypedDict):
+    root_nodes: list[FunctionalityNode]
+    pending_nodes: list[FunctionalityNode]
+    explored_nodes: set[str]
 
 
 def _generate_initial_question(
@@ -68,16 +74,56 @@ def _generate_initial_question(
     return initial_question
 
 
+def _add_new_node_to_graph(
+    node: FunctionalityNode,
+    current_node: FunctionalityNode | None,
+    graph_state: ExplorationGraphState,
+    llm: BaseLanguageModel,
+) -> bool:
+    """Attempts to add a new node to the graph state, handling parent relationships.
+
+    Returns True if the node was added (either as root or child), False otherwise.
+    """
+    is_added_as_child = False
+    # Try adding as a child if exploring a specific node
+    if current_node:
+        relationship_valid = validate_parent_child_relationship(current_node, node, llm)
+        if relationship_valid:
+            current_node.add_child(node)
+            print(f"  - Added '{node.name}' (child of '{current_node.name}')")
+            is_added_as_child = True
+
+    # If not added as child (either no current_node or relationship invalid), add as root
+    if not is_added_as_child:
+        print(f"  - Added '{node.name}' (new root/standalone functionality)")
+        graph_state["root_nodes"].append(node)
+
+    # Add to pending queue if it hasn't been explored yet
+    if node.name not in graph_state["explored_nodes"]:
+        graph_state["pending_nodes"].append(node)
+
+    return True  # Indicate node was added
+
+
 def _analyze_session_and_update_nodes(
     conversation_history_lc: list[BaseMessage],
-    llm: Any,
+    llm: BaseLanguageModel,
     current_node: FunctionalityNode | None,
-    root_nodes: list[FunctionalityNode],
-    pending_nodes: list[FunctionalityNode],
-    explored_nodes: set[str],
-) -> tuple[list[dict[str, str]], list[FunctionalityNode], list[FunctionalityNode], set[str]]:
-    """Analyzes conversation, extracts/processes nodes, and updates node lists."""
-    # Convert LangChain messages back to simple dicts
+    graph_state: ExplorationGraphState,
+) -> tuple[list[dict[str, str]], ExplorationGraphState]:
+    """Analyzes conversation, extracts functionalities, and updates the exploration graph state.
+
+    Args:
+        conversation_history_lc: The conversation history using LangChain message objects.
+        llm: The language model instance.
+        current_node: The functionality node that was the focus of this session, if any.
+        graph_state: The current state of the exploration graph (roots, pending, explored).
+
+    Returns:
+        A tuple containing the conversation history as a list of dictionaries and the
+        updated exploration graph state.
+    """
+    # Convert LangChain messages to simple dicts for analysis functions compatibility
     conversation_history_dict = [
         {
             "role": "system" if isinstance(m, SystemMessage) else ("assistant" if isinstance(m, AIMessage) else "user"),
@@ -86,51 +132,50 @@ def _analyze_session_and_update_nodes(
         for m in conversation_history_lc
     ]
 
-    # Extract functionalities found in this session
+    # Extract potential new functionalities mentioned in this session's conversation
     print("\nAnalyzing conversation for new functionalities...")
-    new_functionality_nodes = extract_functionality_nodes(conversation_history_dict, llm, current_node)
+    newly_extracted_nodes = extract_functionality_nodes(conversation_history_dict, llm, current_node)
 
-    # Process newly found nodes
-    if new_functionality_nodes:
-        print(f"Discovered {len(new_functionality_nodes)} new functionality nodes:")
-        new_functionality_nodes = merge_similar_functionalities(
-            new_functionality_nodes, llm
-        )  # Merge within session first
-        all_existing_nodes = []
-        for root in root_nodes:
-            all_existing_nodes.extend(_get_all_nodes(root))
+    # Process the extracted nodes if any were found
+    if newly_extracted_nodes:
+        print(f"Discovered {len(newly_extracted_nodes)} potential new functionality nodes:")
 
-        for node in new_functionality_nodes:
-            if not is_duplicate_functionality(node, all_existing_nodes, llm):
-                is_added_as_child = False
-                if current_node:
-                    relationship_valid = validate_parent_child_relationship(current_node, node, llm)
-                    if relationship_valid:
-                        current_node.add_child(node)
-                        print(f"  - '{node.name}' (child of '{current_node.name}')")
-                        is_added_as_child = True
+        # Merge similar nodes discovered *within this session* before further processing
+        processed_new_nodes = merge_similar_functionalities(newly_extracted_nodes, llm)
 
-                if not is_added_as_child:
-                    print(f"  - '{node.name}' (new root/standalone functionality)")
-                    root_nodes.append(node)
+        # Get a snapshot of all nodes currently in the graph for duplicate checking
+        # This is done once before processing the new batch.
+        nodes_in_graph_before_adding = []
+        for root in graph_state["root_nodes"]:
+            nodes_in_graph_before_adding.extend(_get_all_nodes(root))
 
-                # Add to pending only if it's truly new (not duplicate) and not already explored
-                if node.name not in explored_nodes:
-                    pending_nodes.append(node)
-                # Update all_existing_nodes for subsequent checks in this loop
-                all_existing_nodes.append(node)  # Add the newly added node
+        # Keep track of nodes added *during this analysis step* for subsequent duplicate checks
+        nodes_added_this_analysis = []
+
+        for node in processed_new_nodes:
+            # Check for duplicates against nodes already in the graph AND nodes just added in this analysis step
+            combined_check_list = nodes_in_graph_before_adding + nodes_added_this_analysis
+            if not is_duplicate_functionality(node, combined_check_list, llm):
+                # Attempt to add the non-duplicate node to the graph
+                was_added = _add_new_node_to_graph(node, current_node, graph_state, llm)
+                if was_added:
+                    # If added successfully, include it in the list for subsequent duplicate checks within this loop
+                    nodes_added_this_analysis.append(node)
             else:
                 print(f"  - Skipped duplicate functionality: '{node.name}'")
 
-        # Merge similar root nodes after adding new ones
-        if root_nodes:
-            root_nodes = merge_similar_functionalities(root_nodes, llm)
+        # After adding all new nodes from this session, re-run merge on the root nodes
+        # This handles cases where a new root might be similar to an existing root.
+        if graph_state["root_nodes"]:
+            print("   Merging root nodes after additions...")
+            graph_state["root_nodes"] = merge_similar_functionalities(graph_state["root_nodes"], llm)
 
-    # Mark the node we focused on as explored
+    # Mark the node focused on in this session as explored (if applicable)
     if current_node:
-        explored_nodes.add(current_node.name)
+        graph_state["explored_nodes"].add(current_node.name)
 
-    return conversation_history_dict, root_nodes, pending_nodes, explored_nodes
+    # Return the history dict and the updated graph state
+    return conversation_history_dict, graph_state
 
 
 def _get_explorer_next_message(
@@ -322,40 +367,29 @@ def run_exploration_session(
     the_chatbot: Chatbot,
     fallback_message: str | None = None,
     current_node: FunctionalityNode | None = None,
-    explored_nodes: set[str] | None = None,
-    pending_nodes: list[FunctionalityNode] | None = None,
-    root_nodes: list[FunctionalityNode] | None = None,
+    graph_state: ExplorationGraphState | None = None,
     supported_languages: list[str] | None = None,
-):
-    """Runs one chat session to explore the bot.
-
-    Can focus on a specific 'current_node' if provided. Includes retry logic on fallback.
+) -> tuple[list[dict[str, str]], ExplorationGraphState]:
+    """Runs one chat session to explore the chatbot's capabilities.
 
     Args:
-        session_num (int): The current session number (0-based).
-        max_sessions (int): Total sessions to run.
-        max_turns (int): Max chat turns per session.
+        session_num: The current session number (0-based).
+        max_sessions: Total sessions planned.
+        max_turns: Maximum chat turns allowed per session.
         llm: The language model instance.
         the_chatbot: The chatbot connector instance.
-        fallback_message (str, optional): The detected fallback message of the chatbot. Defaults to None.
-        current_node (FunctionalityNode, optional): Node to focus exploration on. Defaults to None.
-        explored_nodes (set, optional): Set of names of already explored nodes. Defaults to None.
-        pending_nodes (list, optional): List of nodes waiting to be explored. Defaults to None.
-        root_nodes (list, optional): List of current root nodes. Defaults to None.
-        supported_languages (list, optional): List of detected languages. Defaults to None.
+        fallback_message: The detected fallback message, if any.
+        current_node: The specific functionality node to focus on, if any.
+        graph_state: The current state of the exploration graph.
+        supported_languages: List of detected supported languages.
 
     Returns:
-        tuple: Contains the conversation history, detected languages (None),
-               new nodes found this session,
-               updated root nodes list, updated pending nodes list, updated explored nodes set.
+        A tuple containing the conversation history (list of dicts) and the
+        updated exploration graph state.
     """
-    # Setup default values if needed
-    if explored_nodes is None:
-        explored_nodes = set()
-    if pending_nodes is None:
-        pending_nodes = []
-    if root_nodes is None:
-        root_nodes = []
+    # Initialize state if not provided
+    if graph_state is None:
+        graph_state = {"root_nodes": [], "pending_nodes": [], "explored_nodes": set()}
     if supported_languages is None:
         supported_languages = []
 
@@ -365,32 +399,31 @@ def run_exploration_session(
     else:
         print("Exploring general capabilities")
 
-    # Determine focus, language, system prompt
+    # --- Setup Session ---
     session_focus = get_session_focus(current_node)
     primary_language = supported_languages[0] if supported_languages else "English"
     language_instruction = get_language_instruction(supported_languages, primary_language)
     system_content = get_explorer_system_prompt(session_focus, language_instruction, max_turns)
+    conversation_history_lc: list[BaseMessage] = [SystemMessage(content=system_content)]
 
-    # --- Initial Setup and First Exchange ---
-    conversation_history_lc = [SystemMessage(content=system_content)]
+    # --- Initial Exchange ---
     initial_question = _generate_initial_question(current_node, primary_language, llm)
     print(f"\nExplorer: {initial_question}")
     is_ok, chatbot_message = the_chatbot.execute_with_input(initial_question)
     print(f"\nChatbot: {chatbot_message}")
 
-    turn_count = 0  # Initialize turn count
+    turn_count = 0
     if not is_ok:
         print("\nError communicating with chatbot on initial message. Ending session.")
         conversation_history_lc.append(AIMessage(content=initial_question))
         conversation_history_lc.append(HumanMessage(content="[Chatbot communication error on initial message]"))
-        # turn_count remains 0
     else:
         conversation_history_lc.append(AIMessage(content=initial_question))
         conversation_history_lc.append(HumanMessage(content=chatbot_message))
-        turn_count = 1  # First exchange successful
+        turn_count = 1
 
-        # --- Run the main conversation loop ---
-        if turn_count < max_turns:  # Only run loop if max_turns allows more turns
+        # --- Conversation Loop ---
+        if turn_count < max_turns:
             conversation_history_lc, turn_count = _run_conversation_loop(
                 session_num=session_num,
                 max_turns=max_turns,
@@ -401,26 +434,13 @@ def run_exploration_session(
             )
 
     # --- Post-Session Analysis ---
-    (
-        conversation_history_dict,
-        root_nodes,
-        pending_nodes,
-        explored_nodes,
-    ) = _analyze_session_and_update_nodes(
+    conversation_history_dict, updated_graph_state = _analyze_session_and_update_nodes(
         conversation_history_lc,
         llm,
         current_node,
-        root_nodes,
-        pending_nodes,
-        explored_nodes,
+        graph_state,
     )
 
-    print(f"\nSession {session_num + 1} complete with {turn_count} exchanges")
+    print(f"\nSession {session_num + 1} complete with {turn_count} exchanges.")
 
-    # Return all updated state
-    return (
-        conversation_history_dict,
-        root_nodes,
-        pending_nodes,
-        explored_nodes,
-    )
+    return conversation_history_dict, updated_graph_state

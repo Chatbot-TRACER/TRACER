@@ -6,8 +6,11 @@ from langgraph.checkpoint.memory import MemorySaver
 
 from chatbot_explorer.conversation.fallback_detection import extract_fallback_message
 from chatbot_explorer.conversation.language_detection import extract_supported_languages
-from chatbot_explorer.conversation.session import run_exploration_session
 
+# Assuming ExplorationGraphState is importable or defined here/nearby
+from chatbot_explorer.conversation.session import ExplorationGraphState, run_exploration_session
+
+# Assuming FunctionalityNode is importable
 from .graphs.profile_graph import build_profile_generation_graph
 from .graphs.structure_graph import build_structure_graph
 from .schemas.graph_state_model import State
@@ -47,9 +50,13 @@ class ChatbotExplorationAgent:
         conversation_sessions: list[list[dict[str, str]]] = []
         supported_languages: list[str] = []
         fallback_message: str | None = None
-        root_nodes: list[FunctionalityNode] = []
-        pending_nodes: list[FunctionalityNode] = []
-        explored_nodes: set[str] = set()
+
+        # Initialize graph state components
+        current_graph_state: ExplorationGraphState = {
+            "root_nodes": [],
+            "pending_nodes": [],
+            "explored_nodes": set(),
+        }
 
         # --- Initial Language Detection ---
         print("\n--- Probing Chatbot Language ---")
@@ -74,7 +81,6 @@ class ChatbotExplorationAgent:
         # --- Initial Fallback Message Detection ---
         print("\n--- Attempting to detect chatbot fallback message ---")
         try:
-            # Use the agent's LLM instance directly
             fallback_message = extract_fallback_message(chatbot_connector, self.llm)
             if fallback_message:
                 print(f'   Detected fallback message: "{fallback_message[:50]}..."')
@@ -93,9 +99,11 @@ class ChatbotExplorationAgent:
             explore_node = None
             session_type_log = "General Exploration"
 
-            if pending_nodes:
-                explore_node = pending_nodes.pop(0)
-                if explore_node.name in explored_nodes:
+            # Use pending_nodes from the current_graph_state
+            if current_graph_state["pending_nodes"]:
+                explore_node = current_graph_state["pending_nodes"].pop(0)
+                # Use explored_nodes from the current_graph_state
+                if explore_node.name in current_graph_state["explored_nodes"]:
                     print(f"--- Skipping already explored node: '{explore_node.name}' ---")
                     session_num += 1
                     continue
@@ -105,13 +113,8 @@ class ChatbotExplorationAgent:
 
             print(f"   Session Type: {session_type_log}")
 
-            # Execute one exploration session, passing self (the agent instance)
-            (
-                conversation_history,
-                updated_roots,
-                updated_pending,
-                updated_explored,
-            ) = run_exploration_session(
+            # Execute one exploration session, passing the graph state dictionary
+            conversation_history, updated_graph_state = run_exploration_session(
                 session_num=current_session_index,
                 max_sessions=max_sessions,
                 max_turns=max_turns,
@@ -119,27 +122,26 @@ class ChatbotExplorationAgent:
                 the_chatbot=chatbot_connector,
                 fallback_message=fallback_message,
                 current_node=explore_node,
-                explored_nodes=explored_nodes,
-                pending_nodes=pending_nodes,
-                root_nodes=root_nodes,
+                graph_state=current_graph_state,  # Pass the whole state dict
                 supported_languages=supported_languages,
             )
 
+            # Update the local state with the returned state
             conversation_sessions.append(conversation_history)
-            root_nodes = updated_roots
-            pending_nodes = updated_pending
-            explored_nodes = updated_explored
+            current_graph_state = updated_graph_state
             session_num += 1
 
         # --- Post-Exploration Summary ---
         print(f"\n=== Completed {session_num} exploration sessions ===")
-        if pending_nodes:
-            print(f"   NOTE: {len(pending_nodes)} nodes still remain in the pending queue.")
+        # Access state components via the dictionary
+        if current_graph_state["pending_nodes"]:
+            print(f"   NOTE: {len(current_graph_state['pending_nodes'])} nodes still remain in the pending queue.")
         else:
             print("   All discovered nodes were explored.")
-        print(f"Discovered {len(root_nodes)} root functionalities after exploration.")
+        print(f"Discovered {len(current_graph_state['root_nodes'])} root functionalities after exploration.")
 
-        functionality_dicts = [node.to_dict() for node in root_nodes]
+        # Convert final root nodes to dictionaries for the result
+        functionality_dicts = [node.to_dict() for node in current_graph_state["root_nodes"]]
 
         return {
             "conversation_sessions": conversation_sessions,
@@ -163,7 +165,7 @@ class ChatbotExplorationAgent:
         structure_initial_state = State(
             messages=[{"role": "system", "content": "Infer structure from conversation history."}],
             conversation_history=exploration_results.get("conversation_sessions", []),
-            discovered_functionalities=exploration_results.get("root_nodes_dict", {}),
+            discovered_functionalities=exploration_results.get("root_nodes_dict", {}),  # Use the dict format
             built_profiles=[],
             discovered_limitations=[],
             current_session=len(exploration_results.get("conversation_sessions", [])),
@@ -178,7 +180,6 @@ class ChatbotExplorationAgent:
         # -- Run Structure Inference --
         print("\n--- Running workflow structure inference ---")
         structure_thread_id = f"structure_analysis_{uuid.uuid4()}"
-        # Access the pre-compiled graph directly via self
         structure_result = self._structure_graph.invoke(
             structure_initial_state,
             config={"configurable": {"thread_id": structure_thread_id}},
@@ -187,8 +188,7 @@ class ChatbotExplorationAgent:
         print("--- Structure inference complete ---")
 
         # 2. Prepare initial state for the profile graph
-        # Start with the state resulting from structure analysis
-        profile_initial_state = structure_result.copy()  # Creates a shallow copy
+        profile_initial_state = structure_result.copy()
         profile_initial_state["workflow_structure"] = workflow_structure
         profile_initial_state["messages"] = [
             {"role": "system", "content": "Generate user profiles based on the workflow structure."},
@@ -199,7 +199,6 @@ class ChatbotExplorationAgent:
         # -- Run Profile Generation --
         print("\n--- Generating user profiles ---")
         profile_thread_id = f"profile_analysis_{uuid.uuid4()}"
-        # Access the pre-compiled graph directly via self
         profile_result = self._profile_graph.invoke(
             profile_initial_state,
             config={"configurable": {"thread_id": profile_thread_id}},
