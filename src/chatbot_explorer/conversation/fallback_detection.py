@@ -7,9 +7,10 @@ from chatbot_explorer.prompts.fallback_detection_prompts import (
     get_fallback_identification_prompt,
     get_semantic_fallback_check_prompt,
 )
+from connectors.chatbot_connectors import Chatbot
 
 
-def extract_fallback_message(the_chatbot: Any, llm: BaseLanguageModel) -> str | None:
+def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> str | None:
     """Try to get the chatbot's fallback message.
 
     Sends confusing messages to trigger it. These aren't part of the main chat history.
@@ -43,7 +44,7 @@ def extract_fallback_message(the_chatbot: Any, llm: BaseLanguageModel) -> str | 
             if is_ok:
                 print(f"Response received ({len(response)} chars)")
                 responses.append(response)
-        except Exception as e:
+        except (TimeoutError, ConnectionError) as e:
             print(f"Error communicating with chatbot: {e}")
 
     # Analyze responses if we got any
@@ -61,11 +62,14 @@ def extract_fallback_message(the_chatbot: Any, llm: BaseLanguageModel) -> str | 
             # Remove any "Fallback message:" prefix if the LLM included it
             fallback = re.sub(r"^(Fallback message:?\s*)", "", fallback, flags=re.IGNORECASE)
 
+            fallback_preview_length = 50
             if fallback:
-                print(f'Detected fallback pattern: "{fallback[:50]}{"..." if len(fallback) > 50 else ""}"')
+                print(
+                    f'Detected fallback pattern: "{fallback[:fallback_preview_length]}{"..." if len(fallback) > fallback_preview_length else ""}"'
+                )
                 return fallback
             print("Could not extract a clear fallback message pattern.")
-        except Exception as e:
+        except (TimeoutError, ConnectionError, ValueError) as e:
             print(f"Error during fallback analysis: {e}")
 
     print("Could not detect a consistent fallback message.")
@@ -93,6 +97,6 @@ def is_semantically_fallback(response: str, fallback: str, llm: BaseLanguageMode
         decision_text = llm_decision.content.strip().upper()
 
         return decision_text.startswith("YES")
-    except Exception as e:
+    except (TimeoutError, ConnectionError, ValueError) as e:
         print(f"   LLM Fallback Check Error: {e}. Assuming not a fallback.")
         return False  # Default to False if LLM fails
