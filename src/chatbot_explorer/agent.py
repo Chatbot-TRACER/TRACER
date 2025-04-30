@@ -8,7 +8,11 @@ from chatbot_explorer.conversation.fallback_detection import extract_fallback_me
 from chatbot_explorer.conversation.language_detection import extract_supported_languages
 
 # Assuming ExplorationGraphState is importable or defined here/nearby
-from chatbot_explorer.conversation.session import ExplorationGraphState, run_exploration_session
+from chatbot_explorer.conversation.session import (
+    ExplorationGraphState,
+    ExplorationSessionConfig,
+    run_exploration_session,
+)
 
 # Assuming FunctionalityNode is importable
 from .graphs.profile_graph import build_profile_generation_graph
@@ -113,17 +117,20 @@ class ChatbotExplorationAgent:
 
             print(f"   Session Type: {session_type_log}")
 
-            # Execute one exploration session, passing the graph state dictionary
+            session_config: ExplorationSessionConfig = {
+                "session_num": current_session_index,
+                "max_sessions": max_sessions,
+                "max_turns": max_turns,
+                "llm": self.llm,
+                "the_chatbot": chatbot_connector,
+                "fallback_message": fallback_message,
+                "current_node": explore_node,
+                "graph_state": current_graph_state,  # Pass the current state dict
+                "supported_languages": supported_languages,
+            }
+
             conversation_history, updated_graph_state = run_exploration_session(
-                session_num=current_session_index,
-                max_sessions=max_sessions,
-                max_turns=max_turns,
-                llm=self.llm,
-                the_chatbot=chatbot_connector,
-                fallback_message=fallback_message,
-                current_node=explore_node,
-                graph_state=current_graph_state,  # Pass the whole state dict
-                supported_languages=supported_languages,
+                config=session_config,
             )
 
             # Update the local state with the returned state
