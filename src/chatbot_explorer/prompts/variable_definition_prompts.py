@@ -1,12 +1,9 @@
-from typing import List
-
-
 def get_variable_definition_prompt(
     profile_name: str,
     role: str,
     goals_text: str,
     variable_name: str,
-    all_other_variables: List[str],
+    all_other_variables: list[str],
     language_instruction: str,
 ) -> str:
     """Creates the specific text prompt to ask the LLM about one variable."""
