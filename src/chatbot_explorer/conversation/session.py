@@ -127,7 +127,7 @@ def _generate_initial_question(
         else:
             initial_question = greeting_en  # Use English
 
-        print(f"   (Starting session 0 with general capability question: '{initial_question}')")
+        print(f"   (Starting session 1 with general capability question: '{initial_question}')")
     return initial_question
 
 

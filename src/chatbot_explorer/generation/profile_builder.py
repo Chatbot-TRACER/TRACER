@@ -1,11 +1,15 @@
-import random
+"""Generates structured output definitions based on user profiles and functionalities and validates them."""
+
+import secrets
 from typing import Any
 
 import yaml
+from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.constants import AVAILABLE_PERSONALITIES, VARIABLE_PATTERN
 from chatbot_explorer.prompts.profile_builder_prompts import get_yaml_fix_prompt
 from chatbot_explorer.utils.parsing_utils import extract_yaml
+from scripts.validation_script import YamlValidator
 
 
 def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_language: str) -> dict[str, Any]:
@@ -30,9 +34,7 @@ def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_l
 
     # Create the goals list for YAML (mix of strings and variable dicts)
     yaml_goals = list(profile.get("goals", []))
-    for var_name in used_variables:
-        if var_name in profile:  # Add variable definition if found in profile data
-            yaml_goals.append({var_name: profile[var_name]})
+    yaml_goals.extend({var_name: profile[var_name]} for var_name in used_variables if var_name in profile)
 
     # Build the chatbot section
     chatbot_section = {
@@ -45,13 +47,16 @@ def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_l
     # Build the user context list
     user_context = []
 
-    # 75% chance to include a personality
-    if random.random() < 0.75:
-        selected_personality = random.choice(AVAILABLE_PERSONALITIES)
+    # Define the probability of including a personality
+    personality_probability = 75
+
+    # Include a personality based on the defined probability
+    if secrets.randbelow(100) < personality_probability:
+        selected_personality = secrets.choice(AVAILABLE_PERSONALITIES)
         user_context.append(f"personality: personalities/{selected_personality}")
 
     # Choose a random temperature
-    temperature = round(random.uniform(0.3, 1.0), 1)
+    temperature = round(secrets.choice(range(30, 101)) / 100, 1)
 
     # Add other context items
     context = profile.get("context", [])
@@ -82,7 +87,9 @@ def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_l
     }
 
 
-def validate_and_fix_profile(profile: dict[str, Any], validator, llm) -> dict[str, Any]:
+def validate_and_fix_profile(
+    profile: dict[str, Any], validator: YamlValidator, llm: BaseLanguageModel
+) -> dict[str, Any]:
     """Validate a profile and try to fix it using LLM if needed."""
     # Convert profile dict to YAML string for validation
     yaml_content = yaml.dump(profile, sort_keys=False, allow_unicode=True)
@@ -96,11 +103,12 @@ def validate_and_fix_profile(profile: dict[str, Any], validator, llm) -> dict[st
     error_count = len(errors)
     print(f"\n⚠ Profile '{profile['test_name']}' has {error_count} validation errors")
 
+    max_errors_to_print = 3
     # Print first few errors
-    for e in errors[:3]:
+    for e in errors[:max_errors_to_print]:
         print(f"  • {e.path}: {e.message}")
-    if error_count > 3:
-        print(f"  • ... and {error_count - 3} more errors")
+    if error_count > max_errors_to_print:
+        print(f"  • ... and {error_count - max_errors_to_print} more errors")
 
     # Prepare prompt for LLM to fix errors
     error_messages = "\n".join(f"- {e.path}: {e.message}" for e in errors)
@@ -131,11 +139,9 @@ def validate_and_fix_profile(profile: dict[str, Any], validator, llm) -> dict[st
             return fixed_profile
         # Still has errors, keep original
         print(f"  ✗ LLM couldn't fix all errors ({len(re_errors)} remaining)")
-        return profile  # Keep original
+
     except yaml.YAMLError as e:
         print(f"  ✗ Failed to parse fixed YAML: {e}")
-        return profile  # Keep original
-    except Exception as e:
-        # LLM call failed or other error, keep original
-        print(f"  ✗ Failed to fix profile: {type(e).__name__} - {e}")
+        return profile
+    else:
         return profile  # Keep original
