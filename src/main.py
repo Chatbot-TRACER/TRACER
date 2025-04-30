@@ -1,42 +1,39 @@
 import sys
+from argparse import Namespace
 from pathlib import Path
+from typing import Any
 
 from chatbot_explorer.agent import ChatbotExplorationAgent
-from connectors.chatbot_connectors import ChatbotAdaUam, ChatbotTaskyto
+from connectors.chatbot_connectors import Chatbot, ChatbotAdaUam, ChatbotTaskyto
 from utils.cli import parse_arguments
 from utils.reporting import generate_graph_image, save_profiles, write_report
 
 
-def main() -> None:
-    # Parse command-line arguments
+def _setup_configuration() -> Namespace:
+    """Parses arguments, validates config, prints summary, and creates output dir."""
     args = parse_arguments()
     valid_technologies = ["taskyto", "ada-uam"]
 
-    # Extract arguments for clarity
-    chatbot_url = args.url
-    max_sessions = args.sessions
-    max_turns = args.turns
-    model_name = args.model
-    output_dir = args.output
-    technology = args.technology
-
     # Validate technology choice
-    if technology not in valid_technologies:
-        print(f"Error: Invalid technology '{technology}'. Must be one of: {valid_technologies}")
+    if args.technology not in valid_technologies:
+        print(f"Error: Invalid technology '{args.technology}'. Must be one of: {valid_technologies}")
         sys.exit(1)
 
     # Print configuration summary
     print("=== Chatbot Explorer Configuration ===")
-    print(f"Chatbot Technology: {technology}")
-    print(f"Chatbot URL: {chatbot_url}")
-    print(f"Exploration sessions: {max_sessions}")
-    print(f"Max turns per session: {max_turns}")
-    print(f"Using model: {model_name}")
+    print(f"Chatbot Technology: {args.technology}")
+    print(f"Chatbot URL: {args.url}")
+    print(f"Exploration sessions: {args.sessions}")
+    print(f"Max turns per session: {args.turns}")
+    print(f"Using model: {args.model}")
     print("====================================")
 
-    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    Path(args.output).mkdir(parents=True, exist_ok=True)
+    return args
 
-    # --- Initialize the Agent ---
+
+def _initialize_agent(model_name: str) -> ChatbotExplorationAgent:
+    """Initializes the Chatbot Exploration Agent with error handling."""
     print(f"\nInitializing Chatbot Exploration Agent with model: {model_name}...")
     try:
         agent = ChatbotExplorationAgent(model_name)
@@ -44,24 +41,31 @@ def main() -> None:
         print(f"Error initializing Chatbot Exploration Agent: {e}")
         print("Please ensure your API keys (e.g., OPENAI_API_KEY) are set correctly in your environment or .env file.")
         sys.exit(1)
-    print("Agent initialized successfully.")
+    else:
+        print("Agent initialized successfully.")
+        return agent
 
-    # --- Instantiate the Chatbot Connector ---
+
+def _instantiate_connector(technology: str, url: str) -> Chatbot:
+    """Instantiates the appropriate chatbot connector."""
     print(f"Instantiating connector for technology: {technology}")
     if technology == "taskyto":
-        the_chatbot = ChatbotTaskyto(chatbot_url)
-    elif technology == "ada-uam":
-        the_chatbot = ChatbotAdaUam(chatbot_url)
-    else:
-        # This case should not be reachable due to earlier validation
-        print(f"Internal Error: Unknown technology '{technology}'")
-        sys.exit(1)
+        return ChatbotTaskyto(url)
+    if technology == "ada-uam":
+        return ChatbotAdaUam(url)
+    # This case should not be reachable due to earlier validation in _setup_configuration
+    print(f"Internal Error: Unknown technology '{technology}'")
+    sys.exit(1)
 
-    # --- Run Exploration ---
+
+def _run_exploration_phase(
+    agent: ChatbotExplorationAgent, chatbot_connector: Chatbot, max_sessions: int, max_turns: int
+) -> dict[str, Any]:
+    """Runs the exploration phase with error handling."""
     print("\n--- Starting Chatbot Exploration Phase ---")
     try:
-        exploration_results = agent.run_exploration(
-            chatbot_connector=the_chatbot,
+        results = agent.run_exploration(
+            chatbot_connector=chatbot_connector,
             max_sessions=max_sessions,
             max_turns=max_turns,
         )
@@ -70,33 +74,42 @@ def main() -> None:
         print("\n--- Error during Exploration Phase ---")
         print(f"Error: {e}")
         sys.exit(1)
+    else:
+        return results
 
-    # --- Run Analysis ---
+
+def _run_analysis_phase(agent: ChatbotExplorationAgent, exploration_results: dict[str, Any]) -> dict[str, Any]:
+    """Runs the analysis phase with error handling."""
     print("\n--- Starting Analysis Phase (Structure Inference & Profile Generation) ---")
     try:
-        # Pass the results from the exploration phase to the analysis method
-        analysis_results = agent.run_analysis(exploration_results=exploration_results)
+        results = agent.run_analysis(exploration_results=exploration_results)
         print("--- Analysis Phase Complete ---")
     except (ValueError, KeyError) as e:
         print("\n--- Error during Analysis Phase ---")
         print(f"Error: {e}")
         sys.exit(1)
+    else:
+        return results
 
-    # Extract results for reporting and saving
+
+def _generate_reports(
+    output_dir: str,
+    exploration_results: dict[str, Any],
+    analysis_results: dict[str, Any],
+) -> None:
+    """Saves profiles, writes the report, and generates the graph."""
     built_profiles = analysis_results.get("built_profiles", [])
-
-    # --- Save Generated Profiles ---
-    print(f"\n--- Saving {len(built_profiles)} generated profiles ---")
-    save_profiles(built_profiles, output_dir)
-
-    # --- Write Final Report ---
-    print("--- Writing final report ---")
-
     functionality_dicts = analysis_results.get("discovered_functionalities", {})
     limitations = analysis_results.get("discovered_limitations", [])
     supported_languages = exploration_results.get("supported_languages", ["N/A"])
     fallback_message = exploration_results.get("fallback_message", "N/A")
 
+    # Save Generated Profiles
+    print(f"\n--- Saving {len(built_profiles)} generated profiles ---")
+    save_profiles(built_profiles, output_dir)
+
+    # Write Final Report
+    print("--- Writing final report ---")
     write_report(
         output_dir,
         structured_functionalities=functionality_dicts,
@@ -105,7 +118,7 @@ def main() -> None:
         fallback_message=fallback_message,
     )
 
-    # --- Generate Workflow Graph Image ---
+    # Generate Workflow Graph Image
     if functionality_dicts:
         print("--- Generating workflow graph image ---")
         graph_output_base = Path(output_dir) / "workflow_graph"
@@ -113,8 +126,28 @@ def main() -> None:
     else:
         print("--- Skipping workflow graph image (no functionalities discovered) ---")
 
+
+def main() -> None:
+    """Main execution function."""
+    # 1. Parses arguments, validates config, prints summary, and creates output dir.
+    args = _setup_configuration()
+
+    # 2. Initialization
+    agent = _initialize_agent(args.model)
+    the_chatbot = _instantiate_connector(args.technology, args.url)
+
+    # 3. Run Exploration
+    exploration_results = _run_exploration_phase(agent, the_chatbot, args.sessions, args.turns)
+
+    # 4. Run Analysis
+    analysis_results = _run_analysis_phase(agent, exploration_results)
+
+    # 5. Generate Report, Save Profiles, and Generate Graph
+    _generate_reports(args.output, exploration_results, analysis_results)
+
+    # 6. Finish
     print("\n--- Chatbot Explorer Finished ---")
-    print(f"Results saved in: {output_dir}")
+    print(f"Results saved in: {args.output}")
 
 
 if __name__ == "__main__":
