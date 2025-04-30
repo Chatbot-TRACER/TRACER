@@ -1,4 +1,9 @@
-def extract_supported_languages(chatbot_response: str, llm) -> list[str]:
+from langchain_core.language_models import BaseLanguageModel
+
+from chatbot_explorer.prompts.language_detection_prompts import get_language_detection_prompt
+
+
+def extract_supported_languages(chatbot_response: str, llm: BaseLanguageModel) -> list[str]:
     """Try to figure out what languages the chatbot knows.
 
     Args:
@@ -8,19 +13,7 @@ def extract_supported_languages(chatbot_response: str, llm) -> list[str]:
     Returns:
         List[str]: A list of language names (strings).
     """
-    language_prompt = f"""
-    Based on the following chatbot response, determine what language(s) the chatbot supports.
-    If the response is in a non-English language, include that language in the list.
-    If the response explicitly mentions supported languages, list those.
-
-    CHATBOT RESPONSE:
-    {chatbot_response}
-
-    FORMAT YOUR RESPONSE AS A COMMA-SEPARATED LIST OF LANGUAGES:
-    [language1, language2, ...]
-
-    RESPONSE:
-    """
+    language_prompt = get_language_detection_prompt(chatbot_response)
 
     language_result = llm.invoke(language_prompt)
     languages = language_result.content.strip()

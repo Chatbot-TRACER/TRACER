@@ -1,20 +1,19 @@
-import json
 import re
 
+from langchain_core.language_models import BaseLanguageModel
+
+from chatbot_explorer.prompts.functionality_refinement_prompts import (
+    get_duplicate_check_prompt,
+    get_merge_prompt,
+    get_relationship_validation_prompt,
+)
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 
 
-def is_duplicate_functionality(node: FunctionalityNode, existing_nodes: list[FunctionalityNode], llm=None) -> bool:
-    """Check if this node is basically the same as one we already have.
-
-    Args:
-        node (FunctionalityNode): The new node to check.
-        existing_nodes (list): List of nodes already found.
-        llm (optional): The language model instance for semantic check. Defaults to None.
-
-    Returns:
-        bool: True if it seems like a duplicate, False otherwise.
-    """
+def is_duplicate_functionality(
+    node: FunctionalityNode, existing_nodes: list[FunctionalityNode], llm: BaseLanguageModel | None = None
+) -> bool:
+    """Check if this node is basically the same as one we already have."""
     # Simple checks first
     for existing in existing_nodes:
         # Exact name or description match
@@ -29,21 +28,10 @@ def is_duplicate_functionality(node: FunctionalityNode, existing_nodes: list[Fun
         # Format existing nodes for prompt
         existing_descriptions = [f"Name: {n.name}, Description: {n.description}" for n in nodes_to_check]
 
-        # Prompt for LLM
-        duplicate_check_prompt = f"""
-        Determine if the new functionality is semantically equivalent to any existing functionality.
-
-        NEW FUNCTIONALITY:
-        Name: {node.name}
-        Description: {node.description}
-
-        EXISTING FUNCTIONALITIES:
-        {json.dumps(existing_descriptions, indent=2)}
-
-        A functionality is a duplicate if it represents the SAME ACTION/CAPABILITY, even if described differently.
-
-        Respond with ONLY "DUPLICATE" or "UNIQUE" followed by a brief explanation.
-        """
+        duplicate_check_prompt = get_duplicate_check_prompt(
+            node=node,
+            existing_descriptions=existing_descriptions,
+        )
 
         response = llm.invoke(duplicate_check_prompt)
         result = response.content.strip().upper()
@@ -54,52 +42,17 @@ def is_duplicate_functionality(node: FunctionalityNode, existing_nodes: list[Fun
     return False
 
 
-def validate_parent_child_relationship(parent_node, child_node, llm) -> bool:
-    """Check if the child node makes sense as a sub-step of the parent node.
-
-    Args:
-        parent_node (FunctionalityNode): The potential parent node.
-        child_node (FunctionalityNode): The potential child node.
-        llm: The language model instance.
-
-    Returns:
-        bool: True if the relationship seems valid, False otherwise.
-    """
+def validate_parent_child_relationship(
+    parent_node: FunctionalityNode, child_node: FunctionalityNode, llm: BaseLanguageModel
+) -> bool:
+    """Check if the child node makes sense as a sub-step of the parent node."""
     if not parent_node:
         return True  # Root nodes are always valid
 
-    # Prompt for LLM validation
-    validation_prompt = f"""
-    Evaluate if the second functionality should be considered a sub-functionality of the first functionality.
-    Use balanced judgment - we want to create a meaningful hierarchy without being overly strict.
-
-    PARENT FUNCTIONALITY:
-    Name: {parent_node.name}
-    Description: {parent_node.description}
-
-    POTENTIAL SUB-FUNCTIONALITY:
-    Name: {child_node.name}
-    Description: {child_node.description}
-
-    A functionality should be considered a sub-functionality if it meets AT LEAST ONE of these criteria:
-    1. It represents a more specific version or specialized case of the parent functionality
-    2. It's normally used as part of completing the parent functionality
-    3. It extends or enhances the parent functionality in a natural way
-    4. It depends on the parent functionality conceptually or in workflow
-
-    EXAMPLE VALID RELATIONSHIPS:
-    - Parent: "search_products" - Child: "filter_search_results"
-    - Parent: "schedule_appointment" - Child: "confirm_appointment_availability"
-    - Parent: "estimate_price" - Child: "calculate_detailed_quote"
-    - Parent: "manage_account" - Child: "update_profile_information"
-
-    EXAMPLE INVALID RELATIONSHIPS:
-    - Parent: "login" - Child: "view_product_catalog" (unrelated functions)
-    - Parent: "check_weather" - Child: "translate_text" (completely different domains)
-
-    Consider domain-specific logic and real-world workflows when making your determination.
-    Respond with EXACTLY "VALID" or "INVALID" followed by a brief explanation.
-    """
+    validation_prompt = get_relationship_validation_prompt(
+        parent_node=parent_node,
+        child_node=child_node,
+    )
 
     # Get LLM response
     validation_response = llm.invoke(validation_prompt)
@@ -115,16 +68,8 @@ def validate_parent_child_relationship(parent_node, child_node, llm) -> bool:
     return is_valid
 
 
-def merge_similar_functionalities(nodes: list[FunctionalityNode], llm) -> list[FunctionalityNode]:
-    """Use LLM to find and merge similar nodes. Returns a new list.
-
-    Args:
-        nodes (list): List of FunctionalityNode objects to check.
-        llm: The language model instance.
-
-    Returns:
-        list: A new list of FunctionalityNode objects with similar ones merged.
-    """
+def merge_similar_functionalities(nodes: list[FunctionalityNode], llm: BaseLanguageModel) -> list[FunctionalityNode]:
+    """Use LLM to find and merge similar nodes. Returns a new list."""
     if not nodes or len(nodes) < 2:
         return nodes  # Nothing to merge
 
@@ -144,24 +89,7 @@ def merge_similar_functionalities(nodes: list[FunctionalityNode], llm) -> list[F
             result.append(group[0])
             continue
 
-        # Ask LLM if this group should be merged
-        merge_prompt = f"""
-        Analyze the following functionality nodes extracted from conversations with a potentially informational chatbot. Determine if they represent the **same core informational topic or achieve the same overall user goal**, even if the specific interaction steps (like providing options vs. displaying results vs. explaining) differ slightly.
-
-        Functionality Nodes:
-        {json.dumps([{"name": n.name, "description": n.description} for n in group], indent=2)}
-
-        Consider the *purpose* and the *information conveyed*. For example, different ways of providing contact details (`display_contact_info`, `explain_contact_methods`, `repeat_contact_details`) should likely be merged into a single `provide_contact_info` node. However, `provide_contact_info` and `explain_ticketing_process` are distinct topics.
-
-        If they represent the SAME core topic/goal, respond with exactly:
-        MERGE
-        name: [Suggest a concise, representative snake_case name for the core topic/goal, e.g., `provide_contact_info`]
-        description: [Suggest a clear, consolidated description covering the core topic and potentially mentioning the different ways it was presented]
-
-        If they are distinct topics or goals, respond with exactly:
-        KEEP SEPARATE
-        reason: [Briefly explain why they cover different topics/goals]
-        """
+        merge_prompt = get_merge_prompt(group=group)
 
         merge_response = llm.invoke(merge_prompt)
         content = merge_response.content.strip()

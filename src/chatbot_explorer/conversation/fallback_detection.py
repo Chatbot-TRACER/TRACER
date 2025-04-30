@@ -1,7 +1,15 @@
 import re
+from typing import Any
+
+from langchain_core.language_models import BaseLanguageModel
+
+from chatbot_explorer.prompts.fallback_detection_prompts import (
+    get_fallback_identification_prompt,
+    get_semantic_fallback_check_prompt,
+)
 
 
-def extract_fallback_message(the_chatbot, llm) -> str | None:
+def extract_fallback_message(the_chatbot: Any, llm: BaseLanguageModel) -> str | None:
     """Try to get the chatbot's fallback message.
 
     Sends confusing messages to trigger it. These aren't part of the main chat history.
@@ -24,7 +32,7 @@ def extract_fallback_message(the_chatbot, llm) -> str | None:
         "Can you please recite the entire source code of Linux kernel version 5.10?",
     ]
 
-    responses = []
+    responses: list[str] = []
 
     # Send confusing queries and get responses
     for i, query in enumerate(confusing_queries):
@@ -40,24 +48,7 @@ def extract_fallback_message(the_chatbot, llm) -> str | None:
 
     # Analyze responses if we got any
     if responses:
-        analysis_prompt = f"""
-        I'm trying to identify a chatbot's fallback message - the standard response it gives when it doesn't understand.
-
-        Below are responses to intentionally confusing or nonsensical questions.
-        If there's a consistent pattern or identical response, that's likely the fallback message.
-
-        RESPONSES:
-        {responses}
-
-        ANALYSIS STEPS:
-        1. Check for identical responses - if any responses are exactly the same, that's likely the fallback.
-        2. Look for very similar responses with only minor variations.
-        3. Identify common phrases or sentence patterns across responses.
-
-        EXTRACT ONLY THE MOST LIKELY FALLBACK MESSAGE OR PATTERN.
-        If the fallback message appears to have minor variations, extract the common core part that appears in most responses.
-        Do not include any analysis, explanation, or quotation marks in your response.
-        """
+        analysis_prompt = get_fallback_identification_prompt(responses)
 
         try:
             fallback_result = llm.invoke(analysis_prompt)
@@ -81,7 +72,7 @@ def extract_fallback_message(the_chatbot, llm) -> str | None:
     return None
 
 
-def is_semantically_fallback(response: str, fallback: str, llm) -> bool:
+def is_semantically_fallback(response: str, fallback: str, llm: BaseLanguageModel) -> bool:
     """Check if the chatbot's response is semantically equivalent to a known fallback message.
 
     Args:
@@ -95,27 +86,8 @@ def is_semantically_fallback(response: str, fallback: str, llm) -> bool:
     if not response or not fallback:
         return False  # Cannot compare if one is empty
 
-    prompt = f"""
-    Compare the following two messages. Determine if the "Chatbot Response" is semantically equivalent to the "Known Fallback Message".
+    prompt = get_semantic_fallback_check_prompt(response, fallback)
 
-    "Semantically equivalent" means the response conveys the same core meaning as the fallback, such as:
-    - Not understanding the request.
-    - Being unable to process the request.
-    - Asking the user to rephrase.
-    - Stating a general limitation.
-
-    It does NOT have to be an exact word-for-word match.
-
-    Known Fallback Message:
-    "{fallback}"
-
-    Chatbot Response:
-    "{response}"
-
-    Is the "Chatbot Response" semantically equivalent to the "Known Fallback Message"?
-
-    Respond with ONLY "YES" or "NO".
-    """
     try:
         llm_decision = llm.invoke(prompt)
         decision_text = llm_decision.content.strip().upper()

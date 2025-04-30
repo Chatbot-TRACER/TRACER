@@ -1,9 +1,16 @@
 from typing import Any
 
+from langchain_core.language_models import BaseLanguageModel
+
 from chatbot_explorer.conversation.conversation_utils import format_conversation
+from chatbot_explorer.prompts.classification_prompts import get_classification_prompt
 
 
-def classify_chatbot_type(functionalities: list[dict[str, Any]], conversation_history: list[Any], llm) -> str:
+def classify_chatbot_type(
+    functionalities: list[dict[str, Any]],
+    conversation_history: list[Any],
+    llm: BaseLanguageModel,
+) -> str:
     """Determine if the chatbot is transactional (task-oriented) or informational (Q&A).
 
     Args:
@@ -57,24 +64,10 @@ def classify_chatbot_type(functionalities: list[dict[str, Any]], conversation_hi
 
     conversation_snippets = "\n".join(snippets) or "No conversation snippets available."
 
-    # Create prompt for classification
-    classification_prompt = f"""
-    Analyze the following conversation snippets and discovered functionalities to classify the chatbot's primary interaction style.
-
-    Discovered Functionalities Summary:
-    {func_summary}
-
-    Conversation Snippets:
-    {conversation_snippets}
-
-    Consider these definitions:
-    - **Transactional / Workflow-driven:** The chatbot guides the user through a specific multi-step process with clear sequences, choices, and goals (e.g., ordering food, booking an appointment, completing a form). Conversations often involve the chatbot asking questions to gather input and presenting options to advance the workflow.
-    - **Informational / Q&A:** The chatbot primarily answers user questions on various independent topics. Users typically ask a question, get an answer (often text or links), and might then ask about a completely different topic. There isn't usually a strict required sequence between topics.
-
-    Based on the overall pattern in the conversations and the nature of the functionalities, is this chatbot PRIMARILY Transactional/Workflow-driven or Informational/Q&A?
-
-    Respond with ONLY ONE word: "transactional" or "informational".
-    """
+    classification_prompt = get_classification_prompt(
+        func_summary=func_summary,
+        conversation_snippets=conversation_snippets,
+    )
 
     try:
         # Ask the LLM for classification

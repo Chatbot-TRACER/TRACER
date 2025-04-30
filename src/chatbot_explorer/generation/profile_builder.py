@@ -4,6 +4,7 @@ from typing import Any
 import yaml
 
 from chatbot_explorer.constants import AVAILABLE_PERSONALITIES, VARIABLE_PATTERN
+from chatbot_explorer.prompts.profile_builder_prompts import get_yaml_fix_prompt
 from chatbot_explorer.utils.parsing_utils import extract_yaml
 
 
@@ -82,16 +83,7 @@ def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_l
 
 
 def validate_and_fix_profile(profile: dict[str, Any], validator, llm) -> dict[str, Any]:
-    """Validate a profile and try to fix it using LLM if needed.
-
-    Args:
-        profile: Profile dictionary to validate
-        validator: YamlValidator instance
-        llm: The language model instance
-
-    Returns:
-        Dict: The validated (and potentially fixed) profile
-    """
+    """Validate a profile and try to fix it using LLM if needed."""
     # Convert profile dict to YAML string for validation
     yaml_content = yaml.dump(profile, sort_keys=False, allow_unicode=True)
     errors = validator.validate(yaml_content)  # Validate
@@ -112,26 +104,22 @@ def validate_and_fix_profile(profile: dict[str, Any], validator, llm) -> dict[st
 
     # Prepare prompt for LLM to fix errors
     error_messages = "\n".join(f"- {e.path}: {e.message}" for e in errors)
-    fix_prompt = (
-        "You are an AI assistant specialized in correcting YAML configuration files.\n"
-        "Based ONLY on the following validation errors, please fix the provided YAML content.\n"
-        "Your response MUST contain ONLY the complete, corrected YAML content.\n"
-        "Enclose the corrected YAML within triple backticks (```yaml ... ```).\n"
-        "Do NOT include any explanations, apologies, introductions, or conclusions outside the YAML block.\n"
-        "Ensure the output is well-formed YAML and directly addresses the errors listed.\n\n"
-        f"Errors to fix:\n{error_messages}\n\n"
-        "Original YAML to fix:\n"
-        f"```yaml\n{yaml_content}\n```\n\n"
-        "Corrected YAML:"
-    )
+
+    fix_prompt = get_yaml_fix_prompt(error_messages, yaml_content)
 
     print("  Asking LLM to fix the profile...")
 
     try:
         # Ask LLM to fix it
-        fixed_yaml_str = llm.invoke([{"role": "user", "content": fix_prompt}])
+        fixed_yaml_response = llm.invoke(fix_prompt)
+        fixed_yaml_str = fixed_yaml_response.content
+
         # Extract and parse the fixed YAML
         just_yaml = extract_yaml(fixed_yaml_str)
+        if not just_yaml:
+            print("  ✗ LLM response did not contain a YAML block.")
+            return profile  # Keep original
+
         fixed_profile = yaml.safe_load(just_yaml)
 
         # Re-validate the fixed YAML
@@ -144,7 +132,10 @@ def validate_and_fix_profile(profile: dict[str, Any], validator, llm) -> dict[st
         # Still has errors, keep original
         print(f"  ✗ LLM couldn't fix all errors ({len(re_errors)} remaining)")
         return profile  # Keep original
+    except yaml.YAMLError as e:
+        print(f"  ✗ Failed to parse fixed YAML: {e}")
+        return profile  # Keep original
     except Exception as e:
-        # LLM call failed, keep original
-        print(f"  ✗ Failed to fix profile: {type(e).__name__}")
+        # LLM call failed or other error, keep original
+        print(f"  ✗ Failed to fix profile: {type(e).__name__} - {e}")
         return profile  # Keep original
