@@ -302,7 +302,7 @@ LANGUAGE REQUIREMENT:
     profiles = generate_variable_definitions(profiles, llm, supported_languages)
 
     # Generate context
-    profiles = generate_context(profiles, functionalities, llm, supported_languages)
+    profiles = generate_context(profiles, llm, supported_languages)
 
     # Generate output fields
     return generate_outputs(profiles, functionalities, llm, supported_languages)
