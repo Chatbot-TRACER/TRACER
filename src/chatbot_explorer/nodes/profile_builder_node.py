@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from ..state import State
+from ..schemas.state import State
 from ..utils.analysis.profile_generator import build_profile_yaml
 
 

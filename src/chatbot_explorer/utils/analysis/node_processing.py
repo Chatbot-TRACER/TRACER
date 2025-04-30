@@ -2,7 +2,7 @@ import json
 import re
 from typing import List
 
-from ...functionality_node import FunctionalityNode
+from ...schemas.functionality_node import FunctionalityNode
 
 
 def is_duplicate_functionality(node: FunctionalityNode, existing_nodes: List[FunctionalityNode], llm=None) -> bool:

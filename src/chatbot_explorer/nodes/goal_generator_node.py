@@ -1,7 +1,7 @@
 import re
 from typing import Any, Dict, List, Optional, Set
 
-from ..state import State
+from ..schemas.state import State
 from ..utils.constants import VARIABLE_PATTERN
 
 

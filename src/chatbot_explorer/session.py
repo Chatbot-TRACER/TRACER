@@ -3,7 +3,7 @@ from typing import List, Optional, Set
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
-from .functionality_node import FunctionalityNode
+from .schemas.functionality_node import FunctionalityNode
 from .utils.analysis.functionality_extraction import extract_functionality_nodes
 from .utils.analysis.node_processing import (
     is_duplicate_functionality,

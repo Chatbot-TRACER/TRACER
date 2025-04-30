@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from ..state import State
+from ..schemas.state import State
 from ..utils.analysis.chatbot_classification import classify_chatbot_type
 from ..utils.analysis.workflow_builder import build_workflow_structure
 
@@ -17,8 +17,6 @@ def structure_builder_node(state: State, llm) -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: Dictionary with updated 'discovered_functionalities' and 'chatbot_type'.
     """
-    # This node is used in the structure analysis graph.
-    # It expects 'discovered_functionalities' from the exploration phase.
 
     print("\n--- Building Workflow Structure ---")
     # Functionalities are expected as dicts from run_full_exploration results
@@ -37,7 +35,6 @@ def structure_builder_node(state: State, llm) -> Dict[str, Any]:
     bot_type = classify_chatbot_type(flat_functionality_dicts, conversation_history, llm)
     print(f"   Chatbot type classified as: {bot_type}")
 
-    # Use the imported build_workflow_structure function
     try:
         structured_nodes = build_workflow_structure(flat_functionality_dicts, conversation_history, bot_type, llm)
 

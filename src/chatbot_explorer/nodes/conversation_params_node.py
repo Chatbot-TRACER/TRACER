@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 
-from ..state import State
+from ..schemas.state import State
 
 
 def extract_profile_variables(profile):

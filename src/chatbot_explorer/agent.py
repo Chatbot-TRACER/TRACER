@@ -11,7 +11,7 @@ from .nodes.goal_generator_node import goal_generator_node
 from .nodes.profile_builder_node import profile_builder_node
 from .nodes.profile_validator_node import profile_validator_node
 from .nodes.structure_builder_node import structure_builder_node
-from .state import State
+from .schemas.state import State
 
 from .graphs.structure_graph import build_structure_graph
 from .graphs.profile_graph import build_profile_generation_graph
