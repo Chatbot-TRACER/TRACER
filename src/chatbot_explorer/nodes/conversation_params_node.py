@@ -6,6 +6,9 @@ from typing import Any, TypedDict
 from langchain_core.language_models.base import BaseLanguageModel
 
 from chatbot_explorer.prompts.conversation_params_prompts import (
+    PromptLanguageSupport,
+    PromptPreviousParams,
+    PromptProfileContext,
     get_goal_style_prompt,
     get_interaction_style_prompt,
     get_max_cost_prompt,
@@ -264,15 +267,26 @@ def request_interaction_style_from_llm(
     context: ParamRequestContext, number_value: str | int, max_cost: float, goal_style: dict[str, Any]
 ) -> list[str]:
     """Prompts LLM to determine the INTERACTION_STYLE parameter."""
+    profile_context: PromptProfileContext = {
+        "profile": context["profile"],
+        "variables_info": context["variables_info"],
+        "language_info": context["language_info"],
+    }
+    prev_params: PromptPreviousParams = {
+        "number_value": number_value,
+        "max_cost": max_cost,
+        "goal_style": goal_style,
+    }
+    lang_support: PromptLanguageSupport = {
+        "supported_languages_text": context["supported_languages_text"],
+        "languages_example": context["languages_example"],
+    }
+
+    # Call the prompt function with the structured arguments
     prompt = get_interaction_style_prompt(
-        profile=context["profile"],
-        variables_info=context["variables_info"],
-        language_info=context["language_info"],
-        number_value=number_value,
-        max_cost=max_cost,
-        goal_style=goal_style,
-        supported_languages_text=context["supported_languages_text"],
-        languages_example=context["languages_example"],
+        profile_context=profile_context,
+        prev_params=prev_params,
+        lang_support=lang_support,
     )
     response = context["llm"].invoke(prompt)
     response_text = response.content.strip()
