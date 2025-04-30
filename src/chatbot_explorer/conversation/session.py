@@ -1,6 +1,7 @@
-import random
+import secrets
 from typing import Any
 
+from langchain_core.language_models import BaseLanguageModel
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 
 from chatbot_explorer.analysis.functionality_extraction import extract_functionality_nodes
@@ -19,6 +20,7 @@ from chatbot_explorer.prompts.session_prompts import (
     get_translation_prompt,
 )
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
+from connectors.chatbot_connectors import Chatbot
 
 from .conversation_utils import _get_all_nodes
 from .fallback_detection import (
@@ -26,7 +28,9 @@ from .fallback_detection import (
 )
 
 
-def _generate_initial_question(current_node, primary_language, llm):
+def _generate_initial_question(
+    current_node: FunctionalityNode | None, primary_language: str, llm: BaseLanguageModel
+) -> str:
     """Generates the initial question for the exploration session."""
     lang_lower = primary_language.lower()
     if current_node:
@@ -42,7 +46,7 @@ def _generate_initial_question(current_node, primary_language, llm):
             "I'm interested in using your services. What's available",
             "Can you list your main functions or services?",
         ]
-        greeting_en = random.choice(possible_greetings)
+        greeting_en = secrets.choice(possible_greetings)
 
         # Translate if needed
         if lang_lower != "english":
@@ -54,7 +58,7 @@ def _generate_initial_question(current_node, primary_language, llm):
                     initial_question = translated_greeting
                 else:  # Use English if translation failed
                     initial_question = greeting_en
-            except Exception as e:
+            except ValueError as e:
                 print(f"Warning: Failed to translate initial greeting to {primary_language}: {e}")
                 initial_question = greeting_en  # Fallback
         else:
@@ -131,7 +135,7 @@ def _analyze_session_and_update_nodes(
 
 def _get_explorer_next_message(
     conversation_history_lc: list[BaseMessage],
-    llm: Any,
+    llm: BaseLanguageModel,
     force_topic_change_instruction: str | None,
 ) -> str | None:
     """Gets the next message from the explorer LLM."""
@@ -147,7 +151,7 @@ def _get_explorer_next_message(
         )
         llm_response = llm.invoke(messages_for_llm_this_turn)
         return llm_response.content.strip()
-    except Exception as e:
+    except (ValueError, RuntimeError) as e:
         print(f"\nError getting response from Explorer AI LLM: {e}. Ending session.")
         return None
 
@@ -155,7 +159,7 @@ def _get_explorer_next_message(
 def _handle_chatbot_interaction(
     explorer_message: str,
     the_chatbot: Any,
-    llm: Any,
+    llm: BaseLanguageModel,
     fallback_message: str | None,
 ) -> tuple[bool, str, bool]:
     """Interacts with the chatbot, handles retries on fallback/error, and returns outcome.
@@ -311,17 +315,17 @@ def _run_conversation_loop(
 
 
 def run_exploration_session(
-    session_num,
-    max_sessions,
-    max_turns,
-    llm,
-    the_chatbot,
+    session_num: int,
+    max_sessions: int,
+    max_turns: int,
+    llm: BaseLanguageModel,
+    the_chatbot: Chatbot,
     fallback_message: str | None = None,
     current_node: FunctionalityNode | None = None,
     explored_nodes: set[str] | None = None,
     pending_nodes: list[FunctionalityNode] | None = None,
     root_nodes: list[FunctionalityNode] | None = None,
-    supported_languages=None,
+    supported_languages: list[str] | None = None,
 ):
     """Runs one chat session to explore the bot.
 

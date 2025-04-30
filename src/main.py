@@ -1,5 +1,5 @@
-import os
 import sys
+from pathlib import Path
 
 from chatbot_explorer.agent import ChatbotExplorationAgent
 from connectors.chatbot_connectors import ChatbotAdaUam, ChatbotTaskyto
@@ -32,16 +32,15 @@ def main() -> None:
     print(f"Exploration sessions: {max_sessions}")
     print(f"Max turns per session: {max_turns}")
     print(f"Using model: {model_name}")
-    print(f"Output directory: {output_dir}")
     print("====================================")
 
-    os.makedirs(output_dir, exist_ok=True)
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
 
     # --- Initialize the Agent ---
     print(f"\nInitializing Chatbot Exploration Agent with model: {model_name}...")
     try:
         agent = ChatbotExplorationAgent(model_name)
-    except Exception as e:
+    except (ValueError, OSError) as e:
         print(f"Error initializing Chatbot Exploration Agent: {e}")
         print("Please ensure your API keys (e.g., OPENAI_API_KEY) are set correctly in your environment or .env file.")
         sys.exit(1)
@@ -67,7 +66,7 @@ def main() -> None:
             max_turns=max_turns,
         )
         print("--- Exploration Phase Complete ---")
-    except Exception as e:
+    except (ValueError, OSError, RuntimeError) as e:
         print("\n--- Error during Exploration Phase ---")
         print(f"Error: {e}")
         sys.exit(1)
@@ -78,7 +77,7 @@ def main() -> None:
         # Pass the results from the exploration phase to the analysis method
         analysis_results = agent.run_analysis(exploration_results=exploration_results)
         print("--- Analysis Phase Complete ---")
-    except Exception as e:
+    except (ValueError, KeyError) as e:
         print("\n--- Error during Analysis Phase ---")
         print(f"Error: {e}")
         sys.exit(1)
@@ -109,8 +108,8 @@ def main() -> None:
     # --- Generate Workflow Graph Image ---
     if functionality_dicts:
         print("--- Generating workflow graph image ---")
-        graph_output_base = os.path.join(output_dir, "workflow_graph")
-        generate_graph_image(functionality_dicts, graph_output_base)
+        graph_output_base = Path(output_dir) / "workflow_graph"
+        generate_graph_image(functionality_dicts, str(graph_output_base))
     else:
         print("--- Skipping workflow graph image (no functionalities discovered) ---")
 
