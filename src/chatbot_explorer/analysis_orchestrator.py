@@ -1,13 +1,13 @@
 import uuid
 from typing import Any, Dict, List
 
-from chatbot_explorer.explorer import (
-    ChatbotExplorer,
+from chatbot_explorer.agent import (
+    ChatbotExplorationAgent,
 )
 
 
 def run_analysis_pipeline(
-    explorer_instance: ChatbotExplorer, exploration_results: Dict[str, Any]
+    explorer_instance: ChatbotExplorationAgent, exploration_results: Dict[str, Any]
 ) -> Dict[str, List[Any]]:
     """Runs the LangGraph analysis pipeline to infer workflow structure and generate user profiles.
 

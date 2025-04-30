@@ -1,12 +1,12 @@
 import os
 import sys
 
-from chatbot_connectors import ChatbotAdaUam, ChatbotTaskyto
+from connectors.chatbot_connectors import ChatbotAdaUam, ChatbotTaskyto
 from chatbot_explorer.analysis_orchestrator import (
     run_analysis_pipeline,
 )
 from chatbot_explorer.exploration_orchestrator import run_exploration_phase
-from chatbot_explorer.explorer import ChatbotExplorer
+from chatbot_explorer.agent import ChatbotExplorationAgent
 from utils.cli import parse_arguments
 from utils.reporting import generate_graph_image, save_profiles, write_report
 
@@ -43,7 +43,7 @@ def main() -> None:
     os.makedirs(output_dir, exist_ok=True)
 
     # Initialize the main explorer class
-    explorer = ChatbotExplorer(model_name)
+    explorer = ChatbotExplorationAgent(model_name)
 
     # Store results from multiple sessions
     # Instantiate the correct chatbot connector based on technology

@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, Set
 
-from .explorer import ChatbotExplorer
+from .agent import ChatbotExplorationAgent
 from .functionality_node import FunctionalityNode
 from .session import run_exploration_session
 from .utils.conversation.fallback_detection import extract_fallback_message
@@ -8,7 +8,7 @@ from .utils.conversation.language_detection import extract_supported_languages
 
 
 def run_exploration_phase(
-    explorer_instance: ChatbotExplorer,
+    explorer_instance: ChatbotExplorationAgent,
     chatbot_connector,
     max_sessions: int,
     max_turns: int,

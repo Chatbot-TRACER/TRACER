@@ -10,7 +10,7 @@ from .nodes.structure_builder_node import structure_builder_node
 from .state import State
 
 
-class ChatbotExplorer:
+class ChatbotExplorationAgent:
     """Uses LangGraph to explore chatbots and orchestrate analysis."""
 
     def __init__(self, model_name: str) -> None:
