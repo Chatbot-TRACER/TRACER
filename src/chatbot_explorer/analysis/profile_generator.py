@@ -4,7 +4,7 @@ from typing import Any
 
 import yaml
 
-from ..constants import AVAILABLE_PERSONALITIES, VARIABLE_PATTERN
+from chatbot_explorer.constants import AVAILABLE_PERSONALITIES, VARIABLE_PATTERN
 
 
 def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_language: str) -> dict[str, Any]:

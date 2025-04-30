@@ -2,7 +2,7 @@ from langchain_core.language_models import BaseLanguageModel
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, StateGraph
 
-from chatbot_explorer.nodes.structure_builder_node import structure_builder_node
+from chatbot_explorer.nodes.workflow_builder_node import workflow_builder_node
 from chatbot_explorer.schemas.state import State
 
 
@@ -19,11 +19,11 @@ def build_structure_graph(llm: BaseLanguageModel, checkpointer: BaseCheckpointSa
     graph_builder = StateGraph(State)
 
     graph_builder.add_node(
-        "structure_builder",
-        lambda state: structure_builder_node(state, llm),
+        "workflow_builder",
+        lambda state: workflow_builder_node(state, llm),
     )
 
-    graph_builder.set_entry_point("structure_builder")
-    graph_builder.add_edge("structure_builder", END)
+    graph_builder.set_entry_point("workflow_builder")
+    graph_builder.add_edge("workflow_builder", END)
 
     return graph_builder.compile(checkpointer=checkpointer)

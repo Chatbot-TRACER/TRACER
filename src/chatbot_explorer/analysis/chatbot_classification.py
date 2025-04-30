@@ -1,6 +1,6 @@
 from typing import Any
 
-from ..conversation.conversation_utils import format_conversation
+from chatbot_explorer.conversation.conversation_utils import format_conversation
 
 
 def classify_chatbot_type(functionalities: list[dict[str, Any]], conversation_history: list[Any], llm) -> str:

@@ -1,7 +1,7 @@
 import json
 import re
 
-from ..schemas.functionality_node import FunctionalityNode
+from chatbot_explorer.schemas.functionality_node import FunctionalityNode
 
 
 def is_duplicate_functionality(node: FunctionalityNode, existing_nodes: list[FunctionalityNode], llm=None) -> bool:

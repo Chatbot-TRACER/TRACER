@@ -3,8 +3,8 @@ from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, StateGraph
 
 from chatbot_explorer.nodes.conversation_params_node import conversation_params_node
-from chatbot_explorer.nodes.goal_generator_node import goal_generator_node
 from chatbot_explorer.nodes.profile_builder_node import profile_builder_node
+from chatbot_explorer.nodes.profile_generator_node import profile_generator_node
 from chatbot_explorer.nodes.profile_validator_node import profile_validator_node
 from chatbot_explorer.schemas.state import State
 
@@ -22,7 +22,7 @@ def build_profile_generation_graph(llm: BaseLanguageModel, checkpointer: BaseChe
     graph_builder = StateGraph(State)
 
     # Add nodes, passing LLM where needed via lambda
-    graph_builder.add_node("goal_generator", lambda state: goal_generator_node(state, llm))
+    graph_builder.add_node("goal_generator", lambda state: profile_generator_node(state, llm))
     graph_builder.add_node("conversation_params", lambda state: conversation_params_node(state, llm))
 
     graph_builder.add_node("profile_builder", profile_builder_node)

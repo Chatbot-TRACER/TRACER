@@ -5,7 +5,7 @@ from chatbot_explorer.schemas.state import State
 
 
 def profile_builder_node(state: State) -> dict[str, Any]:
-    """Node that takes conversation goals and builds the final YAML profile dictionaries.
+    """Node that takes all the necessary parameters and builds the YAML.
 
     Args:
         state (State): The current graph state.

@@ -44,7 +44,7 @@ def build_workflow_structure(
             if not isinstance(session_history, list):
                 continue
 
-            from ..conversation.conversation_utils import format_conversation
+            from chatbot_explorer.conversation.conversation_utils import format_conversation
 
             session_str = format_conversation(session_history)
             snippet_len = 1500

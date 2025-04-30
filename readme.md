@@ -69,7 +69,7 @@ The system uses specialized graphs for different stages of analysis:
 
 ```mermaid
 flowchart LR
-    A[Exploration data] --> B[structure_builder_node]
+    A[Exploration data] --> B[workflow_builder_node]
     B --> C{Classify chatbot}
     C -->|Transactional Prompt| D[Build functionalities]
     C -->|Informational Prompt| D[Build functionalities]

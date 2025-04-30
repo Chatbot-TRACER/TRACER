@@ -5,7 +5,7 @@ from chatbot_explorer.analysis.workflow_builder import build_workflow_structure
 from chatbot_explorer.schemas.state import State
 
 
-def structure_builder_node(state: State, llm) -> dict[str, Any]:
+def workflow_builder_node(state: State, llm) -> dict[str, Any]:
     """Node that analyzes functionalities and history to build the workflow structure.
 
     Uses different logic based on whether the bot seems transactional or informational.

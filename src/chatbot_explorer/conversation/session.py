@@ -2,17 +2,18 @@ import random
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
-from ..analysis.functionality_extraction import extract_functionality_nodes
-from ..analysis.functionality_refinement import (
+from chatbot_explorer.analysis.functionality_extraction import extract_functionality_nodes
+from chatbot_explorer.analysis.functionality_refinement import (
     is_duplicate_functionality,
     merge_similar_functionalities,
     validate_parent_child_relationship,
 )
+from chatbot_explorer.schemas.functionality_node import FunctionalityNode
+
 from .conversation_utils import _get_all_nodes
 from .fallback_detection import (
     is_semantically_fallback,
 )
-from ..schemas.functionality_node import FunctionalityNode
 
 
 def run_exploration_session(
