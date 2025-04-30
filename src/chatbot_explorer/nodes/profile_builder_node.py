@@ -1,6 +1,6 @@
 from typing import Any
 
-from chatbot_explorer.analysis.profile_generator import build_profile_yaml
+from chatbot_explorer.analysis.profile_builder import build_profile_yaml
 from chatbot_explorer.schemas.state import State
 
 
