@@ -46,26 +46,26 @@ def generate_outputs(
         current_data = {}
 
         for line in outputs_response.content.strip().split("\n"):
-            line = line.strip()
-            if not line:
+            line_content = line.strip()
+            if not line_content:
                 continue
 
-            if line.startswith("OUTPUT:"):
+            if line_content.startswith("OUTPUT:"):
                 # Save previous output if exists
                 if current_output and current_data:
                     outputs_list.append({current_output: current_data})
 
                 # Start new output
-                current_output = line[len("OUTPUT:") :].strip()
+                current_output = line_content[len("OUTPUT:") :].strip()
                 # Ensure name has no spaces and is lowercase
                 current_output = current_output.replace(" ", "_").lower()
                 current_data = {}
 
-            elif line.startswith("TYPE:"):
-                current_data["type"] = line[len("TYPE:") :].strip()
+            elif line_content.startswith("TYPE:"):
+                current_data["type"] = line_content[len("TYPE:") :].strip()
 
-            elif line.startswith("DESCRIPTION:"):
-                current_data["description"] = line[len("DESCRIPTION:") :].strip()
+            elif line_content.startswith("DESCRIPTION:"):
+                current_data["description"] = line_content[len("DESCRIPTION:") :].strip()
 
         # Save last output
         if current_output and current_data:
