@@ -5,12 +5,13 @@ from chatbot_connectors import ChatbotAdaUam, ChatbotTaskyto
 from chatbot_explorer.analysis_orchestrator import (
     run_analysis_pipeline,
 )
+from chatbot_explorer.exploration_orchestrator import run_exploration_phase
 from chatbot_explorer.explorer import ChatbotExplorer
 from utils.cli import parse_arguments
 from utils.reporting import generate_graph_image, save_profiles, write_report
 
 
-def main():
+def main() -> None:
     # Parse command-line arguments
     args = parse_arguments()
     valid_technologies = ["taskyto", "ada-uam"]
@@ -57,7 +58,8 @@ def main():
 
     # --- Run Full Exploration ---
     print("\n--- Starting Chatbot Exploration ---")
-    exploration_results = explorer.run_full_exploration(
+    exploration_results = run_exploration_phase(
+        explorer_instance=explorer,
         chatbot_connector=the_chatbot,
         max_sessions=max_sessions,
         max_turns=max_turns,
