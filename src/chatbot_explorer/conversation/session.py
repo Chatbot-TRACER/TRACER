@@ -3,7 +3,7 @@ import random
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 from ..analysis.functionality_extraction import extract_functionality_nodes
-from ..analysis.node_processing import (
+from ..analysis.functionality_refinement import (
     is_duplicate_functionality,
     merge_similar_functionalities,
     validate_parent_child_relationship,
