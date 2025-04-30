@@ -1,3 +1,5 @@
+"""Prompts for generating conversation parameters based on user profile information."""
+
 from typing import Any
 
 
@@ -5,6 +7,7 @@ def get_number_prompt(
     profile: dict[str, Any],
     variables_info: str,
     language_info: str,
+    *,
     has_nested_forwards: bool,
 ) -> str:
     """Generate the prompt to determine the NUMBER parameter."""

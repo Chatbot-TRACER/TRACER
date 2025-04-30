@@ -1,3 +1,5 @@
+"""Prompts for detecting languages supported by a chatbot."""
+
 def get_language_detection_prompt(chatbot_response: str) -> str:
     """Generate a prompt for detecting the languages supported by a chatbot."""
     return f"""

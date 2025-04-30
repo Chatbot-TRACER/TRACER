@@ -1,3 +1,5 @@
+"""Prompts for generating output fields to extract from chatbot responses."""
+
 from typing import Any
 
 

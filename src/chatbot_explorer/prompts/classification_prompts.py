@@ -1,3 +1,5 @@
+"""Prompts for classifying chatbot interaction type (transactional vs. informational)."""
+
 def get_classification_prompt(func_summary: str, conversation_snippets: str) -> str:
     """Generate the prompt for classifying the chatbot interaction type."""
     return f"""

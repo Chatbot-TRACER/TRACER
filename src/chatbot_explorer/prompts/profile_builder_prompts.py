@@ -1,3 +1,5 @@
+"""Prompts for building and fixing YAML configuration files."""
+
 def get_yaml_fix_prompt(error_messages: str, yaml_content: str) -> str:
     """Generate the prompt for asking the LLM to fix YAML validation errors."""
     return (

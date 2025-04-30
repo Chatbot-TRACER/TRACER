@@ -1,3 +1,5 @@
+"""Prompts for managing chatbot exploration sessions."""
+
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 
 

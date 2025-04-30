@@ -1,3 +1,5 @@
+"""LangGraph Node that builds the YAML profiles for the chatbot."""
+
 from typing import Any
 
 from chatbot_explorer.generation.profile_builder import build_profile_yaml
@@ -38,9 +40,8 @@ def profile_builder_node(state: State) -> dict[str, Any]:
                 primary_language=primary_language,
             )
             built_profiles.append(profile_yaml_content)
-        except Exception as e:
+        except (KeyError, ValueError, TypeError) as e:
             print(f"Error building profile for goal: {profile.get('name', 'N/A')}. Error: {e}")
-            # Optionally skip this profile or add a placeholder error
 
     # Update state with the list of profile dicts/strings
     return {"built_profiles": built_profiles}

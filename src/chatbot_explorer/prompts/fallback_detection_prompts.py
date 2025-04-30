@@ -1,3 +1,5 @@
+"""Prompts for detecting and analyzing fallback messages from the chatbot."""
+
 def get_fallback_identification_prompt(responses: list[str]) -> str:
     """Generate the prompt for identifying the chatbot's fallback message pattern."""
     return f"""

@@ -1,3 +1,5 @@
+"""Prompts for refining functionality nodes based on existing descriptions."""
+
 import json
 
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode

@@ -1,3 +1,5 @@
+"""Prompts for grouping functionalities into profile scenarios and generate the baseline for the profiles."""
+
 from typing import Any
 
 

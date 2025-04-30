@@ -1,3 +1,6 @@
+"""Prompts for workflow analysis and modeling of chatbot interactions."""
+
+
 def create_transactional_prompt(func_list_str: str, conversation_snippets: str) -> str:
     """Create a prompt specifically for transactional chatbot analysis."""
     return f"""
