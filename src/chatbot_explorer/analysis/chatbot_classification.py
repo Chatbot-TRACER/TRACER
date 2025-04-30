@@ -79,8 +79,8 @@ def classify_chatbot_type(
             return classification
         # Handle unclear response
         print(f"   LLM response unclear ('{classification}'), defaulting to informational.")
-        return "informational"
-    except Exception as e:
+    except (ValueError, TypeError) as e:
         # Handle LLM error
         print(f"   Error during classification: {e}. Defaulting to informational.")
+    else:
         return "informational"

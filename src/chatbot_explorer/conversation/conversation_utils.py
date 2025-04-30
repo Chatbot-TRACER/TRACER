@@ -1,3 +1,6 @@
+from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
+
+
 def format_conversation(messages: list[dict[str, str]]) -> str:
     """Make the conversation history easy to read.
 
@@ -16,7 +19,7 @@ def format_conversation(messages: list[dict[str, str]]) -> str:
     return "\n".join(formatted)
 
 
-def _get_all_nodes(root_node):
+def _get_all_nodes(root_node: FunctionalityNode) -> list:
     """Helper to get a flat list of nodes in a tree.
 
     Args:
