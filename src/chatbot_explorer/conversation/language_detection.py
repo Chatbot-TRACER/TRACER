@@ -1,5 +1,3 @@
-
-
 def extract_supported_languages(chatbot_response: str, llm) -> list[str]:
     """Try to figure out what languages the chatbot knows.
 

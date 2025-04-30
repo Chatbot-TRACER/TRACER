@@ -180,7 +180,8 @@ class ChatbotExplorationAgent:
         structure_thread_id = f"structure_analysis_{uuid.uuid4()}"
         # Access the pre-compiled graph directly via self
         structure_result = self._structure_graph.invoke(
-            structure_initial_state, config={"configurable": {"thread_id": structure_thread_id}},
+            structure_initial_state,
+            config={"configurable": {"thread_id": structure_thread_id}},
         )
         workflow_structure = structure_result.get("discovered_functionalities", {})
         print("--- Structure inference complete ---")
@@ -200,7 +201,8 @@ class ChatbotExplorationAgent:
         profile_thread_id = f"profile_analysis_{uuid.uuid4()}"
         # Access the pre-compiled graph directly via self
         profile_result = self._profile_graph.invoke(
-            profile_initial_state, config={"configurable": {"thread_id": profile_thread_id}},
+            profile_initial_state,
+            config={"configurable": {"thread_id": profile_thread_id}},
         )
 
         generated_profiles = profile_result.get("built_profiles", [])

@@ -114,7 +114,8 @@ def _build_single_variable_prompt(
 
 
 def _parse_single_variable_definition(
-    response_content: str, expected_type: str | None = None,
+    response_content: str,
+    expected_type: str | None = None,
 ) -> dict[str, Any] | None:
     """Takes the LLM's text answer for one variable and tries to turn it into a Python dictionary.
 

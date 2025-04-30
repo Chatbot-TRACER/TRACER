@@ -1,5 +1,3 @@
-
-
 def format_conversation(messages: list[dict[str, str]]) -> str:
     """Make the conversation history easy to read.
 

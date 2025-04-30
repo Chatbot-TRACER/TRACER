@@ -24,7 +24,8 @@ select = [
 ignore = [
     "E501", # line too long
     "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107", # Common missing docstring rules
-    "ANN101", "ANN102", "ANN401", # Common missing/Any type hint rules
+    "COM812", # Creates incompatibility with formatter
+    "T201", # Doesnt let you use prints
 
 ]
 
