@@ -1,8 +1,9 @@
 """Module to generate the graph for workflow structure inference."""
 
 from langchain_core.language_models import BaseLanguageModel
+from langchain_core.runnables import Runnable
 from langgraph.checkpoint.base import BaseCheckpointSaver
-from langgraph.graph import END, Runnable, StateGraph
+from langgraph.graph import END, StateGraph
 
 from chatbot_explorer.nodes.workflow_builder_node import workflow_builder_node
 from chatbot_explorer.schemas.graph_state_model import State

@@ -1,8 +1,13 @@
+"""LangGraph Node for Profile Generation."""
+
 from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
-from chatbot_explorer.generation.profile_generation import generate_profile_content
+from chatbot_explorer.generation.profile_generation import (
+    ProfileGenerationConfig,
+    generate_profile_content,
+)
 from chatbot_explorer.schemas.graph_state_model import State
 
 
@@ -62,24 +67,28 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
     print(f" -> Preparing {len(functionality_descriptions)} descriptions (from structure) for goal generation.")
 
     try:
-        # Call the main generation function (now imported)
-        profiles_with_goals = generate_profile_content(
-            functionalities=functionality_descriptions,
-            limitations=state.get("discovered_limitations", []),
-            llm=llm,
-            workflow_structure=workflow_structure,
-            conversation_history=state.get("conversation_history", []),
-            supported_languages=state.get("supported_languages", []),
-            chatbot_type=chatbot_type,
-        )
-        print(f" -> Generated {len(profiles_with_goals)} profiles with goals, variables, context, and outputs.")
-        # Update state with the fully generated profiles
-        return {"conversation_goals": profiles_with_goals}
+        # Create the config dictionary
+        config: ProfileGenerationConfig = {
+            "functionalities": functionality_descriptions,
+            "limitations": state.get("discovered_limitations", []),
+            "llm": llm,
+            "workflow_structure": workflow_structure,
+            "conversation_history": state.get("conversation_history", []),
+            "supported_languages": state.get("supported_languages", []),
+            "chatbot_type": chatbot_type,
+        }
 
-    except Exception as e:
+        # Call the main generation function with the config dictionary
+        profiles_with_goals = generate_profile_content(config)
+
+        print(f" -> Generated {len(profiles_with_goals)} profiles with goals, variables, context, and outputs.")
+    except (KeyError, TypeError, ValueError) as e:
         print(f"Error during profile/goal generation orchestration: {e}")
         # Consider more specific error handling or logging
         import traceback
 
         traceback.print_exc()
         return {"conversation_goals": []}  # Return empty list on error
+    else:
+        # Update state with the fully generated profiles
+        return {"conversation_goals": profiles_with_goals}

@@ -1,5 +1,7 @@
+"""Node for generating conversation parameters (number, cost, style) for user profiles."""
+
 import contextlib
-from typing import Any
+from typing import Any, TypedDict
 
 from langchain_core.language_models.base import BaseLanguageModel
 
@@ -11,272 +13,270 @@ from chatbot_explorer.prompts.conversation_params_prompts import (
 )
 from chatbot_explorer.schemas.graph_state_model import State
 
+# --- Helper Functions for extract_profile_variables ---
 
-def extract_profile_variables(profile):
-    """Extract variables and their relationships from profile."""
-    variables = []
+
+def _get_profile_variables(profile: dict[str, Any]) -> list[str]:
+    """Extracts all defined variable names from a profile."""
+    return [
+        var_name
+        for var_name, var_def in profile.items()
+        if isinstance(var_def, dict) and "function" in var_def and "data" in var_def
+    ]
+
+
+def _check_nested_forwards(profile: dict[str, Any], variables: list[str]) -> tuple[bool, list[str], str]:
+    """Checks for nested forward dependencies and calculates related info."""
+    has_nested_forwards = profile.get("has_nested_forwards", False)
     forward_with_dependencies = []
-    has_nested_forwards = False
     nested_forward_info = ""
 
-    # Get all variables regardless of type
-    for var_name, var_def in profile.items():
-        if isinstance(var_def, dict) and "function" in var_def and "data" in var_def:
-            variables.append(var_name)
+    if "forward_dependencies" in profile:
+        forward_dependencies = profile["forward_dependencies"]
+        forward_with_dependencies = list(forward_dependencies.keys())
 
-    # Check nested forward dependencies
-    if "has_nested_forwards" in profile:
-        has_nested_forwards = profile["has_nested_forwards"]
+        if has_nested_forwards and "nested_forward_chains" in profile:
+            nested_chains = profile["nested_forward_chains"]
+            chain_descriptions = [f"Chain: {' → '.join(chain)}" for chain in nested_chains]
 
-        if "forward_dependencies" in profile:
-            forward_dependencies = profile["forward_dependencies"]
-            forward_with_dependencies = list(forward_dependencies.keys())
-
-            # Create detailed nested forward information
-            if has_nested_forwards and "nested_forward_chains" in profile:
-                nested_chains = profile["nested_forward_chains"]
-                chain_descriptions = []
-
-                for chain in nested_chains:
-                    chain_str = " → ".join(chain)
-                    chain_descriptions.append(f"Chain: {chain_str}")
-
-                if chain_descriptions:
-                    nested_forward_info = "\nNested dependency chains detected:\n" + "\n".join(chain_descriptions)
-
-                    # Calculate potential combinations
-                    combinations = 1
-                    for var_name in variables:
-                        var_def = profile.get(var_name, {})
-                        if isinstance(var_def, dict) and "data" in var_def:
-                            data = var_def.get("data", [])
-                            if isinstance(data, list):
-                                combinations *= len(data)
-                            elif isinstance(data, dict) and "min" in data and "max" in data and "step" in data:
+            if chain_descriptions:
+                nested_forward_info = "\nNested dependency chains detected:\n" + "\n".join(chain_descriptions)
+                combinations = 1
+                for var_name in variables:
+                    var_def = profile.get(var_name, {})
+                    if isinstance(var_def, dict) and "data" in var_def:
+                        data = var_def.get("data", [])
+                        if isinstance(data, list):
+                            combinations *= len(data) if data else 1
+                        elif isinstance(data, dict) and all(k in data for k in ["min", "max", "step"]):
+                            if data["step"] != 0:
                                 steps = (data["max"] - data["min"]) / data["step"] + 1
-                                combinations *= int(steps)
+                                combinations *= int(steps) if steps >= 1 else 1
+                nested_forward_info += f"\nPotential combinations: approximately {combinations}"
+    else:  # Fallback if structured dependencies aren't present
+        for var_name, var_def in profile.items():
+            if (
+                isinstance(var_def, dict)
+                and "function" in var_def
+                and "forward" in var_def["function"]
+                and "(" in var_def["function"]
+                and ")" in var_def["function"]
+            ):
+                param = var_def["function"].split("(")[1].split(")")[0]
+                if param and param != "rand" and not param.isdigit():
+                    forward_with_dependencies.append(var_name)
 
-                    nested_forward_info += f"\nPotential combinations: approximately {combinations}"
-        else:
-            # Fallback method for forward dependencies
-            for var_name, var_def in profile.items():
-                if (
-                    isinstance(var_def, dict)
-                    and "function" in var_def
-                    and "data" in var_def
-                    and "forward" in var_def["function"]
-                    and "(" in var_def["function"]
-                    and ")" in var_def["function"]
-                ):
-                    param = var_def["function"].split("(")[1].split(")")[0]
-                    if param and param != "rand" and not param.isdigit():
-                        forward_with_dependencies.append(var_name)
+    return has_nested_forwards, forward_with_dependencies, nested_forward_info
 
-    # Build profile information for the prompt
-    variables_info = ""
-    if variables:
-        variables_info = f"\nThis profile has {len(variables)} variables: {', '.join(variables)}"
 
-        if forward_with_dependencies:
-            variables_info += f"\n{len(forward_with_dependencies)} variables have dependencies: {', '.join(forward_with_dependencies)}"
-            if has_nested_forwards:
-                variables_info += "\nThis creates COMBINATIONS that could be explored with 'all_combinations', 'sample(X)', or a fixed number."
-                variables_info += f"\nIMPORTANT: This profile has NESTED FORWARD DEPENDENCIES.{nested_forward_info}"
+def _build_variables_info_string(
+    variables: list[str],
+    forward_with_dependencies: list[str],
+    has_nested_forwards: bool,
+    nested_forward_info: str,
+) -> str:
+    """Builds the descriptive string about variables for LLM prompts."""
+    if not variables:
+        return ""
 
-    return (
-        variables,
-        forward_with_dependencies,
-        has_nested_forwards,
-        nested_forward_info,
-        variables_info,
+    variables_info = f"\nThis profile has {len(variables)} variables: {', '.join(variables)}"
+    if forward_with_dependencies:
+        variables_info += (
+            f"\n{len(forward_with_dependencies)} variables have dependencies: {', '.join(forward_with_dependencies)}"
+        )
+        if has_nested_forwards:
+            variables_info += "\nThis creates COMBINATIONS that could be explored with 'all_combinations', 'sample(X)', or a fixed number."
+            variables_info += f"\nIMPORTANT: This profile has NESTED FORWARD DEPENDENCIES.{nested_forward_info}"
+    return variables_info
+
+
+def extract_profile_variables(profile: dict[str, Any]) -> tuple[list[str], list[str], bool, str, str]:
+    """Extracts variables, dependency info, and builds a descriptive string from a profile.
+
+    Args:
+        profile: The user profile dictionary.
+
+    Returns:
+        A tuple containing:
+            - List of all variable names.
+            - List of variables with forward dependencies.
+            - Boolean indicating if nested forwards exist.
+            - String with details about nested forward chains and combinations.
+            - A combined descriptive string about variables for LLM prompts.
+    """
+    variables = _get_profile_variables(profile)
+    has_nested_forwards, forward_with_dependencies, nested_forward_info = _check_nested_forwards(profile, variables)
+    variables_info = _build_variables_info_string(
+        variables, forward_with_dependencies, has_nested_forwards, nested_forward_info
     )
+    return variables, forward_with_dependencies, has_nested_forwards, nested_forward_info, variables_info
 
 
-def prepare_language_info(supported_languages):
-    """Prepare language information for prompt."""
+# --- Language Info Preparation ---
+
+
+def prepare_language_info(supported_languages: list[str] | None) -> tuple[str, str, str]:
+    """Prepares language-related strings for LLM prompts."""
     language_info = ""
     languages_example = ""
     supported_languages_text = ""
 
-    if supported_languages and len(supported_languages) > 0:
+    if supported_languages:
         language_info = f"\nSUPPORTED LANGUAGES: {', '.join(supported_languages)}"
         supported_languages_text = f"({', '.join(supported_languages)})"
-
-        language_lines = [f"- {lang.lower()}" for lang in supported_languages]
-        languages_example = "\n".join(language_lines)
+        languages_example = "\n".join([f"- {lang.lower()}" for lang in supported_languages])
 
     return language_info, languages_example, supported_languages_text
 
 
-def request_number_from_llm(llm, profile, variables_info, language_info, variables, has_nested_forwards):
-    """Prompt LLM to determine the NUMBER parameter."""
-    # Determine default number based on profile type
-    default_number = "sample(0.2)" if has_nested_forwards else (5 if variables else 2)
+# --- Context for Parameter Requests ---
 
-    prompt = get_number_prompt(
-        profile=profile,
-        variables_info=variables_info,
-        language_info=language_info,
-        has_nested_forwards=has_nested_forwards,
-    )
 
-    response = llm.invoke(prompt)
-    response_text = response.content.strip()
+class ParamRequestContext(TypedDict):
+    """Context dictionary for requesting conversation parameters."""
 
-    # Extract number from response
+    llm: BaseLanguageModel
+    profile: dict[str, Any]
+    variables_info: str
+    language_info: str
+    has_nested_forwards: bool
+    supported_languages_text: str
+    languages_example: str
+
+
+# --- LLM Request Functions ---
+
+
+def _parse_number_response(response_text: str, default_number: str | int) -> str | int:
+    """Parses the LLM response for the 'number' parameter."""
     extracted_number = None
     for line in response_text.split("\n"):
         line_content = line.strip()
         if not line_content or ":" not in line_content:
             continue
-
         key, value = line_content.split(":", 1)
-        key = key.strip().lower()
-        value = value.strip()
-
-        if key == "number":
+        if key.strip().lower() == "number":
+            value = value.strip()
             if value == "all_combinations":
                 extracted_number = "all_combinations"
             elif "sample" in value.lower() and "(" in value and ")" in value:
-                try:
+                with contextlib.suppress(ValueError):
                     sample_value = float(value.split("(")[1].split(")")[0])
                     if 0.1 <= sample_value <= 1.0:
                         extracted_number = f"sample({sample_value})"
-                except ValueError:
-                    pass
             elif value.isdigit():
                 extracted_number = int(value)
-
-    # Use default if extraction failed
-    if extracted_number is None:
-        extracted_number = default_number
-
-    return extracted_number
+            break  # Found number, no need to check further lines
+    return extracted_number if extracted_number is not None else default_number
 
 
-def request_max_cost_from_llm(llm, profile, variables_info, language_info, number_value, has_nested_forwards):
-    """Prompt LLM to determine the MAX_COST parameter."""
-    prompt = get_max_cost_prompt(
-        profile=profile, variables_info=variables_info, language_info=language_info, number_value=number_value
+def request_number_from_llm(context: ParamRequestContext, variables: list[str]) -> str | int:
+    """Prompts LLM to determine the NUMBER parameter."""
+    default_number = "sample(0.2)" if context["has_nested_forwards"] else (5 if variables else 2)
+    prompt = get_number_prompt(
+        profile=context["profile"],
+        variables_info=context["variables_info"],
+        language_info=context["language_info"],
+        has_nested_forwards=context["has_nested_forwards"],
     )
+    response = context["llm"].invoke(prompt)
+    return _parse_number_response(response.content.strip(), default_number)
 
-    response = llm.invoke(prompt)
+
+def request_max_cost_from_llm(context: ParamRequestContext, number_value: str | int) -> float:
+    """Prompts LLM to determine the MAX_COST parameter."""
+    prompt = get_max_cost_prompt(
+        profile=context["profile"],
+        variables_info=context["variables_info"],
+        language_info=context["language_info"],
+        number_value=number_value,
+    )
+    response = context["llm"].invoke(prompt)
     response_text = response.content.strip()
-
-    # Default cost based on profile type
-    default_cost = 1.0 if not has_nested_forwards else 2.0
+    default_cost = 1.0 if not context["has_nested_forwards"] else 2.0
     max_cost = default_cost
-
-    # Extract max cost from response
     for line in response_text.split("\n"):
         line = line.strip()
         if not line or ":" not in line:
             continue
-
         key, value = line.split(":", 1)
-        key = key.strip().lower()
-        value = value.strip()
-
-        if key == "max_cost":
+        if key.strip().lower() == "max_cost":
             with contextlib.suppress(ValueError):
-                max_cost = float(value)
-
+                max_cost = float(value.strip())
+            break
     return max_cost
 
 
-def request_goal_style_from_llm(llm, profile, variables_info, language_info, number_value, max_cost):
-    """Prompt LLM to determine the GOAL_STYLE parameter."""
-    prompt = get_goal_style_prompt(
-        profile=profile,
-        variables_info=variables_info,
-        language_info=language_info,
-        number_value=number_value,
-        max_cost=max_cost,
-    )
-
-    response = llm.invoke(prompt)
-    response_text = response.content.strip()
-
-    # Default values
-    goal_style = {"steps": 11}
+def _parse_goal_style_response(response_text: str) -> dict[str, Any]:
+    """Parses the LLM response for the 'goal_style' parameter."""
+    goal_style = {"steps": 11}  # Default
     selected_style = "steps"
     goal_style_value = 11
 
-    # Extract goal style from response
     for line in response_text.split("\n"):
         line_content = line.strip()
         if not line_content or ":" not in line_content:
             continue
-
         key, value = line_content.split(":", 1)
         key = key.strip().lower()
         value = value.strip()
 
-        if key == "goal_style":
-            if value in ["steps", "all_answered", "random_steps"]:
-                selected_style = value
-                # Update the style with the current numeric value (goal_style_value)
-                if selected_style == "steps":
-                    goal_style = {"steps": goal_style_value}
-                elif selected_style == "all_answered":
-                    goal_style = {"all_answered": {"export": False, "limit": goal_style_value}}
-                elif selected_style == "random_steps":
-                    goal_style = {"random_steps": goal_style_value}
+        if key == "goal_style" and value in ["steps", "all_answered", "random_steps"]:
+            selected_style = value
         elif key == "goal_style_value":
-            try:
+            with contextlib.suppress(ValueError):
                 goal_style_value = int(value)
-                # Update the goal style with the new numeric value
-                if selected_style == "steps":
-                    goal_style = {"steps": goal_style_value}
-                elif selected_style == "all_answered":
-                    goal_style = {"all_answered": {"export": False, "limit": goal_style_value}}
-                elif selected_style == "random_steps":
-                    goal_style = {"random_steps": goal_style_value}
-            except ValueError:
-                pass
+
+        # Update goal_style based on potentially updated selected_style and goal_style_value
+        if selected_style == "steps":
+            goal_style = {"steps": goal_style_value}
+        elif selected_style == "all_answered":
+            goal_style = {"all_answered": {"export": False, "limit": goal_style_value}}
+        elif selected_style == "random_steps":
+            goal_style = {"random_steps": goal_style_value}
 
     return goal_style
 
 
+def request_goal_style_from_llm(
+    context: ParamRequestContext, number_value: str | int, max_cost: float
+) -> dict[str, Any]:
+    """Prompts LLM to determine the GOAL_STYLE parameter."""
+    prompt = get_goal_style_prompt(
+        profile=context["profile"],
+        variables_info=context["variables_info"],
+        language_info=context["language_info"],
+        number_value=number_value,
+        max_cost=max_cost,
+    )
+    response = context["llm"].invoke(prompt)
+    return _parse_goal_style_response(response.content.strip())
+
+
 def request_interaction_style_from_llm(
-    llm,
-    profile,
-    variables_info,
-    language_info,
-    number_value,
-    max_cost,
-    goal_style,
-    supported_languages_text,
-    languages_example,
-):
-    """Prompt LLM to determine the INTERACTION_STYLE parameter."""
+    context: ParamRequestContext, number_value: str | int, max_cost: float, goal_style: dict[str, Any]
+) -> list[str]:
+    """Prompts LLM to determine the INTERACTION_STYLE parameter."""
     prompt = get_interaction_style_prompt(
-        profile=profile,
-        variables_info=variables_info,
-        language_info=language_info,
+        profile=context["profile"],
+        variables_info=context["variables_info"],
+        language_info=context["language_info"],
         number_value=number_value,
         max_cost=max_cost,
         goal_style=goal_style,
-        supported_languages_text=supported_languages_text,
-        languages_example=languages_example,
+        supported_languages_text=context["supported_languages_text"],
+        languages_example=context["languages_example"],
     )
-
-    response = llm.invoke(prompt)
+    response = context["llm"].invoke(prompt)
     response_text = response.content.strip()
-
-    # Extract interaction style from response
     interaction_styles = []
-
     for line in response_text.split("\n"):
         line_content = line.strip()
         if not line_content or ":" not in line_content:
             continue
-
         key, value = line_content.split(":", 1)
-        key = key.strip().lower()
-        value = value.strip()
-
-        if key == "interaction_style":
+        if key.strip().lower() == "interaction_style":
+            value = value.strip()
             if "[" in value and "]" in value:
                 styles_part = value.replace("[", "").replace("]", "")
                 styles = [s.strip().strip("\"'") for s in styles_part.split(",")]
@@ -285,117 +285,102 @@ def request_interaction_style_from_llm(
                 style = value.strip().strip("\"'")
                 if style:
                     interaction_styles.append(style)
-
+            break
     return interaction_styles
 
 
-def generate_conversation_parameters(profiles, functionalities, llm, supported_languages=None):
-    """Generate conversation parameters for test profiles using sequential prompting."""
+# --- Main Generation Function ---
+
+
+def generate_conversation_parameters(
+    profiles: list[dict[str, Any]],
+    functionalities: list[dict[str, Any]],  # Keep functionalities for potential future use
+    llm: BaseLanguageModel,
+    supported_languages: list[str] | None = None,
+) -> list[dict[str, Any]]:
+    """Generates conversation parameters for each profile using sequential LLM prompting.
+
+    Args:
+        profiles: List of user profile dictionaries.
+        functionalities: List of discovered chatbot functionalities (currently unused but kept).
+        llm: The language model instance.
+        supported_languages: Optional list of supported languages.
+
+    Returns:
+        The list of profiles with an added 'conversation' key containing the generated parameters.
+    """
+    language_info, languages_example, supported_languages_text = prepare_language_info(supported_languages)
+
     for profile in profiles:
-        # Extract profile variables and build info
-        (
-            variables,
-            forward_with_dependencies,
-            has_nested_forwards,
-            nested_forward_info,
-            variables_info,
-        ) = extract_profile_variables(profile)
+        variables, _, has_nested_forwards, _, variables_info = extract_profile_variables(profile)
 
-        # Prepare language information
-        language_info, languages_example, supported_languages_text = prepare_language_info(supported_languages)
-
-        # Sequential prompting for each parameter
-
-        # Step 1: Determine NUMBER
-        number_value = request_number_from_llm(
-            llm, profile, variables_info, language_info, variables, has_nested_forwards
-        )
-
-        # Step 2: Determine MAX_COST
-        max_cost = request_max_cost_from_llm(
-            llm,
-            profile,
-            variables_info,
-            language_info,
-            number_value,
-            has_nested_forwards,
-        )
-
-        # Step 3: Determine GOAL_STYLE
-        goal_style = request_goal_style_from_llm(llm, profile, variables_info, language_info, number_value, max_cost)
-
-        # Step 4: Determine INTERACTION_STYLE
-        interaction_styles = request_interaction_style_from_llm(
-            llm,
-            profile,
-            variables_info,
-            language_info,
-            number_value,
-            max_cost,
-            goal_style,
-            supported_languages_text,
-            languages_example,
-        )
-
-        # Build final conversation parameters
-        conversation_params = {
-            "number": number_value,
-            "max_cost": max_cost,
-            "goal_style": goal_style,
+        # Create context for this profile's requests
+        request_context: ParamRequestContext = {
+            "llm": llm,
+            "profile": profile,
+            "variables_info": variables_info,
+            "language_info": language_info,
+            "has_nested_forwards": has_nested_forwards,
+            "supported_languages_text": supported_languages_text,
+            "languages_example": languages_example,
         }
 
+        # Sequential prompting
+        number_value = request_number_from_llm(request_context, variables)
+        max_cost = request_max_cost_from_llm(request_context, number_value)
+        goal_style = request_goal_style_from_llm(request_context, number_value, max_cost)
+        interaction_styles = request_interaction_style_from_llm(request_context, number_value, max_cost, goal_style)
+
+        # Build and assign parameters
+        conversation_params = {"number": number_value, "max_cost": max_cost, "goal_style": goal_style}
         if interaction_styles:
             conversation_params["interaction_style"] = interaction_styles
-
-        # Set parameters in profile
         profile["conversation"] = conversation_params
 
     return profiles
+
+
+# --- LangGraph Node ---
 
 
 def conversation_params_node(state: State, llm: BaseLanguageModel) -> dict[str, Any]:
     """Node that generates specific parameters needed for conversation goals.
 
     Args:
-        state (State): The current graph state.
+        state: The current graph state, expected to contain 'conversation_goals'
+               and optionally 'discovered_functionalities' and 'supported_languages'.
         llm: The language model instance.
 
     Returns:
-        dict: Updated state dictionary with parameters added to goals.
+        A dictionary containing the updated 'conversation_goals' list.
     """
-    if not state.get("conversation_goals"):
+    conversation_goals = state.get("conversation_goals")
+    if not conversation_goals:
         print("\n--- Skipping conversation parameters: No goals generated. ---")
-        return {"conversation_goals": state.get("conversation_goals", [])}  # Return existing goals or empty
+        return {"conversation_goals": []}
 
     print("\n--- Generating conversation parameters ---")
 
-    # Functionalities are dicts (structured)
+    # Flatten functionalities (currently unused by generate_conversation_parameters but kept for context)
     structured_root_dicts = state.get("discovered_functionalities", [])
+    flat_func_info = []
+    nodes_to_process = list(structured_root_dicts)
+    while nodes_to_process:
+        node = nodes_to_process.pop(0)
+        info = {k: v for k, v in node.items() if k != "children"}
+        flat_func_info.append(info)
+        if node.get("children"):
+            nodes_to_process.extend(node["children"])
 
-    # Helper to flatten the structure info
-    def get_all_func_info(nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
-        all_info = []
-        for node in nodes:
-            # Get node info (excluding children for flat list)
-            info = {k: v for k, v in node.items() if k != "children"}
-            all_info.append(info)
-            if node.get("children"):  # Recursively add children info
-                all_info.extend(get_all_func_info(node["children"]))
-        return all_info
-
-    flat_func_info = get_all_func_info(structured_root_dicts)
-
-    # Call parameter generation function
     try:
         profiles_with_params = generate_conversation_parameters(
-            state["conversation_goals"],
-            flat_func_info,  # Pass the flat list
+            conversation_goals,
+            flat_func_info,
             llm,
-            supported_languages=state.get("supported_languages", []),
+            supported_languages=state.get("supported_languages"),
         )
-        # Update state (only need to update goals)
-    except RuntimeError as e:
-        print(f"Error during parameter generation: {e}")
-        return {"conversation_goals": state.get("conversation_goals", [])}  # Return existing goals on error
-    else:
         return {"conversation_goals": profiles_with_params}
+    except Exception as e:  # Catch broader exceptions during generation
+        print(f"Error during parameter generation: {e}")
+        # Return original goals on error to avoid losing them
+        return {"conversation_goals": conversation_goals}
