@@ -1,6 +1,7 @@
+import contextlib
 from typing import Any
 
-from ..schemas.state import State
+from chatbot_explorer.schemas.state import State
 
 
 def extract_profile_variables(profile):
@@ -225,10 +226,8 @@ def prompt_for_max_cost(llm, profile, variables_info, language_info, number_valu
         value = value.strip()
 
         if key == "max_cost":
-            try:
+            with contextlib.suppress(ValueError):
                 max_cost = float(value)
-            except ValueError:
-                pass
 
     return max_cost
 

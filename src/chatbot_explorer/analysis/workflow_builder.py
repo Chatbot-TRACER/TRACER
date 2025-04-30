@@ -88,7 +88,8 @@ def build_workflow_structure(
         # Parse the JSON string into a list of node info dicts
         structured_nodes_info = json.loads(json_str)
         if not isinstance(structured_nodes_info, list):
-            raise ValueError("LLM response is not a JSON list.")
+            msg = "LLM response is not a JSON list."
+            raise ValueError(msg)
 
         # Build the hierarchy from the parent_names info
         root_nodes_dicts = build_node_hierarchy(structured_nodes_info)
@@ -201,7 +202,8 @@ def extract_json_from_response(response_content: str) -> str:
         if response_content.strip().startswith("[") and response_content.strip().endswith("]"):
             json_str = response_content.strip()
         else:
-            raise ValueError("Could not extract JSON block from LLM response.")
+            msg = "Could not extract JSON block from LLM response."
+            raise ValueError(msg)
 
     return json_str
 
@@ -216,7 +218,7 @@ def build_node_hierarchy(structured_nodes_info: list[dict[str, Any]]) -> list[di
         node_info["children"] = []
 
     # Link children to parents based on 'parent_names'
-    for node_name, node_info in nodes_map.items():
+    for node_info in nodes_map.values():
         parent_names = node_info.get("parent_names", [])
         for parent_name in parent_names:
             if parent_name in nodes_map:
@@ -232,6 +234,4 @@ def build_node_hierarchy(structured_nodes_info: list[dict[str, Any]]) -> list[di
             if isinstance(child_info, dict) and "name" in child_info:
                 all_child_names.add(child_info["name"])
 
-    root_nodes = [node_info for node_name, node_info in nodes_map.items() if node_name not in all_child_names]
-
-    return root_nodes
+    return [node_info for node_name, node_info in nodes_map.items() if node_name not in all_child_names]

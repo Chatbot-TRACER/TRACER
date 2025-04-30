@@ -2,13 +2,13 @@ import requests
 
 
 class Chatbot:
-    def __init__(self, url):
+    def __init__(self, url) -> None:
         self.url = url
         self.fallback = "I do not understand you"
 
 
 class ChatbotTaskyto(Chatbot):
-    def __init__(self, url):
+    def __init__(self, url) -> None:
         Chatbot.__init__(self, url)
         self.id = None
 
@@ -55,7 +55,7 @@ class ChatbotTaskyto(Chatbot):
 
 
 class MillionBot(Chatbot):
-    def __init__(self, url):
+    def __init__(self, url) -> None:
         Chatbot.__init__(self, url)
         self.headers = {}
         self.payload = {}
@@ -64,7 +64,7 @@ class MillionBot(Chatbot):
         self.reset_url = None
         self.reset_payload = None
 
-    def init_chatbot(self, bot_id, conversation_id, url, sender="671ab2931382d56e5140f023"):
+    def init_chatbot(self, bot_id, conversation_id, url, sender="671ab2931382d56e5140f023") -> None:
         self.url = "https://api.1millionbot.com/api/public/messages"
         self.headers = {
             "Content-Type": "application/json",
@@ -169,7 +169,7 @@ class MillionBot(Chatbot):
 
 
 class ChatbotAdaUam(MillionBot):
-    def __init__(self, url):
+    def __init__(self, url) -> None:
         MillionBot.__init__(self, url)
         self.init_chatbot(
             bot_id="60a3be81f9a6b98f7659a6f9",

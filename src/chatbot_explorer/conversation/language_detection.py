@@ -27,6 +27,4 @@ def extract_supported_languages(chatbot_response: str, llm) -> list[str]:
 
     # Clean up the LLM response
     languages = languages.replace("[", "").replace("]", "")
-    language_list = [lang.strip() for lang in languages.split(",") if lang.strip()]
-
-    return language_list
+    return [lang.strip() for lang in languages.split(",") if lang.strip()]

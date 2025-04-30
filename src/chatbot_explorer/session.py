@@ -203,7 +203,7 @@ def run_exploration_session(
 
             # If forcing change, add a temporary system message for this turn
             if force_topic_change_instruction:
-                messages_for_llm_this_turn = messages_for_llm + [SystemMessage(content=force_topic_change_instruction)]
+                messages_for_llm_this_turn = [*messages_for_llm, SystemMessage(content=force_topic_change_instruction)]
             else:
                 messages_for_llm_this_turn = messages_for_llm
 

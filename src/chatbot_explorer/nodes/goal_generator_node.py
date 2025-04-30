@@ -1,8 +1,8 @@
 import re
 from typing import Any
 
-from ..constants import VARIABLE_PATTERN
-from ..schemas.state import State
+from chatbot_explorer.constants import VARIABLE_PATTERN
+from chatbot_explorer.schemas.state import State
 
 
 def ensure_double_curly(text):
@@ -38,7 +38,7 @@ def _build_single_variable_prompt(
         f"OTHER VARIABLES IN THIS PROFILE: {', '.join(sorted(all_other_variables))}" if all_other_variables else ""
     )
 
-    prompt = f"""
+    return f"""
     Define parameters for the variable '{variable_name}' used in a user simulator profile.
 
     USER PROFILE CONTEXT:
@@ -110,7 +110,6 @@ def _build_single_variable_prompt(
 
     Respond ONLY with the FUNCTION, TYPE, and DATA for the variable '{variable_name}'.
     """
-    return prompt
 
 
 def _parse_single_variable_definition(
@@ -820,8 +819,7 @@ LANGUAGE REQUIREMENT:
     profiles = generate_context(profiles, functionalities, llm, supported_languages)
 
     # Generate output fields
-    profiles = generate_outputs(profiles, functionalities, llm, supported_languages)
-    return profiles
+    return generate_outputs(profiles, functionalities, llm, supported_languages)
 
 
 def goal_generator_node(state: State, llm) -> dict[str, Any]:

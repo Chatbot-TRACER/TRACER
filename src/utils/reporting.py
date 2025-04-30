@@ -11,7 +11,7 @@ import yaml
 # --------------------------------------------------- #
 
 
-def generate_graph_image(structured_data: list[dict[str, Any]], output_filename_base: str):
+def generate_graph_image(structured_data: list[dict[str, Any]], output_filename_base: str) -> None:
     """Generates a PNG visualization of the workflow graph using Graphviz.
 
     Args:
@@ -57,7 +57,7 @@ def generate_graph_image(structured_data: list[dict[str, Any]], output_filename_
     processed_nodes: set[str] = set()
     processed_edges: set[tuple[str, str]] = set()
 
-    def add_nodes_edges(graph: graphviz.Digraph, node_dict: dict[str, Any], depth=0):
+    def add_nodes_edges(graph: graphviz.Digraph, node_dict: dict[str, Any], depth=0) -> None:
         """Recursive helper to add nodes and edges to the graph."""
         node_name = node_dict.get("name")
         if not node_name:
@@ -150,7 +150,7 @@ def generate_graph_image(structured_data: list[dict[str, Any]], output_filename_
 # ------------------------------------------------ #
 
 
-def print_structured_functionalities(f, nodes: list[dict[str, Any]], indent: str = ""):
+def print_structured_functionalities(f, nodes: list[dict[str, Any]], indent: str = "") -> None:
     """Recursively print the structured functionalities to a file object.
 
     Args:
@@ -201,7 +201,7 @@ def write_report(
     limitations: list[str],
     supported_languages: list[str],
     fallback_message: str | None,
-):
+) -> None:
     """Writes the analysis results to report.txt.
 
     Args:
@@ -336,7 +336,7 @@ def write_report(
 # -------------------------------------------------- #
 
 
-def save_profiles(built_profiles: list[dict[str, Any]], output_dir: str):
+def save_profiles(built_profiles: list[dict[str, Any]], output_dir: str) -> None:
     """Saves the generated user profiles to individual YAML files in the specified directory.
 
     Args:

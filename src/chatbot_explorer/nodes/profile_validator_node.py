@@ -1,9 +1,8 @@
 from typing import Any
 
+from chatbot_explorer.analysis.profile_generator import validate_and_fix_profile
+from chatbot_explorer.schemas.state import State
 from scripts.validation_script import YamlValidator
-
-from ..analysis.profile_generator import validate_and_fix_profile
-from ..schemas.state import State
 
 
 def profile_validator_node(state: State, llm) -> dict[str, Any]:

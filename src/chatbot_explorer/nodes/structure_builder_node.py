@@ -1,8 +1,8 @@
 from typing import Any
 
-from ..analysis.chatbot_classification import classify_chatbot_type
-from ..analysis.workflow_builder import build_workflow_structure
-from ..schemas.state import State
+from chatbot_explorer.analysis.chatbot_classification import classify_chatbot_type
+from chatbot_explorer.analysis.workflow_builder import build_workflow_structure
+from chatbot_explorer.schemas.state import State
 
 
 def structure_builder_node(state: State, llm) -> dict[str, Any]:

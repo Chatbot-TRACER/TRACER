@@ -11,14 +11,14 @@ class FunctionalityNode:
         parameters: list[dict[str, Any]] | None = None,
         parent: Optional["FunctionalityNode"] = None,
         children: list["FunctionalityNode"] | None = None,
-    ):
+    ) -> None:
         self.name: str = name
         self.description: str = description
         self.parameters: list[dict[str, Any]] = parameters if parameters else []
         self.parent: FunctionalityNode | None = parent
         self.children: list[FunctionalityNode] = children if children is not None else []
 
-    def add_child(self, child_node: "FunctionalityNode"):
+    def add_child(self, child_node: "FunctionalityNode") -> None:
         """Adds a child node to this node."""
         child_node.parent = self
         if child_node not in self.children:

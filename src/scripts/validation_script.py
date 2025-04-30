@@ -81,7 +81,7 @@ languages = [
 
 
 class YamlValidator:
-    def __init__(self):
+    def __init__(self) -> None:
         self.required_top_level = [
             "test_name",
             # "llm",
@@ -185,7 +185,7 @@ class YamlValidator:
             if "goals" in user and isinstance(user["goals"], list):
                 for goal in user["goals"]:
                     if isinstance(goal, dict) and len(goal) == 1:
-                        var_name = list(goal.keys())[0]
+                        var_name = next(iter(goal.keys()))
                         var_def = goal[var_name]
 
                         if isinstance(var_def, dict) and "function" in var_def:
@@ -332,14 +332,13 @@ class YamlValidator:
                             ),
                         )
 
-        if "language" in user:
-            if user["language"] not in languages:
-                errors.append(
-                    ValidationError(
-                        message=(f"Invalid language '{user['language']}'. Must be one of: {', '.join(languages)}"),
-                        path="/user/language",
-                    ),
-                )
+        if "language" in user and user["language"] not in languages:
+            errors.append(
+                ValidationError(
+                    message=(f"Invalid language '{user['language']}'. Must be one of: {', '.join(languages)}"),
+                    path="/user/language",
+                ),
+            )
 
         # Validate goals structure
         if "goals" in user:
@@ -355,7 +354,7 @@ class YamlValidator:
                 defined_variables = {}
                 for i, goal in enumerate(user["goals"]):
                     if isinstance(goal, dict) and len(goal) == 1:
-                        var_name = list(goal.keys())[0]
+                        var_name = next(iter(goal.keys()))
                         var_def = goal[var_name]
 
                         if isinstance(var_def, dict) and "function" in var_def:
@@ -449,7 +448,7 @@ class YamlValidator:
                                 ),
                             )
                         else:
-                            var_name = list(goal.keys())[0]
+                            var_name = next(iter(goal.keys()))
                             var_def = goal[var_name]
 
                             # Check required fields for variable definition
@@ -559,14 +558,13 @@ class YamlValidator:
                                         and "max" in data
                                         and data["min"] is not None
                                         and data["max"] is not None
-                                    ):
-                                        if data["min"] >= data["max"]:
-                                            errors.append(
-                                                ValidationError(
-                                                    "Minimum value must be smaller than maximum value",
-                                                    f"/user/goals/{i}/{var_name}/data",
-                                                ),
-                                            )
+                                    ) and data["min"] >= data["max"]:
+                                        errors.append(
+                                            ValidationError(
+                                                "Minimum value must be smaller than maximum value",
+                                                f"/user/goals/{i}/{var_name}/data",
+                                            ),
+                                        )
 
                                     # Check that either step or linspace is provided for float
                                     if var_type == "float" and "step" not in data and "linspace" not in data:
@@ -688,7 +686,7 @@ class YamlValidator:
                     )
 
             # Detect circular dependencies
-            def detect_cycle(node, visited, path, cycles):
+            def detect_cycle(node, visited, path, cycles) -> None:
                 visited[node] = True
                 path.append(node)
 
@@ -770,7 +768,7 @@ class YamlValidator:
                         )
                         continue
 
-                    output_name = list(output_item.keys())[0]
+                    output_name = next(iter(output_item.keys()))
                     output_def = output_item[output_name]
 
                     # Check that output definition is a dictionary
@@ -1031,7 +1029,7 @@ class YamlValidator:
                             )
                             continue
 
-                        style_type = list(style.keys())[0]
+                        style_type = next(iter(style.keys()))
                         style_value = style[style_type]
 
                         # Handle "random" style - must be a list of other styles
