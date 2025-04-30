@@ -77,8 +77,9 @@ def _check_nested_forwards(profile: dict[str, Any], variables: list[str]) -> tup
 def _build_variables_info_string(
     variables: list[str],
     forward_with_dependencies: list[str],
-    has_nested_forwards: bool,
     nested_forward_info: str,
+    *,
+    has_nested_forwards: bool,
 ) -> str:
     """Builds the descriptive string about variables for LLM prompts."""
     if not variables:
@@ -112,7 +113,7 @@ def extract_profile_variables(profile: dict[str, Any]) -> tuple[list[str], list[
     variables = _get_profile_variables(profile)
     has_nested_forwards, forward_with_dependencies, nested_forward_info = _check_nested_forwards(profile, variables)
     variables_info = _build_variables_info_string(
-        variables, forward_with_dependencies, has_nested_forwards, nested_forward_info
+        variables, forward_with_dependencies, nested_forward_info, has_nested_forwards=has_nested_forwards
     )
     return variables, forward_with_dependencies, has_nested_forwards, nested_forward_info, variables_info
 
@@ -300,7 +301,6 @@ def request_interaction_style_from_llm(
 
 def generate_conversation_parameters(
     profiles: list[dict[str, Any]],
-    functionalities: list[dict[str, Any]],
     llm: BaseLanguageModel,
     supported_languages: list[str] | None = None,
 ) -> list[dict[str, Any]]:
@@ -308,7 +308,6 @@ def generate_conversation_parameters(
 
     Args:
         profiles: List of user profile dictionaries.
-        functionalities: List of discovered chatbot functionalities (currently unused but kept).
         llm: The language model instance.
         supported_languages: Optional list of supported languages.
 
@@ -381,7 +380,6 @@ def conversation_params_node(state: State, llm: BaseLanguageModel) -> dict[str, 
     try:
         profiles_with_params = generate_conversation_parameters(
             conversation_goals,
-            flat_func_info,
             llm,
             supported_languages=state.get("supported_languages"),
         )
