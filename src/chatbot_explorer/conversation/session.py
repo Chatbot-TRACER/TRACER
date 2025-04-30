@@ -129,14 +129,106 @@ def _analyze_session_and_update_nodes(
     return conversation_history_dict, root_nodes, pending_nodes, explored_nodes
 
 
+def _get_explorer_next_message(
+    conversation_history_lc: list[BaseMessage],
+    llm: Any,
+    force_topic_change_instruction: str | None,
+) -> str | None:
+    """Gets the next message from the explorer LLM."""
+    try:
+        max_history_turns_for_llm = 10
+        # Include system prompt + recent turns
+        messages_for_llm = [conversation_history_lc[0]] + conversation_history_lc[-(max_history_turns_for_llm * 2) :]
+        # Add force topic change instruction if applicable
+        messages_for_llm_this_turn = (
+            [*messages_for_llm, SystemMessage(content=force_topic_change_instruction)]
+            if force_topic_change_instruction
+            else messages_for_llm
+        )
+        llm_response = llm.invoke(messages_for_llm_this_turn)
+        return llm_response.content.strip()
+    except Exception as e:
+        print(f"\nError getting response from Explorer AI LLM: {e}. Ending session.")
+        return None
+
+
+def _handle_chatbot_interaction(
+    explorer_message: str,
+    the_chatbot: Any,
+    llm: Any,
+    fallback_message: str | None,
+) -> tuple[bool, str, bool]:
+    """Interacts with the chatbot, handles retries on fallback/error, and returns outcome.
+
+    Returns:
+        Tuple[bool, str, bool]: (is_comm_ok, final_chatbot_message, was_retry_needed_and_failed)
+    """
+    is_ok, chatbot_message = the_chatbot.execute_with_input(explorer_message)
+
+    if not is_ok:
+        print("\nError communicating with chatbot.")
+        return False, "[Chatbot communication error]", True  # Communication failed, counts as failed retry
+
+    original_chatbot_message = chatbot_message
+    is_initial_fallback = fallback_message and is_semantically_fallback(chatbot_message, fallback_message, llm)
+    is_initial_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
+    retry_also_failed = False
+    needs_retry = is_initial_fallback or is_initial_parsing_error
+
+    if needs_retry:
+        failure_reason = (
+            "Fallback message" if is_initial_fallback else "Potential chatbot error (OUTPUT_PARSING_FAILURE)"
+        )
+        print(f"\n   ({failure_reason} detected. Rephrasing and retrying...)")
+        rephrase_prompt = get_rephrase_prompt(explorer_message)
+        try:
+            rephrased_response = llm.invoke(rephrase_prompt)
+            rephrased_message = rephrased_response.content.strip().strip("\"'")
+            if rephrased_message and rephrased_message != explorer_message:
+                print(f"   Original: '{explorer_message}'")
+                print(f"   Rephrased: '{rephrased_message}'")
+                is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(rephrased_message)
+            else:
+                print("   Failed to generate a different rephrasing. Retrying with original.")
+                is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(explorer_message)
+        except Exception as e:
+            print(f"   Error rephrasing message: {e}. Retrying with original.")
+            is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(explorer_message)
+
+        if is_ok_retry:
+            is_retry_fallback = fallback_message and is_semantically_fallback(
+                chatbot_message_retry, fallback_message, llm
+            )
+            is_retry_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message_retry
+            if (
+                chatbot_message_retry != original_chatbot_message
+                and not is_retry_fallback
+                and not is_retry_parsing_error
+            ):
+                print("   Retry successful!")
+                chatbot_message = chatbot_message_retry  # Use the successful retry message
+                # retry_also_failed remains False
+            else:
+                print("   Retry failed (still received fallback/error or same message)")
+                chatbot_message = original_chatbot_message  # Revert to original message on failed retry
+                retry_also_failed = True
+        else:
+            print("   Retry failed (communication error)")
+            chatbot_message = original_chatbot_message  # Revert to original message on failed retry
+            retry_also_failed = True
+
+    # Return communication status, the final message to record, and whether a needed retry failed
+    return True, chatbot_message, retry_also_failed
+
+
 def _run_conversation_loop(
     session_num: int,
     max_turns: int,
-    llm,
-    the_chatbot,
+    llm: Any,
+    the_chatbot: Any,
     fallback_message: str | None,
-    initial_history,
-):
+    initial_history: list[BaseMessage],
+) -> tuple[list[BaseMessage], int]:
     """Runs the main conversation loop for a single session."""
     conversation_history_lc = initial_history[:]  # Work on a copy
     consecutive_failures = 0
@@ -144,133 +236,75 @@ def _run_conversation_loop(
     turn_count = 1  # Start at 1 because the initial exchange is already in history
 
     while True:
-        # Stop if we hit the max number of turns
+        # 1. Check Stop Conditions
         if turn_count >= max_turns:
             print(f"\nReached maximum turns ({max_turns}). Ending session {session_num + 1}.")
             break
 
-        # --- Check for forcing topic change ---
+        # 2. Determine if Topic Change is Needed
         force_topic_change_instruction = get_force_topic_change_instruction(
             force_topic_change_next_turn, consecutive_failures
         )
         if force_topic_change_instruction:
             print(f"\n Forcing topic change: {force_topic_change_instruction.split(':')[1].strip()} !!!")
+            # Reset flag after using it
             if force_topic_change_next_turn:
                 force_topic_change_next_turn = False
 
-        # --- Get explorer's next message ---
-        explorer_response_content = None
-        try:
-            max_history_turns_for_llm = 10
-            messages_for_llm = [conversation_history_lc[0]] + conversation_history_lc[
-                -(max_history_turns_for_llm * 2) :
-            ]
-            messages_for_llm_this_turn = (
-                [*messages_for_llm, SystemMessage(content=force_topic_change_instruction)]
-                if force_topic_change_instruction
-                else messages_for_llm
-            )
-            llm_response = llm.invoke(messages_for_llm_this_turn)
-            explorer_response_content = llm_response.content.strip()
-        except Exception as e:
-            print(f"\nError getting response from Explorer AI LLM: {e}. Ending session.")
+        # 3. Get Explorer's Next Message
+        explorer_response_content = _get_explorer_next_message(
+            conversation_history_lc, llm, force_topic_change_instruction
+        )
+        if explorer_response_content is None:
+            print("\nError getting response from Explorer AI LLM. Ending session.")
             break
-
-        if not explorer_response_content:
-            print("\nError: Failed to get next action from Explorer AI LLM. Ending session.")
-            break
-
-        print(f"\nExplorer: {explorer_response_content}")
-
         if "EXPLORATION COMPLETE" in explorer_response_content.upper():
             print(f"\nExplorer has finished session {session_num + 1} exploration.")
             break
 
+        print(f"\nExplorer: {explorer_response_content}")
         conversation_history_lc.append(AIMessage(content=explorer_response_content))
 
-        # --- Interact with the chatbot and handle potential failures/retries ---
-        is_ok, chatbot_message = the_chatbot.execute_with_input(explorer_response_content)
+        # 4. Interact with Chatbot (with retry logic)
+        is_comm_ok, final_chatbot_message, retry_failed = _handle_chatbot_interaction(
+            explorer_response_content, the_chatbot, llm, fallback_message
+        )
 
-        if not is_ok:
-            print("\nError communicating with chatbot. Ending session.")
-            conversation_history_lc.append(HumanMessage(content="[Chatbot communication error]"))
+        # 5. Update History and State based on Interaction Outcome
+        conversation_history_lc.append(HumanMessage(content=final_chatbot_message))
+        print(f"\nChatbot: {final_chatbot_message}")
+
+        if not is_comm_ok:
+            # Communication error during interaction (initial or retry)
             consecutive_failures += 1
-            force_topic_change_next_turn = True
+            force_topic_change_next_turn = True  # Force change after comms error
+            print(f"   (Communication failure. Consecutive failures: {consecutive_failures})")
             break  # End session on communication error
 
-        original_chatbot_message = chatbot_message
-        is_fallback = fallback_message and is_semantically_fallback(chatbot_message, fallback_message, llm)
-        is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
-        retry_also_failed = False
-
-        if is_fallback or is_parsing_error:
-            failure_reason = "Fallback message" if is_fallback else "Potential chatbot error (OUTPUT_PARSING_FAILURE)"
-            print(f"\n   ({failure_reason} detected. Rephrasing and retrying...)")
-            rephrase_prompt = get_rephrase_prompt(explorer_response_content)
-            try:
-                rephrased_response = llm.invoke(rephrase_prompt)
-                rephrased_message = rephrased_response.content.strip().strip("\"'")
-                if rephrased_message and rephrased_message != explorer_response_content:
-                    print(f"   Original: '{explorer_response_content}'")
-                    print(f"   Rephrased: '{rephrased_message}'")
-                    is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(rephrased_message)
-                else:
-                    print("   Failed to generate a different rephrasing. Retrying with original.")
-                    is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(explorer_response_content)
-            except Exception as e:
-                print(f"   Error rephrasing message: {e}. Retrying with original.")
-                is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(explorer_response_content)
-
-            if is_ok_retry:
-                is_retry_fallback = fallback_message and is_semantically_fallback(
-                    chatbot_message_retry, fallback_message, llm
-                )
-                is_retry_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message_retry
-                if (
-                    chatbot_message_retry != original_chatbot_message
-                    and not is_retry_fallback
-                    and not is_retry_parsing_error
-                ):
-                    print("   Retry successful!")
-                    chatbot_message = chatbot_message_retry
-                    consecutive_failures = 0  # Reset on successful retry
-                else:
-                    print("   Retry failed (still received fallback/error)")
-                    chatbot_message = original_chatbot_message
-                    retry_also_failed = True
-            else:
-                print("   Retry failed (communication error)")
-                chatbot_message = original_chatbot_message
-                retry_also_failed = True
-        # --- END Rephrasing Retry Logic ---
-
-        # --- Update state based on FINAL outcome of the turn ---
-        final_is_fallback = fallback_message and is_semantically_fallback(chatbot_message, fallback_message, llm)
-        final_is_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
+        # Check if the final response (after potential retry) is still a fallback/error
+        final_is_fallback = fallback_message and is_semantically_fallback(final_chatbot_message, fallback_message, llm)
+        final_is_parsing_error = "OUTPUT_PARSING_FAILURE" in final_chatbot_message
 
         if final_is_fallback or final_is_parsing_error:
-            # Increment failures only if the initial attempt failed AND the retry also failed (or wasn't needed)
-            if retry_also_failed or not (is_fallback or is_parsing_error):
-                consecutive_failures += 1
-                print(f"   (Consecutive failures: {consecutive_failures})")
-            # Force change next turn only if the retry specifically failed
-            if retry_also_failed:
+            # Increment failures if the interaction ended in fallback/error
+            consecutive_failures += 1
+            print(f"   (Final response is fallback/error. Consecutive failures: {consecutive_failures})")
+            # Force change only if a retry was attempted and it specifically failed
+            if retry_failed:
                 force_topic_change_next_turn = True
         else:
-            # Reset counter if the turn was successful (even if it was a successful retry)
+            # Successful interaction (or successful retry)
             if consecutive_failures > 0:
                 print(f"   (Successful response. Resetting consecutive failures from {consecutive_failures}.)")
             consecutive_failures = 0
-            force_topic_change_next_turn = False
-        # ---
+            force_topic_change_next_turn = False  # Ensure flag is reset on success
 
-        print(f"\nChatbot: {chatbot_message}")
-        conversation_history_lc.append(HumanMessage(content=chatbot_message))
-
-        if chatbot_message.lower() in ["quit", "exit", "q", "bye", "goodbye"]:
+        # 6. Check if Chatbot Ended Conversation
+        if final_chatbot_message.lower() in ["quit", "exit", "q", "bye", "goodbye"]:
             print("Chatbot ended the conversation. Ending session.")
             break
 
+        # 7. Increment Turn Count
         turn_count += 1
 
     return conversation_history_lc, turn_count
