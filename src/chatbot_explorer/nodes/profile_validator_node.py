@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from ..state import State
 from ..utils.analysis.profile_generator import validate_and_fix_profile
-from ..validation_script import YamlValidator
+from scripts.validation_script import YamlValidator
 
 
 def profile_validator_node(state: State, llm) -> Dict[str, Any]:
