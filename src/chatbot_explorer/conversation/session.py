@@ -1,3 +1,5 @@
+"""Manages the conversational exploration sessions with the target chatbot."""
+
 import enum
 import secrets
 from typing import TypedDict
@@ -30,18 +32,45 @@ from .fallback_detection import (
 
 
 class ExplorationGraphState(TypedDict):
+    """Represents the state of the functionality graph being explored.
+
+    Attributes:
+        root_nodes: List of root nodes in the graph.
+        pending_nodes: List of nodes that are pending exploration.
+        explored_nodes: Set of node identifiers that have been explored.
+    """
+
     root_nodes: list[FunctionalityNode]
     pending_nodes: list[FunctionalityNode]
     explored_nodes: set[str]
 
 
 class ConversationContext(TypedDict):
+    """Contextual information needed during the conversation loop."""
+
     llm: BaseLanguageModel
     the_chatbot: Chatbot
     fallback_message: str | None
 
 
 class ExplorationSessionConfig(TypedDict):
+    """Configuration and state required to run a single exploration session.
+
+    Attributes:
+        session_num: The current session number.
+        max_sessions: The maximum number of sessions.
+        max_turns: The maximum number of turns per session.
+        llm: The language model instance.
+        the_chatbot: The chatbot instance.
+        fallback_message: The fallback message for the chatbot.
+        current_node: The current functionality node being explored.
+        graph_state: The current state of the exploration graph.
+        supported_languages: List of languages supported in the session.
+
+
+
+    """
+
     session_num: int
     max_sessions: int
     max_turns: int
@@ -54,6 +83,8 @@ class ExplorationSessionConfig(TypedDict):
 
 
 class InteractionOutcome(enum.Enum):
+    """Represents the possible outcomes of an interaction with the chatbot."""
+
     SUCCESS = 0
     COMM_ERROR = 1
     FALLBACK_DETECTED = 2
@@ -389,7 +420,23 @@ def _run_conversation_loop(
 def run_exploration_session(
     config: ExplorationSessionConfig,
 ) -> tuple[list[dict[str, str]], ExplorationGraphState]:
-    """Runs one chat session to explore the chatbot's capabilities based on the provided configuration."""
+    """Runs one chat session to explore the chatbot's capabilities based on the provided configuration.
+
+    Args:
+        config: An ExplorationSessionConfig dictionary containing all necessary
+            parameters and state for the session, including session number, turn limits,
+            LLM instance, chatbot connector, target functionality node (if any),
+            the current graph state, and supported languages.
+
+    Returns:
+        A tuple containing:
+            - list[dict[str, str]]: The conversation history of the session, formatted
+              as a list of dictionaries, where each dictionary has 'role' (system,
+              assistant, or user) and 'content' keys.
+            - ExplorationGraphState: The updated state of the exploration graph after
+              analyzing the session's conversation and potentially adding or modifying
+              functionality nodes.
+    """
     # Extract parameters from the config object
     session_num = config["session_num"]
     max_sessions = config["max_sessions"]
