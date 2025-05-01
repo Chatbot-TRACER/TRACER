@@ -1,3 +1,5 @@
+"""Constants for the chatbot explorer module."""
+
 import re
 
 # Regex to find {{variables}}

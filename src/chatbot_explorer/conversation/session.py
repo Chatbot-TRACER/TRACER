@@ -366,7 +366,8 @@ def _run_conversation_loop(
 
         # 2. Determine if Topic Change is Needed
         force_topic_change_instruction = get_force_topic_change_instruction(
-            force_topic_change_next_turn, consecutive_failures
+            force_topic_change_next_turn=force_topic_change_next_turn,
+            consecutive_failures=consecutive_failures,
         )
         if force_topic_change_instruction:
             print("\n   Forcing topic change.")
