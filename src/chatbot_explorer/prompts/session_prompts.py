@@ -2,6 +2,8 @@
 
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 
+MAX_CONSECUTIVE_FAILURES = 2
+
 
 def get_session_focus(current_node: FunctionalityNode | None) -> str:
     """Determine the focus string for the exploration session."""
@@ -25,11 +27,11 @@ def get_language_instruction(supported_languages: list[str] | None, primary_lang
     return ""  # Return empty string if no languages detected
 
 
-def get_force_topic_change_instruction(force_topic_change_next_turn: bool, consecutive_failures: int) -> str | None:
+def get_force_topic_change_instruction(consecutive_failures: int, *, force_topic_change_next_turn: bool) -> str | None:
     """Generate the critical override instruction if topic change is forced."""
     if force_topic_change_next_turn:
         return "CRITICAL OVERRIDE: Your previous attempt AND a retry both failed (likely hit fallback). You MUST abandon the last topic/question now. Ask about a completely different, plausible capability"
-    if consecutive_failures >= 2:
+    if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
         return f"CRITICAL OVERRIDE: The chatbot has failed to respond meaningfully {consecutive_failures} times in a row on the current topic/line of questioning. You MUST abandon this topic now. Ask about a completely different, plausible capability"
     return None  # No override needed
 
@@ -54,7 +56,7 @@ EXPLORATION FOCUS FOR THIS SESSION:
 {session_focus}
 
 Try to follow the focus and the adaptive exploration guideline, especially the rule about abandoning topics after repetitive failures. After {max_turns} exchanges, or when you believe you have thoroughly explored this specific path/topic (or reached a dead end/loop), respond ONLY with "EXPLORATION COMPLETE".
-"""
+"""  # noqa: S608
 
 
 def get_initial_question_prompt(current_node: FunctionalityNode, primary_language: str | None = None) -> str:

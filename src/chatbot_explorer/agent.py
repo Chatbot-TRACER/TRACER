@@ -75,7 +75,7 @@ class ChatbotExplorationAgent:
                     print(f"   Detected initial language(s): {supported_languages}")
                 else:
                     print("   Could not detect language from initial probe, defaulting to English.")
-            except Exception as lang_e:
+            except (ValueError, TypeError) as lang_e:
                 print(f"   Error during initial language detection: {lang_e}. Defaulting to English.")
         else:
             print("   Could not get initial response from chatbot for language probe. Defaulting to English.")
@@ -90,7 +90,7 @@ class ChatbotExplorationAgent:
                 print(f'   Detected fallback message: "{fallback_message[:50]}..."')
             else:
                 print("   Could not detect a fallback message.")
-        except Exception as fb_e:
+        except (ValueError, KeyError, AttributeError) as fb_e:
             print(f"   Error during fallback detection: {fb_e}. Proceeding without fallback.")
             fallback_message = None
 
