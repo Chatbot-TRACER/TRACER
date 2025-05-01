@@ -5,6 +5,8 @@ from dataclasses import dataclass
 
 import yaml
 
+MAX_RANDOM_STEPS = 20
+
 
 @dataclass
 class ValidationError:
@@ -484,7 +486,7 @@ class YamlValidator:
             if isinstance(goal, str):
                 errors.extend(self._validate_goal_string(goal, defined_variables, path))
             elif isinstance(goal, dict):
-                errors.extend(self._validate_goal_variable_definition(goal, defined_variables, path, i))
+                errors.extend(self._validate_goal_variable_definition(goal, defined_variables, path))
             else:
                 errors.append(
                     ValidationError(
@@ -550,7 +552,10 @@ class YamlValidator:
         return errors
 
     def _validate_goal_variable_definition(
-        self, goal_dict: dict, defined_variables: dict, path: str, index: int
+        self,
+        goal_dict: dict,
+        defined_variables: dict,
+        path: str,
     ) -> list[ValidationError]:
         """Validate a dictionary goal (variable definition).
 
@@ -558,7 +563,6 @@ class YamlValidator:
             goal_dict: The dictionary representing the variable definition.
             defined_variables: Dictionary of variables defined in the goals section.
             path: The JSON path to this goal dictionary.
-            index: The index of this goal in the goals list.
 
         Returns:
             A list of ValidationError objects.
@@ -1378,8 +1382,8 @@ class YamlValidator:
         errors = []
         if not isinstance(random_steps, int) or random_steps <= 0:
             errors.append(ValidationError("Random steps must be a positive integer", path))
-        elif random_steps > 20:  # Example limit
-            errors.append(ValidationError("Random steps cannot exceed 20", path))
+        elif random_steps > MAX_RANDOM_STEPS:
+            errors.append(ValidationError(f"Random steps cannot exceed {MAX_RANDOM_STEPS}", path))
         return errors
 
     def _validate_goal_style_max_cost(self, cost: any, path: str) -> list[ValidationError]:
@@ -1650,7 +1654,7 @@ user:
     - personality: personalities/conversational-user.yml
     - your name is Jon Doe
   goals:
-    - "a {{size}} custom pizza with toppings, {{size}}"
+    - "a {{size}} custom pizza with {{toppings}}, {{size}}"
     - how long is going to take the pizza to arrive
     - how much will it cost
 
