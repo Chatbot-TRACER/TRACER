@@ -279,14 +279,14 @@ class YamlValidator:
                 current = current[part]
 
             if valid_path:
-                for field in fields:
-                    if not isinstance(current, dict) or field not in current:
-                        errors.append(
-                            ValidationError(
-                                f"Missing required field: {field} in {path}",
-                                f"{current_path}/{field}",
-                            ),
-                        )
+                errors.extend(
+                    ValidationError(
+                        f"Missing required field: {field} in {path}",
+                        f"{current_path}/{field}",
+                    )
+                    for field in fields
+                    if not isinstance(current, dict) or field not in current
+                )
 
         return errors
 
@@ -302,15 +302,15 @@ class YamlValidator:
         errors = []
 
         # Check for unexpected fields in the llm section
-        for field in llm:
-            if field not in self.allowed_fields["llm"]:
-                errors.append(
-                    ValidationError(
-                        f"Unexpected field '{field}' in llm section. Allowed fields: {', '.join(self.allowed_fields['llm'])}",
-                        f"/llm/{field}",
-                    ),
-                )
 
+        errors.extend(
+            ValidationError(
+                f"Unexpected field '{field}' in llm section. Allowed fields: {', '.join(self.allowed_fields['llm'])}",
+                f"/llm/{field}",
+            )
+            for field in llm
+            if field not in self.allowed_fields["llm"]
+        )
         # Check that temperature is a number between 0 and 1
         if "temperature" in llm:
             temp = llm["temperature"]
@@ -579,9 +579,12 @@ class YamlValidator:
             return errors  # Cannot proceed if definition is not a dict
 
         # Check required fields within the variable definition
-        for field in ["function", "type", "data"]:
-            if field not in var_def:
-                errors.append(ValidationError(f"Missing required field '{field}' in variable '{var_name}'", var_path))
+
+        errors.extend(
+            ValidationError(f"Missing required field '{field}' in variable '{var_name}'", var_path)
+            for field in ["function", "type", "data"]
+            if field not in var_def
+        )
 
         # Validate 'type' field
         if "type" in var_def:
@@ -776,9 +779,12 @@ class YamlValidator:
 
         # Check for unexpected keys in range definition
         allowed_range_keys = {"min", "max", "step", "linspace"}
-        for key in data:
-            if key not in allowed_range_keys:
-                errors.append(ValidationError(f"Unexpected key '{key}' in numeric range definition", f"{path}/{key}"))
+
+        errors.extend(
+            ValidationError(f"Unexpected key '{key}' in numeric range definition", f"{path}/{key}")
+            for key in data
+            if key not in allowed_range_keys
+        )
         return errors
 
     def _validate_range_min_max(self, data: dict, path: str) -> list[ValidationError]:
@@ -966,9 +972,12 @@ class YamlValidator:
 
         # Check for unexpected keys
         allowed_keys = {"file", "function_name", "args"}
-        for key in data:
-            if key not in allowed_keys:
-                errors.append(ValidationError(f"Unexpected key '{key}' in custom function definition", f"{path}/{key}"))
+
+        errors.extend(
+            ValidationError(f"Unexpected key '{key}' in custom function definition", f"{path}/{key}")
+            for key in data
+            if key not in allowed_keys
+        )
         return errors
 
     def _validate_forward_dependencies(self, defined_variables: dict) -> list[ValidationError]:
@@ -1153,9 +1162,12 @@ class YamlValidator:
         """
         errors = []
         # Check required fields within output definition
-        for field in ["type", "description"]:
-            if field not in output_def:
-                errors.append(ValidationError(f"Output '{output_name}' must have a '{field}'", path))
+
+        errors.extend(
+            ValidationError(f"Output '{output_name}' must have a '{field}'", path)
+            for field in ["type", "description"]
+            if field not in output_def
+        )
 
         # Validate output type
         if "type" in output_def:
@@ -1180,11 +1192,12 @@ class YamlValidator:
                 )
         # Check for unexpected keys in output definition
         allowed_keys = {"type", "description"}
-        for key in output_def:
-            if key not in allowed_keys:
-                errors.append(
-                    ValidationError(f"Unexpected key '{key}' in output definition '{output_name}'", f"{path}/{key}")
-                )
+
+        errors.extend(
+            ValidationError(f"Unexpected key '{key}' in output definition '{output_name}'", f"{path}/{key}")
+            for key in output_def
+            if key not in allowed_keys
+        )
         return errors
 
     def _validate_conversation_section(self, conversation: dict) -> list[ValidationError]:
@@ -1305,14 +1318,15 @@ class YamlValidator:
         """
         errors = []
         # Check for invalid goal style option keys first
-        for key in goal_style_dict:
-            if key not in self.valid_goal_styles:
-                errors.append(
-                    ValidationError(
-                        f"Invalid goal_style option: '{key}'. Valid options: {', '.join(self.valid_goal_styles)}",
-                        f"{path}/{key}",
-                    ),
-                )
+
+        errors.extend(
+            ValidationError(
+                f"Invalid goal_style option: '{key}'. Valid options: {', '.join(self.valid_goal_styles)}",
+                f"{path}/{key}",
+            )
+            for key in goal_style_dict
+            if key not in self.valid_goal_styles
+        )
 
         # If invalid keys are found, don't proceed with specific validations
         if errors:
@@ -1397,14 +1411,14 @@ class YamlValidator:
             pass  # Boolean value is fine
         elif isinstance(all_answered, dict):
             allowed_keys = {"export", "limit"}
-            for key in all_answered:
-                if key not in allowed_keys:
-                    errors.append(
-                        ValidationError(
-                            f"Unexpected key '{key}' in all_answered. Allowed keys: {', '.join(allowed_keys)}",
-                            f"{path}/{key}",
-                        )
-                    )
+            errors.extend(
+                ValidationError(
+                    f"Unexpected key '{key}' in all_answered. Allowed keys: {', '.join(allowed_keys)}",
+                    f"{path}/{key}",
+                )
+                for key in all_answered
+                if key not in allowed_keys
+            )
 
             # Validate export field if present (optional)
             if "export" in all_answered and not isinstance(all_answered["export"], bool):
