@@ -5,7 +5,7 @@ from typing import Any, TypedDict
 from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.constants import VARIABLE_PATTERN
-from chatbot_explorer.prompts.variable_definition_prompts import get_variable_definition_prompt
+from chatbot_explorer.prompts.variable_definition_prompts import ProfileContext, get_variable_definition_prompt
 
 
 class VariableDefinitionContext(TypedDict):
@@ -143,24 +143,20 @@ def _define_single_variable_with_retry(
     variable_name: str,
     context: VariableDefinitionContext,
 ) -> dict[str, Any] | None:
-    """Attempts to define a single variable using the LLM with retries.
-
-    Args:
-        variable_name: The name of the variable to define (e.g., 'location').
-        context: A dictionary containing profile info, goals, other variables, LLM, etc.
-
-    Returns:
-        The parsed variable definition dictionary if successful, otherwise None.
-    """
+    """Attempts to define a single variable using the LLM with retries."""
     print(f"   Defining variable: '{variable_name}'...")
     other_variables = list(context["all_variables"] - {variable_name})
     parsed_def = None
 
+    profile_context: ProfileContext = {
+        "name": context["profile"].get("name", "Unnamed Profile"),
+        "role": context["profile"].get("role", "Unknown Role"),
+        "goals_text": context["goals_text"],
+    }
+
     for attempt in range(context["max_retries"]):
         prompt = get_variable_definition_prompt(
-            context["profile"].get("name", "Unnamed Profile"),
-            context["profile"].get("role", "Unknown Role"),
-            context["goals_text"],
+            profile_context,
             variable_name,
             other_variables,
             context["language_instruction"],

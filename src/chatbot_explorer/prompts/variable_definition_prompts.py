@@ -1,15 +1,39 @@
 """Prompts for defining variables in user simulator profiles."""
 
+from typing import TypedDict
+
+
+class ProfileContext(TypedDict):
+    """Context information about a profile for variable definition.
+
+    Attributes:
+        name: Profile name
+        role: User role description
+        goals_text: Multi-line string containing profile goals
+    """
+
+    name: str
+    role: str
+    goals_text: str
+
 
 def get_variable_definition_prompt(
-    profile_name: str,
-    role: str,
-    goals_text: str,
+    profile_context: ProfileContext,
     variable_name: str,
     all_other_variables: list[str],
     language_instruction: str,
 ) -> str:
-    """Creates the specific text prompt to ask the LLM about one variable."""
+    """Creates a text prompt for LLM to define a variable's parameters.
+
+    Args:
+        profile_context: Profile information (name, role, goals)
+        variable_name: The variable name to define
+        all_other_variables: Other variable names in the same profile
+        language_instruction: Language-specific generation instructions
+
+    Returns:
+        Formatted prompt string for LLM to define the variable
+    """
     other_vars_text = (
         f"OTHER VARIABLES IN THIS PROFILE: {', '.join(sorted(all_other_variables))}" if all_other_variables else ""
     )
@@ -18,10 +42,10 @@ def get_variable_definition_prompt(
     Define parameters for the variable '{variable_name}' used in a user simulator profile.
 
     USER PROFILE CONTEXT:
-    Name: {profile_name}
-    Role: {role}
+    Name: {profile_context["name"]}
+    Role: {profile_context["role"]}
     Goals (where the variable might appear):
-    {goals_text}
+    {profile_context["goals_text"]}
     {other_vars_text} # Provides context for potential forward(other_var) usage.
 
     {language_instruction}
