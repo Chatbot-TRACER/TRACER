@@ -1,6 +1,45 @@
-"""Prompts for grouping functionalities into profile scenarios and generate the baseline for the profiles."""
+"""Prompts for grouping functionalities and generating profile goals."""
 
-from typing import Any
+from typing import Any, TypedDict
+
+# --- Data Structures for Prompt Arguments ---
+
+
+class ProfileGroupingContext(TypedDict):
+    """Contextual information for grouping functionalities into profiles.
+
+    Args:
+        conversation_context: String describing the overall conversation history/context.
+        workflow_context: String describing discovered conversation workflows.
+        chatbot_type_context: String describing the type of chatbot (transactional/informational).
+        language_instruction_grouping: Language-specific instructions for the grouping prompt.
+    """
+
+    conversation_context: str
+    workflow_context: str
+    chatbot_type_context: str
+    language_instruction_grouping: str
+
+
+class ProfileGoalContext(TypedDict):
+    """Contextual information for generating goals for a specific profile.
+
+    Args:
+        chatbot_type_context: String describing the type of chatbot.
+        workflow_context: String describing discovered conversation workflows.
+        limitations: List of known chatbot limitations.
+        conversation_context: String describing the overall conversation history/context.
+        language_instruction_goals: Language-specific instructions for the goal generation prompt.
+    """
+
+    chatbot_type_context: str
+    workflow_context: str
+    limitations: list[str]
+    conversation_context: str
+    language_instruction_goals: str
+
+
+# --- Language Instruction Functions ---
 
 
 def get_language_instruction_grouping(primary_language: str) -> str:
@@ -9,11 +48,11 @@ def get_language_instruction_grouping(primary_language: str) -> str:
         return ""
     return f"""
 LANGUAGE REQUIREMENT:
-- Write ALL profile names, descriptions, and functionalities in {primary_language}
-- KEEP ONLY the formatting markers (##, PROFILE:, DESCRIPTION:, FUNCTIONALITIES:) in English
+- Write ALL profile names, roles, and functionalities in {primary_language}
+- KEEP ONLY the formatting markers (##, PROFILE:, ROLE:, FUNCTIONALITIES:) in English
 - Example if the primary language was Spanish:
   ## PROFILE: [Nombre del escenario en Spanish]
-  DESCRIPTION: [Descripción en Spanish]
+  ROLE: [Rol del usuario en Spanish]
   FUNCTIONALITIES:
   - [Funcionalidad en Spanish]
 """
@@ -34,24 +73,35 @@ LANGUAGE REQUIREMENT:
 """
 
 
+# --- Prompt Generation Functions ---
+
+
 def get_profile_grouping_prompt(
     functionalities: list[str],
-    conversation_context: str,
-    workflow_context: str,
-    chatbot_type_context: str,
-    language_instruction_grouping: str,
+    context: ProfileGroupingContext,
     suggested_profiles: int,
 ) -> str:
-    """Returns the prompt for grouping functionalities into profile scenarios."""
+    """Returns the prompt for grouping functionalities into profile scenarios.
+
+    Args:
+        functionalities: A list of discovered chatbot functionalities.
+        context: A dictionary containing various contextual strings for the prompt.
+        suggested_profiles: The desired number of profiles to generate.
+
+    Returns:
+        A formatted string representing the LLM prompt.
+    """
+    # Note: The S608 warning about SQL injection is a false positive here,
+    # as this f-string is used to generate prompts for an LLM, not SQL queries.
     return f"""
 Based on these chatbot functionalities:
 {", ".join(functionalities)}
 
-{conversation_context}
-{workflow_context}
-{chatbot_type_context}
+{context["conversation_context"]}
+{context["workflow_context"]}
+{context["chatbot_type_context"]}
 
-{language_instruction_grouping}
+{context["language_instruction_grouping"]}
 
 Create {suggested_profiles} distinct user profiles, where each profile represents ONE specific conversation scenario.
 
@@ -90,87 +140,91 @@ FUNCTIONALITIES:
 
 def get_profile_goals_prompt(
     profile: dict[str, Any],
-    chatbot_type_context: str,
-    workflow_context: str,
-    limitations: list[str],
-    conversation_context: str,
-    language_instruction_goals: str,
+    context: ProfileGoalContext,
 ) -> str:
-    """Returns the prompt for generating user-centric goals for a profile."""
-    return f"""
-    Generate a set of coherent **user-centric** goals for this conversation scenario:
+    """Returns the prompt for generating user-centric goals for a profile.
 
-    CONVERSATION SCENARIO: {profile["name"]}
-    ROLE: {profile["role"]}
+    Args:
+        profile: The specific profile dictionary (containing name, role, functionalities).
+        context: A dictionary containing various contextual strings for the prompt.
 
-    {chatbot_type_context}
-
-    RELEVANT FUNCTIONALITIES:
-    {", ".join(profile["functionalities"])}
-
-    {workflow_context}
-
-    LIMITATIONS (keep in mind only; do NOT let these drive the goals):
-    {", ".join(limitations)}
-
-    {conversation_context}
-
-    {language_instruction_goals}
-
-    ABOUT VARIABLES:
-    - Only use {{variable}} where the user might provide different values each time (e.g. {{date}}, {{amount}}, {{reference_number}})
-    - These are purely placeholders for possible user input. For example, {{employee_id}} does not mean we must always request an ID; it's just a potential input that could vary.
-    - Do NOT put fixed names like "IT Department" or organization names inside {{ }} (they are not interchangeable).
-    - Variables must be legitimate parameters the user could change (e.g., different dates, amounts, or IDs).
-
-    EXTREMELY IMPORTANT RESTRICTIONS:
-    1. NEVER create goals about asking for chatbot limitations or capabilities
-    2. NEVER create goals about testing the chatbot's understanding or knowledge
-    3. NEVER include meta-goals like "find out what the chatbot can do"
-    4. Goals MUST be about actual tasks a real user would want to accomplish
-    5. Focus on practical, realistic user tasks ONLY
-
-    Create 2-4 goals that focus strictly on what the user intends to achieve with the chatbot.
-    Avoid vague or indirect objectives like "understand the chatbot's capabilities" or "test the system's knowledge."
-
-    IMPORTANT:
-    - If the chatbot is TRANSACTIONAL, goals should follow a natural workflow progression. Create goals that represent steps in completing a process or transaction.
-    - If the chatbot is INFORMATIONAL, goals can be more independent questions, but should still be related to the same general topic.
-    - If workflow information is provided, create goals that follow natural conversation flows discovered during exploration.
-
-    Examples for TRANSACTIONAL chatbots:
-
-    Example 1 (IT Support):
-    - "Report a technical issue with my {{device_type}}"
-    - "Provide additional details about the problem"
-    - "Request an estimated resolution time"
-    - "Ask for a ticket confirmation number"
-
-    Example 2 (Appointment Scheduling):
-    - "Schedule an appointment for {{service_type}}"
-    - "Select a preferred date from {{available_dates}}"
-    - "Confirm the appointment details"
-    - "Request a reminder option"
-
-    Examples for INFORMATIONAL chatbots:
-
-    Example 1 (University Information):
-    - "Ask about admission requirements for {{program_name}}"
-    - "Request information about application deadlines"
-    - "Inquire about scholarship opportunities"
-
-    Example 2 (Government Services):
-    - "Ask about the process for renewing a {{document_type}}"
-    - "Inquire about required documentation"
-    - "Find out about processing times"
-
-    FORMAT YOUR RESPONSE AS:
-
-    GOALS:
-    - "first user-centric goal with {{variable}} if needed"
-    - "second related goal"
-    - "third goal that follows naturally"
-
-    DO NOT include any definitions for variables - just use {{varname}} placeholders.
-    Make sure all goals fit naturally in ONE conversation with the chatbot, and remain strictly focused on user tasks.
+    Returns:
+        A formatted string representing the LLM prompt.
     """
+    return f"""
+Generate a set of coherent **user-centric** goals for this conversation scenario:
+
+CONVERSATION SCENARIO: {profile["name"]}
+ROLE: {profile["role"]}
+
+{context["chatbot_type_context"]}
+
+RELEVANT FUNCTIONALITIES:
+{", ".join(profile["functionalities"])}
+
+{context["workflow_context"]}
+
+LIMITATIONS (keep in mind only; do NOT let these drive the goals):
+{", ".join(context["limitations"])}
+
+{context["conversation_context"]}
+
+{context["language_instruction_goals"]}
+
+ABOUT VARIABLES:
+- Only use {{variable}} where the user might provide different values each time (e.g. {{date}}, {{amount}}, {{reference_number}})
+- These are purely placeholders for possible user input. For example, {{employee_id}} does not mean we must always request an ID; it's just a potential input that could vary.
+- Do NOT put fixed names like "IT Department" or organization names inside {{ }} (they are not interchangeable).
+- Variables must be legitimate parameters the user could change (e.g., different dates, amounts, or IDs).
+
+EXTREMELY IMPORTANT RESTRICTIONS:
+1. NEVER create goals about asking for chatbot limitations or capabilities
+2. NEVER create goals about testing the chatbot's understanding or knowledge
+3. NEVER include meta-goals like "find out what the chatbot can do"
+4. Goals MUST be about actual tasks a real user would want to accomplish
+5. Focus on practical, realistic user tasks ONLY
+
+Create 2-4 goals that focus strictly on what the user intends to achieve with the chatbot.
+Avoid vague or indirect objectives like "understand the chatbot's capabilities" or "test the system's knowledge."
+
+IMPORTANT:
+- If the chatbot is TRANSACTIONAL, goals should follow a natural workflow progression. Create goals that represent steps in completing a process or transaction.
+- If the chatbot is INFORMATIONAL, goals can be more independent questions, but should still be related to the same general topic.
+- If workflow information is provided, create goals that follow natural conversation flows discovered during exploration.
+
+Examples for TRANSACTIONAL chatbots:
+
+Example 1 (IT Support):
+- "Report a technical issue with my {{device_type}}"
+- "Provide additional details about the problem"
+- "Request an estimated resolution time"
+- "Ask for a ticket confirmation number"
+
+Example 2 (Appointment Scheduling):
+- "Schedule an appointment for {{service_type}}"
+- "Select a preferred date from {{available_dates}}"
+- "Confirm the appointment details"
+- "Request a reminder option"
+
+Examples for INFORMATIONAL chatbots:
+
+Example 1 (University Information):
+- "Ask about admission requirements for {{program_name}}"
+- "Request information about application deadlines"
+- "Inquire about scholarship opportunities"
+
+Example 2 (Government Services):
+- "Ask about the process for renewing a {{document_type}}"
+- "Inquire about required documentation"
+- "Find out about processing times"
+
+FORMAT YOUR RESPONSE AS:
+
+GOALS:
+- "first user-centric goal with {{variable}} if needed"
+- "second related goal"
+- "third goal that follows naturally"
+
+DO NOT include any definitions for variables - just use {{varname}} placeholders.
+Make sure all goals fit naturally in ONE conversation with the chatbot, and remain strictly focused on user tasks.
+"""  # noqa: S608

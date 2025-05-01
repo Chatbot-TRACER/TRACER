@@ -9,6 +9,8 @@ from chatbot_explorer.generation.context_generation import generate_context
 from chatbot_explorer.generation.output_generation import generate_outputs
 from chatbot_explorer.generation.variable_definition import generate_variable_definitions
 from chatbot_explorer.prompts.profile_generation_prompts import (
+    ProfileGoalContext,
+    ProfileGroupingContext,
     get_language_instruction_goals,
     get_language_instruction_grouping,
     get_profile_goals_prompt,
@@ -156,12 +158,16 @@ def _generate_profile_groupings(
     suggested_profiles = max(min_profiles, min(max_profiles, num_functionalities))
     chatbot_type_context = f"CHATBOT TYPE: {config['chatbot_type'].upper()}\n"
 
+    grouping_context: ProfileGroupingContext = {
+        "conversation_context": conv_context,
+        "workflow_context": wf_context,
+        "chatbot_type_context": chatbot_type_context,
+        "language_instruction_grouping": lang_instr,
+    }
+
     grouping_prompt = get_profile_grouping_prompt(
         functionalities=config["functionalities"],
-        conversation_context=conv_context,
-        workflow_context=wf_context,
-        chatbot_type_context=chatbot_type_context,
-        language_instruction_grouping=lang_instr,
+        context=grouping_context,
         suggested_profiles=suggested_profiles,
     )
 
@@ -174,13 +180,18 @@ def _generate_profile_goals(
 ) -> list[str]:
     """Generates and parses goals for a single profile using the LLM."""
     chatbot_type_context = f"CHATBOT TYPE: {config['chatbot_type'].upper()}\n"
+
+    goal_context: ProfileGoalContext = {
+        "chatbot_type_context": chatbot_type_context,
+        "workflow_context": wf_context,
+        "limitations": config["limitations"],
+        "conversation_context": conv_context,
+        "language_instruction_goals": lang_instr,
+    }
+
     goals_prompt = get_profile_goals_prompt(
         profile=profile,
-        chatbot_type_context=chatbot_type_context,
-        workflow_context=wf_context,
-        limitations=config["limitations"],
-        conversation_context=conv_context,
-        language_instruction_goals=lang_instr,
+        context=goal_context,
     )
 
     goals_response = config["llm"].invoke(goals_prompt)
