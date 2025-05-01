@@ -1,11 +1,15 @@
+"""Node to validate if the profiles are correct for the user simulator."""
+
 from typing import Any
+
+from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.generation.profile_builder import validate_and_fix_profile
 from chatbot_explorer.schemas.graph_state_model import State
 from scripts.validation_script import YamlValidator
 
 
-def profile_validator_node(state: State, llm) -> dict[str, Any]:
+def profile_validator_node(state: State, llm: BaseLanguageModel) -> dict[str, Any]:
     """Node that validates generated YAML profiles and tries to fix them using LLM if needed.
 
     Args:
@@ -31,7 +35,7 @@ def profile_validator_node(state: State, llm) -> dict[str, Any]:
                 validated_profiles.append(validated_profile)
             else:
                 print("  - Profile failed validation and could not be fixed.")
-        except Exception as e:
+        except (ValueError, TypeError, KeyError) as e:
             print(f"Error during profile validation/fixing: {e}")
             # Optionally skip this profile
 

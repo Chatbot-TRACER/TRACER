@@ -1,5 +1,6 @@
 """Prompts for extracting functionality nodes from a conversation."""
 
+
 def get_functionality_extraction_prompt(context: str, formatted_conversation: str) -> str:
     """Generate the prompt for extracting functionality nodes from a conversation."""
     return f"""

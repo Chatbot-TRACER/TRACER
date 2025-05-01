@@ -1,29 +1,56 @@
 """Prompts for defining variables in user simulator profiles."""
 
+from typing import TypedDict
+
+
+class VariableDefinitionPromptContext(TypedDict):
+    """Context needed to generate the variable definition prompt.
+
+    Args:
+        profile_name: The name of the user profile.
+        role: The role description for the user simulator.
+        goals_text: Formatted string of user goals.
+        all_other_variables: List of other variable names in the profile.
+        language_instruction: Language-specific instructions for the LLM.
+    """
+
+    profile_name: str
+    role: str
+    goals_text: str
+    all_other_variables: list[str]
+    language_instruction: str
+
+
 def get_variable_definition_prompt(
-    profile_name: str,
-    role: str,
-    goals_text: str,
     variable_name: str,
-    all_other_variables: list[str],
-    language_instruction: str,
+    context: VariableDefinitionPromptContext,
 ) -> str:
-    """Creates the specific text prompt to ask the LLM about one variable."""
+    """Creates the specific text prompt to ask the LLM about one variable.
+
+    Args:
+        variable_name: The name of the variable to define.
+        context: A dictionary containing profile and language context.
+
+    Returns:
+        The formatted prompt string for the LLM.
+    """
     other_vars_text = (
-        f"OTHER VARIABLES IN THIS PROFILE: {', '.join(sorted(all_other_variables))}" if all_other_variables else ""
+        f"OTHER VARIABLES IN THIS PROFILE: {', '.join(sorted(context['all_other_variables']))}"
+        if context["all_other_variables"]
+        else ""
     )
 
     return f"""
     Define parameters for the variable '{variable_name}' used in a user simulator profile.
 
     USER PROFILE CONTEXT:
-    Name: {profile_name}
-    Role: {role}
+    Name: {context["profile_name"]}
+    Role: {context["role"]}
     Goals (where the variable might appear):
-    {goals_text}
+    {context["goals_text"]}
     {other_vars_text} # Provides context for potential forward(other_var) usage.
 
-    {language_instruction}
+    {context["language_instruction"]}
 
     Define ONLY the parameters for the variable '{variable_name}' following these guidelines:
 

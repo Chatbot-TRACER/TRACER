@@ -5,7 +5,10 @@ from typing import Any, TypedDict
 from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.constants import VARIABLE_PATTERN
-from chatbot_explorer.prompts.variable_definition_prompts import get_variable_definition_prompt
+from chatbot_explorer.prompts.variable_definition_prompts import (
+    VariableDefinitionPromptContext,
+    get_variable_definition_prompt,
+)
 
 
 class VariableDefinitionContext(TypedDict):
@@ -156,14 +159,18 @@ def _define_single_variable_with_retry(
     other_variables = list(context["all_variables"] - {variable_name})
     parsed_def = None
 
+    prompt_context: VariableDefinitionPromptContext = {
+        "profile_name": context["profile"].get("name", "Unnamed Profile"),
+        "role": context["profile"].get("role", "Unknown Role"),
+        "goals_text": context["goals_text"],
+        "all_other_variables": other_variables,
+        "language_instruction": context["language_instruction"],
+    }
+
     for attempt in range(context["max_retries"]):
         prompt = get_variable_definition_prompt(
-            context["profile"].get("name", "Unnamed Profile"),
-            context["profile"].get("role", "Unknown Role"),
-            context["goals_text"],
-            variable_name,
-            other_variables,
-            context["language_instruction"],
+            variable_name=variable_name,
+            context=prompt_context,
         )
         try:
             response = context["llm"].invoke(prompt)

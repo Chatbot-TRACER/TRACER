@@ -1,3 +1,5 @@
+"""Defines the structure and attributes of the graph state model."""
+
 from typing import Annotated, Any
 
 from langgraph.graph.message import add_messages
