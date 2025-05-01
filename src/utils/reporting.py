@@ -1,6 +1,9 @@
+"""Utilities for generating reports and visualizations from chatbot analysis."""
+
 import json
 import os
 import traceback
+from dataclasses import dataclass, field  # Import dataclass and field
 from typing import Any
 
 import graphviz
@@ -11,20 +14,17 @@ import yaml
 # --------------------------------------------------- #
 
 
-def generate_graph_image(structured_data: list[dict[str, Any]], output_filename_base: str) -> None:
-    """Generates a PNG visualization of the workflow graph using Graphviz.
+@dataclass
+class GraphBuildContext:
+    """Context holding the state during graph construction."""
 
-    Args:
-        structured_data: A list of root node dictionaries representing the workflow.
-        output_filename_base: The base path and filename for the output PNG (e.g., 'output/workflow_graph').
-                               The '.png' extension will be added automatically.
-    """
-    print(f"\n--- Generating workflow graph image ({output_filename_base}.png) ---")
-    if not structured_data:
-        print("   Skipping graph generation: No structured data provided.")
-        return
+    graph: graphviz.Digraph
+    processed_nodes: set[str] = field(default_factory=set)
+    processed_edges: set[tuple[str, str]] = field(default_factory=set)
 
-    dot = graphviz.Digraph(comment="Chatbot Workflow", format="png", engine="dot")
+
+def _set_graph_attributes(dot: graphviz.Digraph) -> None:
+    """Sets default attributes for the Graphviz graph, nodes, and edges."""
     dot.attr(
         rankdir="LR",
         bgcolor="#ffffff",
@@ -36,6 +36,8 @@ def generate_graph_image(structured_data: list[dict[str, Any]], output_filename_
         splines="curved",
         overlap="false",
         dpi="300",
+        label="Chatbot Functionality Workflow",
+        labelloc="t",
     )
     dot.attr(
         "node",
@@ -54,67 +56,127 @@ def generate_graph_image(structured_data: list[dict[str, Any]], output_filename_
         arrowsize="0.7",
     )
 
-    processed_nodes: set[str] = set()
-    processed_edges: set[tuple[str, str]] = set()
 
-    def add_nodes_edges(graph: graphviz.Digraph, node_dict: dict[str, Any], depth=0) -> None:
-        """Recursive helper to add nodes and edges to the graph."""
-        node_name = node_dict.get("name")
-        if not node_name:
-            return
+def _get_node_params_label(node_dict: dict[str, Any]) -> str:
+    """Generates a label string for node parameters."""
+    params_label = ""
+    params_data = node_dict.get("parameters", [])
+    if isinstance(params_data, list):
+        param_str_list = []
+        for p in params_data:
+            if isinstance(p, dict):
+                param_str_list.append(p.get("name", "?"))
+            elif isinstance(p, str):
+                param_str_list.append(p)
+        if param_str_list:
+            params_label = f"\nParams: {', '.join(param_str_list)}"
+    elif isinstance(params_data, str) and params_data.lower() not in ["none", ""]:
+        params_label = f"\nParams: {params_data}"
+    return params_label
 
-        if node_name not in processed_nodes:
-            params_label = ""
-            params_data = node_dict.get("parameters", [])
-            if isinstance(params_data, list):
-                param_str_list = []
-                for p in params_data:
-                    if isinstance(p, dict):
-                        param_str_list.append(p.get("name", "?"))
-                    elif isinstance(p, str):
-                        param_str_list.append(p)
-                if param_str_list:
-                    params_label = f"\nParams: {', '.join(param_str_list)}"
-            elif isinstance(params_data, str) and params_data.lower() not in [
-                "none",
-                "",
-            ]:
-                params_label = f"\nParams: {params_data}"
 
-            label = f"{node_name.replace('_', ' ')}{params_label}"
-            color_schemes = {
-                0: {"fillcolor": "#e6f3ff:#c2e0ff", "color": "#4a86e8"},
-                1: {"fillcolor": "#e9f7ed:#c5e9d3", "color": "#43a047"},
-                2: {"fillcolor": "#fef8e3:#faecc5", "color": "#f6b26b"},
-                3: {"fillcolor": "#f9e4e8:#f4c7d0", "color": "#cc4125"},
-            }
-            depth_mod = min(depth, 3)
-            node_style = color_schemes[depth_mod]
+def _get_node_style(depth: int) -> dict[str, str]:
+    """Determines the node style based on its depth in the graph."""
+    color_schemes = {
+        0: {"fillcolor": "#e6f3ff:#c2e0ff", "color": "#4a86e8"},
+        1: {"fillcolor": "#e9f7ed:#c5e9d3", "color": "#43a047"},
+        2: {"fillcolor": "#fef8e3:#faecc5", "color": "#f6b26b"},
+        3: {"fillcolor": "#f9e4e8:#f4c7d0", "color": "#cc4125"},
+    }
+    depth_mod = min(depth, 3)  # Cap depth for styling
+    return color_schemes[depth_mod]
 
-            graph.node(
-                node_name,
-                label=label,
-                fillcolor=node_style["fillcolor"],
-                color=node_style["color"],
-            )
-            processed_nodes.add(node_name)
 
-        children = node_dict.get("children", [])
-        if isinstance(children, list):
-            for child_dict in children:
-                child_name = child_dict.get("name")
-                if child_name:
-                    add_nodes_edges(graph, child_dict, depth + 1)
-                    edge_key = (node_name, child_name)
-                    if edge_key not in processed_edges:
-                        graph.edge(node_name, child_name)
-                        processed_edges.add(edge_key)
-        elif children:
-            print(f"WARN in graph: Expected 'children' for node '{node_name}' to be a list, found {type(children)}")
+def _add_node_to_graph(context: GraphBuildContext, node_dict: dict[str, Any], depth: int) -> str | None:
+    """Adds a single node to the graph if not already processed."""
+    node_name = node_dict.get("name")
+    if not node_name or node_name in context.processed_nodes:
+        return node_name  # Return name even if not added, or None if no name
 
-    dot.attr("graph", label="Chatbot Functionality Workflow", fontsize="18", labelloc="t")
+    params_label = _get_node_params_label(node_dict)
+    label = f"{node_name.replace('_', ' ')}{params_label}"
+    node_style = _get_node_style(depth)
+
+    context.graph.node(
+        node_name,
+        label=label,
+        fillcolor=node_style["fillcolor"],
+        color=node_style["color"],
+    )
+    context.processed_nodes.add(node_name)
+    return node_name
+
+
+def _add_edges_for_children(
+    context: GraphBuildContext,
+    parent_name: str,
+    node_dict: dict[str, Any],
+    depth: int,
+) -> None:
+    """Recursively adds child nodes and edges."""
+    children = node_dict.get("children", [])
+    if isinstance(children, list):
+        for child_dict in children:
+            # Recursively add child node and its subtree, passing context
+            child_name = _add_nodes_and_edges_recursive(context, child_dict, depth + 1)
+            if child_name:
+                edge_key = (parent_name, child_name)
+                if edge_key not in context.processed_edges:
+                    context.graph.edge(parent_name, child_name)
+                    context.processed_edges.add(edge_key)
+    elif children:
+        print(f"WARN in graph: Expected 'children' for node '{parent_name}' to be a list, found {type(children)}")
+
+
+def _add_nodes_and_edges_recursive(
+    context: GraphBuildContext,  # Use context object
+    node_dict: dict[str, Any],
+    depth: int,
+) -> str | None:
+    """Recursive helper to add a node and its children to the graph."""
+    # Add the current node using context
+    node_name = _add_node_to_graph(context, node_dict, depth)
+    if not node_name:
+        return None
+
+    # Add edges and recursively process children using context
+    _add_edges_for_children(context, node_name, node_dict, depth)
+    return node_name
+
+
+def _render_graph(dot: graphviz.Digraph, output_filename_base: str) -> None:
+    """Renders the graph to a file, handling potential errors."""
+    try:
+        dot.render(output_filename_base, cleanup=True, view=False)
+        print(f"   Successfully generated graph image: {output_filename_base}.png")
+    except graphviz.backend.execute.ExecutableNotFound:
+        print("\n   ERROR: Graphviz executable not found.")
+        print("   Please install Graphviz (see https://graphviz.org/download/)")
+        print("   and ensure it's in your system's PATH.")
+
+
+def generate_graph_image(structured_data: list[dict[str, Any]], output_filename_base: str) -> None:
+    """Generates a PNG visualization of the workflow graph using Graphviz.
+
+    Args:
+        structured_data: A list of root node dictionaries representing the workflow.
+        output_filename_base: The base path and filename for the output PNG (e.g., 'output/workflow_graph').
+                               The '.png' extension will be added automatically.
+    """
+    print(f"\n--- Generating workflow graph image ({output_filename_base}.png) ---")
+    if not structured_data or not isinstance(structured_data, list):
+        print("   Skipping graph generation: No valid structured data (list of dicts) provided.")
+        return
+
+    dot = graphviz.Digraph(comment="Chatbot Workflow", format="png", engine="dot")
+    _set_graph_attributes(dot)
+
+    # Create the context object
+    context = GraphBuildContext(graph=dot)
+
+    # Add a dedicated start node
     start_node_name = "start_node"
-    dot.node(
+    context.graph.node(
         start_node_name,
         label="",
         shape="circle",
@@ -124,25 +186,23 @@ def generate_graph_image(structured_data: list[dict[str, Any]], output_filename_
         fillcolor="black",
         color="black",
     )
+    context.processed_nodes.add(start_node_name)  # Add start node to processed set
 
+    # Process each root node in the structured data using context
     for root_node_dict in structured_data:
-        node_name = root_node_dict.get("name")
-        if node_name:
-            add_nodes_edges(dot, root_node_dict)
-            edge_key = (start_node_name, node_name)
-            if edge_key not in processed_edges:
-                dot.edge(start_node_name, node_name)
-                processed_edges.add(edge_key)
+        if isinstance(root_node_dict, dict):
+            # Add the root node and its subtree using context
+            root_node_name = _add_nodes_and_edges_recursive(context, root_node_dict, 0)
+            # Add edge from start node to this root node
+            if root_node_name:
+                edge_key = (start_node_name, root_node_name)
+                if edge_key not in context.processed_edges:
+                    context.graph.edge(start_node_name, root_node_name)
+                    context.processed_edges.add(edge_key)
+        else:
+            print(f"WARN in graph: Expected root element to be a dictionary, found {type(root_node_dict)}")
 
-    try:
-        dot.render(output_filename_base, cleanup=True, view=False)
-        print(f"   Successfully generated graph image: {output_filename_base}.png")
-    except graphviz.backend.execute.ExecutableNotFound:
-        print("\n   ERROR: Graphviz executable not found.")
-        print("   Please install Graphviz (see https://graphviz.org/download/)")
-        print("   and ensure it's in your system's PATH.")
-    except Exception as e:
-        print(f"\n   ERROR: Failed to generate graph image: {e}")
+    _render_graph(context.graph, output_filename_base)
 
 
 # ------------------------------------------------ #

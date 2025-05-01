@@ -1,7 +1,10 @@
+"""Command Line Interface utilities for parsing arguments."""
+
 import argparse
+from argparse import Namespace
 
 
-def parse_arguments():
+def parse_arguments() -> Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Chatbot Explorer - Discover functionalities of another chatbot")
 
