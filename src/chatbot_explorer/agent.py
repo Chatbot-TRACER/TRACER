@@ -1,23 +1,41 @@
+"""ChatbotExplorer Agent, contains methods to run the exploration and analysis."""
+
 import uuid
-from typing import Any
+from typing import Any, TypedDict
 
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
 
 from chatbot_explorer.conversation.fallback_detection import extract_fallback_message
 from chatbot_explorer.conversation.language_detection import extract_supported_languages
-
-# Assuming ExplorationGraphState is importable or defined here/nearby
 from chatbot_explorer.conversation.session import (
     ExplorationGraphState,
     ExplorationSessionConfig,
     run_exploration_session,
 )
+from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
+from connectors.chatbot_connectors import Chatbot
 
-# Assuming FunctionalityNode is importable
 from .graphs.profile_graph import build_profile_generation_graph
 from .graphs.structure_graph import build_structure_graph
 from .schemas.graph_state_model import State
+
+
+class ExplorationParams(TypedDict):
+    """Parameters for running exploration sessions."""
+
+    max_sessions: int
+    max_turns: int
+    supported_languages: list[str]
+    fallback_message: str | None
+
+
+class SessionParams(TypedDict):
+    """Parameters specific to a single exploration session."""
+
+    session_num: int
+    max_sessions: int
+    max_turns: int
 
 
 class ChatbotExplorationAgent:
@@ -35,37 +53,65 @@ class ChatbotExplorationAgent:
         self._structure_graph = build_structure_graph(self.llm, self.memory)
         self._profile_graph = build_profile_generation_graph(self.llm, self.memory)
 
-    def run_exploration(self, chatbot_connector, max_sessions: int, max_turns: int) -> dict[str, Any]:
+    def run_exploration(self, chatbot_connector: Chatbot, max_sessions: int, max_turns: int) -> dict[str, Any]:
         """Runs the initial probing and the main exploration loop.
 
         Args:
             chatbot_connector: An instance of a chatbot connector class.
-            max_sessions (int): Maximum number of exploration sessions to run.
-            max_turns (int): Maximum turns per exploration session.
+            max_sessions: Maximum number of exploration sessions to run.
+            max_turns: Maximum turns per exploration session.
 
         Returns:
-            Dict[str, Any]: A dictionary containing exploration results:
-                            - conversation_sessions: List of conversation histories.
-                            - root_nodes_dict: List of root FunctionalityNode objects as dicts.
-                            - supported_languages: List of detected languages.
-                            - fallback_message: Detected fallback message string.
+            Dictionary containing exploration results (conversation histories,
+            functionality nodes, supported languages, and fallback message).
         """
-        # Initialize results and state tracking
-        conversation_sessions: list[list[dict[str, str]]] = []
-        supported_languages: list[str] = []
-        fallback_message: str | None = None
+        # Initialize results storage
+        conversation_sessions = []
+        current_graph_state = self._initialize_graph_state()
 
-        # Initialize graph state components
-        current_graph_state: ExplorationGraphState = {
+        # Perform initial probing steps
+        supported_languages = self._detect_languages(chatbot_connector)
+        fallback_message = self._detect_fallback(chatbot_connector)
+
+        # Create exploration parameters
+        exploration_params: ExplorationParams = {
+            "max_sessions": max_sessions,
+            "max_turns": max_turns,
+            "supported_languages": supported_languages,
+            "fallback_message": fallback_message,
+        }
+
+        # Run the main exploration sessions
+        conversation_sessions, current_graph_state = self._run_exploration_sessions(
+            chatbot_connector, exploration_params, current_graph_state
+        )
+
+        # Convert final root nodes to dictionaries for the result
+        functionality_dicts = [node.to_dict() for node in current_graph_state["root_nodes"]]
+
+        return {
+            "conversation_sessions": conversation_sessions,
+            "root_nodes_dict": functionality_dicts,
+            "supported_languages": supported_languages,
+            "fallback_message": fallback_message,
+        }
+
+    def _initialize_graph_state(self) -> ExplorationGraphState:
+        """Initialize the graph state for exploration."""
+        return {
             "root_nodes": [],
             "pending_nodes": [],
             "explored_nodes": set(),
         }
 
-        # --- Initial Language Detection ---
+    def _detect_languages(self, chatbot_connector: Chatbot) -> list[str]:
+        """Detect languages supported by the chatbot."""
         print("\n--- Probing Chatbot Language ---")
         initial_probe_query = "Hello"
         is_ok, probe_response = chatbot_connector.execute_with_input(initial_probe_query)
+
+        supported_languages = ["English"]  # Default
+
         if is_ok and probe_response:
             print(f"   Initial response received: '{probe_response[:60]}...'")
             try:
@@ -79,11 +125,14 @@ class ChatbotExplorationAgent:
                 print(f"   Error during initial language detection: {lang_e}. Defaulting to English.")
         else:
             print("   Could not get initial response from chatbot for language probe. Defaulting to English.")
-        if not supported_languages:
-            supported_languages = ["English"]
 
-        # --- Initial Fallback Message Detection ---
+        return supported_languages
+
+    def _detect_fallback(self, chatbot_connector: Chatbot) -> str | None:
+        """Detect the chatbot's fallback message."""
         print("\n--- Attempting to detect chatbot fallback message ---")
+        fallback_message = None
+
         try:
             fallback_message = extract_fallback_message(chatbot_connector, self.llm)
             if fallback_message:
@@ -92,70 +141,126 @@ class ChatbotExplorationAgent:
                 print("   Could not detect a fallback message.")
         except (ValueError, KeyError, AttributeError) as fb_e:
             print(f"   Error during fallback detection: {fb_e}. Proceeding without fallback.")
-            fallback_message = None
 
-        # --- Exploration Loop ---
+        return fallback_message
+
+    def _run_exploration_sessions(
+        self,
+        chatbot_connector: Chatbot,
+        params: ExplorationParams,
+        graph_state: ExplorationGraphState,
+    ) -> tuple[list[list[dict[str, str]]], ExplorationGraphState]:
+        """Run multiple exploration sessions with the chatbot.
+
+        Args:
+            chatbot_connector: Chatbot to interact with
+            params: Exploration parameters including max sessions, turns, languages and fallback
+            graph_state: Current state of the exploration graph
+
+        Returns:
+            Tuple of conversation sessions and updated graph state
+        """
+        conversation_sessions = []
+        current_graph_state = graph_state
+
         session_num = 0
-        while session_num < max_sessions:
-            current_session_index = session_num
-            print(f"\n=== Starting Session {current_session_index + 1}/{max_sessions} ===")
+        while session_num < params["max_sessions"]:
+            print(f"\n=== Starting Session {session_num + 1}/{params['max_sessions']} ===")
 
-            explore_node = None
-            session_type_log = "General Exploration"
+            # Determine which node to explore next
+            explore_node, session_type = self._select_next_node(current_graph_state, session_num)
 
-            # Use pending_nodes from the current_graph_state
-            if current_graph_state["pending_nodes"]:
-                explore_node = current_graph_state["pending_nodes"].pop(0)
-                # Use explored_nodes from the current_graph_state
-                if explore_node.name in current_graph_state["explored_nodes"]:
-                    print(f"--- Skipping already explored node: '{explore_node.name}' ---")
-                    session_num += 1
-                    continue
-                session_type_log = f"Exploring functionality '{explore_node.name}'"
-            elif session_num > 0:
-                print("   Pending nodes queue is empty. Performing general exploration.")
+            # Skip already explored nodes
+            if explore_node and explore_node.name in current_graph_state["explored_nodes"]:
+                print(f"--- Skipping already explored node: '{explore_node.name}' ---")
+                session_num += 1
+                continue
 
-            print(f"   Session Type: {session_type_log}")
+            print(f"   Session Type: {session_type}")
 
-            session_config: ExplorationSessionConfig = {
-                "session_num": current_session_index,
-                "max_sessions": max_sessions,
-                "max_turns": max_turns,
-                "llm": self.llm,
-                "the_chatbot": chatbot_connector,
-                "fallback_message": fallback_message,
-                "current_node": explore_node,
-                "graph_state": current_graph_state,  # Pass the current state dict
-                "supported_languages": supported_languages,
+            # Configure and run a single session
+            session_params: SessionParams = {
+                "session_num": session_num,
+                "max_sessions": params["max_sessions"],
+                "max_turns": params["max_turns"],
             }
+
+            session_config = self._create_session_config(
+                session_params,
+                chatbot_connector,
+                params,
+                explore_node,
+                current_graph_state,
+            )
 
             conversation_history, updated_graph_state = run_exploration_session(
                 config=session_config,
             )
 
-            # Update the local state with the returned state
             conversation_sessions.append(conversation_history)
             current_graph_state = updated_graph_state
             session_num += 1
 
-        # --- Post-Exploration Summary ---
-        print(f"\n=== Completed {session_num} exploration sessions ===")
-        # Access state components via the dictionary
-        if current_graph_state["pending_nodes"]:
-            print(f"   NOTE: {len(current_graph_state['pending_nodes'])} nodes still remain in the pending queue.")
+        # Display summary information
+        self._print_exploration_summary(session_num, current_graph_state)
+
+        return conversation_sessions, current_graph_state
+
+    def _select_next_node(self, graph_state: ExplorationGraphState, session_num: int) -> tuple[Any, str]:
+        """Select the next node to explore."""
+        explore_node = None
+        session_type = "General Exploration"
+
+        if graph_state["pending_nodes"]:
+            explore_node = graph_state["pending_nodes"].pop(0)
+            session_type = f"Exploring functionality '{explore_node.name}'"
+        elif session_num > 0:
+            print("   Pending nodes queue is empty. Performing general exploration.")
+
+        return explore_node, session_type
+
+    def _create_session_config(
+        self,
+        session_params: SessionParams,
+        chatbot_connector: Chatbot,
+        exploration_params: ExplorationParams,
+        current_node: FunctionalityNode,
+        graph_state: ExplorationGraphState,
+    ) -> ExplorationSessionConfig:
+        """Create a configuration for a single exploration session.
+
+        Args:
+            session_params: Session-specific parameters (number, max sessions, turns)
+            chatbot_connector: The chatbot connector instance
+            exploration_params: General exploration parameters
+            current_node: The current node being explored (if any)
+            graph_state: Current state of the exploration graph
+
+        Returns:
+            Configuration dictionary for the session
+        """
+        return {
+            "session_num": session_params["session_num"],
+            "max_sessions": session_params["max_sessions"],
+            "max_turns": session_params["max_turns"],
+            "llm": self.llm,
+            "the_chatbot": chatbot_connector,
+            "fallback_message": exploration_params["fallback_message"],
+            "current_node": current_node,
+            "graph_state": graph_state,
+            "supported_languages": exploration_params["supported_languages"],
+        }
+
+    def _print_exploration_summary(self, session_count: int, graph_state: ExplorationGraphState) -> None:
+        """Print summary information after exploration."""
+        print(f"\n=== Completed {session_count} exploration sessions ===")
+
+        if graph_state["pending_nodes"]:
+            print(f"   NOTE: {len(graph_state['pending_nodes'])} nodes still remain in the pending queue.")
         else:
             print("   All discovered nodes were explored.")
-        print(f"Discovered {len(current_graph_state['root_nodes'])} root functionalities after exploration.")
 
-        # Convert final root nodes to dictionaries for the result
-        functionality_dicts = [node.to_dict() for node in current_graph_state["root_nodes"]]
-
-        return {
-            "conversation_sessions": conversation_sessions,
-            "root_nodes_dict": functionality_dicts,
-            "supported_languages": supported_languages,
-            "fallback_message": fallback_message,
-        }
+        print(f"Discovered {len(graph_state['root_nodes'])} root functionalities after exploration.")
 
     def run_analysis(self, exploration_results: dict[str, Any]) -> dict[str, list[Any]]:
         """Runs the LangGraph analysis pipeline using pre-compiled graphs.

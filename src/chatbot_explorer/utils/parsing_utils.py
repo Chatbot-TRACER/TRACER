@@ -4,6 +4,7 @@ import re
 
 MIN_POTENTIAL_YAML_LENGTH = 10
 
+
 def extract_yaml(text: str) -> str:
     """Extract YAML content from LLM response text.
 
