@@ -1,6 +1,5 @@
 """Prompts for generating user simulator context based on profile information."""
 
-
 from typing import Any
 
 

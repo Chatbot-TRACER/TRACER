@@ -1,5 +1,6 @@
 """Prompts for defining variables in user simulator profiles."""
 
+
 def get_variable_definition_prompt(
     profile_name: str,
     role: str,

@@ -1,3 +1,5 @@
+"""Main program to run the Chatbot Explorer."""
+
 import sys
 from argparse import Namespace
 from pathlib import Path
