@@ -1,4 +1,4 @@
-"""Script to validate the profiles for the user simulator."""
+"""Provides validation functionality for YAML configuration files."""
 
 import re
 from dataclasses import dataclass
@@ -175,7 +175,7 @@ class YamlValidator:
             # Validate top-level required fields
             errors.extend(self._validate_required_fields(data))
 
-            # Validate specific sections
+            # Validate specific sections if they exist and required fields are present
             if "llm" in data:
                 errors.extend(self._validate_llm_section(data["llm"]))
 
@@ -188,11 +188,13 @@ class YamlValidator:
             if "conversation" in data:
                 errors.extend(self._validate_conversation_section(data["conversation"]))
 
+            # Cross-section validation (only if both sections are present)
             if "user" in data and "conversation" in data:
                 errors.extend(self._validate_conversation_variable_dependencies(data["user"], data["conversation"]))
 
         except yaml.YAMLError as e:
-            return [ValidationError(f"Invalid YAML syntax: {e!s} at line {e.problem_mark.line + 1}", "/")]
+            line_info = f" at line {e.problem_mark.line + 1}" if hasattr(e, "problem_mark") and e.problem_mark else ""
+            return [ValidationError(f"Invalid YAML syntax: {e!s}{line_info}", "/")]
         else:
             return errors
 
@@ -624,40 +626,83 @@ class YamlValidator:
             errors.append(ValidationError(f"Function must be a string, got {type(func).__name__}", path))
             return errors  # Cannot validate non-string function
 
-        valid_function = False
-        # Simple functions without parameters or with specific allowed parameters
+        # Simple functions without parameters
         if func in ["default()", "random()", "another()", "forward()"]:
-            valid_function = True
+            return []  # Valid
 
-        elif func.startswith("random(") and func.endswith(")"):
-            param = func[len("random(") : -1].strip()
-            if param == "rand" or param.isdigit():
-                valid_function = True
-
+        # Functions with parameters
+        if func.startswith("random(") and func.endswith(")"):
+            errors.extend(self._validate_random_function_param(func, path))
         elif func.startswith("another(") and func.endswith(")"):
-            param = func[len("another(") : -1].strip()
-            if param.isdigit():
-                valid_function = True
-
+            errors.extend(self._validate_another_function_param(func, path))
         elif func.startswith("forward(") and func.endswith(")"):
-            nested_var = func[len("forward(") : -1].strip()
-            if nested_var == "":  # forward() case already handled
-                pass
-            elif nested_var == current_var:
-                errors.append(ValidationError(f"Forward function cannot reference itself ('{nested_var}')", path))
-                valid_function = True  # Mark as valid to avoid generic invalid function error
-            elif nested_var not in defined_variables:
-                errors.append(ValidationError(f"Forward function references undefined variable '{nested_var}'", path))
-                valid_function = True  # Mark as valid to avoid generic invalid function error
-            else:
-                valid_function = True  # Valid forward reference
-
-        if not valid_function and not errors:  # Only add generic error if no specific error was found
+            errors.extend(self._validate_forward_function_param(func, defined_variables, current_var, path))
+        else:
+            # If none of the above matched, it's an invalid format
             allowed_funcs = (
                 "default(), random(), random(n), random(rand), another(), another(n), forward(), forward(var_name)"
             )
             errors.append(ValidationError(f"Invalid function format '{func}'. Allowed formats: {allowed_funcs}", path))
 
+        return errors
+
+    def _validate_random_function_param(self, func: str, path: str) -> list[ValidationError]:
+        """Validate the parameter of a 'random(param)' function string.
+
+        Args:
+            func: The function string, e.g., "random(5)" or "random(rand)".
+            path: The JSON path to the function field.
+
+        Returns:
+            A list of ValidationError objects.
+        """
+        param = func[len("random(") : -1].strip()
+        if param == "rand" or param.isdigit():
+            return []  # Valid
+        return [ValidationError("Parameter for random() must be 'rand' or a positive integer", path)]
+
+    def _validate_another_function_param(self, func: str, path: str) -> list[ValidationError]:
+        """Validate the parameter of an 'another(param)' function string.
+
+        Args:
+            func: The function string, e.g., "another(3)".
+            path: The JSON path to the function field.
+
+        Returns:
+            A list of ValidationError objects.
+        """
+        param = func[len("another(") : -1].strip()
+        if param.isdigit():
+            return []  # Valid
+        return [ValidationError("Parameter for another() must be a positive integer", path)]
+
+    def _validate_forward_function_param(
+        self, func: str, defined_variables: dict, current_var: str, path: str
+    ) -> list[ValidationError]:
+        """Validate the parameter of a 'forward(param)' function string.
+
+        Args:
+            func: The function string, e.g., "forward(other_var)".
+            defined_variables: Dictionary of all defined variables.
+            current_var: The name of the variable this function belongs to.
+            path: The JSON path to the function field.
+
+        Returns:
+            A list of ValidationError objects.
+        """
+        errors = []
+        nested_var = func[len("forward(") : -1].strip()
+        if nested_var == "":
+            # forward() is handled in the main function, this case shouldn't normally be reached
+            # but if it is, it implies an invalid format like "forward( )"
+            errors.append(
+                ValidationError("Forward function parameter cannot be empty if parentheses are present", path)
+            )
+        elif nested_var == current_var:
+            errors.append(ValidationError(f"Forward function cannot reference itself ('{nested_var}')", path))
+        elif nested_var not in defined_variables:
+            errors.append(ValidationError(f"Forward function references undefined variable '{nested_var}'", path))
+        # If none of the above, the parameter is a valid reference to another defined variable
         return errors
 
     def _validate_variable_data(self, data: any, var_type: str | None, path: str) -> list[ValidationError]:
@@ -679,100 +724,17 @@ class YamlValidator:
 
         # --- Validation for numeric types (int, float) ---
         if var_type in ["int", "float"]:
-            if isinstance(data, dict):  # Range definition
-                # Check for required min/max
-                if "min" not in data:
-                    errors.append(ValidationError("Missing 'min' in numeric range definition", path))
-                if "max" not in data:
-                    errors.append(ValidationError("Missing 'max' in numeric range definition", path))
-
-                min_val = data.get("min")
-                max_val = data.get("max")
-
-                # Validate min/max types and relationship
-                if min_val is not None and max_val is not None:
-                    valid_types = (int, float)
-                    if not isinstance(min_val, valid_types):
-                        errors.append(
-                            ValidationError(
-                                f"Range 'min' must be a number, got {type(min_val).__name__}", f"{path}/min"
-                            )
-                        )
-                    if not isinstance(max_val, valid_types):
-                        errors.append(
-                            ValidationError(
-                                f"Range 'max' must be a number, got {type(max_val).__name__}", f"{path}/max"
-                            )
-                        )
-                    elif isinstance(min_val, valid_types) and isinstance(max_val, valid_types) and min_val >= max_val:
-                        errors.append(
-                            ValidationError("Range 'min' value must be strictly smaller than 'max' value", path)
-                        )
-
-                # Validate step/linspace based on type
-                if var_type == "float":
-                    if "step" not in data and "linspace" not in data:
-                        errors.append(ValidationError("Float range must define either 'step' or 'linspace'", path))
-                    elif "step" in data and not isinstance(data["step"], (int, float)):
-                        errors.append(
-                            ValidationError(
-                                f"Range 'step' must be a number, got {type(data['step']).__name__}", f"{path}/step"
-                            )
-                        )
-                    elif "linspace" in data and (not isinstance(data["linspace"], int) or data["linspace"] <= 0):
-                        errors.append(
-                            ValidationError(
-                                f"Range 'linspace' must be a positive integer, got {data['linspace']}",
-                                f"{path}/linspace",
-                            )
-                        )
-
-                elif var_type == "int":
-                    if "step" not in data:
-                        errors.append(ValidationError("Integer range must define 'step'", path))
-                    elif "step" in data and (not isinstance(data["step"], int) or data["step"] <= 0):
-                        errors.append(
-                            ValidationError(
-                                f"Integer range 'step' must be a positive integer, got {data['step']}", f"{path}/step"
-                            )
-                        )
-                    if "linspace" in data:
-                        errors.append(
-                            ValidationError(
-                                "Integer range cannot use 'linspace', use 'step' instead", f"{path}/linspace"
-                            )
-                        )
-
-                # Check for unexpected keys in range definition
-                allowed_range_keys = {"min", "max", "step", "linspace"}
-                for key in data:
-                    if key not in allowed_range_keys:
-                        errors.append(
-                            ValidationError(f"Unexpected key '{key}' in numeric range definition", f"{path}/{key}")
-                        )
-
+            if isinstance(data, dict):  # Range definition or custom function
+                if "file" in data:  # Custom function definition
+                    errors.extend(self._validate_custom_function_data(data, path))
+                else:  # Range definition
+                    errors.extend(self._validate_numeric_range_data(data, var_type, path))
             elif isinstance(data, list):  # List of numbers
-                for j, item in enumerate(data):
-                    item_path = f"{path}/{j}"
-                    if not isinstance(item, (int, float)):
-                        errors.append(
-                            ValidationError(
-                                f"Invalid data list item type: {type(item).__name__}. Expected {var_type}", item_path
-                            )
-                        )
-                    elif var_type == "int" and not isinstance(item, int):
-                        errors.append(
-                            ValidationError(f"Invalid data list item type: expected int, got float ({item})", item_path)
-                        )
-
-            # Custom function definition (common for all types)
-            elif isinstance(data, dict) and "file" in data:
-                errors.extend(self._validate_custom_function_data(data, path))
-
+                errors.extend(self._validate_numeric_list_data(data, var_type, path))
             else:  # Invalid data structure for numeric type
                 errors.append(
                     ValidationError(
-                        f"Data for type '{var_type}' must be a list of values or a range definition (min, max, step/linspace)",
+                        f"Data for type '{var_type}' must be a list of values, a range definition (min, max, step/linspace), or a custom function definition",
                         path,
                     )
                 )
@@ -780,37 +742,7 @@ class YamlValidator:
         # --- Validation for string type ---
         elif var_type == "string":
             if isinstance(data, list):  # List of strings or any() functions
-                for j, item in enumerate(data):
-                    item_path = f"{path}/{j}"
-                    if isinstance(item, str):
-                        # Check for any() function format
-                        if item.startswith("any("):
-                            min_any_function_length = 3  # Length of "any()" with something inside
-                            if not item.endswith(")"):
-                                errors.append(
-                                    ValidationError(
-                                        f"Malformed any() function: Missing closing parenthesis in '{item}'", item_path
-                                    )
-                                )
-                            elif len(item) < min_any_function_length:  # "any()"
-                                errors.append(
-                                    ValidationError(
-                                        "Empty any() function: Must contain instructions between parentheses", item_path
-                                    )
-                                )
-                            # Basic check for balanced parentheses within any()
-                            elif item.count("(") != item.count(")"):
-                                errors.append(
-                                    ValidationError(f"Unbalanced parentheses in any() function: '{item}'", item_path)
-                                )
-                        # Allow empty strings in the list ""
-                    elif not isinstance(item, (str, int, float, bool)):  # Allow primitives to be stringified
-                        errors.append(
-                            ValidationError(
-                                f"Invalid data list item type: {type(item).__name__}. Must be a primitive value (string, int, float, bool) or any() function string",
-                                item_path,
-                            ),
-                        )
+                errors.extend(self._validate_string_list_data(data, path))
             # Custom function definition (common for all types)
             elif isinstance(data, dict) and "file" in data:
                 errors.extend(self._validate_custom_function_data(data, path))
@@ -821,6 +753,182 @@ class YamlValidator:
                     )
                 )
 
+        return errors
+
+    def _validate_numeric_range_data(self, data: dict, var_type: str, path: str) -> list[ValidationError]:
+        """Validate the structure and values of a numeric range definition.
+
+        Args:
+            data: The dictionary representing the range definition.
+            var_type: The numeric type ('int' or 'float').
+            path: The JSON path to this data dictionary.
+
+        Returns:
+            A list of ValidationError objects.
+        """
+        errors = []
+
+        # Validate min/max presence and relationship
+        errors.extend(self._validate_range_min_max(data, path))
+
+        # Validate step/linspace based on type
+        errors.extend(self._validate_range_step_linspace(data, var_type, path))
+
+        # Check for unexpected keys in range definition
+        allowed_range_keys = {"min", "max", "step", "linspace"}
+        for key in data:
+            if key not in allowed_range_keys:
+                errors.append(ValidationError(f"Unexpected key '{key}' in numeric range definition", f"{path}/{key}"))
+        return errors
+
+    def _validate_range_min_max(self, data: dict, path: str) -> list[ValidationError]:
+        """Validate the 'min' and 'max' fields in a numeric range definition.
+
+        Args:
+            data: The dictionary representing the range definition.
+            path: The JSON path to this data dictionary.
+
+        Returns:
+            A list of ValidationError objects related to min/max.
+        """
+        errors = []
+        if "min" not in data:
+            errors.append(ValidationError("Missing 'min' in numeric range definition", path))
+        if "max" not in data:
+            errors.append(ValidationError("Missing 'max' in numeric range definition", path))
+
+        min_val = data.get("min")
+        max_val = data.get("max")
+
+        # Validate min/max types and relationship only if both are present
+        if min_val is not None and max_val is not None:
+            valid_types = (int, float)
+            min_is_valid_type = isinstance(min_val, valid_types)
+            max_is_valid_type = isinstance(max_val, valid_types)
+
+            if not min_is_valid_type:
+                errors.append(
+                    ValidationError(f"Range 'min' must be a number, got {type(min_val).__name__}", f"{path}/min")
+                )
+            if not max_is_valid_type:
+                errors.append(
+                    ValidationError(f"Range 'max' must be a number, got {type(max_val).__name__}", f"{path}/max")
+                )
+            # Only check relationship if both types are valid numbers
+            elif min_is_valid_type and max_is_valid_type and min_val >= max_val:
+                errors.append(ValidationError("Range 'min' value must be strictly smaller than 'max' value", path))
+        return errors
+
+    def _validate_range_step_linspace(self, data: dict, var_type: str, path: str) -> list[ValidationError]:
+        """Validate the 'step' and 'linspace' fields based on the variable type.
+
+        Args:
+            data: The dictionary representing the range definition.
+            var_type: The numeric type ('int' or 'float').
+            path: The JSON path to this data dictionary.
+
+        Returns:
+            A list of ValidationError objects related to step/linspace.
+        """
+        errors = []
+        if var_type == "float":
+            has_step = "step" in data
+            has_linspace = "linspace" in data
+
+            if not has_step and not has_linspace:
+                errors.append(ValidationError("Float range must define either 'step' or 'linspace'", path))
+            if has_step and not isinstance(data["step"], (int, float)):
+                errors.append(
+                    ValidationError(f"Range 'step' must be a number, got {type(data['step']).__name__}", f"{path}/step")
+                )
+            if has_linspace and (not isinstance(data["linspace"], int) or data["linspace"] <= 0):
+                errors.append(
+                    ValidationError(
+                        f"Range 'linspace' must be a positive integer, got {data['linspace']}", f"{path}/linspace"
+                    )
+                )
+
+        elif var_type == "int":
+            if "step" not in data:
+                errors.append(ValidationError("Integer range must define 'step'", path))
+            elif "step" in data and (not isinstance(data["step"], int) or data["step"] <= 0):
+                errors.append(
+                    ValidationError(
+                        f"Integer range 'step' must be a positive integer, got {data['step']}", f"{path}/step"
+                    )
+                )
+            if "linspace" in data:
+                errors.append(
+                    ValidationError("Integer range cannot use 'linspace', use 'step' instead", f"{path}/linspace")
+                )
+        return errors
+
+    def _validate_numeric_list_data(self, data: list, var_type: str, path: str) -> list[ValidationError]:
+        """Validate a list of numeric data items.
+
+        Args:
+            data: The list containing numeric values.
+            var_type: The expected numeric type ('int' or 'float').
+            path: The JSON path to this data list.
+
+        Returns:
+            A list of ValidationError objects.
+        """
+        errors = []
+        for j, item in enumerate(data):
+            item_path = f"{path}/{j}"
+            if not isinstance(item, (int, float)):
+                errors.append(
+                    ValidationError(
+                        f"Invalid data list item type: {type(item).__name__}. Expected {var_type}", item_path
+                    )
+                )
+            elif var_type == "int" and not isinstance(item, int):
+                errors.append(
+                    ValidationError(f"Invalid data list item type: expected int, got float ({item})", item_path)
+                )
+        return errors
+
+    def _validate_string_list_data(self, data: list, path: str) -> list[ValidationError]:
+        """Validate a list of string data items, including 'any()' functions.
+
+        Args:
+            data: The list containing string values or 'any()' functions.
+            path: The JSON path to this data list.
+
+        Returns:
+            A list of ValidationError objects.
+        """
+        errors = []
+        for j, item in enumerate(data):
+            item_path = f"{path}/{j}"
+            if isinstance(item, str):
+                # Check for any() function format
+                if item.startswith("any("):
+                    min_any_function_length = 3  # Length of "any()" with something inside
+                    if not item.endswith(")"):
+                        errors.append(
+                            ValidationError(
+                                f"Malformed any() function: Missing closing parenthesis in '{item}'", item_path
+                            )
+                        )
+                    elif len(item) < min_any_function_length:  # "any()"
+                        errors.append(
+                            ValidationError(
+                                "Empty any() function: Must contain instructions between parentheses", item_path
+                            )
+                        )
+                    # Basic check for balanced parentheses within any()
+                    elif item.count("(") != item.count(")"):
+                        errors.append(ValidationError(f"Unbalanced parentheses in any() function: '{item}'", item_path))
+                # Allow empty strings in the list ""
+            elif not isinstance(item, (str, int, float, bool)):  # Allow primitives to be stringified
+                errors.append(
+                    ValidationError(
+                        f"Invalid data list item type: {type(item).__name__}. Must be a primitive value (string, int, float, bool) or any() function string",
+                        item_path,
+                    ),
+                )
         return errors
 
     def _validate_custom_function_data(self, data: dict, path: str) -> list[ValidationError]:
@@ -851,7 +959,9 @@ class YamlValidator:
                 )
             )
 
-        if not isinstance(data["file"], str) or data["file"].strip() == "":
+        if "file" not in data:
+            errors.append(ValidationError("Custom function data must include 'file'", path))
+        elif not isinstance(data["file"], str) or data["file"].strip() == "":
             errors.append(ValidationError("Custom function 'file' must be a non-empty string path", f"{path}/file"))
 
         # Check for unexpected keys
@@ -900,26 +1010,40 @@ class YamlValidator:
                             ),
                         )
 
-        # Detect circular dependencies using Depth First Search
-        path = set()
+        # Detect circular dependencies
+        errors.extend(self._detect_forward_dependency_cycles(forward_dependencies))
+
+        return errors
+
+    def _detect_forward_dependency_cycles(self, forward_dependencies: dict[str, str]) -> list[ValidationError]:
+        """Detect circular dependencies in the forward dependency map using DFS.
+
+        Args:
+            forward_dependencies: A dictionary mapping variable names to the variable names
+                                  they forward reference.
+
+        Returns:
+            A list of ValidationError objects if cycles are detected.
+        """
+        errors = []
+        path_set = set()
         visited = set()
         cycles_found = []  # Store descriptions of cycles found
 
         def detect_cycle_recursive(node: str) -> bool:
-            path.add(node)
+            """Recursive helper for DFS cycle detection."""
+            path_set.add(node)
             visited.add(node)
             if node in forward_dependencies:
                 next_node = forward_dependencies[node]
-                if next_node in path:
-                    # Found a cycle - reconstruct path (simple for now)
-                    # A more robust reconstruction might be needed for complex paths
-                    # For now, just report the direct cycle link involved
+                if next_node in path_set:
+                    # Found a cycle - report the direct link involved
                     cycles_found.append(f"{node} → {next_node}")
                     return True  # Cycle detected
                 if next_node not in visited and detect_cycle_recursive(next_node):
                     return True  # Propagate cycle detection
 
-            path.remove(node)
+            path_set.remove(node)
             return False  # No cycle found from this node
 
         for var in forward_dependencies:
@@ -936,7 +1060,6 @@ class YamlValidator:
                     "/user/goals",  # General error path for cycles
                 ),
             )
-
         return errors
 
     def _validate_chatbot_section(self, chatbot: dict) -> list[ValidationError]:
@@ -976,69 +1099,92 @@ class YamlValidator:
             if not isinstance(chatbot["output"], list):
                 errors.append(ValidationError("Output must be a list", "/chatbot/output"))
             else:
-                for i, output_item in enumerate(chatbot["output"]):
-                    path = f"/chatbot/output/{i}"
-                    if not isinstance(output_item, dict):
-                        errors.append(
-                            ValidationError(
-                                f"Each output item must be a dictionary, got {type(output_item).__name__}", path
-                            )
-                        )
-                        continue
+                errors.extend(self._validate_chatbot_output_list(chatbot["output"]))
 
-                    if len(output_item) != 1:
-                        errors.append(
-                            ValidationError("Each output item must have exactly one key (the output name)", path)
-                        )
-                        continue
+        return errors
 
-                    output_name = next(iter(output_item.keys()))
-                    output_def = output_item[output_name]
-                    output_path = f"{path}/{output_name}"
+    def _validate_chatbot_output_list(self, output_list: list) -> list[ValidationError]:
+        """Validate the list of items in the 'chatbot.output' field.
 
-                    if not isinstance(output_def, dict):
-                        errors.append(
-                            ValidationError(f"Output definition for '{output_name}' must be a dictionary", output_path)
-                        )
-                        continue
+        Args:
+            output_list: The list value of the 'chatbot.output' field.
 
-                    # Check required fields within output definition
-                    for field in ["type", "description"]:
-                        if field not in output_def:
-                            errors.append(ValidationError(f"Output '{output_name}' must have a '{field}'", output_path))
+        Returns:
+            A list of ValidationError objects.
+        """
+        errors = []
+        for i, output_item in enumerate(output_list):
+            path = f"/chatbot/output/{i}"
+            if not isinstance(output_item, dict):
+                errors.append(
+                    ValidationError(f"Each output item must be a dictionary, got {type(output_item).__name__}", path)
+                )
+                continue
 
-                    # Validate output type
-                    if "type" in output_def:
-                        output_type = output_def["type"]
-                        if output_type not in self.valid_output_types:
-                            errors.append(
-                                ValidationError(
-                                    f"Invalid output type '{output_type}'. Must be one of: {', '.join(self.valid_output_types)}",
-                                    f"{output_path}/type",
-                                ),
-                            )
+            if len(output_item) != 1:
+                errors.append(ValidationError("Each output item must have exactly one key (the output name)", path))
+                continue
 
-                    # Validate description is a non-empty string
-                    if "description" in output_def:
-                        desc = output_def["description"]
-                        if not isinstance(desc, str) or desc.strip() == "":
-                            errors.append(
-                                ValidationError(
-                                    "Description must be a non-empty string",
-                                    f"{output_path}/description",
-                                ),
-                            )
-                    # Check for unexpected keys in output definition
-                    allowed_keys = {"type", "description"}
-                    for key in output_def:
-                        if key not in allowed_keys:
-                            errors.append(
-                                ValidationError(
-                                    f"Unexpected key '{key}' in output definition '{output_name}'",
-                                    f"{output_path}/{key}",
-                                )
-                            )
+            output_name = next(iter(output_item.keys()))
+            output_def = output_item[output_name]
+            output_path = f"{path}/{output_name}"
 
+            if not isinstance(output_def, dict):
+                errors.append(
+                    ValidationError(f"Output definition for '{output_name}' must be a dictionary", output_path)
+                )
+                continue
+
+            errors.extend(self._validate_chatbot_output_definition(output_def, output_name, output_path))
+        return errors
+
+    def _validate_chatbot_output_definition(
+        self, output_def: dict, output_name: str, path: str
+    ) -> list[ValidationError]:
+        """Validate a single output definition within the 'chatbot.output' list.
+
+        Args:
+            output_def: The dictionary defining the output item.
+            output_name: The name of the output item (the key).
+            path: The JSON path to this output definition dictionary.
+
+        Returns:
+            A list of ValidationError objects.
+        """
+        errors = []
+        # Check required fields within output definition
+        for field in ["type", "description"]:
+            if field not in output_def:
+                errors.append(ValidationError(f"Output '{output_name}' must have a '{field}'", path))
+
+        # Validate output type
+        if "type" in output_def:
+            output_type = output_def["type"]
+            if output_type not in self.valid_output_types:
+                errors.append(
+                    ValidationError(
+                        f"Invalid output type '{output_type}'. Must be one of: {', '.join(self.valid_output_types)}",
+                        f"{path}/type",
+                    ),
+                )
+
+        # Validate description is a non-empty string
+        if "description" in output_def:
+            desc = output_def["description"]
+            if not isinstance(desc, str) or desc.strip() == "":
+                errors.append(
+                    ValidationError(
+                        "Description must be a non-empty string",
+                        f"{path}/description",
+                    ),
+                )
+        # Check for unexpected keys in output definition
+        allowed_keys = {"type", "description"}
+        for key in output_def:
+            if key not in allowed_keys:
+                errors.append(
+                    ValidationError(f"Unexpected key '{key}' in output definition '{output_name}'", f"{path}/{key}")
+                )
         return errors
 
     def _validate_conversation_section(self, conversation: dict) -> list[ValidationError]:
@@ -1139,45 +1285,102 @@ class YamlValidator:
             if goal_style != "default":
                 errors.append(ValidationError("When goal_style is a string, it must be 'default'", path))
         elif isinstance(goal_style, dict):
-            # Check for valid goal style option keys
-            for key in goal_style:
-                if key not in self.valid_goal_styles:
-                    errors.append(
-                        ValidationError(
-                            f"Invalid goal_style option: '{key}'. Valid options: {', '.join(self.valid_goal_styles)}",
-                            f"{path}/{key}",
-                        ),
-                    )
-
-            # Validate specific options if present and valid key
-            if "steps" in goal_style:
-                steps = goal_style["steps"]
-                if not isinstance(steps, int) or steps <= 0:
-                    errors.append(ValidationError("Steps must be a positive integer", f"{path}/steps"))
-
-            if "random_steps" in goal_style:
-                random_steps = goal_style["random_steps"]
-                if not isinstance(random_steps, int) or random_steps <= 0:
-                    errors.append(ValidationError("Random steps must be a positive integer", f"{path}/random_steps"))
-                elif random_steps > 20:  # Example limit
-                    errors.append(ValidationError("Random steps cannot exceed 20", f"{path}/random_steps"))
-
-            if "all_answered" in goal_style:
-                errors.extend(
-                    self._validate_goal_style_all_answered(goal_style["all_answered"], f"{path}/all_answered")
-                )
-
-            if "max_cost" in goal_style:
-                cost = goal_style["max_cost"]
-                if not isinstance(cost, (int, float)) or cost <= 0:
-                    errors.append(ValidationError("Goal style max_cost must be a positive number", f"{path}/max_cost"))
-
+            errors.extend(self._validate_goal_style_dict(goal_style, path))
         else:
             errors.append(
                 ValidationError(f"Goal style must be 'default' or a dictionary, got {type(goal_style).__name__}", path)
             )
 
         return errors
+
+    def _validate_goal_style_dict(self, goal_style_dict: dict, path: str) -> list[ValidationError]:
+        """Validate the dictionary structure for 'conversation.goal_style'.
+
+        Args:
+            goal_style_dict: The dictionary value of the 'goal_style' field.
+            path: The JSON path to this dictionary.
+
+        Returns:
+            A list of ValidationError objects.
+        """
+        errors = []
+        # Check for invalid goal style option keys first
+        for key in goal_style_dict:
+            if key not in self.valid_goal_styles:
+                errors.append(
+                    ValidationError(
+                        f"Invalid goal_style option: '{key}'. Valid options: {', '.join(self.valid_goal_styles)}",
+                        f"{path}/{key}",
+                    ),
+                )
+
+        # If invalid keys are found, don't proceed with specific validations
+        if errors:
+            return errors
+
+        # Validate specific options using helper methods
+        if "steps" in goal_style_dict:
+            errors.extend(self._validate_goal_style_steps(goal_style_dict["steps"], f"{path}/steps"))
+
+        if "random_steps" in goal_style_dict:
+            errors.extend(
+                self._validate_goal_style_random_steps(goal_style_dict["random_steps"], f"{path}/random_steps")
+            )
+
+        if "all_answered" in goal_style_dict:
+            errors.extend(
+                self._validate_goal_style_all_answered(goal_style_dict["all_answered"], f"{path}/all_answered")
+            )
+
+        if "max_cost" in goal_style_dict:
+            errors.extend(self._validate_goal_style_max_cost(goal_style_dict["max_cost"], f"{path}/max_cost"))
+
+        return errors
+
+    def _validate_goal_style_steps(self, steps: any, path: str) -> list[ValidationError]:
+        """Validate the 'steps' value within 'goal_style'.
+
+        Args:
+            steps: The value of the 'steps' field.
+            path: The JSON path to the 'steps' field.
+
+        Returns:
+            A list of ValidationError objects.
+        """
+        if not isinstance(steps, int) or steps <= 0:
+            return [ValidationError("Steps must be a positive integer", path)]
+        return []
+
+    def _validate_goal_style_random_steps(self, random_steps: any, path: str) -> list[ValidationError]:
+        """Validate the 'random_steps' value within 'goal_style'.
+
+        Args:
+            random_steps: The value of the 'random_steps' field.
+            path: The JSON path to the 'random_steps' field.
+
+        Returns:
+            A list of ValidationError objects.
+        """
+        errors = []
+        if not isinstance(random_steps, int) or random_steps <= 0:
+            errors.append(ValidationError("Random steps must be a positive integer", path))
+        elif random_steps > 20:  # Example limit
+            errors.append(ValidationError("Random steps cannot exceed 20", path))
+        return errors
+
+    def _validate_goal_style_max_cost(self, cost: any, path: str) -> list[ValidationError]:
+        """Validate the 'max_cost' value within 'goal_style'.
+
+        Args:
+            cost: The value of the 'max_cost' field.
+            path: The JSON path to the 'max_cost' field.
+
+        Returns:
+            A list of ValidationError objects.
+        """
+        if not isinstance(cost, (int, float)) or cost <= 0:
+            return [ValidationError("Goal style max_cost must be a positive number", path)]
+        return []
 
     def _validate_goal_style_all_answered(self, all_answered: any, path: str) -> list[ValidationError]:
         """Validate the 'all_answered' sub-field within 'goal_style'.
@@ -1474,12 +1677,16 @@ conversation:
   interaction_style:
     - random:
       - make spelling mistakes
+      - change language: ["Spanish", "French"] # Example nested change language
+#    - change language: ["German"] # Example top-level change language
     """
-    print("Starting...")
+    print("Starting validation...")
 
     errors = validator.validate(yaml_content)
-    for error in errors:
-        print(f"Error at {error.path}: {error.message}")
 
     if not errors:
-        print("No errors found.")
+        print("Validation successful: No errors found.")
+    else:
+        print(f"Validation failed with {len(errors)} error(s):")
+        for error in errors:
+            print(f"  - Error at path '{error.path}': {error.message}")
