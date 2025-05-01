@@ -1,5 +1,8 @@
+"""Provides utility functions for extracting YAML and JSON data from text."""
+
 import re
 
+MIN_POTENTIAL_YAML_LENGTH = 10
 
 def extract_yaml(text: str) -> str:
     """Extract YAML content from LLM response text.
@@ -27,7 +30,7 @@ def extract_yaml(text: str) -> str:
         if match:
             extracted = match.group(1).strip()
             # Basic check if it looks like YAML
-            if ":" in extracted and len(extracted) > 10:
+            if ":" in extracted and len(extracted) > MIN_POTENTIAL_YAML_LENGTH:
                 return extracted
 
     # If no fences, check if it starts like YAML

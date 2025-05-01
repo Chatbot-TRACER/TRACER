@@ -1,3 +1,5 @@
+"""Defines the models representing the LangGraph graph state."""
+
 from typing import Annotated, Any
 
 from langgraph.graph.message import add_messages
