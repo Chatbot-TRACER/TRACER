@@ -1,4 +1,9 @@
+"""Utilities for parsing and extracting structured data from LLM responses."""
+
 import re
+
+# Minimum length for extracted YAML content to be considered valid
+MIN_YAML_LENGTH = 10
 
 
 def extract_yaml(text: str) -> str:
@@ -27,7 +32,7 @@ def extract_yaml(text: str) -> str:
         if match:
             extracted = match.group(1).strip()
             # Basic check if it looks like YAML
-            if ":" in extracted and len(extracted) > 10:
+            if ":" in extracted and len(extracted) > MIN_YAML_LENGTH:
                 return extracted
 
     # If no fences, check if it starts like YAML
@@ -48,29 +53,3 @@ def extract_yaml(text: str) -> str:
 
     # Give up and return stripped text
     return text.strip()
-
-
-def extract_json_from_response(response_content: str) -> str:
-    """Extract JSON content from the LLM response."""
-    json_str = None
-    json_patterns = [
-        r"```json\s*([\s\S]+?)\s*```",  # ```json ... ```
-        r"```\s*([\s\S]+?)\s*```",  # ``` ... ```
-        r"\[\s*\{.*?\}\s*\]",  # Starts with [ { and ends with } ]
-    ]
-
-    for pattern in json_patterns:
-        match = re.search(pattern, response_content, re.DOTALL)
-        if match:
-            json_str = match.group(1) if "```" in pattern else match.group(0)
-            break
-
-    # Fallback if no pattern matched
-    if not json_str:
-        if response_content.strip().startswith("[") and response_content.strip().endswith("]"):
-            json_str = response_content.strip()
-        else:
-            msg = "Could not extract JSON block from LLM response."
-            raise ValueError(msg)
-
-    return json_str
