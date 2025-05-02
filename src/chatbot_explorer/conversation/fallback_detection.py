@@ -8,7 +8,10 @@ from chatbot_explorer.prompts.fallback_detection_prompts import (
     get_fallback_identification_prompt,
     get_semantic_fallback_check_prompt,
 )
+from chatbot_explorer.utils.logging_utils import get_logger
 from connectors.chatbot_connectors import Chatbot
+
+logger = get_logger()
 
 
 def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> str | None:
@@ -23,7 +26,7 @@ def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> st
     Returns:
         Optional[str]: The detected fallback message, or None if not found.
     """
-    print("\n--- Attempting to detect chatbot fallback message (won't be included in analysis) ---")
+    logger.verbose("\n--- Attempting to detect chatbot fallback message ---")
 
     # Some weird questions to confuse the bot
     confusing_queries = [
@@ -38,18 +41,19 @@ def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> st
 
     # Send confusing queries and get responses
     for i, query in enumerate(confusing_queries):
-        print(f"\nSending confusing query {i + 1}...")
+        logger.verbose("\nSending confusing query %d...", i + 1)
         try:
             is_ok, response = the_chatbot.execute_with_input(query)
 
             if is_ok:
-                print(f"Response received ({len(response)} chars)")
+                logger.debug("Response received (%d chars)", len(response))
                 responses.append(response)
-        except (TimeoutError, ConnectionError) as e:
-            print(f"Error communicating with chatbot: {e}")
+        except (TimeoutError, ConnectionError):
+            logger.exception("Error communicating with chatbot during fallback detection")
 
     # Analyze responses if we got any
     if responses:
+        logger.debug("Analyzing %d collected responses for fallback patterns", len(responses))
         analysis_prompt = get_fallback_identification_prompt(responses)
 
         try:
@@ -63,17 +67,13 @@ def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> st
             # Remove any "Fallback message:" prefix if the LLM included it
             fallback = re.sub(r"^(Fallback message:?\s*)", "", fallback, flags=re.IGNORECASE)
 
-            fallback_preview_length = 50
             if fallback:
-                print(
-                    f'Detected fallback pattern: "{fallback[:fallback_preview_length]}{"..." if len(fallback) > fallback_preview_length else ""}"'
-                )
                 return fallback
-            print("Could not extract a clear fallback message pattern.")
-        except (TimeoutError, ConnectionError, ValueError) as e:
-            print(f"Error during fallback analysis: {e}")
+            logger.verbose("Could not extract a clear fallback message pattern.")
+        except (TimeoutError, ConnectionError, ValueError):
+            logger.exception("Error during fallback analysis")
 
-    print("Could not detect a consistent fallback message.")
+    logger.verbose("Could not detect a consistent fallback message.")
     return None
 
 
@@ -89,15 +89,20 @@ def is_semantically_fallback(response: str, fallback: str, llm: BaseLanguageMode
         bool: True if the response is considered a fallback, False otherwise.
     """
     if not response or not fallback:
+        logger.debug("Cannot check fallback - empty response or fallback pattern")
         return False  # Cannot compare if one is empty
 
+    logger.debug("Checking if response is semantically equivalent to known fallback")
     prompt = get_semantic_fallback_check_prompt(response, fallback)
 
     try:
         llm_decision = llm.invoke(prompt)
         decision_text = llm_decision.content.strip().upper()
 
-        return decision_text.startswith("YES")
-    except (TimeoutError, ConnectionError, ValueError) as e:
-        print(f"   LLM Fallback Check Error: {e}. Assuming not a fallback.")
+        is_fallback = decision_text.startswith("YES")
+        logger.debug("Semantic fallback check result: %s", "IS fallback" if is_fallback else "NOT fallback")
+    except (TimeoutError, ConnectionError, ValueError):
+        logger.exception("LLM Fallback Check Error. Assuming not a fallback.")
         return False  # Default to False if LLM fails
+    else:
+        return is_fallback
