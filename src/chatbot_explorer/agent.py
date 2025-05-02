@@ -284,52 +284,51 @@ class ChatbotExplorationAgent:
         logger.info("\nDiscovered %d root functionalities after exploration", len(graph_state["root_nodes"]))
 
     def run_analysis(self, exploration_results: dict[str, Any]) -> dict[str, list[Any]]:
-        """Runs the LangGraph analysis pipeline using pre-compiled graphs.
-
-        Args:
-            exploration_results: A dictionary containing results from the exploration phase.
-
-        Returns:
-            A dictionary containing 'discovered_functionalities' and 'built_profiles'.
-        """
-        logger.info("\n--- Preparing for analysis phase ---")
+        """Runs the LangGraph analysis pipeline using pre-compiled graphs."""
+        conversation_count = len(exploration_results.get("conversation_sessions", []))
+        functionality_count = len(exploration_results.get("root_nodes_dict", {}))
         logger.debug(
-            "Initializing structure analysis with %d conversation sessions",
-            len(exploration_results.get("conversation_sessions", [])),
+            "Initializing analysis with %d conversation sessions and %d discovered functionalities",
+            conversation_count,
+            functionality_count,
         )
 
-        # 1. Prepare initial state for the structure graph
+        # 1. Structure analysis phase
+        logger.info("\nStep 1: Workflow structure inference")
+        logger.info("------------------------------------------")
+
+        # Prepare initial state for the structure graph
         structure_initial_state = State(
             messages=[{"role": "system", "content": "Infer structure from conversation history."}],
             conversation_history=exploration_results.get("conversation_sessions", []),
-            discovered_functionalities=exploration_results.get("root_nodes_dict", {}),  # Use the dict format
+            discovered_functionalities=exploration_results.get("root_nodes_dict", {}),
             built_profiles=[],
             discovered_limitations=[],
-            current_session=len(exploration_results.get("conversation_sessions", [])),
+            current_session=conversation_count,
             exploration_finished=True,
             conversation_goals=[],
             supported_languages=exploration_results.get("supported_languages", []),
             fallback_message=exploration_results.get("fallback_message", ""),
             workflow_structure=None,
-            # Initialize any other State fields with defaults if necessary
         )
 
-        # -- Run Structure Inference --
-        logger.info("\n--- Running workflow structure inference ---")
-        logger.verbose("Creating analysis thread for structure inference")
+        # Run Structure Inference
+        logger.debug("Creating analysis thread for structure inference")
         structure_thread_id = f"structure_analysis_{uuid.uuid4()}"
 
-        logger.debug("Starting structure graph invocation")
         structure_result = self._structure_graph.invoke(
             structure_initial_state,
             config={"configurable": {"thread_id": structure_thread_id}},
         )
         workflow_structure = structure_result.get("discovered_functionalities", {})
-        logger.info("--- Structure inference complete ---")
-        logger.verbose("Structure inference discovered %d workflow nodes", len(workflow_structure))
+        nodes_count = len(workflow_structure)
+        logger.info("Structure inference complete: %d workflow nodes created", nodes_count)
 
-        # 2. Prepare initial state for the profile graph
-        logger.debug("Preparing state for profile generation")
+        # 2. Profile generation phase
+        logger.info("\nStep 2: User profile generation")
+        logger.info("------------------------------------------")
+
+        # Prepare initial state for profile generation
         profile_initial_state = structure_result.copy()
         profile_initial_state["workflow_structure"] = workflow_structure
         profile_initial_state["messages"] = [
@@ -338,20 +337,28 @@ class ChatbotExplorationAgent:
         profile_initial_state["conversation_goals"] = []
         profile_initial_state["built_profiles"] = []
 
-        # -- Run Profile Generation --
-        logger.info("\n--- Generating user profiles ---")
-        logger.verbose("Creating analysis thread for profile generation")
+        # Run Profile Generation
+        logger.debug("Creating analysis thread for profile generation")
         profile_thread_id = f"profile_analysis_{uuid.uuid4()}"
 
-        logger.debug("Starting profile graph invocation")
         profile_result = self._profile_graph.invoke(
             profile_initial_state,
             config={"configurable": {"thread_id": profile_thread_id}},
         )
 
         generated_profiles = profile_result.get("built_profiles", [])
-        logger.info("--- Analysis complete, %d profiles generated ---", len(generated_profiles))
-        logger.debug("Profile generation finished successfully")
+        logger.info("Profile generation complete: %d user profiles created", len(generated_profiles))
+
+        # Log profile names at info level
+        if generated_profiles:
+            logger.info("\nGenerated profiles:")
+            for i, profile in enumerate(generated_profiles, 1):
+                name = profile.get("name", f"Profile {i}")
+                logger.info(" • %s", name)
+
+        logger.info("\n------------------------------------------")
+        logger.info("          Analysis Phase Complete          ")
+        logger.info("------------------------------------------")
 
         return {
             "discovered_functionalities": workflow_structure,

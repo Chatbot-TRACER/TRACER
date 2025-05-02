@@ -118,7 +118,7 @@ def _run_exploration_phase(
             max_sessions=max_sessions,
             max_turns=max_turns,
         )
-        logger.info("--- Exploration Phase Complete ---")
+
     except Exception:
         logger.exception("--- Fatal Error during Exploration Phase ---")
         sys.exit(1)
@@ -139,7 +139,9 @@ def _run_analysis_phase(agent: ChatbotExplorationAgent, exploration_results: dic
     Raises:
         SystemExit: If a critical error occurs during analysis.
     """
-    logger.info("--- Starting Analysis Phase (Structure Inference & Profile Generation) ---")
+    logger.info("-----------------------------------")
+    logger.info("---   Starting Analysis Phase   ---")
+    logger.info("-----------------------------------")
     try:
         results = agent.run_analysis(exploration_results=exploration_results)
         logger.info("--- Analysis Phase Complete ---")
