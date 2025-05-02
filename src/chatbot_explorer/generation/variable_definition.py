@@ -235,8 +235,6 @@ def generate_variable_definitions(
         if not all_variables:
             continue
 
-        logger.info("Defining variables for profile: %s", profile_name)
-        logger.info("Found variables: %s\n", ", ".join(sorted(all_variables)))
         goals_text = "".join(f"- {goal}\n" for goal in string_goals)
 
         # Prepare context dictionary once per profile

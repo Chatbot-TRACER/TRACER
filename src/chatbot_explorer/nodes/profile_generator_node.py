@@ -71,15 +71,12 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
 
     # Get chatbot type from state
     chatbot_type = state.get("chatbot_type", "unknown")
-    logger.info("Generating profiles for %s chatbot\n", chatbot_type)
 
     functionality_descriptions = get_all_descriptions(structured_root_dicts)
 
     if not functionality_descriptions:
         logger.warning("No descriptions found in structured functionalities")
         return {"conversation_goals": []}
-
-    logger.info("Processing %d functional components for profile generation\n", len(functionality_descriptions))
 
     try:
         # Create the config dictionary
@@ -95,18 +92,6 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
 
         # Call the main generation function with the config dictionary
         profiles_with_goals = generate_profile_content(config)
-
-        # Log the results with profile names
-        profile_count = len(profiles_with_goals)
-        logger.info("Generated %d user profiles:", profile_count)
-        for i, profile in enumerate(profiles_with_goals, 1):
-            name = profile.get("name", f"Profile {i}")
-            logger.info(" • %s", name)
-
-            # Log variable count at verbose level
-            variables = [k for k, v in profile.items() if isinstance(v, dict) and "function" in v and "data" in v]
-            if variables:
-                logger.verbose("   Variables: %d (%s)", len(variables), ", ".join(variables))
 
     except (KeyError, TypeError, ValueError):
         logger.exception("Error during profile generation")

@@ -1,6 +1,7 @@
 """Generates user profiles based on chatbot analysis results."""
 
 import re
+import time
 from typing import Any, TypedDict
 
 from langchain_core.language_models import BaseLanguageModel
@@ -16,6 +17,11 @@ from chatbot_explorer.prompts.profile_generation_prompts import (
     get_profile_goals_prompt,
     get_profile_grouping_prompt,
 )
+from chatbot_explorer.utils.logging_utils import get_logger
+
+MAX_DISPLAYED_FUNCS = 3
+
+logger = get_logger()
 
 
 class ProfileGenerationConfig(TypedDict):
@@ -41,14 +47,7 @@ class ProfileGenerationConfig(TypedDict):
 
 
 def ensure_double_curly(text: str) -> str:
-    """Ensures that all single curly braces in the text are replaced with double curly braces.
-
-    Args:
-        text: The input string potentially containing single curly braces.
-
-    Returns:
-        The string with single curly braces converted to double curly braces.
-    """
+    """Ensures that all single curly braces in the text are replaced with double curly braces."""
     # This pattern finds any {something} that is not already wrapped in double braces.
     pattern = re.compile(r"(?<!\{)\{([^{}]+)\}(?!\})")
     return pattern.sub(r"{{\1}}", text)
@@ -152,6 +151,8 @@ def _generate_profile_groupings(
     config: ProfileGenerationConfig, conv_context: str, wf_context: str, lang_instr: str
 ) -> list[dict[str, Any]]:
     """Given the chatbot's functionalities, generates user profiles using the LLM."""
+    logger.verbose("Generating initial profile groupings")
+
     num_functionalities = len(config["functionalities"])
     min_profiles = 3
     max_profiles = 10
@@ -172,13 +173,18 @@ def _generate_profile_groupings(
     )
 
     profiles_response = config["llm"].invoke(grouping_prompt)
-    return _parse_profile_groupings(profiles_response.content)
+    profiles = _parse_profile_groupings(profiles_response.content)
+
+    logger.verbose("Created %d initial profile groupings", len(profiles))
+    return profiles
 
 
 def _generate_profile_goals(
     profile: dict[str, Any], config: ProfileGenerationConfig, conv_context: str, wf_context: str, lang_instr: str
 ) -> list[str]:
     """Generates and parses goals for a single profile using the LLM."""
+    profile_name = profile.get("name", "Unnamed profile")
+
     chatbot_type_context = f"CHATBOT TYPE: {config['chatbot_type'].upper()}\n"
 
     goal_context: ProfileGoalContext = {
@@ -205,21 +211,15 @@ def _generate_profile_goals(
                 if goal:
                     goal = ensure_double_curly(goal)
                     goals.append(goal)
+
+    logger.debug("Generated %d goals for '%s'", len(goals), profile_name)
     return goals
 
 
 def generate_profile_content(config: ProfileGenerationConfig) -> list[dict[str, Any]]:
-    """Generates the complete content for user profiles based on chatbot analysis.
+    """Generates the complete content for user profiles based on chatbot analysis."""
+    logger.debug("Starting profile content generation")
 
-    Args:
-        config: A ProfileGenerationConfig dictionary containing all necessary inputs
-                like functionalities, limitations, LLM instance, history, etc.
-
-    Returns:
-        A list of dictionaries, where each dictionary represents a fully generated
-        user profile including name, role, functionalities, goals, variables,
-        context, and outputs.
-    """
     # 1. Prepare context strings
     lang_instr_group, lang_instr_goal = _prepare_language_instructions(config["supported_languages"])
     conv_context = _prepare_conversation_context(config["conversation_history"])
@@ -228,15 +228,57 @@ def generate_profile_content(config: ProfileGenerationConfig) -> list[dict[str, 
     # 2. Generate initial profile groupings (name, role, functionalities)
     profiles = _generate_profile_groupings(config, conv_context, workflow_context, lang_instr_group)
 
-    # 3. Generate goals for each profile
-    for profile in profiles:
+    logger.info("Generating %d profiles...", len(profiles))
+
+    # Process each profile with logging
+    for i, profile in enumerate(profiles):
+        profile_name = profile.get("name", f"Profile {i + 1}")
+        logger.verbose("\n • Generating profile: %s", profile_name)
+
+        # Log profile details in verbose mode
+        if logger.isEnabledFor(15):  # VERBOSE level
+            role = profile.get("role", "No role defined")
+            funcs = profile.get("functionalities", [])
+            func_count = len(funcs)
+            logger.verbose("    Role: %s", role)
+            logger.verbose("    Assigned functionalities: %d", func_count)
+
+            if funcs and logger.isEnabledFor(10):  # DEBUG level
+                for j, func in enumerate(funcs[:3], 1):
+                    logger.debug("   - Functionality %d: %s", j, func)
+                if len(funcs) > MAX_DISPLAYED_FUNCS:
+                    logger.debug("   - ... plus %d more functionalities", len(funcs) - MAX_DISPLAYED_FUNCS)
+
+        # 3. Generate goals for each profile
+        logger.verbose("    Generating goals...")
         profile["goals"] = _generate_profile_goals(profile, config, conv_context, workflow_context, lang_instr_goal)
 
-    # 4. Generate variable definitions based on goals
-    profiles = generate_variable_definitions(profiles, config["llm"], config["supported_languages"])
+        # 4. Generate variable definitions based on goals
+        logger.verbose("   Defining variables...")
+        temp_profiles = generate_variable_definitions([profile], config["llm"], config["supported_languages"])
+        if temp_profiles:
+            profile.update(temp_profiles[0])
 
-    # 5. Generate context based on variables
-    profiles = generate_context(profiles, config["llm"], config["supported_languages"])
+        # 5. Generate context based on variables
+        logger.verbose("    Generating context...")
+        temp_profiles = generate_context([profile], config["llm"], config["supported_languages"])
+        if temp_profiles:
+            profile.update(temp_profiles[0])
 
-    # 6. Generate output fields based on profiles and functionalities
-    return generate_outputs(profiles, config["functionalities"], config["llm"], config["supported_languages"])
+        # 6. Generate output fields
+        logger.verbose("    Generating outputs...")
+        temp_profiles = generate_outputs(
+            [profile], config["functionalities"], config["llm"], config["supported_languages"]
+        )
+        if temp_profiles:
+            profile.update(temp_profiles[0])
+
+        # Show completion message
+        logger.info("✅ Completed content for profile: %s", profile.get("name", "Unnamed profile"))
+
+        # Add a small delay for readability if verbose
+        if logger.isEnabledFor(15):
+            time.sleep(0.1)
+
+    logger.debug("Completed generation of %d profiles", len(profiles))
+    return profiles
