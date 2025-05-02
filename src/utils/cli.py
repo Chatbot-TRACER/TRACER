@@ -16,6 +16,14 @@ def parse_arguments() -> Namespace:
     default_technology = "taskyto"
 
     parser.add_argument(
+        "-v",
+        "--verbose",
+        action="count",
+        default=0,
+        help="Increase output verbosity (-v for details, -vv for debug)",
+    )
+
+    parser.add_argument(
         "-s",
         "--sessions",
         type=int,
