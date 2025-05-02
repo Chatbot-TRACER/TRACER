@@ -14,11 +14,14 @@ from chatbot_explorer.conversation.session import (
     run_exploration_session,
 )
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
+from chatbot_explorer.utils.logging_utils import get_logger
 from connectors.chatbot_connectors import Chatbot
 
 from .graphs.profile_graph import build_profile_generation_graph
 from .graphs.structure_graph import build_structure_graph
 from .schemas.graph_state_model import State
+
+logger = get_logger()
 
 
 class ExplorationParams(TypedDict):
@@ -65,11 +68,13 @@ class ChatbotExplorationAgent:
             Dictionary containing exploration results (conversation histories,
             functionality nodes, supported languages, and fallback message).
         """
+        logger.debug("Initializing exploration process")
         # Initialize results storage
         conversation_sessions = []
         current_graph_state = self._initialize_graph_state()
 
         # Perform initial probing steps
+        logger.verbose("Beginning initial chatbot probing steps")
         supported_languages = self._detect_languages(chatbot_connector)
         fallback_message = self._detect_fallback(chatbot_connector)
 
@@ -81,6 +86,8 @@ class ChatbotExplorationAgent:
             "fallback_message": fallback_message,
         }
 
+        logger.debug("Exploration parameters prepared: %d sessions, %d turns per session", max_sessions, max_turns)
+
         # Run the main exploration sessions
         conversation_sessions, current_graph_state = self._run_exploration_sessions(
             chatbot_connector, exploration_params, current_graph_state
@@ -88,6 +95,7 @@ class ChatbotExplorationAgent:
 
         # Convert final root nodes to dictionaries for the result
         functionality_dicts = [node.to_dict() for node in current_graph_state["root_nodes"]]
+        logger.debug("Converted %d root nodes to dictionary format", len(functionality_dicts))
 
         return {
             "conversation_sessions": conversation_sessions,
@@ -98,6 +106,7 @@ class ChatbotExplorationAgent:
 
     def _initialize_graph_state(self) -> ExplorationGraphState:
         """Initialize the graph state for exploration."""
+        logger.debug("Initializing exploration graph state")
         return {
             "root_nodes": [],
             "pending_nodes": [],
@@ -106,41 +115,44 @@ class ChatbotExplorationAgent:
 
     def _detect_languages(self, chatbot_connector: Chatbot) -> list[str]:
         """Detect languages supported by the chatbot."""
-        print("\n--- Probing Chatbot Language ---")
+        logger.verbose("\nProbing Chatbot Language")
         initial_probe_query = "Hello"
-        is_ok, probe_response = chatbot_connector.execute_with_input(initial_probe_query)
+        logger.debug("Sending initial language probe message: '%s'", initial_probe_query)
 
+        is_ok, probe_response = chatbot_connector.execute_with_input(initial_probe_query)
         supported_languages = ["English"]  # Default
 
         if is_ok and probe_response:
-            print(f"   Initial response received: '{probe_response[:60]}...'")
+            logger.verbose("Initial response received: '%s...'", probe_response[:30])
             try:
+                logger.debug("Analyzing response to detect supported languages")
                 detected_langs = extract_supported_languages(probe_response, self.llm)
                 if detected_langs:
                     supported_languages = detected_langs
-                    print(f"   Detected initial language(s): {supported_languages}")
+                    logger.info("Detected initial language(s): %s", supported_languages)
                 else:
-                    print("   Could not detect language from initial probe, defaulting to English.")
-            except (ValueError, TypeError) as lang_e:
-                print(f"   Error during initial language detection: {lang_e}. Defaulting to English.")
+                    logger.warning("Could not detect language from initial probe, defaulting to English")
+            except (ValueError, TypeError):
+                logger.exception("Error during initial language detection. Defaulting to English")
         else:
-            print("   Could not get initial response from chatbot for language probe. Defaulting to English.")
+            logger.error("Could not get initial response from chatbot for language probe. Defaulting to English")
 
         return supported_languages
 
     def _detect_fallback(self, chatbot_connector: Chatbot) -> str | None:
         """Detect the chatbot's fallback message."""
-        print("\n--- Attempting to detect chatbot fallback message ---")
+        logger.verbose("\nAttempting to detect chatbot fallback message")
         fallback_message = None
 
         try:
+            logger.debug("Executing fallback detection sequence")
             fallback_message = extract_fallback_message(chatbot_connector, self.llm)
             if fallback_message:
-                print(f'   Detected fallback message: "{fallback_message[:50]}..."')
+                logger.info('Detected fallback message: "%s..."', fallback_message[:50])
             else:
-                print("   Could not detect a fallback message.")
-        except (ValueError, KeyError, AttributeError) as fb_e:
-            print(f"   Error during fallback detection: {fb_e}. Proceeding without fallback.")
+                logger.warning("Could not detect a fallback message")
+        except (ValueError, KeyError, AttributeError):
+            logger.exception("Error during fallback detection. Proceeding without fallback")
 
         return fallback_message
 
@@ -164,19 +176,21 @@ class ChatbotExplorationAgent:
         current_graph_state = graph_state
 
         session_num = 0
+        logger.info("\n=== Beginning Exploration Sessions ===")
+
         while session_num < params["max_sessions"]:
-            print(f"\n=== Starting Session {session_num + 1}/{params['max_sessions']} ===")
+            logger.info("\n=== Starting Session %d/%d ===", session_num + 1, params["max_sessions"])
 
             # Determine which node to explore next
             explore_node, session_type = self._select_next_node(current_graph_state, session_num)
 
             # Skip already explored nodes
             if explore_node and explore_node.name in current_graph_state["explored_nodes"]:
-                print(f"--- Skipping already explored node: '{explore_node.name}' ---")
+                logger.verbose("Skipping already explored node: '%s'", explore_node.name)
                 session_num += 1
                 continue
 
-            print(f"   Session Type: {session_type}")
+            logger.verbose("Session Type: %s", session_type)
 
             # Configure and run a single session
             session_params: SessionParams = {
@@ -185,6 +199,7 @@ class ChatbotExplorationAgent:
                 "max_turns": params["max_turns"],
             }
 
+            logger.debug("Configuring session %d with %d maximum turns", session_num + 1, params["max_turns"])
             session_config = self._create_session_config(
                 session_params,
                 chatbot_connector,
@@ -193,11 +208,18 @@ class ChatbotExplorationAgent:
                 current_graph_state,
             )
 
+            logger.debug("Running exploration session %d", session_num + 1)
             conversation_history, updated_graph_state = run_exploration_session(
                 config=session_config,
             )
 
             conversation_sessions.append(conversation_history)
+            logger.debug(
+                "Session %d completed, conversation history captured (%d turns)",
+                session_num + 1,
+                len(conversation_history),
+            )
+
             current_graph_state = updated_graph_state
             session_num += 1
 
@@ -214,8 +236,9 @@ class ChatbotExplorationAgent:
         if graph_state["pending_nodes"]:
             explore_node = graph_state["pending_nodes"].pop(0)
             session_type = f"Exploring functionality '{explore_node.name}'"
+            logger.debug("Selected node '%s' from pending queue", explore_node.name)
         elif session_num > 0:
-            print("   Pending nodes queue is empty. Performing general exploration.")
+            logger.verbose("Pending nodes queue is empty. Performing general exploration")
 
         return explore_node, session_type
 
@@ -239,6 +262,7 @@ class ChatbotExplorationAgent:
         Returns:
             Configuration dictionary for the session
         """
+        logger.debug("Creating session configuration for session %d", session_params["session_num"] + 1)
         return {
             "session_num": session_params["session_num"],
             "max_sessions": session_params["max_sessions"],
@@ -253,14 +277,14 @@ class ChatbotExplorationAgent:
 
     def _print_exploration_summary(self, session_count: int, graph_state: ExplorationGraphState) -> None:
         """Print summary information after exploration."""
-        print(f"\n=== Completed {session_count} exploration sessions ===")
+        logger.info("\n=== Completed %d exploration sessions ===", session_count)
 
         if graph_state["pending_nodes"]:
-            print(f"   NOTE: {len(graph_state['pending_nodes'])} nodes still remain in the pending queue.")
+            logger.verbose("NOTE: %d nodes still remain in the pending queue", len(graph_state["pending_nodes"]))
         else:
-            print("   All discovered nodes were explored.")
+            logger.verbose("All discovered nodes were explored")
 
-        print(f"Discovered {len(graph_state['root_nodes'])} root functionalities after exploration.")
+        logger.info("Discovered %d root functionalities after exploration", len(graph_state["root_nodes"]))
 
     def run_analysis(self, exploration_results: dict[str, Any]) -> dict[str, list[Any]]:
         """Runs the LangGraph analysis pipeline using pre-compiled graphs.
@@ -271,7 +295,11 @@ class ChatbotExplorationAgent:
         Returns:
             A dictionary containing 'discovered_functionalities' and 'built_profiles'.
         """
-        print("\n--- Preparing for analysis phase ---")
+        logger.info("\n--- Preparing for analysis phase ---")
+        logger.debug(
+            "Initializing structure analysis with %d conversation sessions",
+            len(exploration_results.get("conversation_sessions", [])),
+        )
 
         # 1. Prepare initial state for the structure graph
         structure_initial_state = State(
@@ -290,16 +318,21 @@ class ChatbotExplorationAgent:
         )
 
         # -- Run Structure Inference --
-        print("\n--- Running workflow structure inference ---")
+        logger.info("\n--- Running workflow structure inference ---")
+        logger.verbose("Creating analysis thread for structure inference")
         structure_thread_id = f"structure_analysis_{uuid.uuid4()}"
+
+        logger.debug("Starting structure graph invocation")
         structure_result = self._structure_graph.invoke(
             structure_initial_state,
             config={"configurable": {"thread_id": structure_thread_id}},
         )
         workflow_structure = structure_result.get("discovered_functionalities", {})
-        print("--- Structure inference complete ---")
+        logger.info("--- Structure inference complete ---")
+        logger.verbose("Structure inference discovered %d workflow nodes", len(workflow_structure))
 
         # 2. Prepare initial state for the profile graph
+        logger.debug("Preparing state for profile generation")
         profile_initial_state = structure_result.copy()
         profile_initial_state["workflow_structure"] = workflow_structure
         profile_initial_state["messages"] = [
@@ -309,15 +342,19 @@ class ChatbotExplorationAgent:
         profile_initial_state["built_profiles"] = []
 
         # -- Run Profile Generation --
-        print("\n--- Generating user profiles ---")
+        logger.info("\n--- Generating user profiles ---")
+        logger.verbose("Creating analysis thread for profile generation")
         profile_thread_id = f"profile_analysis_{uuid.uuid4()}"
+
+        logger.debug("Starting profile graph invocation")
         profile_result = self._profile_graph.invoke(
             profile_initial_state,
             config={"configurable": {"thread_id": profile_thread_id}},
         )
 
         generated_profiles = profile_result.get("built_profiles", [])
-        print(f"--- Analysis complete, {len(generated_profiles)} profiles generated ---")
+        logger.info("--- Analysis complete, %d profiles generated ---", len(generated_profiles))
+        logger.debug("Profile generation finished successfully")
 
         return {
             "discovered_functionalities": workflow_structure,
