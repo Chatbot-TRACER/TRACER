@@ -19,6 +19,8 @@ from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
 
+MAX_DISPLAYED_STYLES = 2
+
 # --- Helper Functions for extract_profile_variables ---
 
 
@@ -378,8 +380,10 @@ def generate_conversation_parameters(
         goal_style_type = next(iter(goal_style.keys())) if goal_style else "unknown"
         interaction_style_summary = ""
         if interaction_styles:
-            interaction_style_summary = f", styles: {', '.join(interaction_styles[:2])}" + (
-                f" +{len(interaction_styles) - 2} more" if len(interaction_styles) > 2 else ""
+            interaction_style_summary = f", styles: {', '.join(interaction_styles[:MAX_DISPLAYED_STYLES])}" + (
+                f" +{len(interaction_styles) - MAX_DISPLAYED_STYLES} more"
+                if len(interaction_styles) > MAX_DISPLAYED_STYLES
+                else ""
             )
 
         logger.info(" ✅ Generated conversation parameters %d/%d: '%s'", i, total_profiles, profile_name)

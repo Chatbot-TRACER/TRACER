@@ -8,8 +8,8 @@ from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.constants import AVAILABLE_PERSONALITIES, VARIABLE_PATTERN
 from chatbot_explorer.prompts.profile_builder_prompts import get_yaml_fix_prompt
-from chatbot_explorer.utils.parsing_utils import extract_yaml
 from chatbot_explorer.utils.logging_utils import get_logger
+from chatbot_explorer.utils.parsing_utils import extract_yaml
 from scripts.validation_script import YamlValidator
 
 logger = get_logger()

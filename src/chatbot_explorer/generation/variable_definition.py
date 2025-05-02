@@ -90,7 +90,7 @@ def _process_string_data(data_lines: list[str], response_content: str) -> list[s
     return processed_data
 
 
-def _process_numeric_data(data_lines: list[str], data_type: str, response_content: str) -> dict[str, Any] | None:
+def _process_numeric_data(data_lines: list[str], data_type: str) -> dict[str, Any] | None:
     """Processes data lines for 'int' or 'float' type variables."""
     processed_data = {}
     for item_line in data_lines:
@@ -130,7 +130,7 @@ def _parse_single_variable_definition(
     if data_type == "string":
         processed_data = _process_string_data(data_lines, response_content)
     elif data_type in ["int", "float"]:
-        processed_data = _process_numeric_data(data_lines, data_type, response_content)
+        processed_data = _process_numeric_data(data_lines, data_type)
     else:
         logger.warning("Unknown variable type '%s'. Cannot parse data.", data_type)
         return None

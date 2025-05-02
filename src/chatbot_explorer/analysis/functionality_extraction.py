@@ -14,6 +14,8 @@ from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
 
+CONTENT_PREVIEW_LENGTH = 100
+
 
 def _parse_parameter_string(params_str: str) -> list[dict[str, Any]]:
     """Parses the 'parameters' string into a list of parameter dictionaries."""
@@ -93,7 +95,7 @@ def _parse_llm_functionality_response(content: str, current_node: FunctionalityN
         elif block_content:
             logger.warning(
                 "Could not parse functionality block: %s",
-                block_content[:100] + ("..." if len(block_content) > 100 else ""),
+                block_content[:CONTENT_PREVIEW_LENGTH] + ("..." if len(block_content) > CONTENT_PREVIEW_LENGTH else ""),
             )
 
     # Final check if parsing yielded nothing despite no explicit 'NO_NEW' flag
