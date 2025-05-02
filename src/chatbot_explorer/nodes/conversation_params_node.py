@@ -15,6 +15,9 @@ from chatbot_explorer.prompts.conversation_params_prompts import (
     get_number_prompt,
 )
 from chatbot_explorer.schemas.graph_state_model import State
+from chatbot_explorer.utils.logging_utils import get_logger
+
+logger = get_logger()
 
 # --- Helper Functions for extract_profile_variables ---
 
@@ -330,8 +333,27 @@ def generate_conversation_parameters(
     """
     language_info, languages_example, supported_languages_text = prepare_language_info(supported_languages)
 
-    for profile in profiles:
-        variables, _, has_nested_forwards, _, variables_info = extract_profile_variables(profile)
+    # Process each profile
+    total_profiles = len(profiles)
+    for i, profile in enumerate(profiles, 1):
+        profile_name = profile.get("name", f"Profile {i}")
+        logger.verbose("Processing profile %d/%d: '%s'", i, total_profiles, profile_name)
+
+        # Extract variables information
+        variables, forward_vars, has_nested_forwards, _, variables_info = extract_profile_variables(profile)
+
+        if variables:
+            var_summary = ", ".join(variables)
+            logger.debug("Profile has %d variables: %s", len(variables), var_summary)
+
+            if forward_vars:
+                logger.debug(
+                    "With %d dependent variables: %s",
+                    len(forward_vars),
+                    ", ".join(forward_vars),
+                )
+        else:
+            logger.debug("Profile has no variables")
 
         # Create context for this profile's requests
         request_context: ParamRequestContext = {
@@ -344,11 +366,30 @@ def generate_conversation_parameters(
             "languages_example": languages_example,
         }
 
-        # Sequential prompting
+        # Sequential prompting with minimal but sufficient logging
+        logger.debug("Determining parameters for profile '%s'", profile_name)
+
+        # Fetch parameters sequentially with minimal logging
         number_value = request_number_from_llm(request_context, variables)
         max_cost = request_max_cost_from_llm(request_context, number_value)
         goal_style = request_goal_style_from_llm(request_context, number_value, max_cost)
         interaction_styles = request_interaction_style_from_llm(request_context, number_value, max_cost, goal_style)
+
+        # Log a concise summary of the key parameters
+        goal_style_type = next(iter(goal_style.keys())) if goal_style else "unknown"
+        interaction_style_summary = ""
+        if interaction_styles:
+            interaction_style_summary = f", styles: {', '.join(interaction_styles[:2])}" + (
+                f" +{len(interaction_styles) - 2} more" if len(interaction_styles) > 2 else ""
+            )
+
+        logger.debug(
+            "Parameters: number=%s, cost=%.2f, goal=%s%s",
+            number_value,
+            max_cost,
+            goal_style_type,
+            interaction_style_summary,
+        )
 
         # Build and assign parameters
         conversation_params = {"number": number_value, "max_cost": max_cost, "goal_style": goal_style}
@@ -363,22 +404,14 @@ def generate_conversation_parameters(
 
 
 def conversation_params_node(state: State, llm: BaseLanguageModel) -> dict[str, Any]:
-    """Node that generates specific parameters needed for conversation goals.
-
-    Args:
-        state: The current graph state, expected to contain 'conversation_goals'
-               and optionally 'discovered_functionalities' and 'supported_languages'.
-        llm: The language model instance.
-
-    Returns:
-        A dictionary containing the updated 'conversation_goals' list.
-    """
+    """Node that generates specific parameters needed for conversation goals."""
     conversation_goals = state.get("conversation_goals")
     if not conversation_goals:
-        print("\n--- Skipping conversation parameters: No goals generated. ---")
+        logger.info("Skipping conversation parameters: No goals generated.")
         return {"conversation_goals": []}
 
-    print("\n--- Generating conversation parameters ---")
+    logger.info("\nStep 3: Conversation parameters generation")
+    logger.info("------------------------------------------")
 
     # Flatten functionalities (currently unused by generate_conversation_parameters but kept for context)
     structured_root_dicts = state.get("discovered_functionalities", [])
@@ -392,13 +425,22 @@ def conversation_params_node(state: State, llm: BaseLanguageModel) -> dict[str, 
             nodes_to_process.extend(node["children"])
 
     try:
+        # Initial progress message
+        total_profiles = len(conversation_goals)
+        logger.verbose("\nGenerating parameters for %d profiles:", total_profiles)
+
+        # Generate parameters
         profiles_with_params = generate_conversation_parameters(
             conversation_goals,
             llm,
             supported_languages=state.get("supported_languages"),
         )
-    except (ValueError, KeyError, TypeError) as e:
-        print(f"Error during parameter generation: {e}")
+
+        # Simple completion message (no need to list all profiles again)
+        logger.info("Successfully generated parameters for all %d profiles", len(profiles_with_params))
+
+    except Exception:
+        logger.exception("Error during parameter generation")
         return {"conversation_goals": conversation_goals}
     else:
         return {"conversation_goals": profiles_with_params}

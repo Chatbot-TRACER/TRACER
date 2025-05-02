@@ -25,7 +25,7 @@ def get_workflow_paths(nodes, prefix="") -> list[str]:
     paths = []
     for node in nodes:
         node_name = node.get("name", "unnamed")
-        node_desc = node.get("description", "").split(".")[0]  # First sentence of description
+        node.get("description", "").split(".")[0]  # First sentence of description
         children = node.get("children", [])
 
         if children:
@@ -90,7 +90,7 @@ def workflow_builder_node(state: State, llm: BaseLanguageModel) -> dict[str, Any
 
     except (ValueError, KeyError, TypeError) as e:
         # Handle errors during structure building
-        logger.error("Error during structure building: %s", str(e))
+        logger.exception("Error during structure building: %s", str(e))
         # Keep the original flat list but update bot_type
         return {
             "discovered_functionalities": flat_functionality_dicts,
