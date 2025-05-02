@@ -139,7 +139,7 @@ def _run_analysis_phase(agent: ChatbotExplorationAgent, exploration_results: dic
     Raises:
         SystemExit: If a critical error occurs during analysis.
     """
-    logger.info("-----------------------------------")
+    logger.info("\n-----------------------------------")
     logger.info("---   Starting Analysis Phase   ---")
     logger.info("-----------------------------------")
     try:

@@ -6,6 +6,9 @@ from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.conversation.conversation_utils import format_conversation
 from chatbot_explorer.prompts.classification_prompts import get_classification_prompt
+from chatbot_explorer.utils.logging_utils import get_logger
+
+logger = get_logger()
 
 
 def classify_chatbot_type(
@@ -23,10 +26,8 @@ def classify_chatbot_type(
     Returns:
         str: "transactional", "informational", or "unknown"
     """
-    print("\n--- Classifying Chatbot Interaction Type ---")
-
     if not conversation_history or not functionalities:
-        print("   Skipping classification: Insufficient data.")
+        logger.warning("Skipping classification: Insufficient data")
         return "unknown"
 
     # Create a summary of functionality names and descriptions
@@ -36,6 +37,8 @@ def classify_chatbot_type(
             for f in functionalities[:10]  # Limit to first 10 for summary
         ],
     )
+
+    logger.debug("Prepared functionality summary with %d entries", min(len(functionalities), 10))
 
     # Get conversation snippets
     snippets = []
@@ -65,6 +68,7 @@ def classify_chatbot_type(
                 break  # Stop if limit reached
 
     conversation_snippets = "\n".join(snippets) or "No conversation snippets available."
+    logger.debug("Prepared %d conversation snippets (%d total characters)", len(snippets), total_snippet_length)
 
     classification_prompt = get_classification_prompt(
         func_summary=func_summary,
@@ -73,16 +77,20 @@ def classify_chatbot_type(
 
     try:
         # Ask the LLM for classification
+        logger.debug("Invoking LLM for chatbot classification")
         response = llm.invoke(classification_prompt)
         classification = response.content.strip().lower()
 
         if classification in ["transactional", "informational"]:
-            print(f"   LLM classified as: {classification}")
+            logger.debug("LLM classified chatbot as: %s", classification)
             return classification
+
         # Handle unclear response
-        print(f"   LLM response unclear ('{classification}'), defaulting to informational.")
-    except (ValueError, TypeError) as e:
-        # Handle LLM error
-        print(f"   Error during classification: {e}. Defaulting to informational.")
+        logger.warning("LLM classification response unclear ('%s'), defaulting to informational", classification)
+
+    except (ValueError, TypeError):
+        # Handle LLM error with logger.exception
+        logger.exception("Error during chatbot classification. Defaulting to informational")
+        return "informational"
     else:
         return "informational"

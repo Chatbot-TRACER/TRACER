@@ -295,7 +295,7 @@ class ChatbotExplorationAgent:
 
         # 1. Structure analysis phase
         logger.info("\nStep 1: Workflow structure inference")
-        logger.info("------------------------------------------")
+        logger.info("------------------------------------------\n")
 
         # Prepare initial state for the structure graph
         structure_initial_state = State(

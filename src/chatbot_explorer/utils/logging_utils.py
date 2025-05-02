@@ -61,7 +61,8 @@ class ConditionalFormatter(logging.Formatter):
     # Precompile regex for speaker detection (case-insensitive)
     SPEAKER1_PATTERN = re.compile(r"^\s*Explorer:", re.IGNORECASE)
     SPEAKER2_PATTERN = re.compile(r"^\s*Chatbot:", re.IGNORECASE)
-    HEADER_PATTERN = re.compile(r"^\s*--- .* ---$")  # Pattern for --- Header --- lines
+    # Things that start with three dashes
+    HEADER_PATTERN = re.compile(r"^\s*---+", re.IGNORECASE)
 
     def __init__(self) -> None:
         """Initializes the ConditionalFormatter."""

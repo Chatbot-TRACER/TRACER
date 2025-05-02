@@ -10,7 +10,10 @@ from chatbot_explorer.prompts.workflow_prompts import (
     create_informational_prompt,
     create_transactional_prompt,
 )
+from chatbot_explorer.utils.logging_utils import get_logger
 from chatbot_explorer.utils.parsing_utils import extract_json_from_response
+
+logger = get_logger()
 
 
 def _parse_and_validate_json_list(json_str: str) -> list[dict[str, Any]]:
@@ -63,7 +66,9 @@ def build_node_hierarchy(structured_nodes_info: list[dict[str, Any]]) -> list[di
             if isinstance(child_info, dict) and "name" in child_info:
                 all_child_names.add(child_info["name"])
 
-    return [node_info for node_name, node_info in nodes_map.items() if node_name not in all_child_names]
+    root_nodes = [node_info for node_name, node_info in nodes_map.items() if node_name not in all_child_names]
+    logger.debug("Node hierarchy built with %d root nodes from %d total nodes", len(root_nodes), len(nodes_map))
+    return root_nodes
 
 
 def build_workflow_structure(
@@ -83,19 +88,22 @@ def build_workflow_structure(
     Returns:
         List[Dict[str, Any]]: Structured hierarchy with parent-child relationships
     """
-    print("\n--- Building Workflow Structure ---")
+    logger.info("\n=== Building Workflow Structure ===")
 
     if not flat_functionality_dicts:
-        print("   Skipping structure building: No functionalities found.")
+        logger.warning("Skipping structure building: No functionalities found")
         return []
 
+    # Prepare functionality list string for prompt
     func_list_str = "\n".join(
         [
             f"- Name: {f.get('name', 'N/A')}\n  Description: {f.get('description', 'N/A')}\n  Parameters: {', '.join(p.get('name', '?') for p in f.get('parameters', [])) or 'None'}"
             for f in flat_functionality_dicts
         ],
     )
+    logger.debug("Prepared functionality list with %d entries", len(flat_functionality_dicts))
 
+    # Extract conversation snippets
     snippets = []
     total_snippet_length = 0
     max_total_snippet_length = 7000  # Larger context for structure analysis
@@ -125,16 +133,18 @@ def build_workflow_structure(
                 break  # Stop if limit reached
 
     conversation_snippets = "\n".join(snippets) or "No conversation history available."
+    logger.debug("Prepared %d conversation snippets (%d total characters)", len(snippets), total_snippet_length)
 
+    # Select appropriate prompt based on chatbot type
     if chatbot_type == "transactional":
-        print("   Using TRANSACTIONAL structuring prompt.")
+        logger.verbose("Using transactional structuring prompt for chatbot workflow")
         structuring_prompt = create_transactional_prompt(func_list_str, conversation_snippets)
     else:  # Default to informational
-        print("   Using INFORMATIONAL structuring prompt.")
+        logger.verbose("Using informational structuring prompt for chatbot workflow")
         structuring_prompt = create_informational_prompt(func_list_str, conversation_snippets)
 
     try:
-        print("   Asking LLM to determine workflow structure...")
+        logger.debug("Invoking LLM to generate workflow structure")
         response = llm.invoke(structuring_prompt)
         response_content = response.content
 
@@ -145,12 +155,14 @@ def build_workflow_structure(
         json_str = re.sub(r",(\s*[\]}])", r"\1", json_str)  # Remove trailing commas
 
         structured_nodes_info = _parse_and_validate_json_list(json_str)
+        logger.debug("Successfully parsed workflow structure JSON with %d nodes", len(structured_nodes_info))
 
         root_nodes_dicts = build_node_hierarchy(structured_nodes_info)
-        print(f"   Built structure with {len(root_nodes_dicts)} root node(s).")
+        logger.verbose("\nConstructed workflow hierarchy with %d root nodes", len(root_nodes_dicts))
 
-    except (json.JSONDecodeError, TypeError) as e:  # Catch TypeError from helper
-        print(f"   Error: Failed to parse or validate JSON from LLM response: {e}")
+    except (json.JSONDecodeError, TypeError):
+        logger.exception("Failed to parse or validate JSON from LLM response")
+        logger.verbose("Returning original flat functionality list as fallback")
         return flat_functionality_dicts  # Return original list on failure
     else:
         return root_nodes_dicts

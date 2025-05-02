@@ -7,6 +7,9 @@ from langchain_core.language_models import BaseLanguageModel
 from chatbot_explorer.analysis.chatbot_classification import classify_chatbot_type
 from chatbot_explorer.analysis.workflow_builder import build_workflow_structure
 from chatbot_explorer.schemas.graph_state_model import State
+from chatbot_explorer.utils.logging_utils import get_logger
+
+logger = get_logger()
 
 
 def workflow_builder_node(state: State, llm: BaseLanguageModel) -> dict[str, Any]:
@@ -21,13 +24,12 @@ def workflow_builder_node(state: State, llm: BaseLanguageModel) -> dict[str, Any
     Returns:
         Dict[str, Any]: Dictionary with updated 'discovered_functionalities' and 'chatbot_type'.
     """
-    print("\n--- Building Workflow Structure ---")
     # Functionalities are expected as dicts from run_full_exploration results
     flat_functionality_dicts = state.get("discovered_functionalities", [])
     conversation_history = state.get("conversation_history", [])
 
     if not flat_functionality_dicts:
-        print("   Skipping structure building: No initial functionalities found.")
+        logger.warning("Skipping structure building: No initial functionalities found")
         # Return partial state update
         return {
             "discovered_functionalities": [],
@@ -35,17 +37,20 @@ def workflow_builder_node(state: State, llm: BaseLanguageModel) -> dict[str, Any
         }
 
     # Classify the bot type first
+    logger.verbose("=== Classifying Chatbot ===")
     bot_type = classify_chatbot_type(flat_functionality_dicts, conversation_history, llm)
-    print(f"   Chatbot type classified as: {bot_type}")
+    logger.info("Chatbot type classified as: %s", bot_type)
 
     try:
         structured_nodes = build_workflow_structure(flat_functionality_dicts, conversation_history, bot_type, llm)
 
-        print(f"   Built structure with {len(structured_nodes)} root node(s).")
+        node_count = len(structured_nodes)
+        logger.info("Workflow structure created with %d root node(s)", node_count)
+        logger.debug("Root node names: %s", ", ".join([node.get("name", "unnamed") for node in structured_nodes]))
 
-    except (ValueError, KeyError, TypeError) as e:
+    except (ValueError, KeyError, TypeError):
         # Handle errors during structure building
-        print(f"   Error during structure building: {e}")
+        logger.exception("Error during structure building")
         # Keep the original flat list but update bot_type
         return {
             "discovered_functionalities": flat_functionality_dicts,
