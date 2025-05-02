@@ -43,7 +43,7 @@ def get_workflow_paths(nodes, prefix="") -> list[str]:
 
 def workflow_builder_node(state: State, llm: BaseLanguageModel) -> dict[str, Any]:
     """Node that analyzes functionalities and history to build the workflow structure."""
-    logger.info("Analyzing workflow structure from discovered functionalities")
+    logger.debug("Analyzing workflow structure from discovered functionalities")
 
     # Functionalities are expected as dicts from run_full_exploration results
     flat_functionality_dicts = state.get("discovered_functionalities", [])
@@ -58,12 +58,12 @@ def workflow_builder_node(state: State, llm: BaseLanguageModel) -> dict[str, Any
         }
 
     # Classify the bot type first
-    logger.info("Classifying chatbot interaction type")
+    logger.info("=== Classifying Chatbot ===")
     bot_type = classify_chatbot_type(flat_functionality_dicts, conversation_history, llm)
     logger.info("Chatbot type classified as: %s", bot_type)
 
     try:
-        logger.info("Building workflow structure based on %d discovered functionalities", len(flat_functionality_dicts))
+        logger.debug("Building workflow structure based on %d discovered functionalities", len(flat_functionality_dicts))
         structured_nodes = build_workflow_structure(flat_functionality_dicts, conversation_history, bot_type, llm)
 
         # Enhanced logging with more information about the structure
