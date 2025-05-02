@@ -7,6 +7,11 @@ from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.constants import VARIABLE_PATTERN
 from chatbot_explorer.prompts.context_generation_prompts import get_context_prompt
+from chatbot_explorer.utils.logging_utils import get_logger
+
+logger = get_logger()
+
+MAX_LENGTH = 50
 
 
 def generate_context(
@@ -49,6 +54,16 @@ def generate_context(
                 entry = line_content[2:].strip()
                 if entry:
                     context_entries.append(entry)
+
+        if len(context_entries) == 0:
+            # Fallback if no context entries generated
+            context_entries = ["No specific context available."]
+        else:
+            logger.verbose(
+            "    Generated %d context entries: %s",
+            len(context_entries),
+            context_entries[0][:MAX_LENGTH] + ("..." if len(context_entries[0]) > MAX_LENGTH else ""),
+            )
 
         profile["context"] = context_entries
 

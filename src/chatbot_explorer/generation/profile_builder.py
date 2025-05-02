@@ -9,7 +9,10 @@ from langchain_core.language_models import BaseLanguageModel
 from chatbot_explorer.constants import AVAILABLE_PERSONALITIES, VARIABLE_PATTERN
 from chatbot_explorer.prompts.profile_builder_prompts import get_yaml_fix_prompt
 from chatbot_explorer.utils.parsing_utils import extract_yaml
+from chatbot_explorer.utils.logging_utils import get_logger
 from scripts.validation_script import YamlValidator
+
+logger = get_logger()
 
 
 def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_language: str) -> dict[str, Any]:
@@ -95,27 +98,30 @@ def validate_and_fix_profile(
     yaml_content = yaml.dump(profile, sort_keys=False, allow_unicode=True)
     errors = validator.validate(yaml_content)  # Validate
 
+    profile_name = profile.get("test_name", "Unnamed profile")
+
     if not errors:
         # Profile is valid
-        print(f"✓ Profile '{profile['test_name']}' valid, no fixes needed.")
+        logger.info(" ✅ Profile '%s' valid, no fixes needed.", profile_name)
         return profile
+
     # Profile has errors
     error_count = len(errors)
-    print(f"\n⚠ Profile '{profile['test_name']}' has {error_count} validation errors")
+    logger.warning(" ⚠️ Profile '%s' has %d validation errors", profile_name, error_count)
 
     max_errors_to_print = 3
-    # Print first few errors
+    # Log first few errors
     for e in errors[:max_errors_to_print]:
-        print(f"  • {e.path}: {e.message}")
+        logger.warning("  • %s: %s", e.path, e.message)
     if error_count > max_errors_to_print:
-        print(f"  • ... and {error_count - max_errors_to_print} more errors")
+        logger.warning("  • ... and %d more errors", error_count - max_errors_to_print)
 
     # Prepare prompt for LLM to fix errors
     error_messages = "\n".join(f"- {e.path}: {e.message}" for e in errors)
 
     fix_prompt = get_yaml_fix_prompt(error_messages, yaml_content)
 
-    print("  Asking LLM to fix the profile...")
+    logger.verbose("  Asking LLM to fix profile '%s'...", profile_name)
 
     try:
         # Ask LLM to fix it
@@ -125,7 +131,7 @@ def validate_and_fix_profile(
         # Extract and parse the fixed YAML
         just_yaml = extract_yaml(fixed_yaml_str)
         if not just_yaml:
-            print("  ✗ LLM response did not contain a YAML block.")
+            logger.warning("  ✗ LLM response did not contain a YAML block.")
             return profile  # Keep original
 
         fixed_profile = yaml.safe_load(just_yaml)
@@ -135,13 +141,18 @@ def validate_and_fix_profile(
 
         if not re_errors:
             # Fixed successfully!
-            print("  ✓ Profile fixed successfully!")
+            logger.info("  ✓ Profile '%s' fixed successfully!", profile_name)
             return fixed_profile
-        # Still has errors, keep original
-        print(f"  ✗ LLM couldn't fix all errors ({len(re_errors)} remaining)")
 
-    except yaml.YAMLError as e:
-        print(f"  ✗ Failed to parse fixed YAML: {e}")
+        # Still has errors, keep original
+        logger.warning("  ✗ LLM couldn't fix all errors (%d remaining)", len(re_errors))
+        for e in re_errors[:max_errors_to_print]:
+            logger.debug("    • %s: %s", e.path, e.message)
+
+    except yaml.YAMLError:
+        logger.exception("  ✗ Failed to parse fixed YAML for '%s'", profile_name)
         return profile
-    else:
-        return profile  # Keep original
+    except Exception:
+        logger.exception("  ✗ Unexpected error fixing profile '%s'", profile_name)
+
+    return profile  # Keep original

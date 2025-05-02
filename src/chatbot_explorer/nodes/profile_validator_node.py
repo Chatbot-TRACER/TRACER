@@ -35,6 +35,8 @@ def profile_validator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
     profile_count = len(state["built_profiles"])
     logger.debug("Starting validation of %d profiles", profile_count)
 
+    logger.info("Validating %d profiles:", profile_count)
+
     for i, profile_content in enumerate(state["built_profiles"], 1):
         profile_name = profile_content.get("name", f"Profile {i}")
 
@@ -57,9 +59,6 @@ def profile_validator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
     # Only log a summary if there were any validation failures
     if successful_count < profile_count:
         logger.info("Validation complete: %d/%d profiles passed", successful_count, profile_count)
-
-    # This will already be logged in the agent.py file, no need to duplicate
-    # logger.info("Profile generation complete: %d user profiles created", successful_count)
 
     # Update state with the list of validated profiles
     return {"built_profiles": validated_profiles}

@@ -345,14 +345,6 @@ class ChatbotExplorationAgent:
         )
 
         generated_profiles = profile_result.get("built_profiles", [])
-        logger.info("Profile generation complete: %d user profiles created", len(generated_profiles))
-
-        # Log profile names at info level
-        if generated_profiles:
-            logger.info("\nGenerated profiles:")
-            for i, profile in enumerate(generated_profiles, 1):
-                name = profile.get("test_name", f"Profile {i}")
-                logger.info(" • %s", name)
 
         return {
             "discovered_functionalities": workflow_structure,

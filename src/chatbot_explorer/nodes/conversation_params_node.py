@@ -337,7 +337,6 @@ def generate_conversation_parameters(
     total_profiles = len(profiles)
     for i, profile in enumerate(profiles, 1):
         profile_name = profile.get("name", f"Profile {i}")
-        logger.verbose("Processing profile %d/%d: '%s'", i, total_profiles, profile_name)
 
         # Extract variables information
         variables, forward_vars, has_nested_forwards, _, variables_info = extract_profile_variables(profile)
@@ -383,6 +382,8 @@ def generate_conversation_parameters(
                 f" +{len(interaction_styles) - 2} more" if len(interaction_styles) > 2 else ""
             )
 
+        logger.info(" ✅ Generated conversation parameters %d/%d: '%s'", i, total_profiles, profile_name)
+
         logger.debug(
             "Parameters: number=%s, cost=%.2f, goal=%s%s",
             number_value,
@@ -427,7 +428,7 @@ def conversation_params_node(state: State, llm: BaseLanguageModel) -> dict[str, 
     try:
         # Initial progress message
         total_profiles = len(conversation_goals)
-        logger.verbose("\nGenerating parameters for %d profiles:", total_profiles)
+        logger.info("Generating conversation parameters for %d profiles:\n", total_profiles)
 
         # Generate parameters
         profiles_with_params = generate_conversation_parameters(
@@ -435,9 +436,6 @@ def conversation_params_node(state: State, llm: BaseLanguageModel) -> dict[str, 
             llm,
             supported_languages=state.get("supported_languages"),
         )
-
-        # Simple completion message (no need to list all profiles again)
-        logger.info("Successfully generated conversation parameters for all %d profiles", len(profiles_with_params))
 
     except Exception:
         logger.exception("Error during parameter generation")

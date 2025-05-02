@@ -10,6 +10,8 @@ from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
 
+MAX_VARIABLES = 3
+
 
 class VariableDefinitionContext(TypedDict):
     """Context needed to define a single variable.
@@ -252,7 +254,16 @@ def generate_variable_definitions(
                 variable_name,
                 var_def_context,
             )
+            logger.debug("Parsed definition for '%s': %s", variable_name, parsed_def)
             if parsed_def:
                 _update_goals_with_definition(goals_list, variable_name, parsed_def)
+
+
+        logger.verbose(
+            "    Generated variables: %d/%d: %s",
+            len(all_variables),
+            len(all_variables),
+            ", ".join(sorted(all_variables)[:3]) + (", ..." if len(all_variables) > MAX_VARIABLES else ""),
+        )
 
     return profiles

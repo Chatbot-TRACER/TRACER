@@ -36,7 +36,6 @@ def profile_builder_node(state: State) -> dict[str, Any]:
         primary_language = state["supported_languages"][0]
 
     total_profiles = len(state["conversation_goals"])
-    logger.verbose("Building %d user profiles with primary language: %s", total_profiles, primary_language)
 
     # Build YAML for each profile goal set
     successful = 0

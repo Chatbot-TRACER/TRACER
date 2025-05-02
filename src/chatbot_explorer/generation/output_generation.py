@@ -7,6 +7,9 @@ from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.constants import VARIABLE_PATTERN
 from chatbot_explorer.prompts.output_generation_prompts import get_outputs_prompt
+from chatbot_explorer.utils.logging_utils import get_logger
+
+logger = get_logger()
 
 
 def _parse_llm_outputs(llm_content: str) -> list[dict[str, Any]]:
@@ -114,5 +117,7 @@ def generate_outputs(
 
         # Store outputs in the profile
         profile["outputs"] = parsed_outputs
+
+        logger.verbose("    Generated %d outputs", len(parsed_outputs))
 
     return profiles
