@@ -23,12 +23,17 @@ from chatbot_explorer.prompts.session_prompts import (
     get_translation_prompt,
 )
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
+from chatbot_explorer.utils.logging_utils import get_logger
 from connectors.chatbot_connectors import Chatbot
 
 from .conversation_utils import _get_all_nodes
 from .fallback_detection import (
     is_semantically_fallback,
 )
+
+logger = get_logger()
+
+MAX_LOG_MESSAGE_LENGTH = 100
 
 
 class ExplorationGraphState(TypedDict):
@@ -121,13 +126,13 @@ def _generate_initial_question(
                     initial_question = translated_greeting
                 else:  # Use English if translation failed
                     initial_question = greeting_en
-            except ValueError as e:
-                print(f"Warning: Failed to translate initial greeting to {primary_language}: {e}")
+            except ValueError:
+                logger.warning("Failed to translate initial greeting to %s. Using English instead.", primary_language)
                 initial_question = greeting_en  # Fallback
         else:
             initial_question = greeting_en  # Use English
 
-        print(f"   (Starting session 1 with general capability question: '{initial_question}')")
+        logger.verbose("Starting session with general capability question: '%s'", initial_question)
     return initial_question
 
 
@@ -147,12 +152,12 @@ def _add_new_node_to_graph(
         relationship_valid = validate_parent_child_relationship(current_node, node, llm)
         if relationship_valid:
             current_node.add_child(node)
-            print(f"  - Added '{node.name}' (child of '{current_node.name}')")
+            logger.debug("Added '%s' (child of '%s')", node.name, current_node.name)
             is_added_as_child = True
 
     # If not added as child (either no current_node or relationship invalid), add as root
     if not is_added_as_child:
-        print(f"  - Added '{node.name}' (new root/standalone functionality)")
+        logger.debug("Added '%s' (new root/standalone functionality)", node.name)
         graph_state["root_nodes"].append(node)
 
     # Add to pending queue if it hasn't been explored yet
@@ -190,12 +195,15 @@ def _analyze_session_and_update_nodes(
     ]
 
     # Extract potential new functionalities mentioned in this session's conversation
-    print("\nAnalyzing conversation for new functionalities...")
+    logger.verbose("Analyzing conversation for new functionalities...")
     newly_extracted_nodes = extract_functionality_nodes(conversation_history_dict, llm, current_node)
+
+    # Track nodes added in this session for the summary
+    session_added_nodes = []
 
     # Process the extracted nodes if any were found
     if newly_extracted_nodes:
-        print(f"Discovered {len(newly_extracted_nodes)} potential new functionality nodes:")
+        logger.debug("Discovered %d potential new functionality nodes", len(newly_extracted_nodes))
 
         # Merge similar nodes discovered *within this session* before further processing
         processed_new_nodes = merge_similar_functionalities(newly_extracted_nodes, llm)
@@ -218,18 +226,29 @@ def _analyze_session_and_update_nodes(
                 if was_added:
                     # If added successfully, include it in the list for subsequent duplicate checks within this loop
                     nodes_added_this_analysis.append(node)
+                    session_added_nodes.append(node)
             else:
-                print(f"  - Skipped duplicate functionality: '{node.name}'")
+                logger.debug("Skipped duplicate functionality: '%s'", node.name)
 
         # After adding all new nodes from this session, re-run merge on the root nodes
         # This handles cases where a new root might be similar to an existing root.
         if graph_state["root_nodes"]:
-            print("   Merging root nodes after additions...")
+            logger.debug("Merging root nodes after additions...")
             graph_state["root_nodes"] = merge_similar_functionalities(graph_state["root_nodes"], llm)
 
     # Mark the node focused on in this session as explored (if applicable)
     if current_node:
         graph_state["explored_nodes"].add(current_node.name)
+
+    # Log summary of discoveries in this session
+    if session_added_nodes:
+        logger.info("Discovered %d new functionalities in this session:", len(session_added_nodes))
+        for node in session_added_nodes:
+            parent = current_node.name if current_node and node in current_node.children else "root"
+            relationship = f"(child of '{parent}')" if parent != "root" else "(root functionality)"
+            logger.info(" • %s %s", node.name, relationship)
+    else:
+        logger.info("No new functionalities discovered in this session")
 
     # Return the history dict and the updated graph state
     return conversation_history_dict, graph_state
@@ -251,10 +270,11 @@ def _get_explorer_next_message(
             if force_topic_change_instruction
             else messages_for_llm
         )
+        logger.debug("Getting next explorer message from LLM")
         llm_response = llm.invoke(messages_for_llm_this_turn)
         return llm_response.content.strip()
-    except (ValueError, RuntimeError) as e:
-        print(f"\nError getting response from Explorer AI LLM: {e}. Ending session.")
+    except (ValueError, RuntimeError):
+        logger.exception("Error getting response from Explorer AI LLM. Ending session.")
         return None
 
 
@@ -265,6 +285,7 @@ def _handle_chatbot_interaction(
     fallback_message: str | None,
 ) -> tuple[InteractionOutcome, str]:
     """Interacts with the chatbot, handles retries on fallback/error, and returns outcome."""
+    logger.debug("Sending message to chatbot")
     is_ok, chatbot_message = the_chatbot.execute_with_input(explorer_message)
 
     if not is_ok:
@@ -280,35 +301,35 @@ def _handle_chatbot_interaction(
 
     # --- Retry Logic ---
     failure_reason = "Fallback message" if is_initial_fallback else "Potential chatbot error (OUTPUT_PARSING_FAILURE)"
-    print(f"\n   ({failure_reason} detected. Rephrasing and retrying...)")
+    logger.verbose("(%s detected. Rephrasing and retrying...)", failure_reason)
     rephrase_prompt = get_rephrase_prompt(explorer_message)
     rephrased_message_or_original = explorer_message  # Default to original
     try:
         rephrased_response = llm.invoke(rephrase_prompt)
         rephrased_message = rephrased_response.content.strip().strip("\"'")
         if rephrased_message and rephrased_message != explorer_message:
-            print(f"   Original: '{explorer_message}'")
-            print(f"   Rephrased: '{rephrased_message}'")
+            logger.debug("Rephrased original message")
             rephrased_message_or_original = rephrased_message
         else:
-            print("   Failed to generate a different rephrasing. Retrying with original.")
-            is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(explorer_message)
-    except (ValueError, RuntimeError) as e:
-        print(f"   Error rephrasing message: {e}. Retrying with original.")
+            logger.debug("Failed to generate a different rephrasing. Retrying with original.")
+    except (ValueError, RuntimeError):
+        logger.exception("Error rephrasing message. Retrying with original.")
 
+    logger.debug("Sending retry message to chatbot")
     is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(rephrased_message_or_original)
 
     if is_ok_retry:
         is_retry_fallback = fallback_message and is_semantically_fallback(chatbot_message_retry, fallback_message, llm)
         is_retry_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message_retry
         if chatbot_message_retry != original_chatbot_message and not is_retry_fallback and not is_retry_parsing_error:
-            print("   Retry successful!")
+            logger.verbose("Retry successful!")
             return InteractionOutcome.SUCCESS, chatbot_message_retry  # Success after retry
 
-        print("   Retry failed (still received fallback/error or same message)")
+        logger.verbose("Retry failed (still received fallback/error or same message)")
         # Return original message but indicate retry failed
         return InteractionOutcome.RETRY_FAILED, original_chatbot_message
-    print("   Retry failed (communication error)")
+
+    logger.verbose("Retry failed (communication error)")
     # Return original message but indicate retry failed (due to comms)
     return InteractionOutcome.RETRY_FAILED, original_chatbot_message
 
@@ -324,17 +345,17 @@ def _update_loop_state_after_interaction(
     if outcome == InteractionOutcome.COMM_ERROR:
         new_consecutive_failures += 1
         new_force_topic_change_next_turn = True
-        print(f"   (Communication failure. Consecutive failures: {new_consecutive_failures})")
-    elif outcome == InteractionOutcome.FALLBACK_DETECTED:  # Or handle initial fallback differently if needed
+        logger.warning("Communication failure. Consecutive failures: %d", new_consecutive_failures)
+    elif outcome == InteractionOutcome.FALLBACK_DETECTED:
         new_consecutive_failures += 1
-        print(f"   (Initial fallback/error detected. Consecutive failures: {new_consecutive_failures})")
+        logger.debug("Initial fallback/error detected. Consecutive failures: %d", new_consecutive_failures)
     elif outcome == InteractionOutcome.RETRY_FAILED:
         new_consecutive_failures += 1
         new_force_topic_change_next_turn = True  # Force change after failed retry
-        print(f"   (Retry failed. Consecutive failures: {new_consecutive_failures})")
+        logger.debug("Retry failed. Consecutive failures: %d", new_consecutive_failures)
     elif outcome == InteractionOutcome.SUCCESS:
         if new_consecutive_failures > 0:
-            print(f"   (Successful response. Resetting consecutive failures from {new_consecutive_failures}.)")
+            logger.debug("Successful response. Resetting consecutive failures from %d", new_consecutive_failures)
         new_consecutive_failures = 0
         new_force_topic_change_next_turn = False
 
@@ -342,9 +363,8 @@ def _update_loop_state_after_interaction(
 
 
 def _run_conversation_loop(
-    session_num: int,
     max_turns: int,
-    context: ConversationContext,  # Use context object
+    context: ConversationContext,
     initial_history: list[BaseMessage],
 ) -> tuple[list[BaseMessage], int]:
     """Runs the main conversation loop for a single session."""
@@ -361,7 +381,7 @@ def _run_conversation_loop(
     while True:
         # 1. Check Stop Conditions
         if turn_count >= max_turns:
-            print(f"\nReached maximum turns ({max_turns}). Ending session {session_num + 1}.")
+            logger.debug("Reached maximum turns (%d). Ending session.", max_turns)
             break
 
         # 2. Determine if Topic Change is Needed
@@ -370,7 +390,7 @@ def _run_conversation_loop(
             force_topic_change_next_turn=force_topic_change_next_turn,
         )
         if force_topic_change_instruction:
-            print("\n   Forcing topic change.")
+            logger.verbose("Forcing topic change")
             if force_topic_change_next_turn:
                 force_topic_change_next_turn = False
 
@@ -379,12 +399,14 @@ def _run_conversation_loop(
             conversation_history_lc, llm, force_topic_change_instruction
         )
         if explorer_response_content is None:
-            break  # Error message printed inside helper
+            break  # Error message logged inside helper
         if "EXPLORATION COMPLETE" in explorer_response_content.upper():
-            print(f"\nExplorer has finished session {session_num + 1} exploration.")
-            break
-
-        print(f"\nExplorer: {explorer_response_content}")
+            logger.debug("Explorer has finished session exploration")
+        logger.verbose(
+            "Explorer: %s",
+            explorer_response_content[:MAX_LOG_MESSAGE_LENGTH]
+            + ("..." if len(explorer_response_content) > MAX_LOG_MESSAGE_LENGTH else ""),
+        )
         conversation_history_lc.append(AIMessage(content=explorer_response_content))
 
         # 4. Interact with Chatbot (with retry logic)
@@ -394,7 +416,11 @@ def _run_conversation_loop(
 
         # 5. Update History
         conversation_history_lc.append(HumanMessage(content=final_chatbot_message))
-        print(f"\nChatbot: {final_chatbot_message}")
+        logger.verbose(
+            "Chatbot: %s",
+            final_chatbot_message[:MAX_LOG_MESSAGE_LENGTH]
+            + ("..." if len(final_chatbot_message) > MAX_LOG_MESSAGE_LENGTH else ""),
+        )
 
         # 6. Update Loop State (Failures, Topic Change Flag) using helper
         consecutive_failures, force_topic_change_next_turn = _update_loop_state_after_interaction(
@@ -404,12 +430,12 @@ def _run_conversation_loop(
 
         # Break loop immediately if communication failed
         if outcome == InteractionOutcome.COMM_ERROR:
-            # Error message printed inside _update_loop_state_after_interaction
+            # Error message logged inside _update_loop_state_after_interaction
             break
 
         # 7. Check if Chatbot Ended Conversation
         if final_chatbot_message.lower() in ["quit", "exit", "q", "bye", "goodbye"]:
-            print("Chatbot ended the conversation. Ending session.")
+            logger.debug("Chatbot ended the conversation. Ending session.")
             break
 
         # 8. Increment Turn Count
@@ -449,11 +475,16 @@ def run_exploration_session(
     graph_state = config["graph_state"]
     supported_languages = config["supported_languages"]
 
-    print(f"\n--- Starting Exploration Session {session_num + 1}/{max_sessions} ---")
+    # Log clear session start marker with basic info
     if current_node:
-        print(f"Exploring functionality: '{current_node.name}'")
+        logger.info(
+            "\n=== Starting Exploration Session %d/%d: Exploring '%s' ===",
+            session_num + 1,
+            max_sessions,
+            current_node.name,
+        )
     else:
-        print("Exploring general capabilities")
+        logger.info("\n=== Starting Exploration Session %d/%d: General Exploration ===", session_num + 1, max_sessions)
 
     # --- Setup Session ---
     session_focus = get_session_focus(current_node)
@@ -464,13 +495,14 @@ def run_exploration_session(
 
     # --- Initial Exchange ---
     initial_question = _generate_initial_question(current_node, primary_language, llm)
-    print(f"\nExplorer: {initial_question}")
+    logger.debug("Initial question: %s", initial_question)
+
+    logger.debug("Sending initial question to chatbot")
     is_ok, chatbot_message = the_chatbot.execute_with_input(initial_question)
-    print(f"\nChatbot: {chatbot_message}")
 
     turn_count = 0
     if not is_ok:
-        print("\nError communicating with chatbot on initial message. Ending session.")
+        logger.error("Error communicating with chatbot on initial message. Ending session.")
         conversation_history_lc.append(AIMessage(content=initial_question))
         conversation_history_lc.append(HumanMessage(content="[Chatbot communication error on initial message]"))
     else:
@@ -487,12 +519,10 @@ def run_exploration_session(
                 "fallback_message": fallback_message,
             }
             conversation_history_lc, turn_count = _run_conversation_loop(
-                session_num=session_num,
                 max_turns=max_turns,
                 context=loop_context,  # Pass context object
                 initial_history=conversation_history_lc,
             )
-
     # --- Post-Session Analysis ---
     conversation_history_dict, updated_graph_state = _analyze_session_and_update_nodes(
         conversation_history_lc,
@@ -501,6 +531,7 @@ def run_exploration_session(
         graph_state,
     )
 
-    print(f"\nSession {session_num + 1} complete with {turn_count} exchanges.")
+    # Session completion summary
+    logger.info("=== Session %d/%d complete: %d exchanges ===\n", session_num + 1, max_sessions, turn_count)
 
     return conversation_history_dict, updated_graph_state
