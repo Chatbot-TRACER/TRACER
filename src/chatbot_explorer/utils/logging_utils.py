@@ -1,6 +1,7 @@
 """Logging utilities for the chatbot explorer."""
 
 import logging
+import re
 import sys
 
 LOGGER_NAME = "chatbot_explorer"
@@ -8,6 +9,23 @@ LOGGER_NAME = "chatbot_explorer"
 # Define custom VERBOSE log level number (between INFO and DEBUG)
 VERBOSE_LEVEL_NUM = 15
 logging.addLevelName(VERBOSE_LEVEL_NUM, "VERBOSE")
+
+try:
+    import colorama
+
+    colorama.init(autoreset=True)  # Automatically reset color after each print
+
+    C_RESET = colorama.Style.RESET_ALL
+    C_INFO_HEADER = colorama.Fore.GREEN + colorama.Style.BRIGHT  # Green for phase starts/ends
+    C_VERBOSE_SPEAKER1 = colorama.Fore.CYAN  # Cyan for Explorer
+    C_VERBOSE_SPEAKER2 = colorama.Fore.MAGENTA  # Magenta for Chatbot
+    C_WARNING = colorama.Fore.YELLOW + colorama.Style.BRIGHT
+    C_ERROR = colorama.Fore.RED + colorama.Style.BRIGHT
+    C_DEBUG = colorama.Fore.BLUE  # Blue for debug details
+except ImportError:
+    print("Warning: colorama not found. Proceeding without colored logs.", file=sys.stderr)
+    C_RESET = C_INFO_HEADER = C_VERBOSE_SPEAKER1 = C_VERBOSE_SPEAKER2 = ""
+    C_WARNING = C_ERROR = C_DEBUG = ""
 
 
 def verbose(self: logging.Logger, message: str, *args: object, **kws: any) -> None:
@@ -28,41 +46,64 @@ logging.Logger.verbose = verbose
 
 
 class ConditionalFormatter(logging.Formatter):
-    """Applies different formats based on log level.
+    """Applies different formats and colors based on log level.
 
-    INFO and VERBOSE levels get minimal formatting (message only).
-    DEBUG, WARNING, ERROR, CRITICAL levels get detailed formatting.
+    - INFO/VERBOSE: Minimal format. INFO headers colored green. VERBOSE speakers colored.
+    - DEBUG: Detailed format, colored blue.
+    - WARNING: Detailed format, colored yellow.
+    - ERROR/CRITICAL: Detailed format, colored red.
     """
 
     SIMPLE_FORMAT = "%(message)s"
     DETAILED_FORMAT = "%(asctime)s - %(levelname)s - [%(name)s:%(lineno)d] - %(message)s"
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
+    # Precompile regex for speaker detection (case-insensitive)
+    SPEAKER1_PATTERN = re.compile(r"^\s*Explorer:", re.IGNORECASE)
+    SPEAKER2_PATTERN = re.compile(r"^\s*Chatbot:", re.IGNORECASE)
+    HEADER_PATTERN = re.compile(r"^\s*--- .* ---$")  # Pattern for --- Header --- lines
+
     def __init__(self) -> None:
         """Initializes the ConditionalFormatter."""
         super().__init__(fmt=self.SIMPLE_FORMAT, datefmt=self.DATE_FORMAT)
-        # Create formatter instances for each style *once* during initialization
         self._simple_formatter = logging.Formatter(self.SIMPLE_FORMAT, datefmt=self.DATE_FORMAT)
         self._detailed_formatter = logging.Formatter(self.DETAILED_FORMAT, datefmt=self.DATE_FORMAT)
 
     def format(self, record: logging.LogRecord) -> str:
-        """Formats the log record based on its level.
+        """Formats the log record based on its level, adding color.
 
         Args:
             record (logging.LogRecord): The log record to format.
 
         Returns:
-            str: The formatted log message string.
+            str: The formatted and potentially colored log message string.
         """
-        # Process any escape sequences in the message
-        if isinstance(record.msg, str):
-            record.msg = record.msg.encode("utf-8").decode("unicode_escape")
-
-        # Use the simple format for INFO and VERBOSE levels
+        # First, format the message using the base class or specific formatters
         if record.levelno in (logging.INFO, VERBOSE_LEVEL_NUM):
-            return self._simple_formatter.format(record)
-        # Use the detailed format for other levels
-        return self._detailed_formatter.format(record)
+            log_message = self._simple_formatter.format(record)
+            # Apply colors based on content for simple formats
+            if record.levelno == logging.INFO and self.HEADER_PATTERN.match(log_message):
+                log_fmt = f"{C_INFO_HEADER}{log_message}{C_RESET}"
+            elif record.levelno == VERBOSE_LEVEL_NUM:
+                if self.SPEAKER1_PATTERN.match(log_message):
+                    log_fmt = f"{C_VERBOSE_SPEAKER1}{log_message}{C_RESET}"
+                elif self.SPEAKER2_PATTERN.match(log_message):
+                    log_fmt = f"{C_VERBOSE_SPEAKER2}{log_message}{C_RESET}"
+                else:
+                    log_fmt = log_message  # Default color for other VERBOSE messages
+            else:
+                log_fmt = log_message  # Default color for other INFO messages
+
+        elif record.levelno == logging.DEBUG:
+            log_fmt = f"{C_DEBUG}{self._detailed_formatter.format(record)}{C_RESET}"
+        elif record.levelno == logging.WARNING:
+            log_fmt = f"{C_WARNING}{self._detailed_formatter.format(record)}{C_RESET}"
+        elif record.levelno >= logging.ERROR:  # ERROR and CRITICAL
+            log_fmt = f"{C_ERROR}{self._detailed_formatter.format(record)}{C_RESET}"
+        else:  # Other levels (use detailed by default)
+            log_fmt = self._detailed_formatter.format(record)
+
+        return log_fmt  # No final strip needed as colorama resets
 
 
 def setup_logging(verbosity: int = 0) -> None:
