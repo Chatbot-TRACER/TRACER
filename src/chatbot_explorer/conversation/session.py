@@ -194,7 +194,7 @@ def _analyze_session_and_update_nodes(
     ]
 
     # Extract potential new functionalities mentioned in this session's conversation
-    logger.verbose("Analyzing conversation for new functionalities...")
+    logger.verbose("\nAnalyzing conversation for new functionalities...")
     newly_extracted_nodes = extract_functionality_nodes(conversation_history_dict, llm, current_node)
 
     # Track nodes added in this session for the summary
@@ -300,7 +300,15 @@ def _handle_chatbot_interaction(
 
     # --- Retry Logic ---
     failure_reason = "Fallback message" if is_initial_fallback else "Potential chatbot error (OUTPUT_PARSING_FAILURE)"
+
+    # Log the original message that caused the fallback
+    logger.verbose(
+        "Chatbot: %s",
+        original_chatbot_message[:MAX_LOG_MESSAGE_LENGTH]
+        + ("..." if len(original_chatbot_message) > MAX_LOG_MESSAGE_LENGTH else ""),
+    )
     logger.verbose("(%s detected. Rephrasing and retrying...)", failure_reason)
+
     rephrase_prompt = get_rephrase_prompt(explorer_message)
     rephrased_message_or_original = explorer_message  # Default to original
     try:
@@ -308,6 +316,11 @@ def _handle_chatbot_interaction(
         rephrased_message = rephrased_response.content.strip().strip("\"'")
         if rephrased_message and rephrased_message != explorer_message:
             logger.debug("Rephrased original message")
+            logger.verbose(
+                "Explorer: %s",
+                rephrased_message[:MAX_LOG_MESSAGE_LENGTH]
+                + ("..." if len(rephrased_message) > MAX_LOG_MESSAGE_LENGTH else ""),
+            )
             rephrased_message_or_original = rephrased_message
         else:
             logger.debug("Failed to generate a different rephrasing. Retrying with original.")
@@ -321,7 +334,7 @@ def _handle_chatbot_interaction(
         is_retry_fallback = fallback_message and is_semantically_fallback(chatbot_message_retry, fallback_message, llm)
         is_retry_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message_retry
         if chatbot_message_retry != original_chatbot_message and not is_retry_fallback and not is_retry_parsing_error:
-            logger.verbose("Retry successful!")
+            logger.verbose("Retry successful with new response!")
             return InteractionOutcome.SUCCESS, chatbot_message_retry  # Success after retry
 
         logger.verbose("Retry failed (still received fallback/error or same message)")
@@ -541,6 +554,6 @@ def run_exploration_session(
     )
 
     # Session completion summary
-    logger.info("=== Session %d/%d complete: %d exchanges ===\n", session_num + 1, max_sessions, turn_count)
+    logger.info("\n=== Session %d/%d complete: %d exchanges ===\n", session_num + 1, max_sessions, turn_count)
 
     return conversation_history_dict, updated_graph_state

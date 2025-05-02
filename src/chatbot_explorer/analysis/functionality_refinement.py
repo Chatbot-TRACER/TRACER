@@ -11,6 +11,9 @@ from chatbot_explorer.prompts.functionality_refinement_prompts import (
     get_relationship_validation_prompt,
 )
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
+from chatbot_explorer.utils.logging_utils import get_logger
+
+logger = get_logger()
 
 
 def is_duplicate_functionality(
@@ -31,6 +34,7 @@ def is_duplicate_functionality(
     # Simple checks first
     for existing in existing_nodes:
         if existing.name.lower() == node.name.lower() or existing.description.lower() == node.description.lower():
+            logger.debug("Found exact match duplicate: '%s'", node.name)
             return True
 
     # Use LLM for smarter check if available and if there are nodes to compare against
@@ -43,10 +47,12 @@ def is_duplicate_functionality(
             existing_descriptions=existing_descriptions,
         )
 
+        logger.debug("Checking if '%s' is semantically equivalent to any existing node", node.name)
         response = llm.invoke(duplicate_check_prompt)
         result = response.content.strip().upper()
 
         if "DUPLICATE" in result:
+            logger.debug("LLM identified semantic duplicate: '%s'", node.name)
             return True
 
     # If no duplicate found by simple checks or LLM
@@ -79,11 +85,11 @@ def validate_parent_child_relationship(
 
     is_valid = result.startswith("VALID")
 
-    # Print the validation result for clarity
+    # Log the validation result at debug level
     if is_valid:
-        print(f"  ✓ Valid relationship: '{child_node.name}' is a sub-functionality of '{parent_node.name}'")
+        logger.debug("✓ Valid relationship: '%s' is a sub-functionality of '%s'", child_node.name, parent_node.name)
     else:
-        print(f"  ✗ Invalid relationship: '{child_node.name}' is not related to '{parent_node.name}'")
+        logger.debug("✗ Invalid relationship: '%s' is not related to '%s'", child_node.name, parent_node.name)
 
     return is_valid
 
@@ -104,6 +110,10 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
     """
     if len(group) == 1:
         return group
+
+    # Log what we're trying to merge
+    node_names = [node.name for node in group]
+    logger.debug("Evaluating potential merge of %d nodes: %s", len(group), ", ".join(node_names))
 
     merge_prompt = get_merge_prompt(group=group)
     merge_response = llm.invoke(merge_prompt)
@@ -133,11 +143,13 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
 
             merged_node.parameters = all_params
 
-            print(f"  Merged {len(group)} functionalities into '{best_name}'")
+            logger.debug("Merged %d functionalities into '%s'", len(group), best_name)
             return [merged_node]
-        print(f"  WARN: Could not parse merge suggestion for group. Keeping first node '{group[0].name}'.")
+
+        logger.warning("Could not parse merge suggestion for group. Keeping first node '%s'", group[0].name)
         return [group[0]]
-    print(f"  LLM suggested keeping {len(group)} nodes separate.")
+
+    logger.debug("LLM suggested keeping %d nodes separate", len(group))
     return group
 
 
@@ -158,6 +170,9 @@ def merge_similar_functionalities(nodes: list[FunctionalityNode], llm: BaseLangu
     if not nodes or len(nodes) < min_nodes_to_merge:
         return nodes
 
+    logger.debug("Checking for potentially similar functionalities to merge among %d nodes", len(nodes))
+
+    # Group nodes by similar names
     name_groups: dict[str, list[FunctionalityNode]] = {}
     for node in nodes:
         normalized_name = node.name.lower().replace("_", " ")
@@ -165,9 +180,20 @@ def merge_similar_functionalities(nodes: list[FunctionalityNode], llm: BaseLangu
             name_groups[normalized_name] = []
         name_groups[normalized_name].append(node)
 
+    # Process each group that may need merging
     merged_results: list[FunctionalityNode] = []
+    groups_that_need_merging = [group for group in name_groups.values() if len(group) > 1]
+
+    if groups_that_need_merging:
+        logger.debug("Found %d groups with potential duplicate functionalities", len(groups_that_need_merging))
+
+    # Process all groups
     for group in name_groups.values():
         processed_group = _process_node_group_for_merge(group, llm)
         merged_results.extend(processed_group)
+
+    # Log results if any merging happened
+    if len(merged_results) < len(nodes):
+        logger.verbose("Merged %d nodes into %d nodes after similarity analysis", len(nodes), len(merged_results))
 
     return merged_results
