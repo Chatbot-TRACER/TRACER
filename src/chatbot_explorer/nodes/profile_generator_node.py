@@ -13,7 +13,7 @@ from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
 
-MAX_GOAL_PREVIEW_LENGTH = 50
+MAX_GOAL_PREVIEW_LENGTH = 70
 
 
 def get_all_descriptions(nodes: list[dict[str, Any]]) -> list[str]:
@@ -71,7 +71,7 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
 
     # Get chatbot type from state
     chatbot_type = state.get("chatbot_type", "unknown")
-    logger.info("Generating profiles for %s chatbot", chatbot_type)
+    logger.info("Generating profiles for %s chatbot\n", chatbot_type)
 
     functionality_descriptions = get_all_descriptions(structured_root_dicts)
 
@@ -79,8 +79,7 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
         logger.warning("No descriptions found in structured functionalities")
         return {"conversation_goals": []}
 
-    logger.info("Processing %d functional components for profile generation", len(functionality_descriptions))
-    logger.verbose("Description sources: workflow nodes and their children")
+    logger.info("Processing %d functional components for profile generation\n", len(functionality_descriptions))
 
     try:
         # Create the config dictionary
@@ -103,15 +102,6 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
         for i, profile in enumerate(profiles_with_goals, 1):
             name = profile.get("name", f"Profile {i}")
             logger.info(" • %s", name)
-
-            # Log the goal for each profile at verbose level
-            if profile.get("goals"):
-                main_goal = profile["goals"][0] if isinstance(profile["goals"], list) else profile["goals"]
-                if isinstance(main_goal, str):
-                    goal_preview = main_goal[:MAX_GOAL_PREVIEW_LENGTH] + (
-                        "..." if len(main_goal) > MAX_GOAL_PREVIEW_LENGTH else ""
-                    )
-                    logger.verbose("   Goal: %s", goal_preview)
 
             # Log variable count at verbose level
             variables = [k for k, v in profile.items() if isinstance(v, dict) and "function" in v and "data" in v]

@@ -158,7 +158,6 @@ def build_workflow_structure(
         logger.debug("Successfully parsed workflow structure JSON with %d nodes", len(structured_nodes_info))
 
         root_nodes_dicts = build_node_hierarchy(structured_nodes_info)
-        logger.verbose("Constructed workflow hierarchy with %d root nodes", len(root_nodes_dicts))
 
     except (json.JSONDecodeError, TypeError):
         logger.exception("Failed to parse or validate JSON from LLM response")

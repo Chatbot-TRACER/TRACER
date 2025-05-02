@@ -437,7 +437,7 @@ def conversation_params_node(state: State, llm: BaseLanguageModel) -> dict[str, 
         )
 
         # Simple completion message (no need to list all profiles again)
-        logger.info("Successfully generated parameters for all %d profiles", len(profiles_with_params))
+        logger.info("Successfully generated conversation parameters for all %d profiles", len(profiles_with_params))
 
     except Exception:
         logger.exception("Error during parameter generation")

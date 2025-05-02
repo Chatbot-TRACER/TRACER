@@ -6,6 +6,9 @@ from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.constants import VARIABLE_PATTERN
 from chatbot_explorer.prompts.variable_definition_prompts import ProfileContext, get_variable_definition_prompt
+from chatbot_explorer.utils.logging_utils import get_logger
+
+logger = get_logger()
 
 
 class VariableDefinitionContext(TypedDict):
@@ -57,8 +60,8 @@ def _parse_base_definition(lines: list[str], expected_type: str | None) -> tuple
             definition["type"] = parsed_type
             in_data_section = False
             if expected_type and parsed_type != expected_type:
-                print(
-                    f"Warning: LLM returned type '{parsed_type}' but expected '{expected_type}'. Will use '{parsed_type}'.",
+                logger.warning(
+                    "LLM returned type '%s' but expected '%s'. Will use '%s'", parsed_type, expected_type, parsed_type
                 )
         elif line_content.startswith("DATA:"):
             in_data_section = True
@@ -80,7 +83,7 @@ def _process_string_data(data_lines: list[str], response_content: str) -> list[s
         if item_line.startswith("- ") and item_line[2:].strip().strip("'\"")
     ]
     if not processed_data:
-        print(f"Warning: String variable data is empty. LLM response:\n{response_content}")
+        logger.debug("String variable data is empty. LLM response:\n%s", response_content)
         return None
     return processed_data
 
@@ -97,14 +100,12 @@ def _process_numeric_data(data_lines: list[str], data_type: str, response_conten
                 value = int(value_str) if data_type == "int" else float(value_str)
                 processed_data[key] = value
             except ValueError:
-                print(f"Warning: Could not parse numeric value for key '{key}': '{value_str}'. Skipping.")
+                logger.debug("Could not parse numeric value for key '%s': '%s'. Skipping.", key, value_str)
 
     has_min_max = "min" in processed_data and "max" in processed_data
     has_step_or_linspace = "step" in processed_data or "linspace" in processed_data
     if not (has_min_max and has_step_or_linspace):
-        print(
-            f"Warning: Numeric variable data missing min/max/step or min/max/linspace. LLM response:\n{response_content}",
-        )
+        logger.debug("Numeric variable data missing min/max/step or min/max/linspace")
         return None
     return processed_data
 
@@ -118,7 +119,7 @@ def _parse_single_variable_definition(
     definition, data_lines = _parse_base_definition(lines, expected_type)
 
     if not definition:
-        print(f"Warning: Failed to parse base fields (FUNCTION, TYPE, DATA) from LLM response:\n{response_content}")
+        logger.debug("Failed to parse base fields (FUNCTION, TYPE, DATA) from LLM response")
         return None
 
     data_type = definition.get("type")
@@ -129,7 +130,7 @@ def _parse_single_variable_definition(
     elif data_type in ["int", "float"]:
         processed_data = _process_numeric_data(data_lines, data_type, response_content)
     else:
-        print(f"Warning: Unknown variable type '{data_type}'. Cannot parse data.")
+        logger.warning("Unknown variable type '%s'. Cannot parse data.", data_type)
         return None
 
     if processed_data is None:
@@ -144,7 +145,7 @@ def _define_single_variable_with_retry(
     context: VariableDefinitionContext,
 ) -> dict[str, Any] | None:
     """Attempts to define a single variable using the LLM with retries."""
-    print(f"   Defining variable: '{variable_name}'...")
+    logger.debug("Defining variable: '%s'", variable_name)
     other_variables = list(context["all_variables"] - {variable_name})
     parsed_def = None
 
@@ -165,14 +166,14 @@ def _define_single_variable_with_retry(
             response = context["llm"].invoke(prompt)
             parsed_def = _parse_single_variable_definition(response.content)
             if parsed_def:
-                print(f"      Successfully parsed definition for '{variable_name}'.")
+                logger.debug("Successfully parsed definition for '%s'", variable_name)
                 return parsed_def  # Success
-            print(f"      Warning: Failed parse attempt {attempt + 1} for '{variable_name}'. Retrying...")
-        except (ValueError, KeyError, AttributeError) as e:
-            print(f"      Error on attempt {attempt + 1} for '{variable_name}': {e}. Retrying...")
+            logger.debug("Failed parse attempt %d for '%s'", attempt + 1, variable_name)
+        except (ValueError, KeyError, AttributeError):
+            logger.exception("Error on attempt %d for '%s'", attempt + 1, variable_name)
             parsed_def = None  # Ensure reset on error
 
-    print(f"ERROR: Failed to define '{variable_name}' after {context['max_retries']} attempts.")
+    logger.warning("Failed to define '%s' after %d attempts", variable_name, context["max_retries"])
     return None
 
 
@@ -184,10 +185,10 @@ def _update_goals_with_definition(goals_list: list[Any], variable_name: str, def
             existing_def_index = i
             break
     if existing_def_index != -1:
-        print(f"      Updating existing definition for '{variable_name}'.")
+        logger.debug("Updating existing definition for '%s'", variable_name)
         goals_list[existing_def_index] = {variable_name: definition}
     else:
-        print(f"      Adding new definition for '{variable_name}'.")
+        logger.debug("Adding new definition for '%s'", variable_name)
         goals_list.append({variable_name: definition})
 
 
@@ -222,9 +223,10 @@ def generate_variable_definitions(
         language_instruction = f"Generate examples/values in {primary_language} where appropriate."
 
     for profile in profiles:
+        profile_name = profile.get("name", "Unnamed")
         goals_list = profile.get("goals", [])
         if not isinstance(goals_list, list):
-            print(f"Warning: Profile '{profile.get('name', 'Unnamed')}' has invalid 'goals'. Skipping.")
+            logger.warning("Profile '%s' has invalid 'goals'. Skipping.", profile_name)
             continue
 
         string_goals = [goal for goal in goals_list if isinstance(goal, str)]
@@ -233,8 +235,8 @@ def generate_variable_definitions(
         if not all_variables:
             continue
 
-        print(f"\n--- Defining variables for profile: {profile.get('name', 'Unnamed')} ---")
-        print(f"   Found variables: {', '.join(sorted(all_variables))}")
+        logger.info("Defining variables for profile: %s", profile_name)
+        logger.info("Found variables: %s\n", ", ".join(sorted(all_variables)))
         goals_text = "".join(f"- {goal}\n" for goal in string_goals)
 
         # Prepare context dictionary once per profile
@@ -250,7 +252,7 @@ def generate_variable_definitions(
         for variable_name in sorted(all_variables):
             parsed_def = _define_single_variable_with_retry(
                 variable_name,
-                var_def_context,  # Pass the context dictionary
+                var_def_context,
             )
             if parsed_def:
                 _update_goals_with_definition(goals_list, variable_name, parsed_def)
