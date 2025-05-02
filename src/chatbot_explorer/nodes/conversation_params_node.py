@@ -411,7 +411,7 @@ def conversation_params_node(state: State, llm: BaseLanguageModel) -> dict[str, 
         return {"conversation_goals": []}
 
     logger.info("\nStep 3: Conversation parameters generation")
-    logger.info("------------------------------------------")
+    logger.info("--------------------------\n")
 
     # Flatten functionalities (currently unused by generate_conversation_parameters but kept for context)
     structured_root_dicts = state.get("discovered_functionalities", [])

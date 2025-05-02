@@ -144,7 +144,6 @@ def _run_analysis_phase(agent: ChatbotExplorationAgent, exploration_results: dic
     logger.info("-----------------------------------")
     try:
         results = agent.run_analysis(exploration_results=exploration_results)
-        logger.info("--- Analysis Phase Complete ---")
     except Exception:
         logger.exception("--- Fatal Error during Analysis Phase ---")
         sys.exit(1)
@@ -170,11 +169,12 @@ def _generate_reports(
     supported_languages = exploration_results.get("supported_languages", ["N/A"])
     fallback_message = exploration_results.get("fallback_message", "N/A")
 
-    logger.info("--- Saving %d generated profiles ---", len(built_profiles))
+    logger.info("\n--------------------------------")
+    logger.info("---   Final Report Summary   ---")
+    logger.info("--------------------------------\n")
 
     save_profiles(built_profiles, output_dir)
 
-    logger.info("--- Writing final report ---")
     write_report(
         output_dir,
         structured_functionalities=functionality_dicts,
@@ -184,7 +184,6 @@ def _generate_reports(
     )
 
     if functionality_dicts:
-        logger.info("--- Generating workflow graph image ---")
         graph_output_base = Path(output_dir) / "workflow_graph"
         try:
             generate_graph_image(functionality_dicts, str(graph_output_base))
@@ -223,8 +222,9 @@ def main() -> None:
     _generate_reports(args.output, exploration_results, analysis_results)
 
     # 8. Finish
+    logger.info("\n---------------------------------")
     logger.info("--- Chatbot Explorer Finished ---")
-    logger.info("Results saved in: %s", args.output)
+    logger.info("---------------------------------")
 
 
 if __name__ == "__main__":

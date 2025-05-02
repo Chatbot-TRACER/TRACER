@@ -8,6 +8,10 @@ from typing import TextIO, TypedDict
 import graphviz
 import yaml
 
+from chatbot_explorer.utils.logging_utils import get_logger
+
+logger = get_logger()
+
 
 class Parameter(TypedDict):
     """Parameter definition for a chatbot functionality."""
@@ -142,7 +146,7 @@ def _add_edges_for_children(
                     context.graph.edge(parent_name, child_name)
                     context.processed_edges.add(edge_key)
     elif children:
-        print(f"WARN in graph: Expected 'children' for node '{parent_name}' to be a list, found {type(children)}")
+        logger.warning("Expected 'children' for node '%s' to be a list, found %s", parent_name, type(children))
 
 
 def _add_nodes_and_edges_recursive(
@@ -165,11 +169,9 @@ def _render_graph(dot: graphviz.Digraph, output_filename_base: str) -> None:
     """Renders the graph to a file, handling potential errors."""
     try:
         dot.render(output_filename_base, cleanup=True, view=False)
-        print(f"   Successfully generated graph image: {output_filename_base}.png")
+        logger.info("Generated graph image: %s.png", output_filename_base)
     except graphviz.backend.execute.ExecutableNotFound:
-        print("\n   ERROR: Graphviz executable not found.")
-        print("   Please install Graphviz (see https://graphviz.org/download/)")
-        print("   and ensure it's in your system's PATH.")
+        logger.exception("Graphviz executable not found. Please install Graphviz (https://graphviz.org/download/)")
 
 
 def generate_graph_image(structured_data: list[FunctionalityNode], output_filename_base: str) -> None:
@@ -179,9 +181,8 @@ def generate_graph_image(structured_data: list[FunctionalityNode], output_filena
         structured_data: List of root node dictionaries representing the workflow
         output_filename_base: Base path and filename for output PNG (without extension)
     """
-    print(f"\n--- Generating workflow graph image ({output_filename_base}.png) ---")
     if not structured_data or not isinstance(structured_data, list):
-        print("   Skipping graph generation: No valid structured data (list of dicts) provided.")
+        logger.warning("Skipping graph generation: No valid structured data provided")
         return
 
     dot = graphviz.Digraph(comment="Chatbot Workflow", format="png", engine="dot")
@@ -216,7 +217,7 @@ def generate_graph_image(structured_data: list[FunctionalityNode], output_filena
                     context.graph.edge(start_node_name, root_node_name)
                     context.processed_edges.add(edge_key)
         else:
-            print(f"WARN in graph: Expected root element to be a dictionary, found {type(root_node_dict)}")
+            logger.warning("Expected root element to be a dictionary, found %s", type(root_node_dict))
 
     _render_graph(context.graph, output_filename_base)
 
@@ -386,7 +387,7 @@ def write_report(
         fallback_message: Detected fallback message, or None if not found
     """
     report_path = Path(output_dir) / "report.txt"
-    print(f"\n--- Writing analysis report ({report_path}) ---")
+    logger.info("Writing analysis report to %s", report_path)
 
     try:
         with report_path.open("w", encoding="utf-8") as f:
@@ -398,9 +399,9 @@ def write_report(
             _write_languages_section(f, supported_languages)
             _write_fallback_section(f, fallback_message)
 
-        print(f"   Successfully wrote report: {report_path}")
-    except OSError as e:
-        print(f"   ERROR: Failed to write report file: {e}")
+        logger.info("Report successfully written to %s", report_path)
+    except OSError:
+        logger.exception("Failed to write report file.")
 
 
 # -------------------------------------------------- #
@@ -416,10 +417,8 @@ def save_profiles(built_profiles: list[dict], output_dir: str) -> None:
         output_dir: Directory to write the profile files to
     """
     if not built_profiles:
-        print("\n--- Skipping profile saving: No profiles generated ---")
+        logger.info("No user profiles to save")
         return
-
-    print(f"\n--- Saving {len(built_profiles)} user profiles to disk ({output_dir}) ---")
 
     # Ensure output directory exists
     Path(output_dir).mkdir(parents=True, exist_ok=True)
@@ -458,11 +457,15 @@ def save_profiles(built_profiles: list[dict], output_dir: str) -> None:
                     width=1000,
                 )
             saved_count += 1
-        except yaml.YAMLError as e:
-            print(f"   ERROR: Failed to dump YAML for profile '{test_name}': {e}")
+            logger.debug("Saved profile: %s", filename)
+        except yaml.YAMLError:
+            logger.exception("Failed to create YAML for profile '%s'.", test_name)
             error_count += 1
-        except OSError as e:
-            print(f"   ERROR: Failed to write file '{filename}': {e}")
+        except OSError:
+            logger.exception("Failed to write file '%s'.", filename)
             error_count += 1
 
-    print(f"   Finished saving profiles: {saved_count} successful, {error_count} errors.")
+    if error_count:
+        logger.warning("Saved %d profiles with %d errors", saved_count, error_count)
+    else:
+        logger.info("Successfully saved %d profiles to %s", saved_count, output_dir)

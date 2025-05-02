@@ -23,7 +23,7 @@ def profile_builder_node(state: State) -> dict[str, Any]:
         return {"built_profiles": []}
 
     logger.info("\nStep 4: Building user profiles")
-    logger.info("------------------------------------------\n")
+    logger.info("--------------------------\n")
 
     built_profiles = []
 

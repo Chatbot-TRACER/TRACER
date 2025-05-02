@@ -295,7 +295,7 @@ class ChatbotExplorationAgent:
 
         # 1. Structure analysis phase
         logger.info("\nStep 1: Workflow structure inference")
-        logger.info("------------------------------------------\n")
+        logger.info("--------------------------\n")
 
         # Prepare initial state for the structure graph
         structure_initial_state = State(
@@ -324,7 +324,7 @@ class ChatbotExplorationAgent:
 
         # 2. Profile generation phase
         logger.info("\nStep 2: User profile generation")
-        logger.info("------------------------------------------\n")
+        logger.info("--------------------------\n")
 
         # Prepare initial state for profile generation
         profile_initial_state = structure_result.copy()
@@ -353,10 +353,6 @@ class ChatbotExplorationAgent:
             for i, profile in enumerate(generated_profiles, 1):
                 name = profile.get("test_name", f"Profile {i}")
                 logger.info(" • %s", name)
-
-        logger.info("\n------------------------------------------")
-        logger.info("          Analysis Phase Complete          ")
-        logger.info("------------------------------------------")
 
         return {
             "discovered_functionalities": workflow_structure,
