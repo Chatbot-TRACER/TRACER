@@ -26,8 +26,6 @@ def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> st
     Returns:
         Optional[str]: The detected fallback message, or None if not found.
     """
-    logger.verbose("\n--- Attempting to detect chatbot fallback message ---")
-
     # Some weird questions to confuse the bot
     confusing_queries = [
         "What is the square root of a banana divided by the color blue?",
@@ -41,7 +39,7 @@ def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> st
 
     # Send confusing queries and get responses
     for i, query in enumerate(confusing_queries):
-        logger.verbose("\nSending confusing query %d...", i + 1)
+        logger.verbose("Sending confusing query %d...", i + 1)
         try:
             is_ok, response = the_chatbot.execute_with_input(query)
 

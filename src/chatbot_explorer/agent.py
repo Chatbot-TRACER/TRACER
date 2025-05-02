@@ -129,7 +129,7 @@ class ChatbotExplorationAgent:
                 detected_langs = extract_supported_languages(probe_response, self.llm)
                 if detected_langs:
                     supported_languages = detected_langs
-                    logger.info("Detected initial language(s): %s", supported_languages)
+                    logger.info("\nDetected initial language(s): %s", supported_languages)
                 else:
                     logger.warning("Could not detect language from initial probe, defaulting to English")
             except (ValueError, TypeError):
@@ -141,7 +141,7 @@ class ChatbotExplorationAgent:
 
     def _detect_fallback(self, chatbot_connector: Chatbot) -> str | None:
         """Detect the chatbot's fallback message."""
-        logger.verbose("\nAttempting to detect chatbot fallback message")
+        logger.verbose("\nDetecting chatbot fallback message")
         fallback_message = None
 
         try:
@@ -149,7 +149,7 @@ class ChatbotExplorationAgent:
             fallback_message = extract_fallback_message(chatbot_connector, self.llm)
             if fallback_message:
                 fallback_preview_length = 30
-                logger.info('Detected fallback message: "%s..."', fallback_message[:fallback_preview_length])
+                logger.info('\nDetected fallback message: "%s..."', fallback_message[:fallback_preview_length])
             else:
                 logger.warning("Could not detect a fallback message")
         except (ValueError, KeyError, AttributeError):
@@ -180,8 +180,6 @@ class ChatbotExplorationAgent:
         logger.info("\n=== Beginning Exploration Sessions ===")
 
         while session_num < params["max_sessions"]:
-            logger.info("\n=== Starting Session %d/%d ===", session_num + 1, params["max_sessions"])
-
             # Determine which node to explore next
             explore_node, session_type = self._select_next_node(current_graph_state, session_num)
 
@@ -190,8 +188,6 @@ class ChatbotExplorationAgent:
                 logger.verbose("Skipping already explored node: '%s'", explore_node.name)
                 session_num += 1
                 continue
-
-            logger.verbose("Session Type: %s", session_type)
 
             # Configure and run a single session
             session_params: SessionParams = {

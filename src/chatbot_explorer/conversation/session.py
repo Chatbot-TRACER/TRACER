@@ -33,7 +33,7 @@ from .fallback_detection import (
 
 logger = get_logger()
 
-MAX_LOG_MESSAGE_LENGTH = 100
+MAX_LOG_MESSAGE_LENGTH = 255
 
 
 class ExplorationGraphState(TypedDict):
@@ -106,6 +106,7 @@ def _generate_initial_question(
         question_prompt = get_initial_question_prompt(current_node, primary_language)
         question_response = llm.invoke(question_prompt)
         initial_question = question_response.content.strip().strip("\"'")
+        logger.verbose("Starting session with targeted question about '%s'", current_node.name)
     else:
         # Ask a general question for the first session
         possible_greetings = [
@@ -497,6 +498,9 @@ def run_exploration_session(
     initial_question = _generate_initial_question(current_node, primary_language, llm)
     logger.debug("Initial question: %s", initial_question)
 
+    # Log the explorer's first message for better visibility
+    logger.verbose("Explorer: %s", initial_question)
+
     logger.debug("Sending initial question to chatbot")
     is_ok, chatbot_message = the_chatbot.execute_with_input(initial_question)
 
@@ -506,6 +510,12 @@ def run_exploration_session(
         conversation_history_lc.append(AIMessage(content=initial_question))
         conversation_history_lc.append(HumanMessage(content="[Chatbot communication error on initial message]"))
     else:
+        # Log the chatbot's first response for better visibility
+        logger.verbose(
+            "Chatbot: %s",
+            chatbot_message[:MAX_LOG_MESSAGE_LENGTH] + ("..." if len(chatbot_message) > MAX_LOG_MESSAGE_LENGTH else ""),
+        )
+
         conversation_history_lc.append(AIMessage(content=initial_question))
         conversation_history_lc.append(HumanMessage(content=chatbot_message))
         turn_count = 1
@@ -523,6 +533,7 @@ def run_exploration_session(
                 context=loop_context,  # Pass context object
                 initial_history=conversation_history_lc,
             )
+
     # --- Post-Session Analysis ---
     conversation_history_dict, updated_graph_state = _analyze_session_and_update_nodes(
         conversation_history_lc,
