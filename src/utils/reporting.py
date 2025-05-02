@@ -387,7 +387,6 @@ def write_report(
         fallback_message: Detected fallback message, or None if not found
     """
     report_path = Path(output_dir) / "report.txt"
-    logger.info("Writing analysis report to %s", report_path)
 
     try:
         with report_path.open("w", encoding="utf-8") as f:
@@ -399,7 +398,7 @@ def write_report(
             _write_languages_section(f, supported_languages)
             _write_fallback_section(f, fallback_message)
 
-        logger.info("Report successfully written to %s", report_path)
+        logger.info("Report successfully written to: %s", report_path)
     except OSError:
         logger.exception("Failed to write report file.")
 
@@ -468,4 +467,4 @@ def save_profiles(built_profiles: list[dict], output_dir: str) -> None:
     if error_count:
         logger.warning("Saved %d profiles with %d errors", saved_count, error_count)
     else:
-        logger.info("Successfully saved %d profiles to %s", saved_count, output_dir)
+        logger.info("Successfully saved %d profiles to: %s/", saved_count, output_dir)
