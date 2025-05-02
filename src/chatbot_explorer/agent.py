@@ -148,7 +148,8 @@ class ChatbotExplorationAgent:
             logger.debug("Executing fallback detection sequence")
             fallback_message = extract_fallback_message(chatbot_connector, self.llm)
             if fallback_message:
-                logger.info('Detected fallback message: "%s..."', fallback_message[:50])
+                fallback_preview_length = 30
+                logger.info('Detected fallback message: "%s..."', fallback_message[:fallback_preview_length])
             else:
                 logger.warning("Could not detect a fallback message")
         except (ValueError, KeyError, AttributeError):
