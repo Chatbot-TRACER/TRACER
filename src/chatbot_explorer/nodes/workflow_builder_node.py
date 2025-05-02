@@ -37,7 +37,7 @@ def workflow_builder_node(state: State, llm: BaseLanguageModel) -> dict[str, Any
         }
 
     # Classify the bot type first
-    logger.verbose("=== Classifying Chatbot ===")
+    logger.info("=== Classifying Chatbot ===\n")
     bot_type = classify_chatbot_type(flat_functionality_dicts, conversation_history, llm)
     logger.info("Chatbot type classified as: %s", bot_type)
 

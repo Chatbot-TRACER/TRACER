@@ -88,7 +88,7 @@ def build_workflow_structure(
     Returns:
         List[Dict[str, Any]]: Structured hierarchy with parent-child relationships
     """
-    logger.info("\n=== Building Workflow Structure ===")
+    logger.info("\n=== Building Workflow Structure ===\n")
 
     if not flat_functionality_dicts:
         logger.warning("Skipping structure building: No functionalities found")
@@ -158,7 +158,7 @@ def build_workflow_structure(
         logger.debug("Successfully parsed workflow structure JSON with %d nodes", len(structured_nodes_info))
 
         root_nodes_dicts = build_node_hierarchy(structured_nodes_info)
-        logger.verbose("\nConstructed workflow hierarchy with %d root nodes", len(root_nodes_dicts))
+        logger.verbose("Constructed workflow hierarchy with %d root nodes", len(root_nodes_dicts))
 
     except (json.JSONDecodeError, TypeError):
         logger.exception("Failed to parse or validate JSON from LLM response")
