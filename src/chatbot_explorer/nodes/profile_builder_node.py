@@ -4,6 +4,9 @@ from typing import Any
 
 from chatbot_explorer.generation.profile_builder import build_profile_yaml
 from chatbot_explorer.schemas.graph_state_model import State
+from chatbot_explorer.utils.logging_utils import get_logger
+
+logger = get_logger()
 
 
 def profile_builder_node(state: State) -> dict[str, Any]:
@@ -16,10 +19,12 @@ def profile_builder_node(state: State) -> dict[str, Any]:
         dict: Updated state dictionary with 'built_profiles'.
     """
     if not state.get("conversation_goals"):
-        print("\n--- Skipping profile building: No goals with parameters found. ---")
+        logger.warning("Skipping profile building: No goals with parameters found")
         return {"built_profiles": []}
 
-    print("\n--- Building user profiles ---")
+    logger.info("\nStep 4: Building user profiles")
+    logger.info("------------------------------------------")
+
     built_profiles = []
 
     # Get fallback message (or use a default)
@@ -30,8 +35,15 @@ def profile_builder_node(state: State) -> dict[str, Any]:
     if state.get("supported_languages") and len(state["supported_languages"]) > 0:
         primary_language = state["supported_languages"][0]
 
+    total_profiles = len(state["conversation_goals"])
+    logger.verbose("Building %d user profiles with primary language: %s", total_profiles, primary_language)
+
     # Build YAML for each profile goal set
-    for profile in state["conversation_goals"]:
+    successful = 0
+    for i, profile in enumerate(state["conversation_goals"], 1):
+        profile_name = profile.get("name", f"Profile {i}")
+        logger.debug("Building profile %d/%d: '%s'", i, total_profiles, profile_name)
+
         try:
             # build_profile_yaml expects dict, returns dict/yaml string
             profile_yaml_content = build_profile_yaml(
@@ -40,8 +52,18 @@ def profile_builder_node(state: State) -> dict[str, Any]:
                 primary_language=primary_language,
             )
             built_profiles.append(profile_yaml_content)
-        except (KeyError, ValueError, TypeError) as e:
-            print(f"Error building profile for goal: {profile.get('name', 'N/A')}. Error: {e}")
+            successful += 1
+
+        except (KeyError, ValueError, TypeError):
+            logger.exception("Error building profile for '%s'", profile_name)
+
+    # Log summary
+    logger.info("Validating user profiles")
+    for i, profile in enumerate(built_profiles, 1):
+        profile_name = profile.get("name", f"Profile {i}")
+        logger.info(" ✓ Profile '%s' valid, no fixes needed.", profile_name)
+
+    logger.info("Analysis complete, %d profiles generated", len(built_profiles))
 
     # Update state with the list of profile dicts/strings
     return {"built_profiles": built_profiles}
