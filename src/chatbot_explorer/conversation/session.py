@@ -106,7 +106,6 @@ def _generate_initial_question(
         question_prompt = get_initial_question_prompt(current_node, primary_language)
         question_response = llm.invoke(question_prompt)
         initial_question = question_response.content.strip().strip("\"'")
-        logger.verbose("Starting session with targeted question about '%s'", current_node.name)
     else:
         # Ask a general question for the first session
         possible_greetings = [
@@ -133,7 +132,6 @@ def _generate_initial_question(
         else:
             initial_question = greeting_en  # Use English
 
-        logger.verbose("Starting session with general capability question: '%s'", initial_question)
     return initial_question
 
 
