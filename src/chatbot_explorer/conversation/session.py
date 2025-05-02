@@ -241,13 +241,13 @@ def _analyze_session_and_update_nodes(
 
     # Log summary of discoveries in this session
     if session_added_nodes:
-        logger.info("Discovered %d new functionalities in this session:", len(session_added_nodes))
+        logger.info("\nDiscovered %d new functionalities in this session:", len(session_added_nodes))
         for node in session_added_nodes:
             parent = current_node.name if current_node and node in current_node.children else "root"
             relationship = f"(child of '{parent}')" if parent != "root" else "(root functionality)"
             logger.info(" • %s %s", node.name, relationship)
     else:
-        logger.info("No new functionalities discovered in this session")
+        logger.info("\nNo new functionalities discovered in this session")
 
     # Return the history dict and the updated graph state
     return conversation_history_dict, graph_state

@@ -108,7 +108,10 @@ def _run_exploration_phase(
     Raises:
         SystemExit: If a critical error occurs during exploration.
     """
-    logger.info("\n--- Starting Chatbot Exploration Phase ---")
+    logger.info("\n------------------------------------------")
+    logger.info("--- Starting Chatbot Exploration Phase ---")
+    logger.info("------------------------------------------")
+
     try:
         results = agent.run_exploration(
             chatbot_connector=chatbot_connector,

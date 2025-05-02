@@ -281,7 +281,7 @@ class ChatbotExplorationAgent:
         else:
             logger.verbose("All discovered nodes were explored")
 
-        logger.info("Discovered %d root functionalities after exploration", len(graph_state["root_nodes"]))
+        logger.info("\nDiscovered %d root functionalities after exploration", len(graph_state["root_nodes"]))
 
     def run_analysis(self, exploration_results: dict[str, Any]) -> dict[str, list[Any]]:
         """Runs the LangGraph analysis pipeline using pre-compiled graphs.
