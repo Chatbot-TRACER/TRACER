@@ -351,7 +351,7 @@ class ChatbotExplorationAgent:
         if generated_profiles:
             logger.info("\nGenerated profiles:")
             for i, profile in enumerate(generated_profiles, 1):
-                name = profile.get("name", f"Profile {i}")
+                name = profile.get("test_name", f"Profile {i}")
                 logger.info(" • %s", name)
 
         logger.info("\n------------------------------------------")

@@ -23,7 +23,7 @@ def profile_builder_node(state: State) -> dict[str, Any]:
         return {"built_profiles": []}
 
     logger.info("\nStep 4: Building user profiles")
-    logger.info("------------------------------------------")
+    logger.info("------------------------------------------\n")
 
     built_profiles = []
 
@@ -56,14 +56,6 @@ def profile_builder_node(state: State) -> dict[str, Any]:
 
         except (KeyError, ValueError, TypeError):
             logger.exception("Error building profile for '%s'", profile_name)
-
-    # Log summary
-    logger.info("Validating user profiles")
-    for i, profile in enumerate(built_profiles, 1):
-        profile_name = profile.get("name", f"Profile {i}")
-        logger.info(" ✓ Profile '%s' valid, no fixes needed.", profile_name)
-
-    logger.info("Analysis complete, %d profiles generated", len(built_profiles))
 
     # Update state with the list of profile dicts/strings
     return {"built_profiles": built_profiles}
