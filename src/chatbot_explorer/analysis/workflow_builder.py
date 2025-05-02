@@ -137,10 +137,10 @@ def build_workflow_structure(
 
     # Select appropriate prompt based on chatbot type
     if chatbot_type == "transactional":
-        logger.verbose("Using transactional structuring prompt for chatbot workflow")
+        logger.debug("Using transactional structuring prompt for chatbot workflow")
         structuring_prompt = create_transactional_prompt(func_list_str, conversation_snippets)
     else:  # Default to informational
-        logger.verbose("Using informational structuring prompt for chatbot workflow")
+        logger.debug("Using informational structuring prompt for chatbot workflow")
         structuring_prompt = create_informational_prompt(func_list_str, conversation_snippets)
 
     try:

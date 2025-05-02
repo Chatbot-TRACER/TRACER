@@ -321,8 +321,6 @@ class ChatbotExplorationAgent:
             config={"configurable": {"thread_id": structure_thread_id}},
         )
         workflow_structure = structure_result.get("discovered_functionalities", {})
-        nodes_count = len(workflow_structure)
-        logger.info("Structure inference complete: %d workflow nodes created", nodes_count)
 
         # 2. Profile generation phase
         logger.info("\nStep 2: User profile generation")

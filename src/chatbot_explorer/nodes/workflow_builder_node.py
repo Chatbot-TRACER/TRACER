@@ -12,18 +12,39 @@ from chatbot_explorer.utils.logging_utils import get_logger
 logger = get_logger()
 
 
+def count_all_nodes(nodes_list) -> int:
+    total = 0
+    for node in nodes_list:
+        total += 1
+        children = node.get("children", [])
+        total += count_all_nodes(children)
+    return total
+
+
+def get_workflow_paths(nodes, prefix="") -> list[str]:
+    paths = []
+    for node in nodes:
+        node_name = node.get("name", "unnamed")
+        node_desc = node.get("description", "").split(".")[0]  # First sentence of description
+        children = node.get("children", [])
+
+        if children:
+            child_names = ", ".join([child.get("name", "unnamed") for child in children[:3]])
+            if len(children) > 3:
+                child_names += f", +{len(children) - 3} more"
+            path_info = f"{prefix}{node_name} → {child_names}"
+            paths.append(path_info)
+            # Add child paths with indentation
+            paths.extend(get_workflow_paths(children, prefix=f"  {prefix}"))
+        else:
+            paths.append(f"{prefix}{node_name} (endpoint)")
+    return paths
+
+
 def workflow_builder_node(state: State, llm: BaseLanguageModel) -> dict[str, Any]:
-    """Node that analyzes functionalities and history to build the workflow structure.
+    """Node that analyzes functionalities and history to build the workflow structure."""
+    logger.info("Analyzing workflow structure from discovered functionalities")
 
-    Uses different logic based on whether the bot seems transactional or informational.
-
-    Args:
-        state (State): The current graph state.
-        llm: The language model instance.
-
-    Returns:
-        Dict[str, Any]: Dictionary with updated 'discovered_functionalities' and 'chatbot_type'.
-    """
     # Functionalities are expected as dicts from run_full_exploration results
     flat_functionality_dicts = state.get("discovered_functionalities", [])
     conversation_history = state.get("conversation_history", [])
@@ -37,20 +58,39 @@ def workflow_builder_node(state: State, llm: BaseLanguageModel) -> dict[str, Any
         }
 
     # Classify the bot type first
-    logger.info("=== Classifying Chatbot ===\n")
+    logger.info("Classifying chatbot interaction type")
     bot_type = classify_chatbot_type(flat_functionality_dicts, conversation_history, llm)
     logger.info("Chatbot type classified as: %s", bot_type)
 
     try:
+        logger.info("Building workflow structure based on %d discovered functionalities", len(flat_functionality_dicts))
         structured_nodes = build_workflow_structure(flat_functionality_dicts, conversation_history, bot_type, llm)
 
+        # Enhanced logging with more information about the structure
         node_count = len(structured_nodes)
-        logger.info("Workflow structure created with %d root node(s)", node_count)
+
+        # Count total nodes including children at all levels
+
+        total_nodes = count_all_nodes(structured_nodes)
+
+        # Get information about workflow structure
+
+        workflow_paths = get_workflow_paths(structured_nodes)
+
+        logger.info("Workflow structure created with %d root nodes and %d total nodes", node_count, total_nodes)
+
+        if workflow_paths:
+            logger.info("\nWorkflow structure:")
+            for path in workflow_paths[:10]:  # Limit to first 10 paths to avoid overwhelming logs
+                logger.info(" • %s", path)
+            if len(workflow_paths) > 10:
+                logger.info(" • ... and %d more paths", len(workflow_paths) - 10)
+
         logger.debug("Root node names: %s", ", ".join([node.get("name", "unnamed") for node in structured_nodes]))
 
-    except (ValueError, KeyError, TypeError):
+    except (ValueError, KeyError, TypeError) as e:
         # Handle errors during structure building
-        logger.exception("Error during structure building")
+        logger.error("Error during structure building: %s", str(e))
         # Keep the original flat list but update bot_type
         return {
             "discovered_functionalities": flat_functionality_dicts,
