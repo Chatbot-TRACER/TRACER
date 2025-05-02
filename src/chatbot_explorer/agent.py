@@ -324,7 +324,7 @@ class ChatbotExplorationAgent:
 
         # 2. Profile generation phase
         logger.info("\nStep 2: User profile generation")
-        logger.info("------------------------------------------")
+        logger.info("------------------------------------------\n")
 
         # Prepare initial state for profile generation
         profile_initial_state = structure_result.copy()

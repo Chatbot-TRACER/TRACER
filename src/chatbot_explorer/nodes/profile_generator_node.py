@@ -9,33 +9,59 @@ from chatbot_explorer.generation.profile_generation import (
     generate_profile_content,
 )
 from chatbot_explorer.schemas.graph_state_model import State
+from chatbot_explorer.utils.logging_utils import get_logger
+
+logger = get_logger()
+
+MAX_GOAL_PREVIEW_LENGTH = 50
+
+
+def get_all_descriptions(nodes: list[dict[str, Any]]) -> list[str]:
+    """Recursively extracts all 'description' values from a nested list of dictionaries.
+
+    Args:
+        nodes: A list of dictionaries, where each dictionary may contain a 'description' key
+               and/or a 'children' key. The 'children' key, if present, contains another
+               list of dictionaries with the same structure.
+
+    Returns:
+        A list of strings, where each string is a 'description' value found in the
+        input list of dictionaries or any of its nested lists.
+    """
+    descriptions = []
+    for node in nodes:
+        if node.get("description"):
+            descriptions.append(node["description"])
+        if node.get("children"):
+            child_descriptions = get_all_descriptions(node["children"])
+            descriptions.extend(child_descriptions)
+    return descriptions
 
 
 def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, Any]:
-    """Node responsible for generating the core content of user profiles.
+    """Generates user profiles with conversation goals based on discovered functionalities.
 
-    This includes:
-    - Defining distinct user roles and scenarios based on functionalities.
-    - Generating user-centric goals for each scenario.
-    - Defining variables ({{variable}}) within goals and their data/types.
-    - Generating relevant context points for the simulator.
-    - Defining expected output fields to extract from chatbot responses.
+    This function controls the generation of user profiles by using
+    structured information about the chatbot's functionalities, limitations,
+    and conversation history.
 
     Args:
-        state (State): The current graph state, containing discovered functionalities,
-                       limitations, conversation history, etc.
-        llm: The language model instance used for generation.
+        state (State): The current state of the chatbot exploration, containing
+            information about discovered functionalities, limitations, conversation
+            history, supported languages, and chatbot type.
+        llm (BaseLanguageModel): The language model used for generating the
+            user profiles.
 
     Returns:
-        dict[str, Any]: Dictionary containing the generated profile content under the
-                        'conversation_goals' key. Each item in the list is a dictionary
-                        representing a complete profile (name, role, goals, variables, context, outputs).
+        dict[str, Any]: A dictionary containing the generated user profiles
+            under the key "conversation_goals". Returns an empty list if no
+            functionalities are found, if an error occurs during profile
+            generation, or if no descriptions are found in the structured
+            functionalities.
     """
     if not state.get("discovered_functionalities"):
-        print("\n--- Skipping goal generation: No structured functionalities found. ---")
+        logger.warning("Skipping goal generation: No structured functionalities found")
         return {"conversation_goals": []}
-
-    print("\n--- Generating conversation goals from structured data ---")
 
     # Functionalities are now dicts (structured from previous node)
     structured_root_dicts: list[dict[str, Any]] = state["discovered_functionalities"]
@@ -45,26 +71,16 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
 
     # Get chatbot type from state
     chatbot_type = state.get("chatbot_type", "unknown")
-    print(f"   Chatbot type for goal generation: {chatbot_type}")
-
-    # Helper to get all descriptions from the structure
-    def get_all_descriptions(nodes: list[dict[str, Any]]) -> list[str]:
-        descriptions = []
-        for node in nodes:
-            if node.get("description"):
-                descriptions.append(node["description"])
-            if node.get("children"):
-                child_descriptions = get_all_descriptions(node["children"])
-                descriptions.extend(child_descriptions)
-        return descriptions
+    logger.info("Generating profiles for %s chatbot", chatbot_type)
 
     functionality_descriptions = get_all_descriptions(structured_root_dicts)
 
     if not functionality_descriptions:
-        print("   Warning: No descriptions found in structured functionalities.")
+        logger.warning("No descriptions found in structured functionalities")
         return {"conversation_goals": []}
 
-    print(f" -> Preparing {len(functionality_descriptions)} descriptions (from structure) for goal generation.")
+    logger.info("Processing %d functional components for profile generation", len(functionality_descriptions))
+    logger.verbose("Description sources: workflow nodes and their children")
 
     try:
         # Create the config dictionary
@@ -81,13 +97,29 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
         # Call the main generation function with the config dictionary
         profiles_with_goals = generate_profile_content(config)
 
-        print(f" -> Generated {len(profiles_with_goals)} profiles with goals, variables, context, and outputs.")
-    except (KeyError, TypeError, ValueError) as e:
-        print(f"Error during profile/goal generation orchestration: {e}")
-        # Consider more specific error handling or logging
-        import traceback
+        # Log the results with profile names
+        profile_count = len(profiles_with_goals)
+        logger.info("Generated %d user profiles:", profile_count)
+        for i, profile in enumerate(profiles_with_goals, 1):
+            name = profile.get("name", f"Profile {i}")
+            logger.info(" • %s", name)
 
-        traceback.print_exc()
+            # Log the goal for each profile at verbose level
+            if profile.get("goals"):
+                main_goal = profile["goals"][0] if isinstance(profile["goals"], list) else profile["goals"]
+                if isinstance(main_goal, str):
+                    goal_preview = main_goal[:MAX_GOAL_PREVIEW_LENGTH] + (
+                        "..." if len(main_goal) > MAX_GOAL_PREVIEW_LENGTH else ""
+                    )
+                    logger.verbose("   Goal: %s", goal_preview)
+
+            # Log variable count at verbose level
+            variables = [k for k, v in profile.items() if isinstance(v, dict) and "function" in v and "data" in v]
+            if variables:
+                logger.verbose("   Variables: %d (%s)", len(variables), ", ".join(variables))
+
+    except (KeyError, TypeError, ValueError):
+        logger.exception("Error during profile generation")
         return {"conversation_goals": []}  # Return empty list on error
     else:
         # Update state with the fully generated profiles
