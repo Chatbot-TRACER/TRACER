@@ -8,6 +8,7 @@ from chatbot_explorer.prompts.fallback_detection_prompts import (
     get_fallback_identification_prompt,
     get_semantic_fallback_check_prompt,
 )
+from chatbot_explorer.utils.html_cleaner import clean_html_response
 from chatbot_explorer.utils.logging_utils import get_logger
 from connectors.chatbot_connectors import Chatbot
 
@@ -15,7 +16,7 @@ logger = get_logger()
 
 
 def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> str | None:
-    """Try to get the chatbot's fallback message.
+    """Try to get the chatbot's fallback message, cleans the HTML first.
 
     Sends confusing messages to trigger it. These aren't part of the main chat history.
 
@@ -45,6 +46,8 @@ def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> st
 
             if is_ok:
                 logger.debug("Response received (%d chars)", len(response))
+                response = clean_html_response(response)
+                logger.debug("Cleaned response: %s", response)
                 responses.append(response)
         except (TimeoutError, ConnectionError):
             logger.exception("Error communicating with chatbot during fallback detection")
@@ -76,7 +79,7 @@ def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> st
 
 
 def is_semantically_fallback(response: str, fallback: str, llm: BaseLanguageModel) -> bool:
-    """Check if the chatbot's response is semantically equivalent to a known fallback message.
+    """Check if the chatbot's response is semantically equivalent to a known fallback message, expects the HTML cleaned.
 
     Args:
         response (str): The chatbot's current response.

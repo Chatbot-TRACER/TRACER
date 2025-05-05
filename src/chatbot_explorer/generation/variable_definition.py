@@ -258,7 +258,6 @@ def generate_variable_definitions(
             if parsed_def:
                 _update_goals_with_definition(goals_list, variable_name, parsed_def)
 
-
         logger.verbose(
             "    Generated variables: %d/%d: %s",
             len(all_variables),

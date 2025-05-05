@@ -23,6 +23,7 @@ from chatbot_explorer.prompts.session_prompts import (
     get_translation_prompt,
 )
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
+from chatbot_explorer.utils.html_cleaner import clean_html_response
 from chatbot_explorer.utils.logging_utils import get_logger
 from connectors.chatbot_connectors import Chatbot
 
@@ -33,7 +34,7 @@ from .fallback_detection import (
 
 logger = get_logger()
 
-MAX_LOG_MESSAGE_LENGTH = 255
+MAX_LOG_MESSAGE_LENGTH = 500
 
 
 class ExplorationGraphState(TypedDict):
@@ -290,7 +291,12 @@ def _handle_chatbot_interaction(
     if not is_ok:
         return InteractionOutcome.COMM_ERROR, "[Chatbot communication error]"
 
-    original_chatbot_message = chatbot_message
+    # Clean HTML if present in the response
+    cleaned_chatbot_message = clean_html_response(chatbot_message)
+
+    original_chatbot_message = chatbot_message  # Store original for debugging
+    chatbot_message = cleaned_chatbot_message  # Use the clean one
+
     is_initial_fallback = fallback_message and is_semantically_fallback(chatbot_message, fallback_message, llm)
     is_initial_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message
     needs_retry = is_initial_fallback or is_initial_parsing_error
@@ -331,6 +337,10 @@ def _handle_chatbot_interaction(
     is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(rephrased_message_or_original)
 
     if is_ok_retry:
+        # Clean HTML in retry response if present
+        cleaned_retry_message = clean_html_response(chatbot_message_retry)
+        chatbot_message_retry = cleaned_retry_message
+
         is_retry_fallback = fallback_message and is_semantically_fallback(chatbot_message_retry, fallback_message, llm)
         is_retry_parsing_error = "OUTPUT_PARSING_FAILURE" in chatbot_message_retry
         if chatbot_message_retry != original_chatbot_message and not is_retry_fallback and not is_retry_parsing_error:
@@ -339,11 +349,11 @@ def _handle_chatbot_interaction(
 
         logger.verbose("Retry failed (still received fallback/error or same message)")
         # Return original message but indicate retry failed
-        return InteractionOutcome.RETRY_FAILED, original_chatbot_message
+        return InteractionOutcome.RETRY_FAILED, chatbot_message
 
     logger.verbose("Retry failed (communication error)")
     # Return original message but indicate retry failed (due to comms)
-    return InteractionOutcome.RETRY_FAILED, original_chatbot_message
+    return InteractionOutcome.RETRY_FAILED, chatbot_message
 
 
 def _update_loop_state_after_interaction(
@@ -521,6 +531,15 @@ def run_exploration_session(
         conversation_history_lc.append(AIMessage(content=initial_question))
         conversation_history_lc.append(HumanMessage(content="[Chatbot communication error on initial message]"))
     else:
+        # Clean HTML if present in the response
+        from chatbot_explorer.utils.html_cleaner import clean_html_response
+
+        original_message = chatbot_message  # Store for debugging if needed
+        chatbot_message = clean_html_response(chatbot_message)
+
+        # Log debug
+        logger.debug("RAW message: %s", original_message)
+
         # Log the chatbot's first response for better visibility
         logger.verbose(
             "Chatbot: %s",

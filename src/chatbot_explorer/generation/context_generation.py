@@ -60,9 +60,9 @@ def generate_context(
             context_entries = ["No specific context available."]
         else:
             logger.verbose(
-            "    Generated %d context entries: %s",
-            len(context_entries),
-            context_entries[0][:MAX_LENGTH] + ("..." if len(context_entries[0]) > MAX_LENGTH else ""),
+                "    Generated %d context entries: %s",
+                len(context_entries),
+                context_entries[0][:MAX_LENGTH] + ("..." if len(context_entries[0]) > MAX_LENGTH else ""),
             )
 
         profile["context"] = context_entries
