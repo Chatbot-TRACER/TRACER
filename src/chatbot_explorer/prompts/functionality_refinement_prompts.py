@@ -26,34 +26,36 @@ def get_duplicate_check_prompt(node: FunctionalityNode, existing_descriptions: l
 def get_relationship_validation_prompt(parent_node: FunctionalityNode, child_node: FunctionalityNode) -> str:
     """Generate prompt to validate parent-child relationship between nodes."""
     return f"""
-    Evaluate if the second functionality should be considered a sub-functionality of the first functionality.
-    Use balanced judgment - we want to create a meaningful hierarchy without being overly strict.
+    Evaluate if the 'POTENTIAL SUB-FUNCTIONALITY' represents a logical next step or a sub-component within a workflow that includes the 'PARENT FUNCTIONALITY'.
 
     PARENT FUNCTIONALITY:
     Name: {parent_node.name}
     Description: {parent_node.description}
 
-    POTENTIAL SUB-FUNCTIONALITY:
+    POTENTIAL SUB-FUNCTIONALITY (CHILD):
     Name: {child_node.name}
     Description: {child_node.description}
 
-    A functionality should be considered a sub-functionality if it meets AT LEAST ONE of these criteria:
-    1. It represents a more specific version or specialized case of the parent functionality
-    2. It's normally used as part of completing the parent functionality
-    3. It extends or enhances the parent functionality in a natural way
-    4. It depends on the parent functionality conceptually or in workflow
+    Consider these criteria for a VALID relationship:
+    1.  **Direct Sub-Task:** The child is a specific part needed to complete the parent's broader goal (e.g., Parent: `create_account`, Child: `set_password`).
+    2.  **Refinement/Specification:** The child provides more detail or options related to the parent (e.g., Parent: `search_items`, Child: `apply_filter_to_results`).
+    3.  **Sequential Step:** The child is a common or necessary step that logically occurs *after* the parent functionality is performed in a typical user workflow (e.g., Parent: `select_item`, Child: `add_item_to_cart`; Parent: `add_item_to_cart`, Child: `proceed_to_checkout`).
+    4.  **Converging Path:** The child represents a common step that might be reached after *multiple different* preceding functionalities (like the parent). For example, `proceed_to_checkout` could validly follow both `select_standard_item` and `configure_custom_item`. If the child is a plausible *next step* after the parent, the relationship can be VALID even if other paths also lead to the child.
 
     EXAMPLE VALID RELATIONSHIPS:
-    - Parent: "search_products" - Child: "filter_search_results"
-    - Parent: "schedule_appointment" - Child: "confirm_appointment_availability"
-    - Parent: "estimate_price" - Child: "calculate_detailed_quote"
-    - Parent: "manage_account" - Child: "update_profile_information"
+    - Parent: `search_products`, Child: `filter_search_results` (Refinement)
+    - Parent: `schedule_appointment`, Child: `confirm_appointment_details` (Sub-Task/Sequential)
+    - Parent: `select_delivery_method`, Child: `provide_delivery_address` (Sequential)
+    - Parent: `add_main_item_to_order`, Child: `offer_side_items` (Sequential/Enhancement)
+    - Parent: `offer_side_items`, Child: `proceed_to_payment` (Sequential/Convergence) # Example: Sides might lead to payment
+    - Parent: `configure_custom_product`, Child: `proceed_to_payment` (Sequential/Convergence) # Example: Custom config might also lead to payment
 
     EXAMPLE INVALID RELATIONSHIPS:
-    - Parent: "login" - Child: "view_product_catalog" (unrelated functions)
-    - Parent: "check_weather" - Child: "translate_text" (completely different domains)
+    - Parent: `login`, Child: `view_product_catalog` (Related but not typically a direct sequential step initiated by the login action itself)
+    - Parent: `check_weather`, Child: `translate_text` (Unrelated domains)
+    - Parent: `provide_order_summary`, Child: `search_products` (Wrong sequence)
 
-    Consider domain-specific logic and real-world workflows when making your determination.
+    Focus on typical process flow and logical dependency. Does completing the PARENT naturally lead into needing or performing the CHILD functionality?
     Respond with EXACTLY "VALID" or "INVALID" followed by a brief explanation.
     """
 

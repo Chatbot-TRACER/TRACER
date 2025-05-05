@@ -6,6 +6,7 @@ from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
+from chatbot_explorer.conversation.conversation_utils import format_conversation
 from chatbot_explorer.prompts.workflow_prompts import (
     create_informational_prompt,
     create_transactional_prompt,
@@ -112,8 +113,6 @@ def build_workflow_structure(
         for i, session_history in enumerate(conversation_history):
             if not isinstance(session_history, list):
                 continue
-
-            from chatbot_explorer.conversation.conversation_utils import format_conversation
 
             session_str = format_conversation(session_history)
             snippet_len = 1500
