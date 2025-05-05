@@ -63,19 +63,40 @@ def get_relationship_validation_prompt(parent_node: FunctionalityNode, child_nod
 def get_merge_prompt(group: list[FunctionalityNode]) -> str:
     """Generate prompt to determine if a group of nodes should be merged."""
     return f"""
-    Analyze the following functionality nodes extracted from conversations with a potentially informational chatbot. Determine if they represent the **same core informational topic or achieve the same overall user goal**, even if the specific interaction steps (like providing options vs. displaying results vs. explaining) differ slightly.
+    Analyze the following functionality nodes extracted from conversations with a chatbot.
+    Determine if they represent the **EXACT SAME specific function or action from the chatbot's perspective**, or if they are distinct functionalities that should remain separate. Your default should be to KEEP SEPARATE unless criteria for merging are definitively met.
 
     Functionality Nodes:
     {json.dumps([{"name": n.name, "description": n.description} for n in group], indent=2)}
 
-    Consider the *purpose* and the *information conveyed*. For example, different ways of providing contact details (`display_contact_info`, `explain_contact_methods`, `repeat_contact_details`) should likely be merged into a single `provide_contact_info` node. However, `provide_contact_info` and `explain_ticketing_process` are distinct topics.
+    **CRITICAL CRITERIA FOR MERGING (Must meet BOTH):**
+    1.  **Identical Goal & Action:** The nodes describe the *precise same user goal* being addressed by the *precise same chatbot action*. Minor wording differences in description are acceptable ONLY IF the underlying function is identical.
+    2.  **No Functional Distinction:** There is NO difference in the *type* of task, the *level of detail* handled, the *specific workflow path* initiated, or the *object* being acted upon. They must be functionally interchangeable.
 
-    If they represent the SAME core topic/goal, respond with exactly:
+    **DO NOT MERGE IF ANY OF THESE APPLY (KEEP SEPARATE):**
+    -   **Different Variants/Paths:** One node handles a standard option/path, while another handles a custom/configurable/alternative option or path (e.g., `show_standard_packages` vs. `start_custom_config`).
+    -   **Different Workflow Steps:** The nodes represent distinct sequential steps in a larger process (e.g., `select_item` vs. `add_to_cart` vs. `proceed_to_checkout`).
+    -   **Different Objects/Topics:** The nodes perform similar actions but on fundamentally different subjects or data types (e.g., `get_product_details` vs. `get_shipping_info`; `order_main_item` vs. `order_side_item`).
+    -   **General vs. Specific:** One node is a general category or entry point, while the other is a specific sub-task, outcome, or refinement (e.g., `manage_account` vs. `update_email_address`; `search_items` vs. `apply_filter`).
+    -   **Information vs. Action:** One node primarily provides information, while the other performs a state-changing or transactional action, even if related (e.g., `list_available_options` vs. `select_option`).
+
+    **EXAMPLES:**
+    -   **MERGE Candidates:**
+        - `display_contact_details` and `show_contact_information` (Likely identical function)
+        - `get_order_status_update` and `check_order_progress` (Likely identical function)
+    -   **KEEP SEPARATE Examples:**
+        - `provide_standard_options` vs. `initiate_custom_build` (Different Variants/Paths)
+        - `view_cart` vs. `proceed_to_payment` (Different Workflow Steps)
+        - `order_pizza` vs. `order_drink` (Different Objects/Topics - **assuming these were extracted separately**)
+        - `explain_return_policy` vs. `initiate_return_request` (Information vs. Action)
+        - `search_products` vs. `filter_search_results` (General vs. Specific / Different Workflow Steps)
+
+    If they represent the **EXACT SAME** functionality based *only* on wording differences and meet the strict merge criteria, respond with exactly:
     MERGE
-    name: [Suggest a concise, representative snake_case name for the core topic/goal, e.g., `provide_contact_info`]
-    description: [Suggest a clear, consolidated description covering the core topic and potentially mentioning the different ways it was presented]
+    name: [Suggest a precise, representative snake_case name for the identical function]
+    description: [Suggest a clear, consolidated description reflecting the identical core function]
 
-    If they are distinct topics or goals, respond with exactly:
+    If they are distinct functionalities according to the criteria above (or if unsure), respond with exactly:
     KEEP SEPARATE
-    reason: [Briefly explain why they cover different topics/goals]
+    reason: [Briefly explain the key functional distinction based on the criteria (e.g., "Different Variants: Standard vs Custom", "Different Workflow Steps: View vs Pay")]
     """

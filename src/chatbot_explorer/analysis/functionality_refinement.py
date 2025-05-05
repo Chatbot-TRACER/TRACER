@@ -118,6 +118,7 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
     merge_prompt = get_merge_prompt(group=group)
     merge_response = llm.invoke(merge_prompt)
     content = merge_response.content.strip()
+    logger.debug("Merge response content: '%s'", content)
 
     if content.upper().startswith("MERGE"):
         name_match = re.search(r"name:\s*(.+)", content, re.IGNORECASE | re.DOTALL)
