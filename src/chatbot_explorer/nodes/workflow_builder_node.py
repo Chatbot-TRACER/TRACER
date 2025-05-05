@@ -1,5 +1,6 @@
 """LangGraph Node that builds the workflow structure from functionalities and conversation history."""
 
+import json
 from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
@@ -15,73 +16,102 @@ MAX_CHILDREN_DISPLAYED = 3
 
 
 def count_all_nodes(nodes_list: list[dict]) -> int:
-    """Count the total number of nodes in a nested list structure.
+    """Count the total number of nodes in a nested list of dictionaries.
 
-    Recursively traverses a list of nodes, counting each node and all its children.
+    Recursively traverses a list of node dictionaries, counting each node
+    and all its children. Avoids double-counting nodes visited via different paths
+    in a DAG by keeping track of visited node names.
 
     Args:
         nodes_list (list): A list of node dictionaries, where each node may contain
-                          a 'children' key with a list of child nodes.
+                          a 'children' key with a list of child node dictionaries.
 
     Returns:
-        int: The total count of all nodes in the hierarchy.
-
-    Example:
-        >>> nodes = [{"id": 1, "children": [{"id": 2}]}, {"id": 3}]
-        >>> count_all_nodes(nodes)
-        3
+        int: The total count of unique nodes in the hierarchy.
     """
-    total = 0
-    for node in nodes_list:
-        total += 1
-        children = node.get("children", [])
-        total += count_all_nodes(children)
-    return total
+    # Use a set to track visited nodes to handle DAGs correctly
+    visited_node_names = set()
+    nodes_to_process = list(nodes_list)  # Start with root nodes
+
+    while nodes_to_process:
+        current_node = nodes_to_process.pop(0)
+        node_name = current_node.get("name")
+
+        # Process node only if it has a name and hasn't been visited
+        if node_name and node_name not in visited_node_names:
+            visited_node_names.add(node_name)
+            children = current_node.get("children", [])
+            if isinstance(children, list):
+                # Add children to the processing queue
+                nodes_to_process.extend(children)
+
+    return len(visited_node_names)
 
 
-def get_workflow_paths(nodes: list[dict], prefix: str = "") -> list[str]:
+def get_workflow_paths(nodes: list[dict], prefix: str = "", visited_paths: set = None) -> list[str]:
     """Recursively generates a list of workflow paths from a hierarchical node structure.
 
-    This function traverses a tree of nodes and creates formatted string representations
-    of each path in the workflow, showing the parent-child relationships. Endpoints
-    (nodes without children) are marked as such.
+    Handles potential cycles/DAGs by tracking visited parent-child relationships for display.
 
     Args:
-        nodes (list): List of node dictionaries, where each node may contain:
-                     - name: The node's name (default: "unnamed")
-                     - description: The node's description (not used in output)
-                     - children: List of child nodes (optional)
-        prefix (str, optional): String prefix for indentation in recursive calls.
-                               Defaults to "".
+        nodes (list): List of node dictionaries.
+        prefix (str, optional): String prefix for indentation. Defaults to "".
+        visited_paths (set, optional): A set to track visited (parent_name, child_name)
+                                       tuples to avoid infinite loops in logs for DAGs.
+                                       Should be initialized as None in the top-level call.
 
     Returns:
-        list[str]: A list of formatted path strings, where:
-                  - Parent nodes show their name followed by the names of up to 3 children
-                  - If a node has more than 3 children, additional children are summarized
-                  - Child paths are indented with "  " per level of depth
-                  - Nodes without children are marked as "(endpoint)"
-
-    Example:
-        For a node structure with parent "A" and children "B", "C", and "D",
-        the function would return:
-        ["A → B, C, D", "  B (endpoint)", "  C (endpoint)", "  D (endpoint)"]
+        list[str]: A list of formatted path strings.
     """
+    if visited_paths is None:
+        visited_paths = set()
+
     paths = []
     for node in nodes:
         node_name = node.get("name", "unnamed")
-        node.get("description", "").split(".")[0]  # First sentence of description
         children = node.get("children", [])
+
+        # Format current node line
         if children:
-            child_names = ", ".join([child.get("name", "unnamed") for child in children[:MAX_CHILDREN_DISPLAYED]])
+            child_names_list = []
+            for child in children[:MAX_CHILDREN_DISPLAYED]:
+                child_name = child.get("name", "unnamed")
+                # Check if this specific parent->child path has been logged before
+                path_tuple = (node_name, child_name)
+                if path_tuple in visited_paths:
+                    child_names_list.append(f"{child_name} (*)")  # Mark as already shown path
+                else:
+                    child_names_list.append(child_name)
+
+            child_names = ", ".join(child_names_list)
+
             if len(children) > MAX_CHILDREN_DISPLAYED:
                 child_names += f", +{len(children) - MAX_CHILDREN_DISPLAYED} more"
-                child_names += f", +{len(children) - 3} more"
             path_info = f"{prefix}{node_name} → {child_names}"
-            paths.append(path_info)
-            # Add child paths with indentation
-            paths.extend(get_workflow_paths(children, prefix=f"  {prefix}"))
         else:
-            paths.append(f"{prefix}{node_name} (endpoint)")
+            path_info = f"{prefix}{node_name} (endpoint)"
+
+        paths.append(path_info)
+
+        # Recursively add child paths only if not visited before in this traversal
+        if children:
+            child_paths_to_add = []
+            current_children_nodes = []
+            for child in children:
+                child_name = child.get("name", "unnamed")
+                path_tuple = (node_name, child_name)
+                if path_tuple not in visited_paths:
+                    visited_paths.add(path_tuple)  # Mark this specific path as visited for display
+                    current_children_nodes.append(child)  # Only recurse through unvisited paths
+
+            if current_children_nodes:
+                # Pass the *same* visited_paths set down
+                child_paths_to_add.extend(
+                    get_workflow_paths(current_children_nodes, prefix=f"  {prefix}", visited_paths=visited_paths)
+                )
+
+            paths.extend(child_paths_to_add)
+
     return paths
 
 
@@ -95,10 +125,9 @@ def workflow_builder_node(state: State, llm: BaseLanguageModel) -> dict[str, Any
 
     if not flat_functionality_dicts:
         logger.warning("Skipping structure building: No initial functionalities found")
-        # Return partial state update
         return {
             "discovered_functionalities": [],
-            "chatbot_type": "unknown",  # Ensure type is set
+            "chatbot_type": "unknown",
         }
 
     # Classify the bot type first
@@ -110,41 +139,46 @@ def workflow_builder_node(state: State, llm: BaseLanguageModel) -> dict[str, Any
         logger.debug(
             "Building workflow structure based on %d discovered functionalities", len(flat_functionality_dicts)
         )
+
         structured_nodes = build_workflow_structure(flat_functionality_dicts, conversation_history, bot_type, llm)
 
-        # Enhanced logging with more information about the structure
-        node_count = len(structured_nodes)
+        root_node_count = len(structured_nodes)
+        total_unique_nodes = count_all_nodes(structured_nodes)
 
-        # Count total nodes including children at all levels
+        logger.info(
+            "Workflow structure created with %d root nodes and %d unique total nodes",
+            root_node_count,
+            total_unique_nodes,
+        )
 
-        total_nodes = count_all_nodes(structured_nodes)
-
-        # Get information about workflow structure
-
-        workflow_paths = get_workflow_paths(structured_nodes)
-
-        logger.info("Workflow structure created with %d root nodes and %d total nodes", node_count, total_nodes)
-
+        # Log the paths using the modified path generator
+        # Pass None for visited_paths initially
+        workflow_paths = get_workflow_paths(structured_nodes, visited_paths=None)
         if workflow_paths:
-            logger.info("\nWorkflow structure:")
-            for path in workflow_paths[:MAX_WORKFLOW_PATHS]:  # Limit to first 10 paths to avoid overwhelming logs
+            logger.info(
+                "\nWorkflow structure (paths shown once per parent; (*) indicates node visited via another path):"
+            )
+            for path in workflow_paths[:MAX_WORKFLOW_PATHS]:
                 logger.info(" • %s", path)
             if len(workflow_paths) > MAX_WORKFLOW_PATHS:
                 logger.info(" • ... and %d more paths", len(workflow_paths) - MAX_WORKFLOW_PATHS)
+        else:
+            logger.info("No workflow paths generated from the structure.")
 
         logger.debug("Root node names: %s", ", ".join([node.get("name", "unnamed") for node in structured_nodes]))
+        logger.info(
+            "Note: The final JSON output accurately represents joins via the 'parent_names' field, even if paths appear duplicated in logs."
+        )
 
-    except (ValueError, KeyError, TypeError):
-        # Handle errors during structure building
-        logger.exception("Error during structure building")
-        # Keep the original flat list but update bot_type
+    except (ValueError, KeyError, TypeError, json.JSONDecodeError):
+        logger.exception("Error during structure building or processing")
         return {
-            "discovered_functionalities": flat_functionality_dicts,
+            "discovered_functionalities": flat_functionality_dicts,  # Keep original flat list
             "chatbot_type": bot_type,
         }
     else:
         # Update state with the final structured list of dictionaries and bot type
         return {
-            "discovered_functionalities": structured_nodes,
+            "discovered_functionalities": structured_nodes,  # This is the dict hierarchy
             "chatbot_type": bot_type,
         }
