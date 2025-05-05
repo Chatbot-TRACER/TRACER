@@ -13,14 +13,14 @@ def create_transactional_prompt(func_list_str: str, conversation_snippets: str) 
     {conversation_snippets}
 
     CRITICAL TASK: Determine the sequential flow, including prerequisites, branches, and joins based *primarily on the conversational evidence*. Assume a workflow exists unless proven otherwise.
-    - **Sequences:** Identify steps that consistently or logically happen *after* others based on the conversation flow (e.g., selecting size after choosing pizza type).
-    - **Branches:** Identify points where the chatbot explicitly offers mutually exclusive choices leading to different subsequent steps (e.g., predefined vs. custom pizza).
-    - **Joins:** Identify points where different interaction paths converge to the *same* common next step (e.g., adding drinks after either pizza type).
+    - **Sequences:** Identify steps that consistently or logically happen *after* others based on the conversation flow (e.g., selecting a specific option like size or color *after* choosing a general product type).
+    - **Branches:** Identify points where the chatbot explicitly offers mutually exclusive choices leading to different subsequent steps (e.g., choosing between standard service options vs. a customized request).
+    - **Joins:** Identify points where different interaction paths converge to the *same* common next step (e.g., confirming contact details after either requesting a quote or reporting an issue).
 
     **IMPORTANT: Distinguish True Prerequisites from Conversational Sequence:**
     - A step should only have `parent_names` if completing the parent step is **functionally required** to perform the child step. Ask: "Is Step A *necessary* to make Step B possible or meaningful?"
     - **Do NOT assign parentage simply because one step occurred before another in a single conversation.**
-    - **Meta-Interactions (like asking "What can you do?", "Help", greetings, asking for general info about the bot itself) should almost always be root nodes (`parent_names: []`)**. They describe the interaction *about* the bot, not the core task flow itself. For example, `inquire_main_functionality` or `ask_capabilities` is NOT a prerequisite for `order_pizza`.
+    - **Meta-Interactions (like asking "What can you do?", "Help", greetings, asking for general info about the bot itself) should almost always be root nodes (`parent_names: []`)**. They describe the interaction *about* the bot, not the core task flow itself. For example, `inquire_main_functionality` or `ask_capabilities` is NOT a prerequisite for `complete_primary_task` (like placing an order or submitting a request).
 
     DEEPLY ANALYZE the conversation flow provided:
     1. Which steps seem like entry points? (Potential root nodes, especially meta-interactions)

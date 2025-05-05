@@ -46,7 +46,7 @@ IMPORTANT GUIDELINES:
 3. **CRITICAL: If the chatbot offers clear interactive choices (e.g., buttons, numbered lists, "Option A or Option B?", "Yes or No?"), you MUST try to select one of the offered options in your next turn to explore that path.**
 4. **ADAPTIVE EXPLORATION (Handling Non-Progressing Turns):**
     - **If the chatbot provides information (like an explanation, contact details, status update) OR a fallback/error message, and does NOT ask a question or offer clear interactive choices:**
-        a) **Check for Repetitive Failure on the SAME GOAL:** If the chatbot has given the **same or very similar fallback/error message** for the last **2** turns despite you asking relevant questions about the *same underlying topic or goal*, **DO NOT REPHRASE the failed question/request again**. Instead, **ABANDON this topic/goal for this session**. Your next turn MUST be to ask about a **completely different capability** or topic you know exists or is plausible (e.g., switch from asking about custom pizza ingredients to asking about predefined pizzas or drinks), OR if no other path is obvious, respond with "EXPLORATION COMPLETE".
+        a) **Check for Repetitive Failure on the SAME GOAL:** If the chatbot has given the **same or very similar fallback/error message** for the last **2** turns despite you asking relevant questions about the *same underlying topic or goal*, **DO NOT REPHRASE the failed question/request again**. Instead, **ABANDON this topic/goal for this session**. Your next turn MUST be to ask about a **completely different capability** or topic you know exists or is plausible (e.g., if asking about 'specific detail A' of a service/product repeatedly fails, switch to asking about 'general feature B' or a 'different service/product C'), OR if no other path is obvious, respond with "EXPLORATION COMPLETE".
         b) **If NOT Repetitive Failure (e.g., first fallback on this topic):** Ask a specific, relevant clarifying question about the information/fallback provided ONLY IF it seems likely to yield progress. Otherwise, or if clarification isn't obvious, **switch to a NEW, specific, plausible topic/task** relevant to the chatbot's likely domain (infer this domain). **Avoid simply rephrasing the previous failed request.** Do NOT just ask "What else?".
     - **Otherwise (if the bot asks a question or offers choices):** Respond appropriately to continue the current flow or make a selection as per Guideline 3.
 5. Prioritize actions/questions relevant to the `EXPLORATION FOCUS` below.
@@ -56,7 +56,7 @@ EXPLORATION FOCUS FOR THIS SESSION:
 {session_focus}
 
 Try to follow the focus and the adaptive exploration guideline, especially the rule about abandoning topics after repetitive failures. After {max_turns} exchanges, or when you believe you have thoroughly explored this specific path/topic (or reached a dead end/loop), respond ONLY with "EXPLORATION COMPLETE".
-"""  # noqa: S608
+"""
 
 
 def get_initial_question_prompt(current_node: FunctionalityNode, primary_language: str | None = None) -> str:

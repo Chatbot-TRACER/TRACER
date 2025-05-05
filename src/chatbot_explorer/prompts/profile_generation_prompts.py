@@ -112,24 +112,24 @@ EXTREMELY IMPORTANT RESTRICTIONS:
 4. Focus ONLY on real-world user tasks and objectives
 5. The profiles should be genuine use cases, not meta-conversations about the chatbot itself
 
-For example, if the functionalities are related to the CAU, the profiles should distinguish between tasks like:
-  - Asking for office hours,
-  - Opening a service ticket,
-  - Requesting information about specific services.
-Do not mix in chatbot internal limitations (e.g., "supports only Spanish" or "handles complex questions").
+For example, if the functionalities are related to a general service provider, the profiles should distinguish between tasks like:
+  - Asking for business hours,
+  - Submitting a support request,
+  - Requesting information about specific services offered.
+Do not mix in chatbot internal limitations (e.g., "only understands basic questions" or "cannot access user history").
 
 Try to cover all the important functionality groups without overlap between profiles.
 
 FORMAT YOUR RESPONSE AS:
 
 ## PROFILE: [Conversation Scenario Name]
-ROLE: [Write a prompt for the user simulator, e.g. "you have to act as a user ordering a pizza to a pizza shop."]
+ROLE: [Write a prompt for the user simulator, e.g., "you have to act as a user asking a company about their return policy for an item you bought last week."]
 FUNCTIONALITIES:
 - [functionality 1 relevant to this scenario]
 - [functionality 2 relevant to this scenario]
 
 ## PROFILE: [Another Conversation Scenario Name]
-ROLE: [Write a prompt for the user simulator, e.g. "you have to act as a user ordering a pizza to a pizza shop."]
+ROLE: [Write a prompt for the user simulator, e.g., "you have to act as a user trying to book a standard service appointment for your car."]
 FUNCTIONALITIES:
 - [functionality 3 relevant to this scenario]
 - [functionality 4 relevant to this scenario]
