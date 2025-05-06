@@ -232,14 +232,13 @@ def print_structured_functionalities(f: TextIO, nodes: list[FunctionalityNode], 
             for param in params_data:
                 if isinstance(param, dict):
                     p_name = param.get("name", "N/A")
-                    p_type = param.get("type", "N/A")
                     p_desc = param.get("description", "N/A")
 
                     # Add options to output if they exist
                     p_options = param.get("options", [])
                     options_str = f" [options: {', '.join(p_options)}]" if p_options else ""
 
-                    param_details.append(f"{p_name} ({p_type}): {p_desc}{options_str}")
+                    param_details.append(f"{p_name}: {p_desc}{options_str}")
                 else:
                     param_details.append(f"InvalidParamFormat({type(param)})")
             param_str = f" | Params: [{'; '.join(param_details)}]"

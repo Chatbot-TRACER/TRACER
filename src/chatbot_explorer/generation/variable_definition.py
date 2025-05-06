@@ -198,6 +198,7 @@ def generate_variable_definitions(
     profiles: list[dict[str, Any]],
     llm: BaseLanguageModel,
     supported_languages: list[str] | None = None,
+    functionality_structure: list[dict[str, Any]] = None,
     max_retries: int = 3,
 ) -> list[dict[str, Any]]:
     """Generates and adds variable definitions to user profile goals using an LLM.
@@ -212,6 +213,7 @@ def generate_variable_definitions(
                   containing a list of strings and potentially existing definition dicts.
         llm: The language model instance for generating definitions.
         supported_languages: Optional list of languages; the first is used for examples.
+        functionality_structure: Optional list of functionality nodes with parameter options.
         max_retries: Maximum attempts to get a valid definition for each variable in case of failure.
 
     Returns:
@@ -223,6 +225,15 @@ def generate_variable_definitions(
     if supported_languages:
         primary_language = supported_languages[0]
         language_instruction = f"Generate examples/values in {primary_language} where appropriate."
+
+    # Extract parameter options from functionality structure if available
+    parameter_options_by_profile = {}
+    if functionality_structure:
+        for profile in profiles:
+            profile_name = profile.get("name", "")
+            parameter_options = _extract_parameter_options_for_profile(profile, functionality_structure)
+            if parameter_options:
+                parameter_options_by_profile[profile_name] = parameter_options
 
     for profile in profiles:
         profile_name = profile.get("name", "Unnamed")
@@ -239,6 +250,9 @@ def generate_variable_definitions(
 
         goals_text = "".join(f"- {goal}\n" for goal in string_goals)
 
+        # Get parameter options for this profile if available
+        profile_parameter_options = parameter_options_by_profile.get(profile_name, {})
+
         # Prepare context dictionary once per profile
         var_def_context: VariableDefinitionContext = {
             "profile": profile,
@@ -250,11 +264,24 @@ def generate_variable_definitions(
         }
 
         for variable_name in sorted(all_variables):
-            parsed_def = _define_single_variable_with_retry(
-                variable_name,
-                var_def_context,
-            )
-            logger.debug("Parsed definition for '%s': %s", variable_name, parsed_def)
+            # Check if we have pre-extracted options for this variable
+            if variable_name in profile_parameter_options:
+                # Use the extracted options directly
+                options = profile_parameter_options[variable_name]
+                parsed_def = {
+                    "function": "forward()",
+                    "type": "string",
+                    "data": options,
+                }
+                logger.debug("Using extracted options for '%s': %s", variable_name, options)
+            else:
+                # No pre-extracted options, generate with LLM
+                parsed_def = _define_single_variable_with_retry(
+                    variable_name,
+                    var_def_context,
+                )
+                logger.debug("Generated definition for '%s': %s", variable_name, parsed_def)
+
             if parsed_def:
                 _update_goals_with_definition(goals_list, variable_name, parsed_def)
 
@@ -266,3 +293,45 @@ def generate_variable_definitions(
         )
 
     return profiles
+
+
+def _extract_parameter_options_for_profile(
+    profile: dict[str, Any], functionality_structure: list[dict[str, Any]]
+) -> dict[str, list[str]]:
+    """Extract parameter options from functionality structure for a specific profile.
+
+    Args:
+        profile: The profile being processed
+        functionality_structure: List of functionality nodes
+
+    Returns:
+        Dictionary mapping variable names to their options
+    """
+    parameter_options = {}
+
+    # Extract assigned functionalities for this profile
+    profile_funcs = profile.get("functionalities", [])
+    if not profile_funcs:
+        return parameter_options
+
+    # Helper function to recursively process functionality nodes
+    def process_node(node):
+        # Check if this node is assigned to the profile
+        if node.get("name", "") in profile_funcs:
+            # Process parameters
+            for param in node.get("parameters", []):
+                if isinstance(param, dict):
+                    param_name = param.get("name", "")
+                    param_options = param.get("options", [])
+                    if param_name and param_options:
+                        parameter_options[param_name] = param_options
+
+        # Process child nodes
+        for child in node.get("children", []):
+            process_node(child)
+
+    # Process all nodes
+    for node in functionality_structure:
+        process_node(node)
+
+    return parameter_options

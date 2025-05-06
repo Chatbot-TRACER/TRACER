@@ -260,7 +260,12 @@ def generate_profile_content(config: ProfileGenerationConfig) -> list[dict[str, 
         profile["goals"] = _generate_profile_goals(profile, config, conv_context, workflow_context, lang_instr_goal)
 
         # 4. Generate variable definitions based on goals
-        temp_profiles = generate_variable_definitions([profile], config["llm"], config["supported_languages"])
+        temp_profiles = generate_variable_definitions(
+            [profile],
+            config["llm"],
+            config["supported_languages"],
+            config["workflow_structure"],
+        )
         if temp_profiles:
             profile.update(temp_profiles[0])
 

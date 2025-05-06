@@ -27,14 +27,11 @@ def _parse_parameter_string(params_str: str) -> list[dict[str, Any]]:
     Returns:
         List of parameter dictionaries with name, type, description, and options
     """
-    parameters: list[dict[str, Any]] = []
-
-    # Return empty list if parameters are None
+    parameters: list[ParameterDefinition] = []
     if params_str.lower().strip() == "none":
         return parameters
 
-    # Split by commas that are not inside parentheses
-    # This regex finds all matches of: param_name followed by optional (options)
+    # Split parameters and extract options
     param_pattern = re.compile(r"([^,]+?)(?:\s*\(([^)]+)\))?\s*(?:,|$)")
     param_matches = param_pattern.findall(params_str)
 
@@ -48,13 +45,11 @@ def _parse_parameter_string(params_str: str) -> list[dict[str, Any]]:
         if options_str:
             options = [opt.strip() for opt in options_str.split("/") if opt.strip()]
 
-        parameters.append(
-            {
-                "name": param_name_content,
-                "description": f"Parameter {param_name_content}",
-                "options": options,
-            }
+        # Create a ParameterDefinition object
+        param = ParameterDefinition(
+            name=param_name_content, description=f"Parameter {param_name_content}", options=options
         )
+        parameters.append(param)
 
     return parameters
 
@@ -116,13 +111,10 @@ def _parse_llm_functionality_response(content: str, current_node: FunctionalityN
 
             # Convert parameter dictionaries to ParameterDefinition objects
             parameters = []
-            for param_dict in parameter_dicts:
-                parameter = ParameterDefinition(
-                    name=param_dict["name"],
-                    description=param_dict["description"],
-                    options=param_dict.get("options", []),
-                )
-                parameters.append(parameter)
+            if isinstance(parameter_dicts, list):
+                parameters = parameter_dicts
+            else:
+                logger.warning("Expected a list of parameters but got: %s", type(parameter_dicts))
 
             # Create the new node
             new_node = FunctionalityNode(

@@ -31,7 +31,11 @@ def create_transactional_prompt(func_list_str: str, conversation_snippets: str) 
     Structure the output as a JSON list of nodes. Each node MUST include:
     - "name": Functionality name (string).
     - "description": Description (string).
-    - "parameters": List of parameter names (list of strings or []).
+    - "parameters": List of parameter objects. Each parameter object should include:
+        - "name": Parameter name (string).
+        - "description": Parameter description (string).
+        - "options": List of available options for the parameter (list of strings or [] if no specific options).
+      If a functionality has no parameters, use an empty list `[]`.
     - "parent_names": List of names of functionalities that, based on conversational evidence AND functional necessity, MUST be completed *immediately before* this one (list of strings). Use `[]` for root nodes and meta-interactions.
 
     Rules for Output:
@@ -66,7 +70,11 @@ def create_informational_prompt(func_list_str: str, conversation_snippets: str) 
     Structure the output as a JSON list of nodes. Each node MUST include:
     - "name": Functionality name (string).
     - "description": Description (string).
-    - "parameters": List of parameter names (list of strings or []).
+    - "parameters": List of parameter objects. Each parameter object should include:
+        - "name": Parameter name (string).
+        - "description": Parameter description (string).
+        - "options": List of available options for the parameter (list of strings or [] if no specific options).
+      If a functionality has no parameters, use an empty list `[]`.
     - "parent_names": List of names of functionalities that MUST be completed immediately before this one based on the rules above. **Use `[]` for root nodes / independent topics / meta-interactions.**
 
     Rules for Output:

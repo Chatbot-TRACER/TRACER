@@ -1,6 +1,7 @@
 """Module to build workflow structures from chatbot functionalities."""
 
 import json
+import pprint
 import re
 from typing import Any
 
@@ -96,9 +97,24 @@ def build_workflow_structure(
         return []
 
     # Prepare functionality list string for prompt
+    func_details_list = []
     func_list_str = "\n".join(
         [
-            f"- Name: {f.get('name', 'N/A')}\n  Description: {f.get('description', 'N/A')}\n  Parameters: {', '.join(p.get('name', '?') for p in f.get('parameters', [])) or 'None'}"
+            (
+                f"- Name: {f.get('name', 'N/A')}\n"
+                f"  Description: {f.get('description', 'N/A')}\n"
+                f"  Parameters: [\n"
+                + (
+                    ",\n".join(
+                        [
+                            f"    {{'name': '{p.get('name', 'N/A')}', 'description': '{p.get('description', 'N/A')}', 'options': {p.get('options', [])}}}"
+                            for p in f.get("parameters", [])
+                        ]
+                    )
+                    or "    None"
+                )
+                + "\n  ]"
+            )
             for f in flat_functionality_dicts
         ],
     )
@@ -156,7 +172,20 @@ def build_workflow_structure(
         structured_nodes_info = _parse_and_validate_json_list(json_str)
         logger.debug("Successfully parsed workflow structure JSON with %d nodes", len(structured_nodes_info))
 
+        # Log the structured_nodes_info (LLM output before hierarchy building)
+        logger.debug(
+            "  LLM Output (structured_nodes_info):\n%s", pprint.pformat(structured_nodes_info, indent=2, width=120)
+        )
+
         root_nodes_dicts = build_node_hierarchy(structured_nodes_info)
+        logger.debug(
+            "Final hierarchical workflow structure built (%d root nodes). Checking for parameter options:",
+            len(root_nodes_dicts),
+        )
+        logger.debug(
+            "  Hierarchical Workflow Structure (root_nodes_dicts):\n%s",
+            pprint.pformat(root_nodes_dicts, indent=2, width=120),
+        )
 
     except (json.JSONDecodeError, TypeError):
         logger.exception("Failed to parse or validate JSON from LLM response")

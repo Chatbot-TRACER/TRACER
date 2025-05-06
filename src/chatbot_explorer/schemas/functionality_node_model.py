@@ -7,7 +7,7 @@ class ParameterDefinition:
     """Model representing a parameter with its metadata."""
 
     def __init__(self, name: str, description: str, options: list[str]) -> None:
-        """Initialize one of the parameters of a Functionality Node
+        """Initialize one of the parameters of a Functionality Node.
 
         Args:
             name: Name of the parameter
@@ -74,12 +74,47 @@ class FunctionalityNode:
             "__type__": "FunctionalityNode",
             "name": self.name,
             "description": self.description,
-            "parameters": [p.to_dict() for p in self.parameters],
+            "parameters": [param.to_dict() for param in self.parameters],
             "children": [child.to_dict() for child in self.children],
         }
 
     def __repr__(self) -> str:
         """Return an unambiguous string representation of the FunctionalityNode."""
         return (
-            f"FunctionalityNode(name='{self.name}', desc='{self.description[:20]}...', children={len(self.children)})"
+            f"FunctionalityNode(name='{self.name}', desc='{self.description[:20]}...', "
+            f"params={len(self.parameters)}, children={len(self.children)})"
         )
+
+    def to_detailed_string(self, indent_level: int = 0) -> str:
+        """Return a detailed, multi-line string representation of the node and its hierarchy."""
+        indent_unit = "  "
+        current_indent = indent_unit * indent_level
+
+        # Node name and description preview
+        node_desc_text = ""
+        if self.description:
+            node_desc_text = self.description[:20].replace("\n", " ")
+        desc_preview = f" (desc: '{node_desc_text}...')" if self.description else ""
+        parts = [f"{current_indent}{self.name}:{desc_preview}"]
+
+        # Parameters
+        if self.parameters:
+            parts.append(f"{current_indent}{indent_unit}Parameters:")
+            for param in self.parameters:
+                param_desc_text = ""
+                if param.description:
+                    param_desc_text = param.description[:20].replace("\n", " ")
+                param_desc_preview_str = f" (desc: '{param_desc_text}...')" if param.description else ""
+                parts.append(f"{current_indent}{indent_unit * 2}{param.name}:{param_desc_preview_str}")
+                if param.options:
+                    for option in param.options:
+                        parts.append(f"{current_indent}{indent_unit * 3}- {option}")
+
+        # Children (recursive call)
+        if self.children:
+            parts.append(f"{current_indent}{indent_unit}Children:")
+            for child in self.children:
+                # Children are indented further relative to the current node's name
+                parts.append(child.to_detailed_string(indent_level + 2))
+
+        return "\n".join(parts)
