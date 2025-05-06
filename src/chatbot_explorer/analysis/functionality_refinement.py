@@ -1,7 +1,6 @@
 """Module to check for duplicate functionalities, merge them and validate relationships between them."""
 
 import re
-from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
@@ -10,7 +9,7 @@ from chatbot_explorer.prompts.functionality_refinement_prompts import (
     get_merge_prompt,
     get_relationship_validation_prompt,
 )
-from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
+from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode, ParameterDefinition
 from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
@@ -130,19 +129,39 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
 
             merged_node = FunctionalityNode(name=best_name, description=best_desc, parameters=[])
 
-            all_params: list[dict[str, Any]] = []
-            param_names_seen = set()
+            # Track parameters by name for merging
+            param_by_name = {}
+
+            # First pass: collect all unique parameters with their options
             for node in group:
                 for param in node.parameters:
-                    param_name = param.get("name")
-                    if param_name and param_name not in param_names_seen:
-                        all_params.append(param)
-                        param_names_seen.add(param_name)
+                    # Handle ParameterDefinition objects
+                    param_name = param.name
+
+                    if param_name not in param_by_name:
+                        # First time seeing this parameter
+                        param_by_name[param_name] = param
+                    else:
+                        # We've seen this parameter before - merge options
+                        existing_param = param_by_name[param_name]
+
+                        # Combine options from both parameters
+                        combined_options = list(set(existing_param.options + param.options))
+
+                        # Create a new merged parameter with combined options
+                        merged_param = ParameterDefinition(
+                            name=param_name, description=existing_param.description, options=combined_options
+                        )
+                        param_by_name[param_name] = merged_param
+
+            # Convert merged parameters to a list
+            merged_node.parameters = list(param_by_name.values())
+
+            # Merge children too
+            for node in group:
                 for child in node.children:
                     child.parent = merged_node
                     merged_node.add_child(child)
-
-            merged_node.parameters = all_params
 
             logger.debug("Merged %d functionalities into '%s'", len(group), best_name)
             return [merged_node]

@@ -234,7 +234,12 @@ def print_structured_functionalities(f: TextIO, nodes: list[FunctionalityNode], 
                     p_name = param.get("name", "N/A")
                     p_type = param.get("type", "N/A")
                     p_desc = param.get("description", "N/A")
-                    param_details.append(f"{p_name} ({p_type}): {p_desc}")
+
+                    # Add options to output if they exist
+                    p_options = param.get("options", [])
+                    options_str = f" [options: {', '.join(p_options)}]" if p_options else ""
+
+                    param_details.append(f"{p_name} ({p_type}): {p_desc}{options_str}")
                 else:
                     param_details.append(f"InvalidParamFormat({type(param)})")
             param_str = f" | Params: [{'; '.join(param_details)}]"
@@ -273,16 +278,18 @@ def _write_functionalities_section(f: TextIO, functionalities: list[Functionalit
         f.write("No functionalities structure discovered (empty list).\n")
         return
 
-    if not isinstance(functionalities[0], dict):
-        f.write("Functionality structure is a list, but elements are not dictionaries.\n")
+    # Check if we're working with FunctionalityNode objects or already serialized dicts
+    if hasattr(functionalities[0], "to_dict"):
+        # Convert FunctionalityNode objects to dictionaries for printing
+        serialized_nodes = [node.to_dict() for node in functionalities]
+        print_structured_functionalities(f, serialized_nodes)
+    elif isinstance(functionalities[0], dict):
+        # Already serialized dictionaries
+        print_structured_functionalities(f, functionalities)
+    else:
+        f.write("Functionality structure is a list, but elements are not recognized objects.\n")
         f.write(f"First element type: {type(functionalities[0])}\n")
-        try:
-            f.write(f"Raw data:\n{json.dumps(functionalities, indent=2)}\n")
-        except TypeError:
-            f.write(f"Raw data (repr):\n{functionalities!r}\n")
         return
-
-    print_structured_functionalities(f, functionalities)
 
 
 def _write_json_section(f: TextIO, data: list[FunctionalityNode]) -> None:

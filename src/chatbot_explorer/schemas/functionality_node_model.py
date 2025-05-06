@@ -18,9 +18,17 @@ class ParameterDefinition:
         self.description = description
         self.options = options
 
+    def to_dict(self) -> dict[str, Any]:
+        """Convert the ParameterDefinition to a serializable dict."""
+        return {
+            "name": self.name,
+            "description": self.description,
+            "options": self.options,
+        }
+
     def __repr__(self) -> str:
         opts = f", options={self.options}" if self.options else ""
-        return f"ParameterDefinition(name='{self.name}', type='{self.type}', description='{self.description}'{opts})"
+        return f"ParameterDefinition(name='{self.name}', description='{self.description}'{opts})"
 
 
 class FunctionalityNode:
@@ -66,7 +74,7 @@ class FunctionalityNode:
             "__type__": "FunctionalityNode",
             "name": self.name,
             "description": self.description,
-            "parameters": [vars(p) for p in self.parameters],
+            "parameters": [p.to_dict() for p in self.parameters],
             "children": [child.to_dict() for child in self.children],
         }
 
