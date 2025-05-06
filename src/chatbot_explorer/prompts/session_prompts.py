@@ -11,7 +11,7 @@ def get_session_focus(current_node: FunctionalityNode | None) -> str:
         # Focus on the specific node
         focus = f"Focus on actively using and exploring the '{current_node.name}' functionality ({current_node.description}). If it requires input, try providing plausible values. If it offers choices, select one to proceed."
         if current_node.parameters:
-            param_names = [p.get("name", "unknown") for p in current_node.parameters]
+            param_names = [p.name for p in current_node.parameters]
             focus += f" Attempt to provide values for parameters like: {', '.join(param_names)}."
         return focus
     # General exploration focus
@@ -67,7 +67,7 @@ def get_initial_question_prompt(current_node: FunctionalityNode, primary_languag
     FUNCTIONALITY TO EXPLORE:
     Name: {current_node.name}
     Description: {current_node.description}
-    Parameters: {", ".join(p.get("name", "?") for p in current_node.parameters) if current_node.parameters else "None"}
+    Parameters: {", ".join(p.name for p in current_node.parameters) if current_node.parameters else "None"}
 
     {"IMPORTANT: Generate your question/command in " + primary_language + "." if primary_language else ""}
 
