@@ -6,17 +6,15 @@ from typing import Any, Optional
 class ParameterDefinition:
     """Model representing a parameter with its metadata."""
 
-    def __init__(self, name: str, type: str, description: str, options: list[str]) -> None:
+    def __init__(self, name: str, description: str, options: list[str]) -> None:
         """Initialize one of the parameters of a Functionality Node
 
         Args:
             name: Name of the parameter
             description: Description of the parameter/input
-            type: Type of the parameter (str, int, float)
             options: What are the available options for the parameter if any (e.g. Small, Medium, Large)
         """
         self.name = name
-        self.type = type
         self.description = description
         self.options = options
 

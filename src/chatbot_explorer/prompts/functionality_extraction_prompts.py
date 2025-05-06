@@ -19,6 +19,7 @@ Analyze the conversation and extract distinct **chatbot capabilities, actions pe
 5.  **EXCLUDE Purely Meta-Functionalities:** Do NOT extract functionalities that SOLELY describe the chatbot's general abilities IN THE ABSTRACT (e.g., 'list_capabilities', 'explain_what_i_can_do', 'state_purpose'). **EXCEPTION:** If listing specific, actionable choices is a *required step within a task* (e.g., chatbot lists available service types A, B, C *after* user initiates a request, and the user must choose one to proceed), then THAT specific action (e.g., `present_service_type_options`) IS valid. The key is whether it's a concrete step in a *specific workflow* vs. just a general self-description triggered by "What can you do?".
 6.  **Naming:** Use clear, descriptive snake_case names reflecting the *specific* chatbot action or service provided in that step (e.g., `prompt_for_confirmation_details`, `display_search_results`, `initiate_custom_config_flow`).
 7.  **Avoid Failures:** AVOID extracting functionalities that solely describe the chatbot failing (e.g., 'handle_fallback', 'fail_to_understand'). Focus on successful actions or information provided.
+8.  **Parameter Options:** If the chatbot presents specific options for parameters (e.g., sizes: small/medium/large, payment methods: cash/credit), include these options with the parameter.
 
 **EXAMPLES (Focus on Chatbot Actions & Granularity):**
 
@@ -33,9 +34,18 @@ Analyze the conversation and extract distinct **chatbot capabilities, actions pe
     - Chatbot: "Confirmed for Tuesday at 10 AM. Email: test@example.com."
     - **GOOD Extractions (Chatbot Actions):**
         - `prompt_for_booking_date`
-        - `provide_available_time_slots`
+        - `provide_available_time_slots` with parameters: time_slot (10 AM/2 PM)
         - `prompt_for_confirmation_email`
         - `confirm_booking_details`
+
+- **Scenario: Pizza Ordering (With Options)**
+    - User: "I want to order a pizza"
+    - Chatbot: "Great! What size would you like? We offer Small, Medium, and Large."
+    - User: "Medium"
+    - Chatbot: "What toppings would you like? We have Pepperoni, Cheese, Veggie, and Supreme."
+    - **GOOD Extraction (With Parameter Options):**
+        - `prompt_for_pizza_size` with parameters: size (Small/Medium/Large)
+        - `prompt_for_pizza_toppings` with parameters: toppings (Pepperoni/Cheese/Veggie/Supreme)
 
 - **Scenario: Providing Options (Granularity)**
     - User: "What are my choices?"
@@ -43,11 +53,9 @@ Analyze the conversation and extract distinct **chatbot capabilities, actions pe
     - User: "Tell me about Standard Packages."
     - Chatbot: "Our Standard Packages include Basic, Pro, and Enterprise..."
     - **GOOD Granular Extractions (Chatbot Actions):**
-        - `offer_choice_between_standard_or_custom` (Presents the initial fork)
-        - `describe_standard_packages` (Provides details on one specific path)
-        - (If user asked about custom) -> `initiate_custom_solution_configuration` (Handles the other path)
-    - **BAD Extraction (Overly General):**
-        - `provide_options`
+        - `offer_choice_between_standard_or_custom` with parameters: package_type (Standard/Custom)
+        - `describe_standard_packages` with parameters: package (Basic/Pro/Enterprise)
+        - (If user asked about custom) -> `initiate_custom_solution_configuration`
 
 - **Scenario: Company Policy Info (Informational)**
     - User: "What's the policy on remote work?"
@@ -55,24 +63,20 @@ Analyze the conversation and extract distinct **chatbot capabilities, actions pe
     - **GOOD Extraction (Chatbot Action):**
         - `explain_remote_work_policy`
 
-- **Scenario: General Inquiry (Meta - Usually Excluded)**
-    - User: "What can you do?"
-    - Chatbot: "I can help you manage your account, check balances, and transfer funds."
-    - **BAD Extraction (Abstract Meta-Capability - See Rule 5):**
-        - `list_main_capabilities` (This describes potential, not a concrete action within a task)
-    - **GOOD Extraction (If applicable later in flow):**
-        - (If user then asks "Show my balance") -> `display_account_balance` (Concrete action triggered)
-
 For each relevant **chatbot capability/action/information provided** based on these rules and examples, identify:
 1. A specific, descriptive name (snake_case, from chatbot's perspective)
 2. A clear description (what the chatbot DOES or PROVIDES in this specific functionality/step)
-3. Required parameters (inputs the chatbot NEEDS for this step, comma-separated or "None")
+3. Required parameters (inputs the chatbot NEEDS for this step)
+4. Parameter options (if the chatbot explicitly presents limited choices for inputs)
 
 Format EXACTLY as:
 FUNCTIONALITY:
 name: chatbot_specific_action_name
 description: What the chatbot specifically does or provides in this functionality.
-parameters: param1, param2 (or "None")
+parameters: param1 (option1/option2/option3), param2, param3 (optionA/optionB)
+
+For parameters without specific options, just list the parameter name. For parameters with options, include them in parentheses with forward slashes between options.
+If there are no parameters, just write "None".
 
 If no new relevant **chatbot capability/action** fitting these criteria is identified in the latest exchanges, respond ONLY with "NO_NEW_FUNCTIONALITY".
 """

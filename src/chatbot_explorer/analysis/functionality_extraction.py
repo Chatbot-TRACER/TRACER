@@ -9,7 +9,7 @@ from chatbot_explorer.conversation.conversation_utils import format_conversation
 from chatbot_explorer.prompts.functionality_extraction_prompts import (
     get_functionality_extraction_prompt,
 )
-from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
+from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode, ParameterDefinition
 from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
@@ -18,12 +18,44 @@ CONTENT_PREVIEW_LENGTH = 100
 
 
 def _parse_parameter_string(params_str: str) -> list[dict[str, Any]]:
-    """Parses the 'parameters' string into a list of parameter dictionaries."""
+    """Parses the 'parameters' string into a list of parameter dictionaries with options.
+
+    Args:
+        params_str: String containing parameters, possibly with options in parentheses
+                   Format: "param1 (option1/option2), param2, param3 (optA/optB)"
+
+    Returns:
+        List of parameter dictionaries with name, type, description, and options
+    """
     parameters: list[dict[str, Any]] = []
-    if params_str.lower().strip() != "none":
-        param_names = [p.strip() for p in params_str.split(",") if p.strip()]
-        # Basic parameter structure assumption
-        parameters = [{"name": p, "type": "string", "description": f"Parameter {p}"} for p in param_names]
+
+    # Return empty list if parameters are None
+    if params_str.lower().strip() == "none":
+        return parameters
+
+    # Split by commas that are not inside parentheses
+    # This regex finds all matches of: param_name followed by optional (options)
+    param_pattern = re.compile(r"([^,]+?)(?:\s*\(([^)]+)\))?\s*(?:,|$)")
+    param_matches = param_pattern.findall(params_str)
+
+    for param_name, options_str in param_matches:
+        param_name_content = param_name.strip()
+        if not param_name_content:
+            continue
+
+        # Process options if they exist
+        options = []
+        if options_str:
+            options = [opt.strip() for opt in options_str.split("/") if opt.strip()]
+
+        parameters.append(
+            {
+                "name": param_name_content,
+                "description": f"Parameter {param_name_content}",
+                "options": options,
+            }
+        )
+
     return parameters
 
 
@@ -80,7 +112,17 @@ def _parse_llm_functionality_response(content: str, current_node: FunctionalityN
         if parsed_details:
             name, description, params_str = parsed_details
             # Parse the parameters string using its helper function
-            parameters = _parse_parameter_string(params_str)
+            parameter_dicts = _parse_parameter_string(params_str)
+
+            # Convert parameter dictionaries to ParameterDefinition objects
+            parameters = []
+            for param_dict in parameter_dicts:
+                parameter = ParameterDefinition(
+                    name=param_dict["name"],
+                    description=param_dict["description"],
+                    options=param_dict.get("options", []),
+                )
+                parameters.append(parameter)
 
             # Create the new node
             new_node = FunctionalityNode(
