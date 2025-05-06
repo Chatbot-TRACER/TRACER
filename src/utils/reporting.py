@@ -3,31 +3,15 @@
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TextIO, TypedDict
+from typing import TextIO
 
 import graphviz
 import yaml
 
+from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
-
-
-class Parameter(TypedDict):
-    """Parameter definition for a chatbot functionality."""
-
-    name: str
-    type: str
-    description: str
-
-
-class FunctionalityNode(TypedDict):
-    """Node representing a chatbot functionality in the workflow graph."""
-
-    name: str
-    description: str
-    parameters: list[Parameter | str]
-    children: list["FunctionalityNode"]
 
 
 # --------------------------------------------------- #
