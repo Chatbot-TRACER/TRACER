@@ -9,7 +9,7 @@ from chatbot_explorer.agent import ChatbotExplorationAgent
 from chatbot_explorer.utils.logging_utils import get_logger, setup_logging
 from connectors.chatbot_connectors import Chatbot, ChatbotAdaUam, ChatbotTaskyto
 from utils.cli import parse_arguments
-from utils.reporting import generate_graph_image, save_profiles, write_report
+from utils.reporting import export_graph, save_profiles, write_report
 
 logger = get_logger()
 
@@ -186,7 +186,7 @@ def _generate_reports(
     if functionality_dicts:
         graph_output_base = Path(output_dir) / "workflow_graph"
         try:
-            generate_graph_image(functionality_dicts, str(graph_output_base))
+            export_graph(functionality_dicts, str(graph_output_base), format="png")
         except Exception:
             logger.exception("Failed to generate workflow graph image")
     else:
