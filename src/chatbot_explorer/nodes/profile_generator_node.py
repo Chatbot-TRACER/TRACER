@@ -38,6 +38,65 @@ def get_all_descriptions(nodes: list[dict[str, Any]]) -> list[str]:
     return descriptions
 
 
+def get_functionalities_with_outputs(nodes: list[dict[str, Any]]) -> list[str]:
+    """Recursively extracts descriptions and output options from functionality nodes.
+
+    Args:
+        nodes: A list of dictionaries, where each dictionary may contain 'description',
+              'outputs', and 'children' keys.
+
+    Returns:
+        A list of strings, where each string combines the functionality description
+        with its output information if available.
+    """
+    functionality_info = []
+    for node in nodes:
+        if node.get("description"):
+            functionality_text = node["description"]
+
+            # Add parameter information if available
+            if node.get("parameters") and isinstance(node["parameters"], list) and node["parameters"]:
+                param_info = []
+                for param in node["parameters"]:
+                    if isinstance(param, dict):
+                        param_name = param.get("name", "")
+                        param_desc = param.get("description", "")
+                        param_options = param.get("options", [])
+
+                        if param_name:
+                            param_text = f"{param_name}"
+                            if param_desc:
+                                param_text += f": {param_desc}"
+                            if param_options:
+                                param_text += f" [options: {', '.join(param_options)}]"
+                            param_info.append(param_text)
+
+                if param_info:
+                    functionality_text += f" (Inputs: {'; '.join(param_info)})"
+
+            # Add output information if available
+            if node.get("outputs") and isinstance(node["outputs"], list) and node["outputs"]:
+                output_info = []
+                for output in node["outputs"]:
+                    if isinstance(output, dict):
+                        category = output.get("category", "")
+                        description = output.get("description", "")
+                        if category and description:
+                            output_info.append(f"{category}: {description}")
+
+                if output_info:
+                    functionality_text += f" (Outputs: {'; '.join(output_info)})"
+
+            functionality_info.append(functionality_text)
+
+        # Recursively process children
+        if node.get("children"):
+            child_info = get_functionalities_with_outputs(node["children"])
+            functionality_info.extend(child_info)
+
+    return functionality_info
+
+
 def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, Any]:
     """Generates user profiles with conversation goals based on discovered functionalities.
 
@@ -72,16 +131,17 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
     # Get chatbot type from state
     chatbot_type = state.get("chatbot_type", "unknown")
 
-    functionality_descriptions = get_all_descriptions(structured_root_dicts)
+    # Get functionalities with their outputs
+    functionalities_with_outputs = get_functionalities_with_outputs(structured_root_dicts)
 
-    if not functionality_descriptions:
-        logger.warning("No descriptions found in structured functionalities")
+    if not functionalities_with_outputs:
+        logger.warning("No functionalities with outputs found in structured functionalities")
         return {"conversation_goals": []}
 
     try:
         # Create the config dictionary
         config: ProfileGenerationConfig = {
-            "functionalities": functionality_descriptions,
+            "functionalities": functionalities_with_outputs,
             "limitations": state.get("discovered_limitations", []),
             "llm": llm,
             "workflow_structure": workflow_structure,
