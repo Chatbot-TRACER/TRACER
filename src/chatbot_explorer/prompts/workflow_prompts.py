@@ -14,49 +14,44 @@ def create_transactional_prompt(func_list_str: str, conversation_snippets: str) 
 
     **CRITICAL TASK: Determine Functional Dependencies to Assign `parent_names`**
 
-    For EACH functionality, you MUST determine its `parent_names`. A functionality (Child F) should have a parent functionality (Parent P) in `parent_names` ONLY IF Parent P meets **ALL** of the following strict criteria:
-    1.  **Immediate Functional Prerequisite:** Parent P must be a step that the chatbot performs, or an input the chatbot solicits, that is **DIRECTLY AND IMMEDIATELY NECESSARY** for Child F to occur or make sense. Ask: "Could Child F meaningfully happen if Parent P did not just occur?" If yes, P is NOT a parent.
-    2.  **Chatbot-Driven Sequence:** The conversation must show the *chatbot* leading the user from Parent P to Child F, or Child F being a direct response/action taken by the chatbot after Parent P.
-    3.  **Avoid Transitive Dependencies as Direct Parents:** If A -> B -> C, then C's immediate parent is B, not A. Do not list A as a direct parent of C unless A *also* has a direct, independent path to C. Focus on the *closest* necessary preceding step.
-    4.  **Single Core Task Focus:** Assume the conversation is trying to complete ONE primary user goal (e.g., order an item, book an appointment). Steps should logically connect towards this goal.
+    For EACH functionality provided in the input, you MUST determine its `parent_names`. A functionality (Child F) should have a parent functionality (Parent P) in `parent_names` ONLY IF Parent P meets **ALL** of the following strict criteria:
+    1.  **Immediate & Necessary Prerequisite:** Parent P must be a step (an action or prompt by the chatbot) that is **DIRECTLY AND IMMEDIATELY NECESSARY** for Child F to occur or make logical sense in the conversation. Ask: "Is Child F impossible or nonsensical if Parent P did not *just* happen?" If Child F could happen without P, or if other steps intervene, P is NOT an immediate parent.
+    2.  **Chatbot-Driven Sequence:** The conversation flow must clearly show the *chatbot* initiating Parent P, which then directly leads to the chatbot initiating Child F.
+    3.  **Closest Functional Link:** If A -> B -> C, then C's immediate parent is B, not A. Focus ONLY on the *single closest* necessary preceding step performed by the chatbot.
+    4.  **Core Task Progression:** Assume the conversation aims to complete ONE primary user goal (e.g., order an item). Steps listed as parents must be essential for progressing this core task.
 
-    **RULES FOR `parent_names`:**
-    *   **Root Nodes:** If a functionality can start an interaction, or is a general greeting/meta-interaction (like "welcome", "list_capabilities"), it should have `parent_names: []`.
-        *   Example: `provide_welcome_message` -> `parent_names: []`.
-        *   Example: If the first step in ordering is `present_item_categories`, then `present_item_categories` (if not preceded by a general welcome that *forces* it) -> `parent_names: []`.
-    *   **Sequential Steps:**
-        *   `prompt_for_X` is often a parent to `confirm_X_input`.
-        *   `prompt_for_X` is often a parent to `prompt_for_Y` (if Y logically follows X, e.g., prompt for size, then prompt for color).
-        *   `present_options_A_B_C` followed by `prompt_for_selection_from_A_B_C` -> `present_options_A_B_C` is parent to `prompt_for_selection_from_A_B_C`.
-    *   **Branches:** If `offer_choice_X_or_Y` leads to either `do_action_X` or `do_action_Y`, then `offer_choice_X_or_Y` is a parent to both `do_action_X` and `do_action_Y`.
-    *   **Joins:** If `do_action_X` and `do_action_Y` can both lead to a common next step like `confirm_details`, then `confirm_details` would have `parent_names: ["do_action_X", "do_action_Y"]` (if both paths are observed and lead *directly* to it).
+    **RULES FOR `parent_names` ASSIGNMENT:**
+    *   **Unique Functionalities:** The output JSON list should contain each unique functionality name from the input ONCE. Your primary task is to assign the correct `parent_names` to these unique functionalities.
+    *   **Root Nodes (`parent_names: []`):**
+        *   Functionalities that initiate a core task or a distinct sub-flow (e.g., `provide_welcome_message`, `start_new_order_flow`, `request_help_topic_selection`).
+        *   General meta-interactions (e.g., `greet_user`, `explain_chatbot_capabilities`) are typically roots.
+        *   The first *task-specific* prompt by the chatbot in a clear sequence (e.g., `prompt_for_item_category_to_order`) is often a root if not forced by a preceding meta-interaction.
+    *   **Sequential Steps (Common Patterns):**
+        *   `prompt_for_X_input` is a strong candidate to be a parent of `confirm_X_input_details`.
+        *   `prompt_for_X_input` can be a parent of `prompt_for_Y_input` if Y is the immediate next piece of information solicited by the chatbot in a sequence (e.g., `prompt_for_size` -> `prompt_for_color`).
+        *   `present_choices_A_B_C` is a parent of `prompt_for_selection_from_A_B_C` if the prompt immediately follows the presentation of choices by the chatbot.
+    *   **Branches:** If `offer_choice_path1_or_path2` leads to either `initiate_path1_action` or `initiate_path2_action`, then `offer_choice_path1_or_path2` is a parent to both.
+    *   **Joins:** If distinct paths (e.g., `complete_path1_final_step` and `complete_path2_final_step`) BOTH can directly lead to a common subsequent step (e.g., `display_final_summary`), then `display_final_summary` would have `parent_names: ["complete_path1_final_step", "complete_path2_final_step"]`.
+    *   **AVOID Conversational Fluff as Parents:** Steps like `thank_user`, `acknowledge_input_received`, or general empathetic statements are RARELY functional parents. Do NOT list them as parents if a more direct data-gathering step or action-enabling step is the true prerequisite.
 
-    **DEEPLY ANALYZE the conversation flow for functional necessity:**
-    1.  **Entry Points:** What are the true starting points of a core task? (Likely `parent_names: []`). `provide_welcome_message` is a classic root. The first *task-specific* prompt (e.g., `prompt_for_item_category`) might also be a root if it's not strictly forced by an earlier step.
-    2.  **Dependencies:** For every other step, scrutinize: "What SINGLE step *performed by the chatbot* (or input *solicited by the chatbot*) was ABSOLUTELY ESSENTIAL and happened *just before* this current step, making this current step possible?" That's its parent.
-    3.  **User Actions Don't Define Parents:** Chatbot actions are parents to other chatbot actions/prompts.
-    4.  **Avoid Over-Linking:** Be conservative. If a step *could* happen independently, even if it often follows another, it might not be a strict child unless functionally dependent.
+    **ANALYSIS FOCUS:**
+    For every functionality, meticulously trace back in the conversation: What was the *chatbot's very last action or prompt* that was *essential* for this current functionality to proceed? That is its parent. If no such single essential step exists, it's likely a root node or its parent is misidentified.
 
-    Structure the output as a JSON list of nodes. Each node MUST include:
+    **OUTPUT STRUCTURE:**
+    Return a JSON list where each object represents one of the unique input functionalities, augmented ONLY with the determined `parent_names`.
     - "name": Functionality name (string).
     - "description": Description (string).
-    - "parameters": List of parameter objects (preserve from input). Each parameter object should include:
-        - "name": Parameter name (string).
-        - "description": Parameter description (string).
-        - "options": List of available options for the parameter (list of strings or [] if no specific options).
-      If a functionality has no parameters, use an empty list `[]`.
-    - "outputs": List of output objects (preserve from input). Each output object should include:
-        - "category": Category name (string).
-        - "description": Description of the output (string).
-      If a functionality has no outputs, use an empty list `[]`.
-    - "parent_names": List of names of functionalities that meet the STRICT criteria above. Use `[]` for root nodes.
+    - "parameters": (Preserve EXACTLY from input).
+    - "outputs": (Preserve EXACTLY from input).
+    - "parent_names": List of names of functionalities that meet ALL the STRICT criteria above. Use `[]` for root nodes.
 
-    Rules for Output:
-    - The `parent_names` MUST reflect **strict, immediate functional dependencies** observed in the conversation flow.
-    - Preserve ALL original functionality details (name, description, parameters, outputs). Only `parent_names` are being determined here.
-    - Output MUST be valid JSON. Use `[]` for empty lists.
+    **FINAL INSTRUCTIONS:**
+    -   Preserve ALL original details (name, description, parameters, outputs) for each functionality.
+    -   The list should contain each input functionality name exactly once.
+    -   Focus entirely on deriving the most accurate, functionally necessary `parent_names`.
+    -   Output valid JSON.
 
-    Generate the JSON list, focusing meticulously on assigning correct `parent_names`:
+    Generate the JSON list:
     """
 
 
