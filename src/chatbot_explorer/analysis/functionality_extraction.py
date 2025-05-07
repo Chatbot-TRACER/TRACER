@@ -1,7 +1,6 @@
 """Module to extract functionalities (as Functionality Nodes) from conversations."""
 
 import re
-from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
@@ -9,7 +8,7 @@ from chatbot_explorer.conversation.conversation_utils import format_conversation
 from chatbot_explorer.prompts.functionality_extraction_prompts import (
     get_functionality_extraction_prompt,
 )
-from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode, ParameterDefinition
+from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode, OutputOptions, ParameterDefinition
 from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
@@ -17,7 +16,7 @@ logger = get_logger()
 CONTENT_PREVIEW_LENGTH = 100
 
 
-def _parse_parameter_string(params_str: str) -> list[dict[str, Any]]:
+def _parse_parameter_string(params_str: str) -> list[ParameterDefinition]:
     """Parses the 'parameters' string into a list of parameter dictionaries with options.
 
     Args:
@@ -25,7 +24,7 @@ def _parse_parameter_string(params_str: str) -> list[dict[str, Any]]:
                    Format: "param1 (option1/option2), param2, param3 (optA/optB)"
 
     Returns:
-        List of parameter dictionaries with name, type, description, and options
+        List of ParameterDefinition objects
     """
     parameters: list[ParameterDefinition] = []
     if params_str.lower().strip() == "none":
@@ -54,11 +53,45 @@ def _parse_parameter_string(params_str: str) -> list[dict[str, Any]]:
     return parameters
 
 
-def _parse_single_functionality_block(block: str) -> tuple[str, str, str] | None:
+def _parse_output_options_string(output_str: str) -> list[OutputOptions]:
+    """Parses the 'output_options' string into a list of OutputOptions objects.
+
+    Args:
+        output_str: String containing output options by category
+                    Format: "category1: description1; category2: description2"
+
+    Returns:
+        List of OutputOptions objects
+    """
+    output_options: list[OutputOptions] = []
+    if output_str.lower().strip() == "none":
+        return output_options
+
+    # Split by category (each separated by semicolon)
+    category_pattern = re.compile(r"([^;:]+):\s*([^;]+)(?:;|$)")
+    category_matches = category_pattern.findall(output_str)
+
+    for category_name, description in category_matches:
+        category_name = category_name.strip()
+        if not category_name:
+            continue
+
+        # Create an OutputOptions object
+        output_option = OutputOptions(
+            category=category_name,
+            description=description.strip()
+        )
+        output_options.append(output_option)
+
+    return output_options
+
+
+def _parse_single_functionality_block(block: str) -> tuple[str, str, str, str] | None:
     """Parses a single block of text for functionality details."""
     name = None
     description = None
     params_str = "None"
+    output_str = "None"
 
     # Parse lines within the block to find name, description, parameters
     lines = block.split("\n")
@@ -73,10 +106,13 @@ def _parse_single_functionality_block(block: str) -> tuple[str, str, str] | None
         # Extract parameters string if found
         elif line_content.lower().startswith("parameters:"):
             params_str = line_content[len("parameters:") :].strip()
+        # Extract output options string if found
+        elif line_content.lower().startswith("output_options:"):
+            output_str = line_content[len("output_options:") :].strip()
 
     # Return parsed details only if essential information is present
     if name and description:
-        return name, description, params_str
+        return name, description, params_str, output_str
     # Return None if parsing failed for this block
     return None
 
@@ -105,22 +141,19 @@ def _parse_llm_functionality_response(content: str, current_node: FunctionalityN
 
         # If parsing was successful, create a node
         if parsed_details:
-            name, description, params_str = parsed_details
+            name, description, params_str, output_str = parsed_details
             # Parse the parameters string using its helper function
-            parameter_dicts = _parse_parameter_string(params_str)
+            parameters = _parse_parameter_string(params_str)
 
-            # Convert parameter dictionaries to ParameterDefinition objects
-            parameters = []
-            if isinstance(parameter_dicts, list):
-                parameters = parameter_dicts
-            else:
-                logger.warning("Expected a list of parameters but got: %s", type(parameter_dicts))
+            # Parse the output options string using its helper function
+            output_options = _parse_output_options_string(output_str)
 
             # Create the new node
             new_node = FunctionalityNode(
                 name=name,
                 description=description,
                 parameters=parameters,
+                outputs=output_options,
                 parent=current_node,  # Assign parent based on context
             )
             functionality_nodes.append(new_node)
@@ -174,7 +207,7 @@ def extract_functionality_nodes(
     response = llm.invoke(extraction_prompt)
     content = response.content.strip()
 
-    logger.debug("\n--- Raw LLM Response for Functionality Extraction ---")
+    logger.debug("--- Raw LLM Response for Functionality Extraction ---")
     # Split by lines to make it more readable in logs
     for line in content.split("\n"):
         if line.strip():

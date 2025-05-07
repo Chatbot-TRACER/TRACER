@@ -9,7 +9,7 @@ from chatbot_explorer.prompts.functionality_refinement_prompts import (
     get_merge_prompt,
     get_relationship_validation_prompt,
 )
-from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode, ParameterDefinition
+from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode, OutputOptions, ParameterDefinition
 from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
@@ -127,35 +127,51 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
             best_name = name_match.group(1).strip()
             best_desc = desc_match.group(1).strip()
 
-            merged_node = FunctionalityNode(name=best_name, description=best_desc, parameters=[])
+            merged_node = FunctionalityNode(name=best_name, description=best_desc, parameters=[], outputs=[])
 
-            # Track parameters by name for merging
             param_by_name = {}
 
-            # First pass: collect all unique parameters with their options
             for node in group:
                 for param in node.parameters:
-                    # Handle ParameterDefinition objects
                     param_name = param.name
 
                     if param_name not in param_by_name:
-                        # First time seeing this parameter
                         param_by_name[param_name] = param
                     else:
-                        # We've seen this parameter before - merge options
                         existing_param = param_by_name[param_name]
 
-                        # Combine options from both parameters
                         combined_options = list(set(existing_param.options + param.options))
 
-                        # Create a new merged parameter with combined options
                         merged_param = ParameterDefinition(
                             name=param_name, description=existing_param.description, options=combined_options
                         )
                         param_by_name[param_name] = merged_param
 
+            output_by_category = {}
+
+            for node in group:
+                for output in node.outputs:
+                    category = output.category
+
+                    if category not in output_by_category:
+                        output_by_category[category] = output
+                    else:
+                        existing_output = output_by_category[category]
+
+                        description = (
+                            output.description
+                            if len(output.description) > len(existing_output.description)
+                            else existing_output.description
+                        )
+
+                        merged_output = OutputOptions(category=category, description=description)
+                        output_by_category[category] = merged_output
+
             # Convert merged parameters to a list
             merged_node.parameters = list(param_by_name.values())
+
+            # Convert merged output options to a list
+            merged_node.outputs = list(output_by_category.values())
 
             # Merge children too
             for node in group:

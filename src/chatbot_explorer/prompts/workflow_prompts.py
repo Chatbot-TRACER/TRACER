@@ -36,11 +36,16 @@ def create_transactional_prompt(func_list_str: str, conversation_snippets: str) 
         - "description": Parameter description (string).
         - "options": List of available options for the parameter (list of strings or [] if no specific options).
       If a functionality has no parameters, use an empty list `[]`.
+    - "outputs": List of output objects. Each output object should include:
+        - "category": Category name (string).
+        - "description": Description of the output (string).
+      If a functionality has no outputs, use an empty list `[]`.
     - "parent_names": List of names of functionalities that, based on conversational evidence AND functional necessity, MUST be completed *immediately before* this one (list of strings). Use `[]` for root nodes and meta-interactions.
 
     Rules for Output:
     - The structure MUST reflect the likely functional dependencies observed in the conversation flow.
     - Use the 'name' field as the identifier.
+    - IMPORTANT: Preserve ALL parameters AND outputs from the input functionalities.
     - Output MUST be valid JSON. Use [] for empty lists.
 
     Generate the JSON list representing the precise sequential workflow structure:
@@ -75,11 +80,16 @@ def create_informational_prompt(func_list_str: str, conversation_snippets: str) 
         - "description": Parameter description (string).
         - "options": List of available options for the parameter (list of strings or [] if no specific options).
       If a functionality has no parameters, use an empty list `[]`.
+    - "outputs": List of output objects. Each output object should include:
+        - "category": Category name (string).
+        - "description": Description of the output (string).
+      If a functionality has no outputs, use an empty list `[]`.
     - "parent_names": List of names of functionalities that MUST be completed immediately before this one based on the rules above. **Use `[]` for root nodes / independent topics / meta-interactions.**
 
     Rules for Output:
     - Reflect dependencies (or lack thereof) based STRICTLY on consistent conversational evidence and functional necessity.
     - Use the 'name' field as the identifier.
+    - IMPORTANT: Preserve ALL parameters AND outputs from the input functionalities.
     - Output MUST be valid JSON. Use [] for empty lists.
 
     Generate the JSON list representing the interaction flow structure:

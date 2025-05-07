@@ -114,6 +114,17 @@ def build_workflow_structure(
                     or "    None"
                 )
                 + "\n  ]"
+                + "\n  Outputs: [\n"
+                + (
+                    ",\n".join(
+                        [
+                            f"    {{'category': '{o.get('category', 'N/A')}', 'description': '{o.get('description', 'N/A')}'}}"
+                            for o in f.get("outputs", [])
+                        ]
+                    )
+                    or "    None"
+                )
+                + "\n  ]"
             )
             for f in flat_functionality_dicts
         ],
