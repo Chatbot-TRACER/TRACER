@@ -232,11 +232,10 @@ def generate_variable_definitions(
     if functionality_structure:
         for profile in profiles:
             profile_name = profile.get("name", "")
-            # Pass the LLM for semantic matching
             parameter_options = _extract_parameter_options_for_profile(
                 profile,
                 functionality_structure,
-                llm,  # Pass the LLM here
+                llm,
             )
             if parameter_options:
                 parameter_options_by_profile[profile_name] = parameter_options
@@ -299,7 +298,6 @@ def generate_variable_definitions(
             ", ".join(sorted(all_variables)[:3]) + (", ..." if len(all_variables) > MAX_VARIABLES else ""),
         )
 
-    # At the end of generate_variable_definitions:
     for profile in profiles:
         logger.debug("Final variable definitions for '%s':", profile.get("name", "Unnamed"))
         for goal in profile.get("goals", []):
@@ -349,10 +347,8 @@ def _extract_parameter_options_for_profile(
         "Profile '%s': Found %d variables in goals: %s", profile_name, len(goal_variables), ", ".join(goal_variables)
     )
 
-    # FIRST CHANGE: Extract assigned functionalities for this profile - more flexibly
-    # We'll extract both exact functionalities and descriptions for fuzzy matching
     profile_funcs = profile.get("functionalities", [])
-    profile_desc = profile.get("role", "").lower()  # Use role for context
+    profile_desc = profile.get("role", "").lower()
 
     logger.debug(
         "Profile '%s': Looking for parameters matching %d functionalities and description",
@@ -360,20 +356,14 @@ def _extract_parameter_options_for_profile(
         len(profile_funcs),
     )
 
-    # SECOND CHANGE: Instead of requiring exact matches, let's gather ALL parameters
-    # and then match them to our variables
     all_parameters = []
 
-    # Helper function to recursively collect parameters from all nodes
-    # without requiring exact functionality name matching
     def collect_all_parameters(node, depth=0):
         node_name = node.get("name", "").lower()
         node_desc = node.get("description", "").lower()
 
-        # Extract all parameters that have options
         for param in node.get("parameters", []):
             if isinstance(param, dict) and param.get("options"):
-                # Add node context to the parameter for better matching
                 param_with_context = param.copy()
                 param_with_context["node_name"] = node.get("name", "")
                 param_with_context["node_description"] = node.get("description", "")
@@ -390,17 +380,14 @@ def _extract_parameter_options_for_profile(
                     param_options,
                 )
 
-        # Process child nodes
         for child in node.get("children", []):
             collect_all_parameters(child, depth + 1)
 
-    # Collect ALL parameters from the structure
     for node in functionality_structure:
         collect_all_parameters(node)
 
     logger.debug("Found %d total parameters with options in functionality structure", len(all_parameters))
 
-    # Direct matching of variables to parameters
     for var_name in goal_variables:
         var_lower = var_name.lower()
 

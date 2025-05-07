@@ -39,8 +39,7 @@ def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_l
     yaml_goals = list(profile.get("goals", []))
     yaml_goals.extend({var_name: profile[var_name]} for var_name in used_variables if var_name in profile)
 
-    # Debug the variables and their values
-    if logger.isEnabledFor(10):  # DEBUG level
+    if logger.isEnabledFor(10):
         logger.debug("Building YAML for profile: %s", profile.get("name", "Unnamed"))
         logger.debug("Used variables: %s", used_variables)
         for var_name in used_variables:
