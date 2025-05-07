@@ -1,5 +1,6 @@
 """Generates structured definitions for variables found in user profile goals."""
 
+import json
 from typing import Any, TypedDict
 
 from langchain_core.language_models import BaseLanguageModel
@@ -231,9 +232,15 @@ def generate_variable_definitions(
     if functionality_structure:
         for profile in profiles:
             profile_name = profile.get("name", "")
-            parameter_options = _extract_parameter_options_for_profile(profile, functionality_structure)
+            # Pass the LLM for semantic matching
+            parameter_options = _extract_parameter_options_for_profile(
+                profile,
+                functionality_structure,
+                llm,  # Pass the LLM here
+            )
             if parameter_options:
                 parameter_options_by_profile[profile_name] = parameter_options
+                logger.info("Found %d parameter options for profile '%s'", len(parameter_options), profile_name)
 
     for profile in profiles:
         profile_name = profile.get("name", "Unnamed")
@@ -292,46 +299,241 @@ def generate_variable_definitions(
             ", ".join(sorted(all_variables)[:3]) + (", ..." if len(all_variables) > MAX_VARIABLES else ""),
         )
 
+    # At the end of generate_variable_definitions:
+    for profile in profiles:
+        logger.debug("Final variable definitions for '%s':", profile.get("name", "Unnamed"))
+        for goal in profile.get("goals", []):
+            if isinstance(goal, dict):
+                for var_name, var_def in goal.items():
+                    if isinstance(var_def, dict) and "data" in var_def:
+                        if var_name in parameter_options_by_profile.get(profile.get("name", ""), {}):
+                            logger.debug(" ✓ '%s': Using matched parameter options", var_name)
+                        else:
+                            logger.debug(" ✗ '%s': Using LLM-generated options", var_name)
+
     return profiles
 
 
 def _extract_parameter_options_for_profile(
-    profile: dict[str, Any], functionality_structure: list[dict[str, Any]]
+    profile: dict[str, Any],
+    functionality_structure: list[dict[str, Any]],
+    llm: BaseLanguageModel = None,
 ) -> dict[str, list[str]]:
     """Extract parameter options from functionality structure for a specific profile.
+
+    Uses direct matching and LLM-based semantic matching to find parameter options.
 
     Args:
         profile: The profile being processed
         functionality_structure: List of functionality nodes
+        llm: Optional language model for semantic matching
 
     Returns:
         Dictionary mapping variable names to their options
     """
     parameter_options = {}
+    profile_name = profile.get("name", "Unnamed")
 
-    # Extract assigned functionalities for this profile
-    profile_funcs = profile.get("functionalities", [])
-    if not profile_funcs:
+    # Extract variables from the profile goals
+    goal_variables = set()
+    for goal in profile.get("goals", []):
+        if isinstance(goal, str):
+            matches = VARIABLE_PATTERN.findall(goal)
+            goal_variables.update(matches)
+
+    if not goal_variables:
+        logger.debug("Profile '%s': No variables found in goals", profile_name)
         return parameter_options
 
-    # Helper function to recursively process functionality nodes
-    def process_node(node):
-        # Check if this node is assigned to the profile
-        if node.get("name", "") in profile_funcs:
-            # Process parameters
-            for param in node.get("parameters", []):
-                if isinstance(param, dict):
-                    param_name = param.get("name", "")
-                    param_options = param.get("options", [])
-                    if param_name and param_options:
-                        parameter_options[param_name] = param_options
+    logger.debug(
+        "Profile '%s': Found %d variables in goals: %s", profile_name, len(goal_variables), ", ".join(goal_variables)
+    )
+
+    # FIRST CHANGE: Extract assigned functionalities for this profile - more flexibly
+    # We'll extract both exact functionalities and descriptions for fuzzy matching
+    profile_funcs = profile.get("functionalities", [])
+    profile_desc = profile.get("role", "").lower()  # Use role for context
+
+    logger.debug(
+        "Profile '%s': Looking for parameters matching %d functionalities and description",
+        profile_name,
+        len(profile_funcs),
+    )
+
+    # SECOND CHANGE: Instead of requiring exact matches, let's gather ALL parameters
+    # and then match them to our variables
+    all_parameters = []
+
+    # Helper function to recursively collect parameters from all nodes
+    # without requiring exact functionality name matching
+    def collect_all_parameters(node, depth=0):
+        node_name = node.get("name", "").lower()
+        node_desc = node.get("description", "").lower()
+
+        # Extract all parameters that have options
+        for param in node.get("parameters", []):
+            if isinstance(param, dict) and param.get("options"):
+                # Add node context to the parameter for better matching
+                param_with_context = param.copy()
+                param_with_context["node_name"] = node.get("name", "")
+                param_with_context["node_description"] = node.get("description", "")
+                all_parameters.append(param_with_context)
+
+                param_name = param.get("name", "unknown")
+                param_options = param.get("options", [])
+                logger.debug(
+                    "%sFound parameter '%s' in node '%s' with %d options: %s",
+                    "  " * depth,
+                    param_name,
+                    node_name,
+                    len(param_options),
+                    param_options,
+                )
 
         # Process child nodes
         for child in node.get("children", []):
-            process_node(child)
+            collect_all_parameters(child, depth + 1)
 
-    # Process all nodes
+    # Collect ALL parameters from the structure
     for node in functionality_structure:
-        process_node(node)
+        collect_all_parameters(node)
+
+    logger.debug("Found %d total parameters with options in functionality structure", len(all_parameters))
+
+    # Direct matching of variables to parameters
+    for var_name in goal_variables:
+        var_lower = var_name.lower()
+
+        # First try exact matches by parameter name
+        for param in all_parameters:
+            param_name = param.get("name", "").lower()
+            param_options = param.get("options", [])
+
+            # Try various matching approaches
+            if (
+                var_lower == param_name
+                or var_lower.replace("_", "") == param_name.replace("_", "")
+                or var_lower in param_name
+                or param_name in var_lower
+            ):
+                parameter_options[var_name] = param_options
+                logger.debug(
+                    "Matched variable '%s' to parameter '%s' with options: %s",
+                    var_name,
+                    param.get("name", ""),
+                    param_options,
+                )
+                break
+
+    # Use LLM matching for remaining variables
+    if llm and goal_variables - set(parameter_options.keys()):
+        unmatched_variables = list(goal_variables - set(parameter_options.keys()))
+        logger.debug("Using LLM to match %d remaining variables", len(unmatched_variables))
+        available_params = []
+
+        for param in all_parameters:
+            param_info = {
+                "name": param.get("name", ""),
+                "description": param.get("description", f"Parameter {param.get('name', '')}"),
+                "options": param.get("options", []),
+            }
+            if param_info["options"]:
+                available_params.append(param_info)
+
+        if unmatched_variables and available_params:
+            logger.debug(
+                "Using LLM to match %d variables to %d parameters", len(unmatched_variables), len(available_params)
+            )
+
+            matches = _match_variables_to_parameters_with_llm(unmatched_variables, available_params, llm)
+
+            for var_name, param_info in matches.items():
+                parameter_options[var_name] = param_info["options"]
+                logger.debug("LLM match: variable '%s' → parameter '%s'", var_name, param_info["name"])
 
     return parameter_options
+
+
+def _match_variables_to_parameters_with_llm(
+    variables: list[str], parameters: list[dict], llm: BaseLanguageModel
+) -> dict[str, dict]:
+    """Uses LLM to match variables to parameters based on semantic similarity.
+
+    Args:
+        variables: List of variable names to match
+        parameters: List of parameter dictionaries (name, description, options)
+        llm: Language model for matching
+
+    Returns:
+        Dictionary mapping variable names to matched parameter info
+    """
+    if not variables or not parameters:
+        return {}
+
+    # Create the matching prompt
+    prompt = f"""
+As an expert in semantic matching for conversational systems, match variable names from profile goals with parameter definitions from functionality nodes.
+
+VARIABLES TO MATCH:
+{json.dumps(variables, indent=2)}
+
+AVAILABLE PARAMETERS:
+{json.dumps(parameters, indent=2)}
+
+IMPORTANT MATCHING RULES:
+1. Find the most appropriate parameter for each variable based on name similarity and semantic meaning
+2. Match variables ONLY to parameters in the SAME DOMAIN (e.g., don't match drink variables to food parameters)
+3. Consider the semantic domain of each variable (e.g., 'drink_type' belongs to beverages domain, 'topping_options' belongs to food additions domain)
+4. If a variable name contains specific domain indicators (e.g., 'drink', 'pizza', 'size'), ONLY match with parameters in that domain
+5. DO NOT match across incompatible semantic domains under any circumstances
+6. If uncertain about domain compatibility, DO NOT create a match
+
+Return your matches in JSON format:
+{{
+  "variable_name": {{
+    "parameter_name": "matched_parameter_name",
+    "options": [list, of, parameter, options]
+  }},
+  ...
+}}
+
+Only include matches where you are CERTAIN there is a correct semantic relationship with domain compatibility.
+If a variable has no appropriate match, DO NOT include it in the results.
+"""
+
+    try:
+        response = llm.invoke(prompt)
+        content = response.content.strip()
+
+        # Try to extract JSON from response
+        matches = {}
+        if "{" in content and "}" in content:
+            json_str = content[content.find("{") : content.rfind("}") + 1]
+            result = json.loads(json_str)
+
+            # Process the matches
+            for var_name, match_info in result.items():
+                if var_name in variables:
+                    # Find the corresponding parameter
+                    param_name = match_info.get("parameter_name")
+                    options = match_info.get("options", [])
+
+                    # Use both the original parameter options and any additional options from the LLM
+                    for param in parameters:
+                        if param.get("name") == param_name:
+                            param_options = set(param.get("options", []))
+                            # Add any new options from the LLM
+                            if options:
+                                param_options.update(options)
+                            matches[var_name] = {
+                                "name": param_name,
+                                "options": list(param_options),
+                                "description": param.get("description", ""),
+                            }
+                            logger.debug("Combined options for '%s': %s", var_name, list(param_options))
+                            break
+
+        return matches
+    except Exception as e:
+        logger.warning(f"Error in LLM parameter matching: {e}")
+        return {}

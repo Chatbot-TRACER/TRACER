@@ -1,7 +1,6 @@
 """Generates user profiles based on chatbot analysis results."""
 
 import re
-import time
 from typing import Any, TypedDict
 
 from langchain_core.language_models import BaseLanguageModel
@@ -283,10 +282,15 @@ def generate_profile_content(config: ProfileGenerationConfig) -> list[dict[str, 
 
         # Show completion message
         logger.info(" ✅ Completed content for profile: %s", profile.get("name", "Unnamed profile"))
-
-        # Add a small delay for readability if verbose
-        if logger.isEnabledFor(15):
-            time.sleep(0.1)
+        if logger.isEnabledFor(10):  # DEBUG level
+            logger.debug("Final parameter values for profile '%s':", profile.get("name"))
+            for g in profile.get("goals", []):
+                if isinstance(g, dict):
+                    for var_name, var_def in g.items():
+                        if isinstance(var_def, dict) and "data" in var_def:
+                            data = var_def.get("data", [])
+                            if isinstance(data, list):
+                                logger.debug(" → %s: %s", var_name, data)
 
     logger.debug("Completed generation of %d profiles", len(profiles))
     return profiles
