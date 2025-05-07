@@ -22,7 +22,7 @@ def _parse_parameter_string(params_str: str) -> list[dict[str, Any]]:
 
     Args:
         params_str: String containing parameters, possibly with options in parentheses
-                   Format: "param1 (option1/option2), param2, param3 (optA/optB)"
+                   Format: "param1 (option1/option2): description, param2: description, param3 (optA/optB): description"
 
     Returns:
         List of parameter dictionaries with name, type, description, and options
@@ -31,23 +31,35 @@ def _parse_parameter_string(params_str: str) -> list[dict[str, Any]]:
     if params_str.lower().strip() == "none":
         return parameters
 
-    # Split parameters and extract options
-    param_pattern = re.compile(r"([^,]+?)(?:\s*\(([^)]+)\))?\s*(?:,|$)")
-    param_matches = param_pattern.findall(params_str)
+    # Split parameters and extract options and descriptions
+    param_parts = params_str.split(",")
 
-    for param_name, options_str in param_matches:
-        param_name_content = param_name.strip()
-        if not param_name_content:
+    for param_part in param_parts:
+        param_part = param_part.strip()
+        if not param_part:
             continue
 
-        # Process options if they exist
+        # Extract description if present
+        param_name_and_desc = param_part.split(":", 1)
+        param_name_with_options = param_name_and_desc[0].strip()
+        description = param_name_and_desc[1].strip() if len(param_name_and_desc) > 1 else f"Parameter {param_name_with_options.split()[0]}"
+
+        # Extract options if present
+        options_match = re.search(r"\s*\(([^)]+)\)", param_name_with_options)
         options = []
-        if options_str:
+        if options_match:
+            options_str = options_match.group(1)
             options = [opt.strip() for opt in options_str.split("/") if opt.strip()]
+            # Remove options part from param_name
+            param_name = re.sub(r"\s*\([^)]+\)", "", param_name_with_options).strip()
+        else:
+            param_name = param_name_with_options.strip()
 
         # Create a ParameterDefinition object
         param = ParameterDefinition(
-            name=param_name_content, description=f"Parameter {param_name_content}", options=options
+            name=param_name,
+            description=description,
+            options=options
         )
         parameters.append(param)
 

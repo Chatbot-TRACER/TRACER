@@ -85,9 +85,9 @@ Format EXACTLY as:
 FUNCTIONALITY:
 name: chatbot_specific_action_name
 description: What the chatbot specifically does or provides in this functionality.
-parameters: param1 (option1/option2/option3), param2, param3 (optionA/optionB)
+parameters: param1 (option1/option2/option3): Brief description of what param1 represents, param2: Description of param2, param3 (optionA/optionB): Description of param3
 
-For parameters without specific options, just list the parameter name.
+For parameters without specific options, include a description after a colon.
 If there are no parameters for the action (i.e., the chatbot is providing information, confirming details, or asking a question that doesn't require specific data input with options), write "None".
 
 If no new relevant **chatbot capability/action** fitting these criteria is identified in the latest exchanges, respond ONLY with "NO_NEW_FUNCTIONALITY".
