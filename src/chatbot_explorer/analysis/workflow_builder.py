@@ -45,14 +45,18 @@ def build_node_hierarchy(structured_nodes_info: list[dict[str, Any]]) -> list[di
         List[Dict[str, Any]]: List of root nodes with their children linked.
 
     """
-    nodes_map = {node_info["name"]: node_info for node_info in structured_nodes_info if "name" in node_info}
+    # Create a mapping of original node attributes by name for reference
+    original_nodes_info = {node_info["name"]: node_info for node_info in structured_nodes_info if "name" in node_info}
+
+    # Create working copy of nodes map to build hierarchy
+    nodes_map = {node_info["name"]: node_info.copy() for node_info in structured_nodes_info if "name" in node_info}
 
     # Initialize children list for all nodes
     for node_info in nodes_map.values():
         node_info["children"] = []
 
     # Link children to parents based on 'parent_names'
-    for node_info in nodes_map.values():
+    for node_name, node_info in nodes_map.items():
         parent_names = node_info.get("parent_names", [])
         for parent_name in parent_names:
             if parent_name in nodes_map:
@@ -68,7 +72,35 @@ def build_node_hierarchy(structured_nodes_info: list[dict[str, Any]]) -> list[di
             if isinstance(child_info, dict) and "name" in child_info:
                 all_child_names.add(child_info["name"])
 
-    root_nodes = [node_info for node_name, node_info in nodes_map.items() if node_name not in all_child_names]
+    root_nodes = [nodes_map[node_name] for node_name in nodes_map if node_name not in all_child_names]
+
+    # Ensure all parameter and description information is preserved by checking original flat nodes
+    # This handles cases where LLM might have omitted or simplified parameter data
+    def restore_node_attributes(node):
+        if "name" in node and node["name"] in original_nodes_info:
+            original = original_nodes_info[node["name"]]
+
+            # Preserve original parameters if they existed and are more detailed
+            if "parameters" in original and (
+                "parameters" not in node or
+                not node["parameters"] or
+                (isinstance(original["parameters"], list) and
+                 len(original["parameters"]) > len(node.get("parameters", [])))
+            ):
+                node["parameters"] = original["parameters"]
+
+            # Preserve original description if it was more detailed
+            if "description" in original and len(original["description"]) > len(node.get("description", "")):
+                node["description"] = original["description"]
+
+            # Recursively process children
+            for child in node.get("children", []):
+                restore_node_attributes(child)
+
+    # Apply restoration to all root nodes
+    for root_node in root_nodes:
+        restore_node_attributes(root_node)
+
     logger.debug("Node hierarchy built with %d root nodes from %d total nodes", len(root_nodes), len(nodes_map))
     return root_nodes
 
@@ -95,6 +127,17 @@ def build_workflow_structure(
     if not flat_functionality_dicts:
         logger.warning("Skipping structure building: No functionalities found")
         return []
+
+    # Create a reference dictionary mapping functionality names to their full details
+    # This will be used to restore parameter/description data that might be lost in LLM processing
+    original_func_details = {}
+    for func in flat_functionality_dicts:
+        if "name" in func and func["name"]:
+            original_func_details[func["name"]] = func
+            # Log parameter counts for debugging
+            param_count = len(func.get("parameters", []))
+            if param_count > 0:
+                logger.debug("Original functionality '%s' has %d parameters", func["name"], param_count)
 
     # Prepare functionality list string for prompt
     func_details_list = []
@@ -171,6 +214,23 @@ def build_workflow_structure(
 
         structured_nodes_info = _parse_and_validate_json_list(json_str)
         logger.debug("Successfully parsed workflow structure JSON with %d nodes", len(structured_nodes_info))
+
+        # Restore original parameter data from flat functionalities where appropriate
+        for node in structured_nodes_info:
+            if "name" in node and node["name"] in original_func_details:
+                original = original_func_details[node["name"]]
+
+                # Check parameters field and restore if original has more complete data
+                if "parameters" in original and isinstance(original["parameters"], list):
+                    # If LLM provided no parameters or fewer parameters than original, restore original
+                    if not node.get("parameters") or not isinstance(node["parameters"], list) or len(node["parameters"]) < len(original["parameters"]):
+                        logger.debug(
+                            "Restoring original %d parameters for '%s' (LLM provided %s)",
+                            len(original["parameters"]),
+                            node["name"],
+                            len(node.get("parameters", [])) if isinstance(node.get("parameters"), list) else "none"
+                        )
+                        node["parameters"] = original["parameters"]
 
         # Log the structured_nodes_info (LLM output before hierarchy building)
         logger.debug(

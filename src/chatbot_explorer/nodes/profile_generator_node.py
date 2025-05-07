@@ -38,6 +38,37 @@ def get_all_descriptions(nodes: list[dict[str, Any]]) -> list[str]:
     return descriptions
 
 
+def extract_function_details(nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Recursively extracts complete functionality information including parameters from nodes.
+
+    Unlike get_all_descriptions which only extracts description strings, this function
+    preserves the full functionality details including parameters.
+
+    Args:
+        nodes: A list of node dictionaries that may contain children
+
+    Returns:
+        A list of dictionaries containing name, description, and parameters for each node
+    """
+    details = []
+    for node in nodes:
+        if "name" in node and "description" in node:
+            # Extract key functionality details
+            func_detail = {
+                "name": node["name"],
+                "description": node["description"],
+                "parameters": node.get("parameters", [])
+            }
+            details.append(func_detail)
+
+        # Process children recursively
+        if node.get("children"):
+            child_details = extract_function_details(node["children"])
+            details.extend(child_details)
+
+    return details
+
+
 def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, Any]:
     """Generates user profiles with conversation goals based on discovered functionalities.
 
@@ -72,7 +103,11 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
     # Get chatbot type from state
     chatbot_type = state.get("chatbot_type", "unknown")
 
-    functionality_descriptions = get_all_descriptions(structured_root_dicts)
+    # Extract complete functionality details including parameters, not just descriptions
+    functionality_full_details = extract_function_details(structured_root_dicts)
+
+    # Still need descriptions for the profile generator
+    functionality_descriptions = [func["description"] for func in functionality_full_details if "description" in func]
 
     if not functionality_descriptions:
         logger.warning("No descriptions found in structured functionalities")
