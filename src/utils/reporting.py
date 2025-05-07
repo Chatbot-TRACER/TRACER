@@ -112,10 +112,9 @@ def _create_node_html_label(node_name: str, node_dict: dict, node_style: dict[st
     # Format node name with better spacing and capitalization
     formatted_name = node_name.replace("_", " ").title()
 
-    # Create a structured HTML table with modern styling
-    html_label = f"""<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" STYLE="rounded">
-
-    <!-- Header with gradient background -->
+    # Create a structured HTML table with modern styling - simplified structure to avoid nesting issues
+    html_label = f'''<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" STYLE="rounded">
+    <!-- Header row -->
     <TR>
         <TD BGCOLOR="{node_style["fillcolor"].split(":")[0]}"
             STYLE="rounded"
@@ -125,133 +124,95 @@ def _create_node_html_label(node_name: str, node_dict: dict, node_style: dict[st
             COLOR="{node_style["color"]}">
             <B>{formatted_name}</B>
         </TD>
-    </TR>"""
+    </TR>'''
 
     # Parameters section (if parameters exist)
     if isinstance(params_data, list) and params_data:
-        html_label += f"""
-        <!-- Parameters section with subtle styling -->
-        <TR>
-            <TD BGCOLOR="#f8f9fa"
-                BORDER="1"
-                COLOR="{node_style["color"]}"
-                STYLE="rounded"
-                ALIGN="CENTER">
-                <FONT POINT-SIZE="10" COLOR="#6c757d">Parameters</FONT>
-            </TD>
-        </TR>
+        html_label += f'''
+    <!-- Parameters header -->
+    <TR>
+        <TD BGCOLOR="#f8f9fa"
+            BORDER="1"
+            COLOR="{node_style["color"]}"
+            STYLE="rounded"
+            ALIGN="CENTER">
+            <FONT POINT-SIZE="10" COLOR="#6c757d">Parameters</FONT>
+        </TD>
+    </TR>'''
 
-        <!-- Parameters content -->
-        <TR>
-            <TD BGCOLOR="#ffffff"
-                ALIGN="LEFT"
-                BORDER="1"
-                COLOR="{node_style["color"]}"
-                STYLE="rounded">
-                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3">"""
-
-        # Add each parameter
+        # Add each parameter in a separate row - avoid nested tables
         for param in params_data:
             if isinstance(param, dict):
                 p_name = param.get("name", "?")
-                html_label += f"""
-                    <TR>
-                        <TD ALIGN="LEFT" BORDER="0">
-                            <FONT POINT-SIZE="11"><B>{p_name}</B></FONT>
-                        </TD>
-                    </TR>"""
+                html_label += f'''
+    <TR>
+        <TD ALIGN="LEFT" BORDER="1" COLOR="{node_style["color"]}" BGCOLOR="#ffffff" STYLE="rounded">
+            <FONT POINT-SIZE="11"><B>{p_name}</B></FONT>
+        </TD>
+    </TR>'''
 
-                # Add options
+                # Add options as separate rows rather than nested tables
                 p_options = param.get("options", [])
-                if p_options:
-                    html_label += """
-                    <TR>
-                        <TD ALIGN="LEFT">
-                            <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" BGCOLOR="#f8f9fa">"""
-
-                    for option in p_options:
-                        html_label += f"""
-                                <TR>
-                                    <TD ALIGN="LEFT" CELLPADDING="1">
-                                        <FONT POINT-SIZE="10" COLOR="#495057">• {option}</FONT>
-                                    </TD>
-                                </TR>"""
-
-                    html_label += """
-                            </TABLE>
-                        </TD>
-                    </TR>"""
+                for option in p_options:
+                    html_label += f'''
+    <TR>
+        <TD ALIGN="LEFT" BORDER="0" BGCOLOR="#f8f9fa">
+            <FONT POINT-SIZE="10" COLOR="#495057">• {option}</FONT>
+        </TD>
+    </TR>'''
             elif isinstance(param, str):
-                html_label += f"""
-                    <TR>
-                        <TD ALIGN="LEFT">
-                            <FONT POINT-SIZE="11">{param}</FONT>
-                        </TD>
-                    </TR>"""
-
-        html_label += """
-                </TABLE>
-            </TD>
-        </TR>"""
+                html_label += f'''
+    <TR>
+        <TD ALIGN="LEFT" BORDER="1" COLOR="{node_style["color"]}" BGCOLOR="#ffffff" STYLE="rounded">
+            <FONT POINT-SIZE="11">{param}</FONT>
+        </TD>
+    </TR>'''
 
     # Outputs section (if outputs exist)
     if isinstance(outputs_data, list) and outputs_data:
-        html_label += f"""
-        <!-- Outputs section with subtle styling -->
-        <TR>
-            <TD BGCOLOR="#f2f7ed"
-                BORDER="1"
-                COLOR="{node_style["color"]}"
-                STYLE="rounded"
-                ALIGN="CENTER">
-                <FONT POINT-SIZE="10" COLOR="#4f6e48">Outputs</FONT>
-            </TD>
-        </TR>
+        html_label += f'''
+    <!-- Outputs header -->
+    <TR>
+        <TD BGCOLOR="#f2f7ed"
+            BORDER="1"
+            COLOR="{node_style["color"]}"
+            STYLE="rounded"
+            ALIGN="CENTER">
+            <FONT POINT-SIZE="10" COLOR="#4f6e48">Outputs</FONT>
+        </TD>
+    </TR>'''
 
-        <!-- Outputs content -->
-        <TR>
-            <TD BGCOLOR="#ffffff"
-                ALIGN="LEFT"
-                BORDER="1"
-                COLOR="{node_style["color"]}"
-                STYLE="rounded">
-                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3">"""
-
-        # Add each output category
+        # Add each output in a separate row - avoid nested tables
         for output in outputs_data:
             if isinstance(output, dict):
                 o_category = output.get("category", "?")
+                html_label += f'''
+    <TR>
+        <TD ALIGN="LEFT" BORDER="1" COLOR="{node_style["color"]}" BGCOLOR="#ffffff" STYLE="rounded">
+            <FONT POINT-SIZE="11"><B>{o_category}</B></FONT>
+        </TD>
+    </TR>'''
+
+                # Add description as separate row
                 o_desc = output.get("description", "")
-                html_label += f"""
-                    <TR>
-                        <TD ALIGN="LEFT" BORDER="0">
-                            <FONT POINT-SIZE="11"><B>{o_category}</B></FONT>
-                        </TD>
-                    </TR>"""
-
-                # Add description
                 if o_desc:
-                    html_label += f"""
-                    <TR>
-                        <TD ALIGN="LEFT">
-                            <FONT POINT-SIZE="10" COLOR="#4f6e48">{o_desc}</FONT>
-                        </TD>
-                    </TR>"""
+                    html_label += f'''
+    <TR>
+        <TD ALIGN="LEFT" BORDER="0" BGCOLOR="#f8f9fa">
+            <FONT POINT-SIZE="10" COLOR="#4f6e48">{o_desc}</FONT>
+        </TD>
+    </TR>'''
             elif isinstance(output, str):
-                html_label += f"""
-                    <TR>
-                        <TD ALIGN="LEFT">
-                            <FONT POINT-SIZE="11">{output}</FONT>
-                        </TD>
-                    </TR>"""
+                html_label += f'''
+    <TR>
+        <TD ALIGN="LEFT" BORDER="1" COLOR="{node_style["color"]}" BGCOLOR="#ffffff" STYLE="rounded">
+            <FONT POINT-SIZE="11">{output}</FONT>
+        </TD>
+    </TR>'''
 
-        html_label += """
-                </TABLE>
-            </TD>
-        </TR>"""
-
-    html_label += """
-</TABLE>>"""
+    # Close the table
+    html_label += '''
+</TABLE>>'''
 
     return html_label
 
