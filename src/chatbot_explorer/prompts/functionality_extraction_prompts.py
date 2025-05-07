@@ -9,62 +9,40 @@ def get_functionality_extraction_prompt(context: str, formatted_conversation: st
 CONVERSATION:
 {formatted_conversation}
 
-Analyze the conversation and extract distinct **chatbot capabilities, actions performed, or information provided by the chatbot** that represent concrete steps towards achieving a user goal or delivering specific information.
+Analyze the conversation to extract distinct **chatbot capabilities, actions performed, or information provided BY THE CHATBOT**. These represent concrete steps towards achieving a user goal or delivering specific information.
 
-**CRITICAL RULES (General):**
-1.  **Focus ONLY on the CHATBOT:** Functionalities MUST represent actions performed *by the chatbot* or information *provided by the chatbot*.
-2.  **EXCLUDE User Actions:** DO NOT extract steps that only describe what the *user* asks, says, or does.
-3.  **Extract Specific & Actionable Steps:** Aim for concrete actions.
-4.  **Differentiate Paths:** If distinct paths/options are offered leading to different outcomes, extract separate functionalities.
-5.  **EXCLUDE Purely Meta-Functionalities** (e.g., 'list_capabilities') unless a required step in a task.
-6.  **Naming:** Clear, snake_case names (e.g., `prompt_for_delivery_address`, `display_order_summary`).
-7.  **Avoid Failures:** Focus on successful actions.
+**CORE PRINCIPLES FOR EXTRACTION:**
+1.  **CHATBOT-CENTRIC:** Functionalities MUST represent actions performed *by the chatbot* or information *provided by the chatbot*.
+2.  **EXCLUDE USER ACTIONS:** DO NOT extract steps describing only what the *user* asks, says, or does.
+3.  **SPECIFIC & ACTIONABLE:** Aim for concrete, granular actions the chatbot performs within a potential workflow, not abstract categories.
+4.  **DIFFERENTIATE PATHS:** If the chatbot offers distinct choices or information categories leading to different interaction paths (e.g., standard vs. custom items), extract SEPARATE functionalities for each distinct path offered by the chatbot.
+5.  **AVOID PURELY META-FUNCTIONALITIES:** Do NOT extract functionalities that SOLELY describe the chatbot's general abilities abstractly (e.g., 'list_capabilities', 'explain_what_i_can_do').
+    *   **EXCEPTION:** If listing specific, actionable choices is a *required step within a user task* (e.g., chatbot lists service types A, B, C *after* user initiates a request, and user *must* choose one to proceed), then that specific action (e.g., `present_service_type_options`) IS valid.
+6.  **NAMING CONVENTION:** Use clear, descriptive snake_case names reflecting the *specific* chatbot action or service (e.g., `prompt_for_delivery_address`, `display_order_summary`).
+7.  **FOCUS ON SUCCESS:** Extract successful actions or information provided. Avoid functionalities that solely describe chatbot failures (e.g., 'handle_fallback').
 
-**CRITICAL RULES FOR PARAMETERS (INPUTS SOLICITED BY CHATBOT):**
-8.  **Parameters are What the Chatbot ASKS FOR:** Parameters represent data the chatbot **explicitly asks the user for** or **needs the user to provide** to complete ITS CURRENT PROMPT or action.
-9.  **Parameter Options are Presented Choices for Input:**
-    *   If the chatbot says, "Which X do you want? We offer A, B, C." then the functionality is `prompt_for_X_selection`, and its parameter is `selected_X` with options `(A/B/C)`.
-    *   The list (A, B, C) provided by the chatbot *becomes the options for the parameter it is soliciting*.
-    *   This is true even if the "presenting options" and "asking for choice" happen in the same chatbot turn. The core is the *solicitation of input*.
+**RULES FOR IDENTIFYING PARAMETERS (User Inputs Solicited by Chatbot):**
+8.  **DEFINITION:** Parameters are data that the chatbot **explicitly asks the user for** or **needs the user to provide** for the chatbot to perform ITS CURRENT ACTION or complete ITS CURRENT PROMPT.
+9.  **OPTIONS FOR PARAMETERS:** If the chatbot, when soliciting an input, simultaneously presents specific, limited options for that input (e.g., "What size? We have Small, Medium, Large."), these options (Small, Medium, Large) MUST be included with that parameter. The core is the *solicitation of input alongside presented choices for that input*.
 
-**CRITICAL RULES FOR OUTPUTS (INFORMATION PROVIDED BY CHATBOT):**
-10. **Outputs are What the Chatbot GIVES/STATES (not what it asks for):**
-    *   Outputs represent specific pieces of information, data fields, confirmations, or results that the chatbot **provides, states, or displays to the user.**
-    *   These are typically things the user would expect to see as a result of their query or a completed transaction (e.g., an order ID, a total price, a delivery ETA, requested policy details, a weather forecast).
-11. **Output Options are Information PROVIDED by the Chatbot:**
-    * Output options represent specific categories of information that the chatbot presents to the user.
-    * When the chatbot presents information, capture these as output categories with descriptions.
-    * **IMPORTANT:** Outputs represent what the chatbot GIVES, while parameters represent what the chatbot ASKS FOR.
-    * For example:
-        * Chatbot says "Our service packages include Basic, Standard, and Premium" -> Output options are "service_packages: A range of service tiers from Basic to Premium"
-        * Chatbot presents "Available service tiers: Basic ($50/mo), Standard ($75/mo), Premium ($100/mo)" -> Output options are "pricing_information: Monthly subscription costs for different service tiers"
-        * Chatbot says "Your transaction ID is XZ987." -> Output options are "transaction_details: Unique identifier for the current transaction"
-        * Chatbot says "We are located at 123 Main St." -> Output options are "location_information: Physical address of the business"
-12. **Conceptual Difference from Parameters:**
-    * When the chatbot PRESENTS information (outputs) and then ASKS for a selection from that information, you must capture BOTH:
-        * The presented information as OUTPUT OPTIONS for the information-providing functionality
-        * The user selection as a PARAMETER for the follow-up choice-requesting functionality
-    * Example:
-        * Chatbot: "We offer options A, B, and C. Which option would you like?"
-        * This should be captured as TWO related functionalities:
-            1. `present_available_options` with OUTPUT OPTIONS "available_options: Description of the options presented to the user" (no parameters)
-            2. `prompt_for_option_selection` with PARAMETER "selected_option (A/B/C)"
-13. **ALWAYS Capture Information-Only Outputs:**
-    * For informational chatbots that primarily provide facts, data, or options without requesting input, focus on capturing detailed output categories.
-    * Example:
-        * Chatbot: "Our store hours are: Monday-Friday 9am-5pm, Saturday 10am-4pm, Sunday Closed."
-        * This should be captured as functionality `provide_store_hours` with OUTPUT OPTIONS "operating_hours: Business hours for different days of the week"
-    * Example:
-        * Chatbot: "The weather in New York today is 72°F and sunny."
-        * This should be captured as functionality `provide_weather_information` with OUTPUT OPTIONS "current_weather: Temperature and conditions for the specified location"
-14. **Categorize Output Options:**
-    * Create meaningful categories that describe the TYPE of information being provided (e.g., "product_features", "subscription_levels", "available_slots", "pricing_details", "item_attributes")
-    * Provide clear, concise descriptions that summarize the information in each category
-    * Focus on the NATURE of the information rather than specific values
+**RULES FOR IDENTIFYING OUTPUTS (Information Provided by Chatbot):**
+10. **DEFINITION:** Outputs represent specific pieces of information, data fields, confirmations, or results that the chatbot **provides, states, or displays to the user.** These are typically results of a query or transaction (e.g., an order ID, total price, policy details).
+11. **OUTPUT CATEGORIES & DESCRIPTIONS:** When the chatbot presents information, capture this as output categories with concise descriptions of the *type* of information provided (e.g., `service_packages: A range of service tiers from Basic to Premium`). Focus on the NATURE of information, not specific instance values from the conversation (unless Rule 12 applies).
+12. **OUTPUTS PRESENTING A LIST OF CHOICES:** If an output's primary purpose is to present a *list of multiple, distinct items or choices* that the user can see (e.g., "Our services are: A, B, C"), then the specific items (A, B, C) should be part of the output description or category value.
+    *   Example: `output_options: available_services_list: Services offered include Standard, Premium, and Express.`
 
-**EXAMPLES (Focus on Chatbot Actions, Parameters, and new Output Definition):**
+**HANDLING INTERACTIONS INVOLVING OPTIONS AND SELECTIONS:**
+13. **DISTINGUISHING SINGLE vs. SEPARATE ACTIONS:**
+    *   **Case A (Single, Combined Action):** If the chatbot presents a list of options AND *immediately in the same turn* asks for a selection from that list (e.g., "We have Red, Green, Blue. Which color do you pick?"), extract a **single functionality** (e.g., `prompt_for_color_selection_from_list`).
+        *   **Parameters:** The presented options (Red, Green, Blue) become `options` for the relevant parameter (e.g., `selected_color (Red/Green/Blue)`).
+        *   **Outputs:** This single functionality likely has minimal or no `output_options` itself, as its main goal is to solicit input.
+    *   **Case B (Separate, Sequential Actions):** If presenting options and asking for a selection are **clearly distinct turns or chatbot actions** (e.g., Chatbot Turn 1: "Here are our main categories: X, Y, Z." Chatbot Turn 2: "Great, which category would you like to explore?"), extract them as **two separate functionalities**:
+        1.  An information-providing functionality (e.g., `present_main_categories`) with `output_options` describing the categories presented (per Rule 11 & 12, e.g., `main_category_options: Describes categories X, Y, and Z`). This function has no parameters.
+        2.  A subsequent input-soliciting functionality (e.g., `prompt_for_category_selection`) with a parameter for the user's choice (e.g., `selected_category (X/Y/Z)`). This function has no `output_options`.
 
-- **Scenario: Item Ordering (Transactional)**
+**EXAMPLES:**
+
+- **Scenario: Item Ordering (Illustrating Rule 13, Case A - Single Action)**
     - User: "I want to order an item."
     - Chatbot: "Okay! We have Model A, Model B, and Model C. Which model would you like?"
     - User: "Model B."
@@ -72,53 +50,49 @@ Analyze the conversation and extract distinct **chatbot capabilities, actions pe
     - User: "Large."
     - Chatbot: "Okay, 1 Large Model B. Your order ID is 789XYZ. Total is $50. It will be ready in 20 minutes at our Main St location."
     - **GOOD Extractions:**
-        - `prompt_for_model_selection`
-            - description: Prompts the user to select a model after presenting available options.
+        - `prompt_for_model_selection_from_list`
+            - description: Presents available models and prompts the user to select one in the same turn.
             - parameters: `selected_model (Model A/Model B/Model C)`
             - output_options: None
-        - `prompt_for_size_selection`
-            - description: Prompts the user to select a size for the chosen model after presenting available sizes.
+        - `prompt_for_size_selection_from_list`
+            - description: Presents available sizes for the chosen model and prompts the user to select one in the same turn.
             - parameters: `selected_size (Small/Medium/Large)`
             - output_options: None
         - `provide_order_confirmation_and_details`
             - description: Confirms the order and provides the order ID, total cost, estimated readiness time, and pickup location.
             - parameters: None
-            - output_options: `ordered_item_description_field; order_identifier_field; total_cost_field; estimated_readiness_time_field; pickup_location_address_field`
+            - output_options: `ordered_item_summary: Details of the confirmed item; order_identifier: Unique ID for the order; total_cost: Final price; estimated_readiness_time: Expected time for order completion; pickup_location: Store address for pickup`
 
-- **Scenario: Information Request**
-    - User: "What are your weekend hours?"
-    - Chatbot: "We are open Saturday 10 AM - 6 PM, and Sunday 12 PM - 4 PM."
-    - **GOOD Extraction:**
-        - `provide_weekend_operating_hours`
-            - description: Provides the store's operating hours for Saturday and Sunday.
+- **Scenario: Service Inquiry (Illustrating Rule 13, Case B - Separate Actions)**
+    - User: "What services do you offer?"
+    - Chatbot: "We offer Standard Servicing, Premium Repair, and Express Diagnostics." (Action 1)
+    - User: "Tell me more about Premium Repair."
+    - Chatbot: "Okay. Which aspect of Premium Repair interests you: features or pricing?" (Action 2 - assuming user needs to choose before details are given)
+    - **GOOD Extractions:**
+        - `list_available_services` (from Action 1)
+            - description: Lists the main types of services offered.
             - parameters: None
-            - output_options: `saturday_hours_info_field; sunday_hours_info_field`
-
-- **Scenario: Booking Confirmation**
-    - User: "Book it for 2 PM."
-    - Chatbot: "Confirmed! Your appointment is for Tuesday at 2 PM. Your confirmation number is BK-123."
-    - **GOOD Extraction:**
-        - `confirm_appointment_details`
-            - description: Confirms the booked appointment date and time, and provides a confirmation number.
-            - parameters: None
-            - output_options: `confirmed_appointment_date_field; confirmed_appointment_time_field; appointment_confirmation_number_field`
+            - output_options: `service_types_offered: Standard Servicing, Premium Repair, Express Diagnostics`
+        - `prompt_for_premium_repair_detail_type` (from Action 2)
+            - description: Asks the user which aspect of Premium Repair they want details about.
+            - parameters: `detail_type_preference (features/pricing)`
+            - output_options: None
 
 For each relevant **chatbot capability/action/information provided** based on these rules and examples, identify:
 1. A specific, descriptive name (snake_case).
 2. A clear description.
 3. Required parameters (inputs the chatbot SOLICITS). List the parameter name, and if the chatbot presented explicit choices for that input, list them in parentheses.
-4. Output options: List the snake_case names of the *types* or *categories* of information the chatbot PROVIDES as a result or statement (e.g., `order_summary_details; total_price_amount; user_id_field`). Separate multiple fields with a semicolon.
+4. Output options: For information PROVIDED by the chatbot, list `category_name: description_of_category_content`. Separate multiple categories with a semicolon.
 
 Format EXACTLY as:
 FUNCTIONALITY:
 name: chatbot_specific_action_name
 description: What the chatbot specifically does or provides in this functionality.
-parameters: param1 (option1/option2/option3), param2, param3 (optionA/optionB)
+parameters: param1 (option1/option2/option3), param2
 output_options: category1: description1; category2: description2
 
-For parameters without specific options, just list the parameter name.
-If there are no parameters for the action (i.e., the chatbot is providing information, confirming details, or asking a question that doesn't require specific data input with options), write "None".
-If there are no output options, write "None".
+If there are no parameters, write "None".
+If there are no output options (e.g., the chatbot only asks for input per Rule 13 Case A), write "None".
 
 If no new relevant **chatbot capability/action** fitting these criteria is identified, respond ONLY with "NO_NEW_FUNCTIONALITY".
 """
