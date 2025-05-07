@@ -49,10 +49,12 @@ def _set_graph_attributes(dot: graphviz.Digraph) -> None:
         shape="rectangle",
         style="filled,rounded",
         fontname="Helvetica Neue, Helvetica, Arial, sans-serif",
-        fontsize="10",
+        fontsize="11",
         margin="0.15,0.1",
         penwidth="1.0",
         fontcolor="#333333",
+        height="0",  # Allow height to be determined by content
+        width="0",   # Allow width to be determined by content
     )
     dot.attr(
         "edge",
@@ -98,16 +100,65 @@ def _add_node_to_graph(context: GraphBuildContext, node_dict: FunctionalityNode,
     if not node_name or node_name in context.processed_nodes:
         return node_name  # Return name even if not added, or None if no name
 
-    params_label = _get_node_params_label(node_dict)
-    label = f"{node_name.replace('_', ' ')}{params_label}"
     node_style = _get_node_style(depth)
 
-    context.graph.node(
-        node_name,
-        label=label,
-        fillcolor=node_style["fillcolor"],
-        color=node_style["color"],
-    )
+    # Create HTML-like label for structured layout
+    params_data = node_dict.get("parameters", [])
+    if isinstance(params_data, list) and params_data:
+        # Create a structured HTML table for the node with parameters
+        html_label = f'<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">'
+
+        # Main node name as the first row
+        html_label += f'<TR><TD BGCOLOR="{node_style["fillcolor"].split(":")[0]}" COLSPAN="1" PORT="main"><B>{node_name.replace("_", " ")}</B></TD></TR>'
+
+        # Parameters label row
+        html_label += f'<TR><TD BGCOLOR="#f5f5f5" BORDER="1" ALIGN="CENTER"><FONT POINT-SIZE="10" COLOR="#666666">params</FONT></TD></TR>'
+
+        # Parameters section with a light background
+        html_label += '<TR><TD BGCOLOR="#f9f9f9" ALIGN="LEFT">'
+        html_label += '<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">'
+
+        # Add each parameter
+        for param in params_data:
+            if isinstance(param, dict):
+                p_name = param.get("name", "?")
+                html_label += f'<TR><TD ALIGN="LEFT" BORDER="0"><FONT POINT-SIZE="10"><B>{p_name}</B></FONT></TD></TR>'
+
+                # Add options if they exist in a bordered box
+                p_options = param.get("options", [])
+                if p_options:
+                    # Create a box for options
+                    html_label += '<TR><TD>'
+                    html_label += '<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" BGCOLOR="#f0f0f0">'
+
+                    # Add each option
+                    for option in p_options:
+                        html_label += f'<TR><TD ALIGN="LEFT" CELLPADDING="1"><FONT POINT-SIZE="9">• {option}</FONT></TD></TR>'
+
+                    html_label += '</TABLE></TD></TR>'
+            elif isinstance(param, str):
+                html_label += f'<TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">{param}</FONT></TD></TR>'
+
+        html_label += '</TABLE></TD></TR></TABLE>>'
+
+        # Use HTML-like label
+        context.graph.node(
+            node_name,
+            label=html_label,
+            shape="none",  # No shape border when using HTML
+            margin="0",
+            color=node_style["color"]
+        )
+    else:
+        # Simple node without parameters
+        label = f"{node_name.replace('_', ' ')}"
+        context.graph.node(
+            node_name,
+            label=label,
+            fillcolor=node_style["fillcolor"],
+            color=node_style["color"],
+        )
+
     context.processed_nodes.add(node_name)
     return node_name
 
@@ -127,7 +178,22 @@ def _add_edges_for_children(
             if child_name:
                 edge_key = (parent_name, child_name)
                 if edge_key not in context.processed_edges:
-                    context.graph.edge(parent_name, child_name)
+                    # Connect to the main port of the node for better positioning
+                    params_data = node_dict.get("parameters", [])
+                    child_params = child_dict.get("parameters", [])
+
+                    # Use port attachment for HTML nodes
+                    if isinstance(params_data, list) and params_data:
+                        source = f"{parent_name}:main"
+                    else:
+                        source = parent_name
+
+                    if isinstance(child_params, list) and child_params:
+                        target = f"{child_name}:main"
+                    else:
+                        target = child_name
+
+                    context.graph.edge(source, target)
                     context.processed_edges.add(edge_key)
     elif children:
         logger.warning("Expected 'children' for node '%s' to be a list, found %s", parent_name, type(children))
@@ -198,7 +264,14 @@ def generate_graph_image(structured_data: list[FunctionalityNode], output_filena
             if root_node_name:
                 edge_key = (start_node_name, root_node_name)
                 if edge_key not in context.processed_edges:
-                    context.graph.edge(start_node_name, root_node_name)
+                    # Check if root node has parameters to determine port attachment
+                    params_data = root_node_dict.get("parameters", [])
+                    if isinstance(params_data, list) and params_data:
+                        target = f"{root_node_name}:main"
+                    else:
+                        target = root_node_name
+
+                    context.graph.edge(start_node_name, target)
                     context.processed_edges.add(edge_key)
         else:
             logger.warning("Expected root element to be a dictionary, found %s", type(root_node_dict))
