@@ -422,14 +422,16 @@ def _run_conversation_loop(
         )
         if explorer_response_content is None:
             break  # Error message logged inside helper
-        if "EXPLORATION COMPLETE" in explorer_response_content.upper():
-            logger.debug("Explorer has finished session exploration")
         logger.verbose(
             "Explorer: %s",
             explorer_response_content[:MAX_LOG_MESSAGE_LENGTH]
             + ("..." if len(explorer_response_content) > MAX_LOG_MESSAGE_LENGTH else ""),
         )
-        conversation_history_lc.append(AIMessage(content=explorer_response_content))
+
+        if "EXPLORATION COMPLETE" in explorer_response_content.upper():
+            logger.debug("Explorer has finished session exploration")
+            conversation_history_lc.append(AIMessage(content=explorer_response_content))
+            break
 
         # 4. Interact with Chatbot (with retry logic)
         outcome, final_chatbot_message = _handle_chatbot_interaction(
