@@ -11,6 +11,7 @@ from chatbot_explorer.prompts.functionality_refinement_prompts import (
 )
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode, ParameterDefinition
 from chatbot_explorer.utils.logging_utils import get_logger
+from chatbot_explorer.analysis.functionality_extraction import _is_meta_functionality
 
 logger = get_logger()
 
@@ -30,6 +31,11 @@ def is_duplicate_functionality(
     Returns:
         True if the node is considered a duplicate, False otherwise.
     """
+    # Check if this is a meta-functionality first
+    if _is_meta_functionality(node.name, node.description):
+        logger.debug("Found meta-functionality to filter: '%s'", node.name)
+        return True
+
     # Simple checks first
     for existing in existing_nodes:
         if existing.name.lower() == node.name.lower() or existing.description.lower() == node.description.lower():

@@ -16,7 +16,14 @@ Analyze the conversation and extract distinct **chatbot capabilities, actions pe
 2.  **EXCLUDE User Actions:** DO NOT extract steps that only describe what the *user* asks, says, or does (e.g., 'user_asks_for_help', 'user_selects_option').
 3.  **Extract Specific & Actionable Steps:** Aim for concrete actions the chatbot performs within a workflow, not abstract categories.
 4.  **Differentiate Based on Paths/Options:** If the chatbot presents distinct *types* or *categories* of options/information that lead to different interaction paths (e.g., standard vs. custom items, different service types), extract SEPARATE functionalities reflecting the specific action for *each distinct path/category offered*. For example, instead of a single `provide_options`, extract `present_standard_item_options` AND `offer_custom_item_configuration` if the chatbot makes that distinction clear.
-5.  **EXCLUDE Purely Meta-Functionalities:** Do NOT extract functionalities that SOLELY describe the chatbot's general abilities IN THE ABSTRACT (e.g., 'list_capabilities', 'explain_what_i_can_do', 'state_purpose'). **EXCEPTION:** If listing specific, actionable choices is a *required step within a task* (e.g., chatbot lists available service types A, B, C *after* user initiates a request, and the user must choose one to proceed), then THAT specific action (e.g., `present_service_type_options`) IS valid. The key is whether it's a concrete step in a *specific workflow* vs. just a general self-description triggered by "What can you do?".
+5.  **STRICTLY EXCLUDE ALL Meta-Functionalities:** DO NOT extract functionalities that describe:
+   - The chatbot introducing itself or explaining its capabilities (e.g., 'introduce_self', 'explain_capabilities', 'list_what_i_can_do')
+   - The chatbot asking the user what they want help with (e.g., 'ask_how_to_help', 'greet_user')
+   - The user asking what the chatbot can do (e.g., 'ask_capabilities', 'user_requests_help')
+   - General self-descriptions or responses to "what can you do?" questions
+   - Purely conversational exchanges without specific task-related actions
+
+   **EXCEPTION:** If listing specific, actionable choices is a *required step within a task* (e.g., chatbot lists available service types A, B, C *after* user initiates a request, and the user must choose one to proceed), then THAT specific action (e.g., `present_service_type_options`) IS valid. The key is whether it's a concrete step in a *specific workflow* vs. just a general self-description triggered by "What can you do?".
 6.  **Naming:** Use clear, descriptive snake_case names reflecting the *specific* chatbot action or service provided in that step (e.g., `prompt_for_confirmation_details`, `display_search_results`, `initiate_custom_config_flow`).
 7.  **Avoid Failures:** AVOID extracting functionalities that solely describe the chatbot failing (e.g., 'handle_fallback', 'fail_to_understand'). Focus on successful actions or information provided.
 
@@ -74,6 +81,16 @@ Analyze the conversation and extract distinct **chatbot capabilities, actions pe
     - Chatbot: "Our remote work policy allows eligible employees to work remotely up to 3 days per week..."
     - **GOOD Extraction (Chatbot Action - Providing Info):**
         - `explain_remote_work_policy` (Parameters: None) // Chatbot is providing information.
+
+- **Scenario: Meta-Functionality (Should NOT be extracted)**
+    - User: "What can you do?"
+    - Chatbot: "I can help with ordering food, tracking deliveries, and finding restaurant information."
+    - **DO NOT EXTRACT:** `explain_capabilities`, `list_services`, `describe_what_i_can_do`, etc.
+
+- **Scenario: Meta-Functionality vs. Legitimate Choice Menu (Differentiate)**
+    - User: "Order food"
+    - Chatbot: "What type of food would you like to order? We offer: 1) Pizza, 2) Burgers, 3) Sushi"
+    - **VALID Extraction:** `present_food_category_options` (Parameters: `selected_food_category (Pizza/Burgers/Sushi)`) - This is a specific step in a food ordering workflow
 
 For each relevant **chatbot capability/action/information provided** based on these rules and examples, identify:
 1. A specific, descriptive name (snake_case, from chatbot's perspective)

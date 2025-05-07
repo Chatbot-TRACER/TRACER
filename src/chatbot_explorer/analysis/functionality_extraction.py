@@ -16,6 +16,83 @@ logger = get_logger()
 
 CONTENT_PREVIEW_LENGTH = 100
 
+# Patterns for identifying meta-functionalities
+META_FUNCTIONALITY_PATTERNS = [
+    r"(ask|explain|list|describe|provide|tell)_(capabilities|what_i_can_do|features|help|services)",
+    r"(introduce|present|state)_(self|capabilities|purpose|services|functions)",
+    r"(ask|request|inquire)_how_to_help",
+    r"(greet|welcome)_user",
+    r"user_(asks|requests|inquires)_(about|for)_(capabilities|help|information)",
+    r"(offer|provide)_(assistance|help)",
+    r"explain_(purpose|what_i_do|how_i_work)",
+    r"(general|initial)_(greeting|introduction)",
+]
+
+def _is_meta_functionality(node_name: str, node_description: str) -> bool:
+    """Determines if a node represents a meta-functionality that should be filtered out.
+
+    Args:
+        node_name: The name of the functionality node
+        node_description: The description of the functionality node
+
+    Returns:
+        True if the node is a meta-functionality, False otherwise
+    """
+    # Convert to lowercase for case-insensitive matching
+    name_lower = node_name.lower()
+    desc_lower = node_description.lower()
+
+    # Check name against patterns
+    for pattern in META_FUNCTIONALITY_PATTERNS:
+        if re.search(pattern, name_lower):
+            logger.debug("Filtered meta-functionality by name pattern: '%s'", node_name)
+            return True
+
+    # Check for specific meta-functionality words in name
+    meta_words = ["capability", "capabilities", "help", "assistance", "introduction", "greeting"]
+    for word in meta_words:
+        if word in name_lower:
+            logger.debug("Filtered meta-functionality by name keyword: '%s'", node_name)
+            return True
+
+    # Check description for meta-functionality indicators
+    meta_phrases = [
+        "what the chatbot can do",
+        "chatbot's capabilities",
+        "chatbot introduces itself",
+        "chatbot asks how it can help",
+        "chatbot greets the user",
+        "user asks what the chatbot can do",
+        "explains its capabilities",
+        "introduces itself",
+        "welcomes the user"
+    ]
+
+    for phrase in meta_phrases:
+        if phrase in desc_lower:
+            logger.debug("Filtered meta-functionality by description phrase: '%s'", node_name)
+            return True
+
+    return False
+
+def _filter_meta_functionalities(nodes: list[FunctionalityNode]) -> list[FunctionalityNode]:
+    """Filters out nodes that represent meta-functionalities.
+
+    Args:
+        nodes: List of functionality nodes to filter
+
+    Returns:
+        Filtered list of nodes with meta-functionalities removed
+    """
+    initial_count = len(nodes)
+    filtered_nodes = [node for node in nodes if not _is_meta_functionality(node.name, node.description)]
+
+    filtered_count = initial_count - len(filtered_nodes)
+    if filtered_count > 0:
+        logger.debug("Filtered out %d meta-functionality nodes", filtered_count)
+
+    return filtered_nodes
+
 
 def _parse_parameter_string(params_str: str) -> list[dict[str, Any]]:
     """Parses the 'parameters' string into a list of parameter dictionaries with options.
@@ -195,6 +272,10 @@ def extract_functionality_nodes(
 
     # 4. Parse the LLM response using the helper function
     nodes = _parse_llm_functionality_response(content, current_node)
-    logger.debug("Extracted %d functionality nodes", len(nodes))
+
+    # 5. Filter out meta-functionalities
+    nodes = _filter_meta_functionalities(nodes)
+
+    logger.debug("Extracted %d functionality nodes after filtering", len(nodes))
 
     return nodes
