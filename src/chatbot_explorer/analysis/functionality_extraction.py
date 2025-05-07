@@ -148,6 +148,15 @@ def _parse_llm_functionality_response(content: str, current_node: FunctionalityN
             # Parse the output options string using its helper function
             output_options = _parse_output_options_string(output_str)
 
+            # Filter out any None/null values in the output_options list
+            output_options = [opt for opt in output_options if opt is not None]
+
+            # Ensure we never create a node with [null] outputs
+            if not output_options and output_str.strip().lower() != "none":
+                logger.warning("Failed to parse any output options from: '%s'", output_str)
+                # Set to empty list explicitly for clarity
+                output_options = []
+
             # Create the new node
             new_node = FunctionalityNode(
                 name=name,

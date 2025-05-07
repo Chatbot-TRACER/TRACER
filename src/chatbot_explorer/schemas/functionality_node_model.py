@@ -97,12 +97,16 @@ class FunctionalityNode:
         Excludes the 'parent' attribute to prevent circular references.
         Recursively converts children.
         """
+        # Ensure outputs and parameters are never null
+        outputs = [output.to_dict() for output in self.outputs if output is not None]
+        parameters = [param.to_dict() for param in self.parameters if param is not None]
+
         return {
             "__type__": "FunctionalityNode",
             "name": self.name,
             "description": self.description,
-            "parameters": [param.to_dict() for param in self.parameters],
-            "outputs": [output.to_dict() for output in self.outputs],
+            "parameters": parameters,
+            "outputs": outputs,
             "children": [child.to_dict() for child in self.children],
         }
 
