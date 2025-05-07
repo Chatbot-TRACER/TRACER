@@ -60,7 +60,7 @@ def parse_arguments() -> Namespace:
         "--model",
         type=str,
         default=default_model,
-        help=f"OpenAI model to use (default: {default_model})",
+        help=f"Model to use (default: {default_model}). Can be OpenAI models like 'gpt-4o' or Gemini models like 'gemini-2.0-flash'",
     )
 
     parser.add_argument(

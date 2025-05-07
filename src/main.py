@@ -60,9 +60,25 @@ def _initialize_agent(model_name: str) -> ChatbotExplorationAgent:
     logger.info("Initializing Chatbot Exploration Agent with model: %s...", model_name)
     try:
         agent = ChatbotExplorationAgent(model_name)
+    except ImportError as e:
+        logger.error("Missing dependency: %s", str(e))
+        if "gemini" in model_name.lower():
+            logger.error(
+                "To use Gemini models, install the required packages:"
+                "\npip install langchain-google-genai google-generativeai"
+            )
+        sys.exit(1)
     except Exception:
         logger.exception("Fatal Error initializing Chatbot Exploration Agent:")
-        logger.exception("Please ensure API keys are set correctly and the model name is valid.")
+
+        if model_name.lower().startswith("gemini"):
+            logger.error(
+                "For Gemini models, ensure the GOOGLE_API_KEY environment variable is set."
+                "\nGet an API key at https://makersuite.google.com/app/apikey"
+            )
+        else:
+            logger.error("Please ensure API keys are set correctly and the model name is valid.")
+
         sys.exit(1)
     else:
         logger.info("Agent initialized successfully.")

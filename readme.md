@@ -167,13 +167,18 @@ All arguments are optional.
 - `-n, --turns`: Maximum turns per session (default: 8).
 - `-t, --technology`: Chatbot technology connector to use (default: `taskyto`). See available technologies below.
 - `-u, --url`: Chatbot URL (default: `http://localhost:5000`). Only necessary for technologies like `taskyto` that require an explicit endpoint. Others may have the URL embedded in their connector.
-- `-m, --model`: OpenAI model for analysis and generation (default: `gpt-4o-mini`).
+- `-m, --model`: Model for analysis and generation (default: `gpt-4o-mini`). Supports both OpenAI models (e.g., `gpt-4o`) and Google Gemini models (e.g., `gemini-1.5-pro`, `gemini-1.5-flash`).
 - `-o, --output`: Output directory for generated files (default: `output`).
 
 ### Supported Chatbot Technologies
 
 - `taskyto`: Custom chatbot framework (requires self-hosting and initialization).
 - `ada-uam`: MillionBot instance for Universidad Autónoma de Madrid (UAM).
+
+### Environment Variables
+
+- For OpenAI models: Set the `OPENAI_API_KEY` environment variable with your API key.
+- For Gemini models: Set the `GOOGLE_API_KEY` environment variable with your API key from Google.
 
 ## 6. Input/Output
 
@@ -185,19 +190,22 @@ All arguments are optional.
   - `report.txt` (structured text report summarizing findings).
   - `workflow_graph.png` (visual graph representation of the interaction flow).
 
-### Example Command
+### Example Commands
 
 ```bash
-python src/main.py -t ada-uam -n 8 -s 12 -o generated_profiles/ada-uam
-```
+# Using OpenAI models
+python src/main.py -t ada-uam -n 8 -s 12 -o generated_profiles/ada-uam -m gpt-4o
 
-This command runs 12 exploration sessions with a maximum of 8 turns each, targeting the `ada-uam` chatbot, and saves the output to `generated_profiles/ada-uam`.
+# Using Gemini models
+python src/main.py -t taskyto -n 10 -s 5 -o generated_profiles/taskyto -m gemini-2.0-flash
+```
 
 ## 7. Technology Stack
 
 - Python 3.11+
 - LangChain / LangGraph (Core framework for LLM interaction and workflow orchestration)
 - OpenAI API (LLM provider)
+- Google Gemini API (Alternative LLM provider)
 - Graphviz (Python library and system tool for graph visualization)
 - PyYAML (YAML parsing and generation)
 - Requests (HTTP requests, used in some connectors)

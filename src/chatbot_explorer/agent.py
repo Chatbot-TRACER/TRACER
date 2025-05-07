@@ -4,8 +4,15 @@ import pprint
 import uuid
 from typing import Any, TypedDict
 
+from langchain_core.language_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
+
+try:
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    GEMINI_AVAILABLE = True
+except ImportError:
+    GEMINI_AVAILABLE = False
 
 from chatbot_explorer.conversation.fallback_detection import extract_fallback_message
 from chatbot_explorer.conversation.language_detection import extract_supported_languages
@@ -49,13 +56,42 @@ class ChatbotExplorationAgent:
         """Sets up the explorer.
 
         Args:
-            model_name (str): The name of the OpenAI model to use.
+            model_name (str): The name of the model to use (OpenAI or Gemini).
         """
-        self.llm = ChatOpenAI(model=model_name)
+        self.llm = self._initialize_llm(model_name)
         self.memory = MemorySaver()
 
         self._structure_graph = build_structure_graph(self.llm, self.memory)
         self._profile_graph = build_profile_generation_graph(self.llm, self.memory)
+
+    def _initialize_llm(self, model_name: str) -> BaseChatModel:
+        """Initialize the language model based on the model name.
+
+        Args:
+            model_name (str): The name of the model to use.
+
+        Returns:
+            BaseChatModel: An instance of the appropriate LLM.
+
+        Raises:
+            ImportError: If trying to use Gemini models but the package is not installed.
+            ValueError: If the model name format is not recognized.
+        """
+        # Check if this is a Gemini model
+        if model_name.lower().startswith("gemini"):
+            if not GEMINI_AVAILABLE:
+                logger.error("Gemini support not available. Please install langchain_google_genai package.")
+                raise ImportError(
+                    "To use Gemini models, please install the required package: "
+                    "pip install langchain-google-genai google-generativeai"
+                )
+
+            logger.info("Initializing Gemini model: %s", model_name)
+            return ChatGoogleGenerativeAI(model=model_name)
+        else:
+            # Default to OpenAI
+            logger.info("Initializing OpenAI model: %s", model_name)
+            return ChatOpenAI(model=model_name)
 
     def run_exploration(self, chatbot_connector: Chatbot, max_sessions: int, max_turns: int) -> dict[str, Any]:
         """Runs the initial probing and the main exploration loop.
