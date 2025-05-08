@@ -81,61 +81,79 @@ def get_profile_grouping_prompt(
     context: ProfileGroupingContext,
     suggested_profiles: int,
 ) -> str:
-    """Returns the prompt for grouping functionalities into profile scenarios.
+    """Generates a prompt to group functionalities into logical user profiles."""
+    functionality_list_str = "\n".join([f"- {f}" for f in functionalities])
+    num_functionalities = len(functionalities)
 
-    Args:
-        functionalities: A list of discovered chatbot functionalities.
-        context: A dictionary containing various contextual strings for the prompt.
-        suggested_profiles: The desired number of profiles to generate.
+    # Construct context section only if parts are available
+    context_str = "\n--- CONTEXTUAL INFORMATION ---\n"
+    has_context = False
+    if context.get("chatbot_type_context"):
+        context_str += context["chatbot_type_context"]
+        has_context = True
+    if context.get("workflow_context"):
+        context_str += context["workflow_context"]
+        has_context = True
+    if context.get("conversation_context"):
+        max_conv_len = 2000
+        conv_snippet = context["conversation_context"]
+        if len(conv_snippet) > max_conv_len:
+            conv_snippet = conv_snippet[:max_conv_len] + "\n... (conversation truncated)"
+        context_str += "\nSAMPLE CONVERSATIONS:\n" + conv_snippet + "\n"
+        has_context = True
 
-    Returns:
-        A formatted string representing the LLM prompt.
-    """
-    # Note: The S608 warning about SQL injection is a false positive here,
-    # as this f-string is used to generate prompts for an LLM, not SQL queries.
+    if not has_context:
+        context_str = ""
+    else:
+        context_str += "--- END CONTEXTUAL INFORMATION ---\n\n"
+
     return f"""
-Based on these chatbot functionalities:
-{", ".join(functionalities)}
-
-{context["conversation_context"]}
-{context["workflow_context"]}
-{context["chatbot_type_context"]}
-
-{context["language_instruction_grouping"]}
-
-Create {suggested_profiles} distinct user profiles, where each profile represents ONE specific conversation scenario.
+You are a User Profile Designer for chatbot testing. Your task is to group the following chatbot functionalities into logical user profiles. The goal is to create distinct user personas/roles, each focused on achieving a related set of goals using a subset of the chatbot's capabilities, ensuring all functionalities are covered across the profiles.
 
 EXTREMELY IMPORTANT RESTRICTIONS:
-1. Create ONLY profiles for realistic end users with PRACTICAL GOALS
-2. NEVER create profiles about users asking about chatbot capabilities or limitations
-3. NEVER create profiles where the user is trying to test or evaluate the chatbot
-4. Focus ONLY on real-world user tasks and objectives
-5. The profiles should be genuine use cases, not meta-conversations about the chatbot itself
 
-For example, if the functionalities are related to a general service provider, the profiles should distinguish between tasks like:
-  - Asking for business hours,
-  - Submitting a support request,
-  - Requesting information about specific services offered.
-Do not mix in chatbot internal limitations (e.g., "only understands basic questions" or "cannot access user history").
+    Create ONLY profiles for realistic end users with PRACTICAL GOALS
 
-Try to cover all the important functionality groups without overlap between profiles.
+    NEVER create profiles about users asking about chatbot capabilities or limitations
 
-FORMAT YOUR RESPONSE AS:
+    NEVER create profiles where the user is trying to test or evaluate the chatbot
 
-## PROFILE: [Conversation Scenario Name]
-ROLE: [Write a prompt for the user simulator, e.g., "you have to act as a user asking a company about their return policy for an item you bought last week."]
+    Focus ONLY on real-world user tasks and objectives
+
+    The profiles should be genuine use cases, not meta-conversations about the chatbot itself
+
+AVAILABLE CHATBOT FUNCTIONALITIES ({num_functionalities} total):
+{functionality_list_str}
+{context_str}
+**Instructions for Grouping:**
+
+1.  **Analyze Relationships:** Examine the list of functionalities. Identify functionalities that are related or often used together in a single user journey or to achieve a larger goal. Use the WORKFLOW INFORMATION (if provided) to see which functionalities often follow others.
+2.  **Define Coherent Roles/Personas:** Create distinct user roles or personas. Each role should represent a plausible type of user with a specific set of needs or tasks they want to accomplish using the chatbot (e.g., "New Customer Inquiry," "Existing User Order Tracking," "Product Configurator," "Information Seeker about Topic X").
+3.  **Group Functionalities Logically:** Assign each functionality to the *most relevant* user profile/role. A profile should contain a set of functionalities that make sense for that specific user persona to use together.
+    *   Group steps that form a sequence (e.g., select item, add to cart, checkout).
+    *   Group informational functions related to a specific topic (e.g., all functions related to pricing, all related to account settings).
+    *   Group functions related to a specific high-level task (e.g., placing a new order, checking status, getting support).
+4.  **Ensure Coverage:** Distribute ALL functionalities across the profiles. Each functionality should ideally belong to at least one profile. Avoid leaving functionalities unassigned.
+5.  **Balance Profile Size (Guideline):** Aim for roughly {suggested_profiles} distinct profiles, but prioritize logical coherence over strictly hitting this number. It's better to have fewer, well-defined profiles or slightly more if needed for logical separation. Avoid profiles with only one trivial functionality if it can logically fit elsewhere. Don't create overly large profiles containing unrelated functions.
+6.  **Describe the Role:** For each profile, provide a concise description of the user's role or primary objective.
+7.  **Output Format:** Structure your response exactly as follows, with each profile starting with `## PROFILE:`, followed by the profile name, role, and functionalities list:
+
+## PROFILE: [Profile Name (e.g., New Order Placer)]
+ROLE: [Description of the user role/objective for this profile]
 FUNCTIONALITIES:
-- [functionality 1 relevant to this scenario]
-- [functionality 2 relevant to this scenario]
+- [Functionality description assigned to this profile]
+- [Another functionality description assigned to this profile]
+...
 
-## PROFILE: [Another Conversation Scenario Name]
-ROLE: [Write a prompt for the user simulator, e.g., "you have to act as a user trying to book a standard service appointment for your car."]
+## PROFILE: [Another Profile Name (e.g., Account Manager)]
+ROLE: [Description of this role]
 FUNCTIONALITIES:
-- [functionality 3 relevant to this scenario]
-- [functionality 4 relevant to this scenario]
+- [Functionality description]
+...
 
-... and so on
-"""
+{context["language_instruction_grouping"]}
+Make sure the profile names and roles are descriptive and distinct. Ensure all functionalities from the input list are assigned to a profile.
+"""  # noqa: S608
 
 
 def get_profile_goals_prompt(
