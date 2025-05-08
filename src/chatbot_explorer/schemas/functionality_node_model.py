@@ -26,6 +26,15 @@ class ParameterDefinition:
             "options": self.options,
         }
 
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "ParameterDefinition":
+        """Create a ParameterDefinition from a dictionary."""
+        return cls(
+            name=data["name"],
+            description=data["description"],
+            options=data["options"],
+        )
+
     def __repr__(self) -> str:
         opts = f", options={self.options}" if self.options else ""
         return f"ParameterDefinition(name='{self.name}', description='{self.description}'{opts})"
@@ -50,6 +59,14 @@ class OutputOptions:
             "category": self.category,
             "description": self.description,
         }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "OutputOptions":
+        """Create an OutputOptions from a dictionary."""
+        return cls(
+            category=data["category"],
+            description=data.get("description", ""),  # Handle optional description
+        )
 
     def __repr__(self) -> str:
         return f"OutputOptions(category='{self.category}', description='{self.description}')"
@@ -109,6 +126,32 @@ class FunctionalityNode:
             "outputs": outputs,
             "children": [child.to_dict() for child in self.children],
         }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "FunctionalityNode":
+        """Create a FunctionalityNode from a dictionary."""
+        # Reconstruct parameters
+        parameters_data = data.get("parameters", [])
+        parameters = [ParameterDefinition.from_dict(p_data) for p_data in parameters_data]
+
+        # Reconstruct outputs
+        outputs_data = data.get("outputs", [])
+        outputs = [OutputOptions.from_dict(o_data) for o_data in outputs_data]
+
+        # Create the node itself (without children initially)
+        node = cls(
+            name=data["name"],
+            description=data["description"],
+            parameters=parameters,
+            outputs=outputs,
+        )
+
+        # Reconstruct and add children
+        children_data = data.get("children", [])
+        for child_data in children_data:
+            child_node = cls.from_dict(child_data)  # Recursive call
+            node.add_child(child_node)  # This will set child_node.parent = node
+        return node
 
     def __repr__(self) -> str:
         """Return an unambiguous string representation of the FunctionalityNode."""

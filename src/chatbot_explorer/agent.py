@@ -15,6 +15,10 @@ try:
 except ImportError:
     GEMINI_AVAILABLE = False
 
+from chatbot_explorer.analysis.functionality_refinement import (
+    _process_node_group_for_merge,
+    is_duplicate_functionality,
+)
 from chatbot_explorer.conversation.fallback_detection import extract_fallback_message
 from chatbot_explorer.conversation.language_detection import extract_supported_languages
 from chatbot_explorer.conversation.session import (
@@ -339,6 +343,108 @@ class ChatbotExplorationAgent:
 
         logger.info("\nDiscovered %d root functionalities after exploration", len(graph_state["root_nodes"]))
 
+    def _aggressive_node_deduplication(self, nodes: list[FunctionalityNode]) -> list[FunctionalityNode]:
+        """Aggressively deduplicate nodes using pairwise comparisons.
+
+        Instead of relying on name-based grouping, this method compares each node
+        against every other node and merges them if they are deemed similar.
+
+        Args:
+            nodes: List of functionality nodes to deduplicate
+
+        Returns:
+            List of deduplicated functionality nodes
+        """
+        if not nodes or len(nodes) < 2:
+            return nodes
+
+        logger.verbose("Starting aggressive deduplication of %d nodes", len(nodes))
+
+        # Make a copy of the nodes to work with
+        remaining_nodes = nodes.copy()
+
+        # Keep track of merged node pairs to avoid checking them again
+        merged_pairs = set()
+
+        # Flag to track if any merges happened in this pass
+        any_merges_happened = True
+
+        # Continue until no more merges happen
+        while any_merges_happened and len(remaining_nodes) > 1:
+            any_merges_happened = False
+            new_remaining_nodes = []
+
+            # Process all remaining nodes
+            while remaining_nodes:
+                current_node = remaining_nodes.pop(0)
+                merged_this_iter = False
+
+                # Compare with each other node
+                i = 0
+                while i < len(remaining_nodes):
+                    other_node = remaining_nodes[i]
+
+                    # Skip if we've already tried to merge this pair
+                    pair_key = frozenset([current_node.name, other_node.name])
+                    if pair_key in merged_pairs:
+                        i += 1
+                        continue
+
+                    # Check if these nodes are duplicates
+                    is_dup, _ = is_duplicate_functionality(current_node, [other_node], self.llm)
+
+                    if is_dup:
+                        logger.debug(
+                            "Found duplicate nodes: '%s' and '%s'. Attempting to merge.",
+                            current_node.name,
+                            other_node.name,
+                        )
+
+                        # Try to merge the nodes
+                        merge_candidates = [current_node, other_node]
+                        merged_result = _process_node_group_for_merge(merge_candidates, self.llm)
+
+                        if len(merged_result) == 1:
+                            # Successful merge
+                            logger.debug(
+                                "Successfully merged '%s' and '%s' into '%s'",
+                                current_node.name,
+                                other_node.name,
+                                merged_result[0].name,
+                            )
+
+                            # Replace current_node with the merged node
+                            current_node = merged_result[0]
+
+                            # Remove the other node from consideration
+                            remaining_nodes.pop(i)
+
+                            merged_this_iter = True
+                            any_merges_happened = True
+                        else:
+                            # Mark this pair as processed
+                            merged_pairs.add(pair_key)
+                            i += 1
+                    else:
+                        i += 1
+
+                # Add the current node back to the list (possibly merged)
+                new_remaining_nodes.append(current_node)
+
+            # Update the remaining nodes for the next iteration
+            remaining_nodes = new_remaining_nodes
+
+            if any_merges_happened:
+                logger.debug(
+                    "Completed a merge pass, %d nodes remaining",
+                    len(remaining_nodes),
+                )
+
+        logger.verbose(
+            "Aggressive deduplication complete: reduced from %d to %d nodes", len(nodes), len(remaining_nodes)
+        )
+        return remaining_nodes
+
     def run_analysis(self, exploration_results: dict[str, Any]) -> dict[str, list[Any]]:
         """Runs the LangGraph analysis pipeline using pre-compiled graphs."""
         conversation_count = len(exploration_results.get("conversation_sessions", []))
@@ -348,6 +454,46 @@ class ChatbotExplorationAgent:
             conversation_count,
             functionality_count,
         )
+
+        # Deduplicate functionalities before analysis
+        root_nodes_dict = exploration_results.get("root_nodes_dict", {})
+        if root_nodes_dict:
+            logger.info("\nDeduplicating functionalities before analysis")
+            # Convert dictionaries back to FunctionalityNode objects for deduplication
+            functionality_nodes = []
+            for node_dict in root_nodes_dict:
+                node = FunctionalityNode.from_dict(node_dict)
+                functionality_nodes.append(node)
+
+            logger.debug("--- Functionality Nodes Before Deduplication ---")
+            if not functionality_nodes:
+                logger.debug("No functionality nodes to display before deduplication.")
+            for i, node in enumerate(functionality_nodes):
+                logger.debug("Node %d (Before Deduplication):", i + 1)
+                for line in node.to_detailed_string(indent_level=1).splitlines():
+                    logger.debug("  %s", line)
+
+            # Apply aggressive pairwise deduplication instead of name-based grouping
+            logger.debug(
+                "Running aggressive pairwise deduplication on %d functionality nodes", len(functionality_nodes)
+            )
+            deduplicated_nodes = self._aggressive_node_deduplication(functionality_nodes)
+            logger.info(
+                "Deduplication complete: %d nodes reduced to %d nodes",
+                len(functionality_nodes),
+                len(deduplicated_nodes),
+            )
+
+            logger.debug("--- Functionality Nodes After Deduplication ---")
+            for i, node in enumerate(deduplicated_nodes):
+                logger.debug("Node %d (After Deduplication):", i + 1)
+                for line in node.to_detailed_string(indent_level=1).splitlines():
+                    logger.debug("  %s", line)
+
+            # Convert back to dictionaries for the workflow builder
+            root_nodes_dict = [node.to_dict() for node in deduplicated_nodes]
+            exploration_results["root_nodes_dict"] = root_nodes_dict
+            logger.debug("Updated exploration results with %d deduplicated nodes", len(root_nodes_dict))
 
         # 1. Structure analysis phase
         logger.info("\nStep 1: Workflow structure inference")

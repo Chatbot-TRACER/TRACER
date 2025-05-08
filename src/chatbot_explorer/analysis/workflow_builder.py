@@ -134,7 +134,7 @@ def build_workflow_structure(
     # Extract conversation snippets
     snippets = []
     total_snippet_length = 0
-    max_total_snippet_length = 7000  # Larger context for structure analysis
+    max_total_snippet_length = 7000
 
     if isinstance(conversation_history, list):
         for i, session_history in enumerate(conversation_history):

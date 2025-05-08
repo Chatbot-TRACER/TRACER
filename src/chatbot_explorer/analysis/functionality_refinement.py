@@ -32,6 +32,8 @@ def is_duplicate_functionality(
         If True, also returns the existing node it matches with.
     """
     # Simple checks first
+    logger.debug("Checking if '%s' is a duplicate against %d existing nodes", node_to_check.name, len(existing_nodes))
+
     for existing in existing_nodes:
         if (
             existing.name.lower() == node_to_check.name.lower()
@@ -53,14 +55,28 @@ def is_duplicate_functionality(
         logger.debug("Checking if '%s' is semantically equivalent to any existing node", node_to_check.name)
         response = llm.invoke(duplicate_check_prompt)
         result_content = response.content.strip().upper()
+        logger.debug("LLM duplicate check response: %s", result_content[:100])
 
+        # First try exact format "DUPLICATE_OF: nodename"
         match = re.search(r"DUPLICATE_OF:\s*([\w_]+)", result_content)
+        if not match:
+            # Fallback to more flexible pattern if exact format isn't found
+            match = re.search(r"DUPLICATE_OF:?\s*[\'\"]*([A-Za-z0-9_]+)[\'\"]*", result_content)
+
         if match:
             existing_node_name = match.group(1)
+            logger.debug("LLM identified potential duplicate: '%s' might match '%s'",
+                        node_to_check.name, existing_node_name)
+
             # Find the actual existing node object by this name
             exact_match = None
             for existing in existing_nodes:
-                if existing.name.upper() == existing_node_name:
+                # Clean up the name for comparison if there's a newline or description
+                clean_existing_name = existing.name
+                if "\n" in clean_existing_name or "description:" in clean_existing_name.lower():
+                    clean_existing_name = clean_existing_name.split("\n")[0].split("description:")[0].strip()
+
+                if clean_existing_name.upper() == existing_node_name:
                     logger.debug(
                         "LLM identified semantic duplicate: '%s' matches existing '%s'",
                         node_to_check.name,
@@ -70,7 +86,12 @@ def is_duplicate_functionality(
 
             # If no exact match, try case-insensitive match
             for existing in existing_nodes:
-                if existing.name.upper() == existing_node_name.upper():
+                # Clean up the name for comparison if there's a newline or description
+                clean_existing_name = existing.name
+                if "\n" in clean_existing_name or "description:" in clean_existing_name.lower():
+                    clean_existing_name = clean_existing_name.split("\n")[0].split("description:")[0].strip()
+
+                if clean_existing_name.upper() == existing_node_name.upper():
                     logger.debug(
                         "LLM identified semantic duplicate (case-insensitive): '%s' matches existing '%s'",
                         node_to_check.name,
@@ -81,8 +102,13 @@ def is_duplicate_functionality(
             # Try to find a fuzzy match based on string
             best_match = None
             for existing in existing_nodes:
+                # Clean up the name for comparison
+                clean_existing_name = existing.name
+                if "\n" in clean_existing_name or "description:" in clean_existing_name.lower():
+                    clean_existing_name = clean_existing_name.split("\n")[0].split("description:")[0].strip()
+
                 # Check if the identified name is a substring of an existing node or vice versa
-                existing_name_lower = existing.name.lower()
+                existing_name_lower = clean_existing_name.lower()
                 identified_name_lower = existing_node_name.lower()
 
                 if existing_name_lower in identified_name_lower or identified_name_lower in existing_name_lower:
