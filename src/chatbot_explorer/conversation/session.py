@@ -9,6 +9,7 @@ from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, System
 
 from chatbot_explorer.analysis.functionality_extraction import extract_functionality_nodes
 from chatbot_explorer.analysis.functionality_refinement import (
+    _process_node_group_for_merge,
     is_duplicate_functionality,
     merge_similar_functionalities,
     validate_parent_child_relationship,
@@ -167,6 +168,65 @@ def _add_new_node_to_graph(
     return True  # Indicate node was added
 
 
+def _remove_node_from_graph(node_name: str, graph_state: ExplorationGraphState) -> bool:
+    """Removes a node and its children from the graph state.
+
+    Args:
+        node_name: The name of the node to remove
+        graph_state: The current exploration graph state
+
+    Returns:
+        True if the node was found and removed, False otherwise
+    """
+    logger.debug("Attempting to remove node '%s' from graph", node_name)
+
+    # Helper function to recursively find and remove a node
+    def _find_and_remove_node(
+        nodes: list[FunctionalityNode], target_name: str, parent: FunctionalityNode = None
+    ) -> tuple[bool, list[FunctionalityNode]]:
+        remaining_nodes = []
+        found = False
+
+        for node in nodes:
+            if node.name == target_name:
+                found = True
+                # If found, don't add to remaining_nodes
+                logger.debug("Found node '%s' to remove", target_name)
+
+                # Also remove from explored and pending nodes
+                if target_name in graph_state["explored_nodes"]:
+                    graph_state["explored_nodes"].remove(target_name)
+
+                # Remove from pending nodes if present
+                graph_state["pending_nodes"] = [n for n in graph_state["pending_nodes"] if n.name != target_name]
+
+                # Don't process children - they'll be removed with the parent
+                continue
+
+            # Process this node's children
+            if node.children:
+                child_found, remaining_children = _find_and_remove_node(node.children, target_name, node)
+                found = found or child_found
+
+                # Update the node's children list with remaining children
+                node.children = remaining_children
+
+            # Keep this node
+            remaining_nodes.append(node)
+
+        return found, remaining_nodes
+
+    # Start removal from root nodes
+    found, graph_state["root_nodes"] = _find_and_remove_node(graph_state["root_nodes"], node_name)
+
+    if found:
+        logger.debug("Successfully removed node '%s' from graph", node_name)
+    else:
+        logger.warning("Failed to remove node '%s': Not found in graph", node_name)
+
+    return found
+
+
 def _analyze_session_and_update_nodes(
     conversation_history_lc: list[BaseMessage],
     llm: BaseLanguageModel,
@@ -191,96 +251,147 @@ def _analyze_session_and_update_nodes(
 
     logger.verbose("\nAnalyzing conversation for new functionalities...")
     newly_extracted_nodes_raw = extract_functionality_nodes(conversation_history_dict, llm, current_node)
-    session_added_nodes = []
+    session_added_or_merged_log_messages = []
 
     if newly_extracted_nodes_raw:
-        logger.debug(">>> Raw Extracted Nodes from this Session (%d):", len(newly_extracted_nodes_raw))
-        for i, node in enumerate(newly_extracted_nodes_raw):
-            logger.debug("  RAW_EXTRACTED[%d]: Name: %s, Desc: %s...", i, node.name, node.description[:50])
+        logger.debug(
+            ">>> Raw Extracted Nodes from this Session (%d)",
+            len(newly_extracted_nodes_raw),
+        )
+        for node in newly_extracted_nodes_raw:
+            logger.debug(" • %s", node.name)
 
-        # 1. Merge similar nodes discovered *within this session's extractions*
+        # 1. Merge similar nodes discovered within this session's extractions
         logger.debug(">>> Performing Session-Local Merge on %d raw extracted nodes...", len(newly_extracted_nodes_raw))
         processed_new_nodes_this_session = merge_similar_functionalities(newly_extracted_nodes_raw, llm)
-        logger.debug("<<< Nodes after Session-Local Merge (%d):", len(processed_new_nodes_this_session))
-        for i, node in enumerate(processed_new_nodes_this_session):
-            logger.debug("  SESSION_MERGED[%d]: Name: %s, Desc: %s...", i, node.name, node.description[:50])
+        logger.debug(
+            "<<< Nodes after Session-Local Merge (%d)",
+            len(processed_new_nodes_this_session),
+        )
+        for node in processed_new_nodes_this_session:
+            logger.debug(" • %s", node.name)
 
-        # Get all unique nodes currently in the graph for duplicate checking.
-        all_existing_nodes_in_graph = []
+        nodes_in_graph_before_this_session_processing = []
         for root in graph_state["root_nodes"]:
-            all_existing_nodes_in_graph.extend(_get_all_nodes(root))  # Assuming _get_all_nodes flattens the tree
-        logger.debug("Found %d existing nodes in graph for duplicate checking.", len(all_existing_nodes_in_graph))
+            nodes_in_graph_before_this_session_processing.extend(_get_all_nodes(root))
 
-        nodes_added_in_current_pass = []  # For duplicate checking within this session's batch
+        # To avoid repeated checks against the same existing nodes if multiple new nodes are similar to them
+        already_merged_with_existing_names = set()
 
-        for new_node in processed_new_nodes_this_session:
-            logger.debug("--- Processing node for addition: '%s' ---", new_node.name)
-            # 2. Check if this new_node is a duplicate of anything already in the graph or added this pass.
-            combined_check_list = all_existing_nodes_in_graph + nodes_added_in_current_pass
-            logger.debug(
-                "Checking for duplicates of '%s' against %d existing/session-added nodes.",
-                new_node.name,
-                len(combined_check_list),
+        for new_node_candidate in processed_new_nodes_this_session:
+            logger.debug("--- Processing node for addition/merge: '%s' ---", new_node_candidate.name)
+
+            # Check for duplicates against nodes ALREADY IN THE GRAPH from previous sessions
+            is_dup, matching_existing_node_obj = is_duplicate_functionality(
+                new_node_candidate,
+                nodes_in_graph_before_this_session_processing,  # Check only against established graph nodes
+                llm,
             )
-            is_dup = is_duplicate_functionality(
-                new_node, combined_check_list, llm
-            )  # is_duplicate_functionality should log its reasoning
 
-            if not is_dup:
-                logger.debug("Node '%s' is NOT a duplicate. Attempting to add to graph.", new_node.name)
-                was_added = _add_new_node_to_graph(
-                    new_node, current_node, graph_state, llm
-                )  # _add_new_node_to_graph handles parent/child linking
-                if was_added:
-                    logger.debug("Successfully added '%s' to the graph.", new_node.name)
-                    nodes_added_in_current_pass.append(new_node)
-                    session_added_nodes.append(new_node)
-                    # Update all_existing_nodes_in_graph to include the newly added node for subsequent checks in this loop
-                    all_existing_nodes_in_graph.append(new_node)
-                else:
-                    logger.warning(
-                        "Failed to add node '%s' to graph (e.g., relationship validation failed).", new_node.name
+            if is_dup and matching_existing_node_obj:
+                if matching_existing_node_obj.name in already_merged_with_existing_names:
+                    logger.debug(
+                        "Node '%s' is a duplicate of '%s', which has already been targeted for a merge this session. Skipping.",
+                        new_node_candidate.name,
+                        matching_existing_node_obj.name,
                     )
-            else:
-                logger.debug("Skipped adding node '%s' as it was identified as a duplicate.", new_node.name)
+                    continue
 
-        # Optional: Global merge of root nodes after session additions.
-        # This can be heavy. Consider if this is better done less frequently or as part of the end-of-exploration phase.
-        if session_added_nodes and graph_state["root_nodes"]:  # Only if new nodes were added AND there are roots
+                logger.debug(
+                    "Node '%s' is a duplicate of existing node '%s'. Attempting to merge them.",
+                    new_node_candidate.name,
+                    matching_existing_node_obj.name,
+                )
+
+                merge_candidates = [new_node_candidate, matching_existing_node_obj]
+                merged_result_list = _process_node_group_for_merge(merge_candidates, llm)
+
+                if len(merged_result_list) == 1 and merged_result_list[0].name != matching_existing_node_obj.name:
+                    merged_node = merged_result_list[0]
+                    logger.debug(
+                        "Successfully merged '%s' and '%s' into '%s'. Updating graph.",
+                        new_node_candidate.name,
+                        matching_existing_node_obj.name,
+                        merged_node.name,
+                    )
+
+                    # Simplistic approach for now: Remove old, add new (potentially as root, hierarchy fixed later)
+                    _remove_node_from_graph(matching_existing_node_obj.name, graph_state)
+                    _add_new_node_to_graph(merged_node, None, graph_state, llm)
+                    session_added_or_merged_log_messages.append(
+                        f"MERGED {new_node_candidate.name} with {matching_existing_node_obj.name} into {merged_node.name}"
+                    )
+                    already_merged_with_existing_names.add(
+                        matching_existing_node_obj.name
+                    )  # Mark as processed for merge
+                    nodes_in_graph_before_this_session_processing.append(
+                        merged_node
+                    )  # Add to list for subsequent checks
+                    if matching_existing_node_obj in nodes_in_graph_before_this_session_processing:
+                        nodes_in_graph_before_this_session_processing.remove(matching_existing_node_obj)
+
+                elif len(merged_result_list) == 1 and merged_result_list[0].name == matching_existing_node_obj.name:
+                    logger.debug(
+                        "Merge attempt between '%s' and '%s' resulted in keeping existing '%s' (no change or new info deemed better).",
+                        new_node_candidate.name,
+                        matching_existing_node_obj.name,
+                        matching_existing_node_obj.name,
+                    )
+                    session_added_or_merged_log_messages.append(
+                        f"CONSIDERED_MERGE {new_node_candidate.name} with {matching_existing_node_obj.name}, existing kept."
+                    )
+                    already_merged_with_existing_names.add(matching_existing_node_obj.name)
+
+                else:
+                    logger.debug(
+                        "Merge attempt between '%s' and '%s' decided to keep them separate. Adding '%s' as new.",
+                        new_node_candidate.name,
+                        matching_existing_node_obj.name,
+                        new_node_candidate.name,
+                    )
+                    was_added = _add_new_node_to_graph(new_node_candidate, current_node, graph_state, llm)
+                    if was_added:
+                        session_added_or_merged_log_messages.append(f"ADDED_NEW {new_node_candidate.name}")
+                        nodes_in_graph_before_this_session_processing.append(new_node_candidate)
+
+            elif not is_dup:
+                logger.debug(
+                    "Node '%s' is NOT a duplicate of any existing graph node. Attempting to add as new.",
+                    new_node_candidate.name,
+                )
+                was_added = _add_new_node_to_graph(new_node_candidate, current_node, graph_state, llm)
+                if was_added:
+                    session_added_or_merged_log_messages.append(f"ADDED_NEW {new_node_candidate.name}")
+                    nodes_in_graph_before_this_session_processing.append(new_node_candidate)
+            else:
+                logger.warning(
+                    "Node '%s' flagged as duplicate by LLM, but no specific matching node identified. Skipping for safety.",
+                    new_node_candidate.name,
+                )
+
+        # Global merge of root nodes after session additions.
+        if graph_state["root_nodes"]:
             logger.debug(">>> Performing Post-Session Merge on all %d Root Nodes...", len(graph_state["root_nodes"]))
-            original_root_names = [r.name for r in graph_state["root_nodes"]]
-            graph_state["root_nodes"] = merge_similar_functionalities(
-                list(graph_state["root_nodes"]), llm
-            )  # Pass a copy
+            original_root_count = len(graph_state["root_nodes"])
+            graph_state["root_nodes"] = merge_similar_functionalities(list(graph_state["root_nodes"]), llm)
             logger.debug(
-                "<<< Root Nodes after Post-Session Merge (%d). Original roots: %s",
+                "<<< Root Nodes after Post-Session Merge (%d from %d).",
                 len(graph_state["root_nodes"]),
-                original_root_names,
+                original_root_count,
             )
-            current_root_names = [r.name for r in graph_state["root_nodes"]]
-            if original_root_names != current_root_names:  # Check if any change happened
-                logger.debug("  Current roots: %s", current_root_names)
 
     if current_node:
         graph_state["explored_nodes"].add(current_node.name)
 
     logger.info("--- Session Summary ---")
-    if session_added_nodes:
-        logger.info("\nDiscovered and added %d new unique functionalities in this session:", len(session_added_nodes))
-        for node in session_added_nodes:
-            # Finding parentage for logging can be tricky here as graph_state is mutable
-            # This is a simplified way to show context
-            relation_to_current = (
-                " (related to current node exploration)" if current_node and node.parent == current_node else ""
-            )
-            logger.info(" • ADDED: %s %s", node.name, relation_to_current)
+    if session_added_or_merged_log_messages:
+        logger.info("Session processing resulted in %d additions/merges:", len(session_added_or_merged_log_messages))
+        for msg in session_added_or_merged_log_messages:
+            logger.info(" • %s", msg)
     else:
-        logger.info("No new unique functionalities were added to the graph in this session.")
+        logger.info("No new functionalities were added or merged in this session based on current graph state.")
     logger.debug("----------------------------------------------------------------------")
-    logger.debug(
-        "Ending Node Analysis for Session. Current Node: %s",
-        current_node.name if current_node else "None (Initial Exploration)",
-    )
+    logger.debug("Ending Node Analysis for Session.")
     logger.debug("----------------------------------------------------------------------\n")
 
     return conversation_history_dict, graph_state

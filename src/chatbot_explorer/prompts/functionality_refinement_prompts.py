@@ -19,7 +19,13 @@ def get_duplicate_check_prompt(node: FunctionalityNode, existing_descriptions: l
 
     A functionality is a duplicate if it represents the SAME ACTION/CAPABILITY, even if described differently.
 
-    Respond with ONLY "DUPLICATE" or "UNIQUE" followed by a brief explanation.
+    Respond with:
+    - "UNIQUE" if the new functionality is distinct.
+    - "DUPLICATE_OF: [name_of_existing_functionality_it_matches]" if it is a semantic duplicate.
+
+    IMPORTANT: For the node name in your "DUPLICATE_OF:" response, use the EXACT name from the existing functionalities list, maintaining the exact spelling, case, and format. Do not add any additional words or variations.
+
+    Followed by a brief explanation.
     """
 
 
@@ -66,7 +72,7 @@ def get_merge_prompt(group: list[FunctionalityNode]) -> str:
     Analyze the following functionality nodes. Your primary goal is to determine if they represent the **same core chatbot function/action from the user's perspective**, even if there are minor variations in naming, description, or specific context mentioned (like item size or type).
 
     Functionality Nodes to Evaluate for Merging:
-    {json.dumps([{"name": n.name, "description": n.description, "parameters": [p.model_dump_json() for p in n.parameters], "outputs": [o.model_dump_json() for o in n.outputs]} for n in group], indent=2)}
+    {json.dumps([{"name": n.name, "description": n.description, "parameters": [p.to_dict() for p in n.parameters], "outputs": [o.to_dict() for o in n.outputs]} for n in group], indent=2)}
 
     **CRITERIA FOR MERGING (All must generally apply):**
     1.  **Functionally Equivalent Core Task:** ... The user goal addressed is identical.

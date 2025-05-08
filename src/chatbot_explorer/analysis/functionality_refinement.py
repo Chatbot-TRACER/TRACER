@@ -16,25 +16,29 @@ logger = get_logger()
 
 
 def is_duplicate_functionality(
-    node: FunctionalityNode, existing_nodes: list[FunctionalityNode], llm: BaseLanguageModel | None = None
-) -> bool:
+    node_to_check: FunctionalityNode, existing_nodes: list[FunctionalityNode], llm: BaseLanguageModel | None = None
+) -> tuple[bool, FunctionalityNode | None]:
     """Checks if a given node is semantically equivalent to any node in a list of existing nodes.
 
-    Uses simple string comparison first, then optionally leverages an LLM for a more nuanced check.
+    Uses simple string comparison first, if no duplicates are found, it uses an LLM to check for semantic equivalence.
 
     Args:
-        node: The node to check for duplication.
+        node_to_check: The node to check for duplicates.
         existing_nodes: A list of nodes already discovered.
         llm: The language model instance, if available for semantic checking.
 
     Returns:
         True if the node is considered a duplicate, False otherwise.
+        If True, also returns the existing node it matches with.
     """
     # Simple checks first
     for existing in existing_nodes:
-        if existing.name.lower() == node.name.lower() or existing.description.lower() == node.description.lower():
-            logger.debug("Found exact match duplicate: '%s'", node.name)
-            return True
+        if (
+            existing.name.lower() == node_to_check.name.lower()
+            or existing.description.lower() == node_to_check.description.lower()
+        ):
+            logger.debug("Found exact match duplicate: '%s' matches existing '%s'", node_to_check.name, existing.name)
+            return True, existing
 
     # Use LLM for smarter check if available and if there are nodes to compare against
     if llm and existing_nodes:
@@ -42,20 +46,77 @@ def is_duplicate_functionality(
         existing_descriptions = [f"Name: {n.name}, Description: {n.description}" for n in nodes_to_check]
 
         duplicate_check_prompt = get_duplicate_check_prompt(
-            node=node,
+            node=node_to_check,
             existing_descriptions=existing_descriptions,
         )
 
-        logger.debug("Checking if '%s' is semantically equivalent to any existing node", node.name)
+        logger.debug("Checking if '%s' is semantically equivalent to any existing node", node_to_check.name)
         response = llm.invoke(duplicate_check_prompt)
-        result = response.content.strip().upper()
+        result_content = response.content.strip().upper()
 
-        if "DUPLICATE" in result:
-            logger.debug("LLM identified semantic duplicate: '%s'", node.name)
-            return True
+        match = re.search(r"DUPLICATE_OF:\s*([\w_]+)", result_content)
+        if match:
+            existing_node_name = match.group(1)
+            # Find the actual existing node object by this name
+            exact_match = None
+            for existing in existing_nodes:
+                if existing.name.upper() == existing_node_name:
+                    logger.debug(
+                        "LLM identified semantic duplicate: '%s' matches existing '%s'",
+                        node_to_check.name,
+                        existing.name,
+                    )
+                    return True, existing  # Return the existing node object
 
-    # If no duplicate found by simple checks or LLM
-    return False
+            # If no exact match, try case-insensitive match
+            for existing in existing_nodes:
+                if existing.name.upper() == existing_node_name.upper():
+                    logger.debug(
+                        "LLM identified semantic duplicate (case-insensitive): '%s' matches existing '%s'",
+                        node_to_check.name,
+                        existing.name,
+                    )
+                    return True, existing
+
+            # Try to find a fuzzy match based on string
+            best_match = None
+            for existing in existing_nodes:
+                # Check if the identified name is a substring of an existing node or vice versa
+                existing_name_lower = existing.name.lower()
+                identified_name_lower = existing_node_name.lower()
+
+                if existing_name_lower in identified_name_lower or identified_name_lower in existing_name_lower:
+                    best_match = existing
+                    logger.debug(
+                        "Found fuzzy match: LLM identified '%s', matched with existing '%s'",
+                        existing_node_name,
+                        existing.name,
+                    )
+                    return True, best_match
+
+            # If still no match found, log warning
+            logger.warning(
+                "LLM said DUPLICATE_OF '%s' but node not found in existing_nodes list.", existing_node_name
+            )  # Should not happen if prompt is good
+
+            return False, None  # Fallback, treat as unique if named node not found
+
+        if "DUPLICATE" in result_content:  # Generic duplicate if specific name isn't parsed
+            logger.warning(
+                "LLM said DUPLICATE but couldn't parse specific match name for '%s'. Trying to find a close match.",
+                node_to_check.name,
+            )
+            # Return the most similar node by name length ratio as a heuristic
+            if existing_nodes:
+                logger.info(
+                    "Using first existing node '%s' as a proxy match for '%s'",
+                    existing_nodes[0].name,
+                    node_to_check.name,
+                )
+                return True, existing_nodes[0]
+            return False, None
+
+    return False, None
 
 
 def validate_parent_child_relationship(
