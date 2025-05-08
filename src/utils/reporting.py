@@ -1,5 +1,6 @@
 """Utilities for generating reports and visualizations from chatbot exploration."""
 
+import html
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -102,18 +103,21 @@ def _create_node_html_label(node_name: str, node_dict: dict, node_style: dict[st
     """Creates an HTML-like label for structured node display."""
     params_data = node_dict.get("parameters", [])
     outputs_data = node_dict.get("outputs", [])
+    node_description = node_dict.get("description")
 
-    # If no parameters and no outputs, use a simple label
-    if (not isinstance(params_data, list) or not params_data) and (
-        not isinstance(outputs_data, list) or not outputs_data
-    ):
+    has_params = isinstance(params_data, list) and params_data
+    has_outputs = isinstance(outputs_data, list) and outputs_data
+    has_description = isinstance(node_description, str) and node_description.strip()
+
+    # If no parameters, no outputs, and no description, use a simple label
+    if not has_params and not has_outputs and not has_description:
         return None
 
     # Format node name with better spacing and capitalization
     formatted_name = node_name.replace("_", " ").title()
 
     # Create a structured HTML table with modern styling - simplified structure to avoid nesting issues
-    html_label = f'''<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" STYLE="rounded">
+    html_label = f"""<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" STYLE="rounded">
     <!-- Header row -->
     <TR>
         <TD BGCOLOR="{node_style["fillcolor"].split(":")[0]}"
@@ -124,11 +128,22 @@ def _create_node_html_label(node_name: str, node_dict: dict, node_style: dict[st
             COLOR="{node_style["color"]}">
             <B>{formatted_name}</B>
         </TD>
-    </TR>'''
+    </TR>"""
+
+    # Description section (if description exists)
+    if has_description:
+        escaped_description = html.escape(node_description)
+        html_label += f"""
+    <TR>
+        <TD BGCOLOR="#f0f0f0" BORDER="1" COLOR="{node_style["color"]}" STYLE="rounded" ALIGN="LEFT">
+            <FONT POINT-SIZE="10" COLOR="#555555">{escaped_description}</FONT>
+        </TD>
+    </TR>"""
 
     # Parameters section (if parameters exist)
-    if isinstance(params_data, list) and params_data:
-        html_label += f'''
+    if has_params:
+        html_label += f"""
+
     <!-- Parameters header -->
     <TR>
         <TD BGCOLOR="#f8f9fa"
@@ -138,39 +153,39 @@ def _create_node_html_label(node_name: str, node_dict: dict, node_style: dict[st
             ALIGN="CENTER">
             <FONT POINT-SIZE="10" COLOR="#6c757d">Parameters</FONT>
         </TD>
-    </TR>'''
+    </TR>"""
 
         # Add each parameter in a separate row - avoid nested tables
         for param in params_data:
             if isinstance(param, dict):
                 p_name = param.get("name", "?")
-                html_label += f'''
+                html_label += f"""
     <TR>
         <TD ALIGN="LEFT" BORDER="1" COLOR="{node_style["color"]}" BGCOLOR="#ffffff" STYLE="rounded">
             <FONT POINT-SIZE="11"><B>{p_name}</B></FONT>
         </TD>
-    </TR>'''
+    </TR>"""
 
                 # Add options as separate rows rather than nested tables
                 p_options = param.get("options", [])
                 for option in p_options:
-                    html_label += f'''
+                    html_label += f"""
     <TR>
         <TD ALIGN="LEFT" BORDER="0" BGCOLOR="#f8f9fa">
             <FONT POINT-SIZE="10" COLOR="#495057">• {option}</FONT>
         </TD>
-    </TR>'''
+    </TR>"""
             elif isinstance(param, str):
-                html_label += f'''
+                html_label += f"""
     <TR>
         <TD ALIGN="LEFT" BORDER="1" COLOR="{node_style["color"]}" BGCOLOR="#ffffff" STYLE="rounded">
             <FONT POINT-SIZE="11">{param}</FONT>
         </TD>
-    </TR>'''
+    </TR>"""
 
     # Outputs section (if outputs exist)
-    if isinstance(outputs_data, list) and outputs_data:
-        html_label += f'''
+    if has_outputs:
+        html_label += f"""
     <!-- Outputs header -->
     <TR>
         <TD BGCOLOR="#f2f7ed"
@@ -180,39 +195,39 @@ def _create_node_html_label(node_name: str, node_dict: dict, node_style: dict[st
             ALIGN="CENTER">
             <FONT POINT-SIZE="10" COLOR="#4f6e48">Outputs</FONT>
         </TD>
-    </TR>'''
+    </TR>"""
 
         # Add each output in a separate row - avoid nested tables
         for output in outputs_data:
             if isinstance(output, dict):
                 o_category = output.get("category", "?")
-                html_label += f'''
+                html_label += f"""
     <TR>
         <TD ALIGN="LEFT" BORDER="1" COLOR="{node_style["color"]}" BGCOLOR="#ffffff" STYLE="rounded">
             <FONT POINT-SIZE="11"><B>{o_category}</B></FONT>
         </TD>
-    </TR>'''
+    </TR>"""
 
                 # Add description as separate row
                 o_desc = output.get("description", "")
                 if o_desc:
-                    html_label += f'''
+                    html_label += f"""
     <TR>
         <TD ALIGN="LEFT" BORDER="0" BGCOLOR="#f8f9fa">
             <FONT POINT-SIZE="10" COLOR="#4f6e48">{o_desc}</FONT>
         </TD>
-    </TR>'''
+    </TR>"""
             elif isinstance(output, str):
-                html_label += f'''
+                html_label += f"""
     <TR>
         <TD ALIGN="LEFT" BORDER="1" COLOR="{node_style["color"]}" BGCOLOR="#ffffff" STYLE="rounded">
             <FONT POINT-SIZE="11">{output}</FONT>
         </TD>
-    </TR>'''
+    </TR>"""
 
     # Close the table
-    html_label += '''
-</TABLE>>'''
+    html_label += """
+</TABLE>>"""
 
     return html_label
 
@@ -269,16 +284,22 @@ def _add_edges_for_children(
                     parent_outputs = node_dict.get("outputs", [])
                     child_params = child_dict.get("parameters", [])
                     child_outputs = child_dict.get("outputs", [])
+                    parent_description = node_dict.get("description")
+                    child_description = child_dict.get("description")
 
-                    parent_has_html = (isinstance(parent_params, list) and parent_params) or (
-                        isinstance(parent_outputs, list) and parent_outputs
+                    parent_has_details = (
+                        (isinstance(parent_params, list) and parent_params)
+                        or (isinstance(parent_outputs, list) and parent_outputs)
+                        or (isinstance(parent_description, str) and parent_description.strip())
                     )
-                    child_has_html = (isinstance(child_params, list) and child_params) or (
-                        isinstance(child_outputs, list) and child_outputs
+                    child_has_details = (
+                        (isinstance(child_params, list) and child_params)
+                        or (isinstance(child_outputs, list) and child_outputs)
+                        or (isinstance(child_description, str) and child_description.strip())
                     )
 
-                    source = f"{parent_name}:main" if parent_has_html else parent_name
-                    target = f"{child_name}:main" if child_has_html else child_name
+                    source = f"{parent_name}:main" if parent_has_details else parent_name
+                    target = f"{child_name}:main" if child_has_details else child_name
 
                     edge_style = {}
                     if depth > 3:
@@ -371,12 +392,14 @@ def generate_graph_image(structured_data: list[FunctionalityNode], output_filena
                 if edge_key not in context.processed_edges:
                     params_data = root_node_dict.get("parameters", [])
                     outputs_data = root_node_dict.get("outputs", [])
+                    description_data = root_node_dict.get("description")
 
-                    has_html = (isinstance(params_data, list) and params_data) or (
-                        isinstance(outputs_data, list) and outputs_data
+                    has_details = (
+                        (isinstance(params_data, list) and params_data)
+                        or (isinstance(outputs_data, list) and outputs_data)
+                        or (isinstance(description_data, str) and description_data.strip())
                     )
-
-                    target = f"{root_node_name}:main" if has_html else root_node_name
+                    target = f"{root_node_name}:main" if has_details else root_node_name
 
                     context.graph.edge(start_node_name, target)
                     context.processed_edges.add(edge_key)
@@ -423,9 +446,15 @@ def export_graph(
                 edge_key = (start_node_name, root_node_name)
                 if edge_key not in context.processed_edges:
                     params_data = root_node_dict.get("parameters", [])
-                    target = (
-                        f"{root_node_name}:main" if isinstance(params_data, list) and params_data else root_node_name
+                    outputs_data = root_node_dict.get("outputs", [])
+                    description_data = root_node_dict.get("description")
+
+                    has_details = (
+                        (isinstance(params_data, list) and params_data)
+                        or (isinstance(outputs_data, list) and outputs_data)
+                        or (isinstance(description_data, str) and description_data.strip())
                     )
+                    target = f"{root_node_name}:main" if has_details else root_node_name
 
                     context.graph.edge(start_node_name, target)
                     context.processed_edges.add(edge_key)
