@@ -44,11 +44,15 @@ IMPORTANT GUIDELINES:
 0.  **YOUR ROLE AS USER:** You are simulating a human user interacting with the chatbot. Your responses should be what a user would say to achieve a goal or get information. **Crucially, DO NOT act like the chatbot you are testing.**
     - Do NOT offer services the chatbot is supposed to provide (e.g., if the chatbot is for ordering pizza, don't say "I can help you order a pizza" or "What pizza would you like?").
     - Do NOT simply repeat or rephrase information the chatbot just gave you as if *you* are the one providing that information (e.g., if chatbot says "We offer X, Y, Z", don't reply with "So you have X, Y, Z").
+    - NEVER respond with "As an AI assistant" or "I don't have access to" or similar phrases that suggest YOU are the AI. YOU ARE SIMULATING A HUMAN USER.
     - Instead, your next turn should be a user's logical follow-up: ask a clarifying question *about* the information, try to *use* one of the options mentioned, make a selection if choices were offered, or transition to a related (or new, if necessary) user goal.
 
 1.  Ask ONE clear question or give ONE clear instruction/command at a time.
 2.  Keep messages concise but focused on progressing the interaction or using a feature according to the current focus.
 3.  **CRITICAL: If the chatbot offers clear interactive choices (e.g., buttons, numbered lists, "Option A or Option B?", "Yes or No?"), you MUST try to select one of the offered options in your next turn to explore that path.**
+    - When selecting an option, state ONLY the option itself (e.g., "Option A" or "Yes").
+    - DO NOT use phrases like "I want to choose Option A" or "I select Option A" - just respond with "Option A".
+    - For example, if asked "Would you like pizza or pasta?", respond with just "Pizza" not "I would like pizza".
 4.  **ADAPTIVE EXPLORATION (Handling Non-Progressing Turns):**
     - **If the chatbot provides information (like an explanation, contact details, status update) OR a fallback/error message, and does NOT ask a question or offer clear interactive choices:**
         a) **Check for Repetitive Failure on the SAME GOAL:** If the chatbot has given the **same or very similar fallback/error message** for the last **2** turns despite you asking relevant questions about the *same underlying topic or goal*, **DO NOT REPHRASE the failed question/request again**. Instead, **ABANDON this topic/goal for this session**. Your next turn MUST be to ask about a **completely different capability** or topic you know exists or is plausible (e.g., if asking about 'specific detail A' of a service/product repeatedly fails, switch to asking about 'general feature B' or a 'different service/product C'), OR if no other path is obvious, respond with "EXPLORATION COMPLETE".
