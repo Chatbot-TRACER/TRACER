@@ -14,6 +14,9 @@ from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
 
+MAX_DESCRIPTION_LENGTH = 80
+MAX_OUTPUTS_LENGTH = 80
+MAX_OPTIONS = 4
 
 # --------------------------------------------------- #
 # ---------------------- GRAPH ---------------------- #
@@ -27,6 +30,7 @@ class GraphBuildContext:
     graph: graphviz.Digraph
     processed_nodes: set[str] = field(default_factory=set)
     processed_edges: set[tuple[str, str]] = field(default_factory=set)
+    node_clusters: dict[str, graphviz.Digraph] = field(default_factory=dict)
 
 
 def _set_graph_attributes(dot: graphviz.Digraph) -> None:
@@ -45,7 +49,7 @@ def _set_graph_attributes(dot: graphviz.Digraph) -> None:
         pad="0.7",
         nodesep="0.8",
         ranksep="1.5",
-        splines="curved",  # Curved lines
+        splines="curved",
         overlap="false",
         dpi="300",
         label="Chatbot Functionality Workflow",
@@ -60,7 +64,7 @@ def _set_graph_attributes(dot: graphviz.Digraph) -> None:
         fontname=font,
         fontsize="12",
         margin="0.2,0.15",
-        penwidth="1.5",  # Slightly thicker borders for modern look
+        penwidth="1.5",
         fontcolor=fontcolor,
         height="0",  # Allow height to be determined by content
         width="0",  # Allow width to be determined by content
@@ -69,7 +73,7 @@ def _set_graph_attributes(dot: graphviz.Digraph) -> None:
     dot.attr(
         "edge",
         color=edge_color,
-        penwidth="1.2",  # Slightly thicker for visibility
+        penwidth="1.2",
         arrowsize="0.8",
         arrowhead="normal",
     )
@@ -80,7 +84,6 @@ def _get_node_style(depth: int) -> dict[str, str]:
 
     Extended to support unlimited depth levels with a consistent color pattern.
     """
-    # Modern gradient color schemes with extended palette
     color_schemes = {
         0: {"fillcolor": "#E3F2FD:#BBDEFB", "color": "#2196F3"},  # Blue theme
         1: {"fillcolor": "#E8F5E9:#C8E6C9", "color": "#4CAF50"},  # Green theme
@@ -99,8 +102,8 @@ def _get_node_style(depth: int) -> dict[str, str]:
     return color_schemes[depth_mod]
 
 
-def _create_node_html_label(node_name: str, node_dict: dict, node_style: dict[str, str]) -> str:
-    """Creates an HTML-like label for structured node display."""
+def _create_node_html_label(node_name: str, node_dict: FunctionalityNode, node_style: dict[str, str]) -> str | None:
+    """Creates an HTML-like label for structured node display with improved compactness."""
     params_data = node_dict.get("parameters", [])
     outputs_data = node_dict.get("outputs", [])
     node_description = node_dict.get("description")
@@ -109,126 +112,139 @@ def _create_node_html_label(node_name: str, node_dict: dict, node_style: dict[st
     has_outputs = isinstance(outputs_data, list) and outputs_data
     has_description = isinstance(node_description, str) and node_description.strip()
 
-    # If no parameters, no outputs, and no description, use a simple label
     if not has_params and not has_outputs and not has_description:
         return None
 
-    # Format node name with better spacing and capitalization
-    formatted_name = node_name.replace("_", " ").title()
+    formatted_name = html.escape(node_name.replace("_", " ").title())
 
-    # Create a structured HTML table with modern styling - simplified structure to avoid nesting issues
-    html_label = f"""<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" STYLE="rounded">
+    # Cell styling with consistent border and better padding
+    bordered_cell_style = f'BORDER="1" COLOR="{node_style["color"]}" STYLE="rounded"'
+    detail_cell_style = 'BORDER="0" ALIGN="LEFT"'
+
+    # Start HTML table with fixed-width to prevent overly wide nodes
+    html_label = f"""<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2" STYLE="rounded" FIXEDSIZE="FALSE" WIDTH="150">
     <!-- Header row -->
     <TR>
-        <TD BGCOLOR="{node_style["fillcolor"].split(":")[0]}"
-            STYLE="rounded"
-            COLSPAN="1"
-            PORT="main"
-            BORDER="1"
-            COLOR="{node_style["color"]}">
-            <B>{formatted_name}</B>
+        <TD BGCOLOR="{node_style["fillcolor"].split(":")[0]}" {bordered_cell_style} COLSPAN="1" PORT="main" ALIGN="CENTER">
+            <FONT POINT-SIZE="12"><B>{formatted_name}</B></FONT>
         </TD>
     </TR>"""
 
-    # Description section (if description exists)
     if has_description:
-        escaped_description = html.escape(node_description)
+        # Truncate long descriptions to keep nodes compact
+        desc = node_description.strip()
+        if len(desc) > MAX_DESCRIPTION_LENGTH:
+            desc = desc[: MAX_DESCRIPTION_LENGTH - 3] + "..."
+        escaped_description = html.escape(desc)
+
+        # Description
         html_label += f"""
     <TR>
-        <TD BGCOLOR="#f0f0f0" BORDER="1" COLOR="{node_style["color"]}" STYLE="rounded" ALIGN="LEFT">
-            <FONT POINT-SIZE="10" COLOR="#555555">{escaped_description}</FONT>
+        <TD BGCOLOR="#f0f0f0" {bordered_cell_style} ALIGN="LEFT">
+            <FONT POINT-SIZE="9" COLOR="#555555">{escaped_description}</FONT>
         </TD>
     </TR>"""
 
-    # Parameters section (if parameters exist)
+    # Parameters section
     if has_params:
         html_label += f"""
-
     <!-- Parameters header -->
     <TR>
-        <TD BGCOLOR="#f8f9fa"
-            BORDER="1"
-            COLOR="{node_style["color"]}"
-            STYLE="rounded"
-            ALIGN="CENTER">
-            <FONT POINT-SIZE="10" COLOR="#6c757d">Parameters</FONT>
+        <TD BGCOLOR="#f8f9fa" {bordered_cell_style} ALIGN="CENTER">
+            <FONT POINT-SIZE="10" COLOR="#6c757d"><B>Parameters</B></FONT>
         </TD>
     </TR>"""
 
-        # Add each parameter in a separate row - avoid nested tables
         for param in params_data:
             if isinstance(param, dict):
-                p_name = param.get("name", "?")
+                p_name_raw = param.get("name", "?")
+                p_name = html.escape(p_name_raw.replace("_", " ").title())
+
+                # Parameter name cell with left padding for better indentation
                 html_label += f"""
     <TR>
-        <TD ALIGN="LEFT" BORDER="1" COLOR="{node_style["color"]}" BGCOLOR="#ffffff" STYLE="rounded">
-            <FONT POINT-SIZE="11"><B>{p_name}</B></FONT>
+        <TD ALIGN="LEFT" {bordered_cell_style} BGCOLOR="#ffffff">
+            <FONT POINT-SIZE="10"><B>&nbsp;&nbsp;{p_name}</B></FONT>
         </TD>
     </TR>"""
 
-                # Add options as separate rows rather than nested tables
                 p_options = param.get("options", [])
-                for option in p_options:
+                if p_options:
+                    max_options = MAX_OPTIONS
+                    display_options = p_options[:max_options]
+                    more_indicator = (
+                        f"<I>+{len(p_options) - max_options} more...</I>" if len(p_options) > max_options else ""
+                    )
+
+                    options_html_parts = []
+                    for option_raw in display_options:
+                        option = html.escape(str(option_raw))
+                        options_html_parts.append(f"• {option}")
+
+                    if more_indicator:
+                        options_html_parts.append(f"{more_indicator}")
+
+                    options_display = "<BR/>".join(options_html_parts)
                     html_label += f"""
     <TR>
-        <TD ALIGN="LEFT" BORDER="0" BGCOLOR="#f8f9fa">
-            <FONT POINT-SIZE="10" COLOR="#495057">• {option}</FONT>
+        <TD {detail_cell_style} BGCOLOR="#f8f9fa" CELLPADDING="1">
+            <FONT POINT-SIZE="8" COLOR="#495057">{options_display}</FONT>
         </TD>
     </TR>"""
             elif isinstance(param, str):
+                escaped_param = html.escape(param.replace("_", " ").title())
                 html_label += f"""
     <TR>
-        <TD ALIGN="LEFT" BORDER="1" COLOR="{node_style["color"]}" BGCOLOR="#ffffff" STYLE="rounded">
-            <FONT POINT-SIZE="11">{param}</FONT>
+        <TD ALIGN="LEFT" {bordered_cell_style} BGCOLOR="#ffffff">
+            <FONT POINT-SIZE="10">&nbsp;&nbsp;{escaped_param}</FONT>
         </TD>
     </TR>"""
 
-    # Outputs section (if outputs exist)
+    # Outputs section
     if has_outputs:
         html_label += f"""
     <!-- Outputs header -->
     <TR>
-        <TD BGCOLOR="#f2f7ed"
-            BORDER="1"
-            COLOR="{node_style["color"]}"
-            STYLE="rounded"
-            ALIGN="CENTER">
-            <FONT POINT-SIZE="10" COLOR="#4f6e48">Outputs</FONT>
+        <TD BGCOLOR="#f2f7ed" {bordered_cell_style} ALIGN="CENTER">
+            <FONT POINT-SIZE="10" COLOR="#4f6e48"><B>Outputs</B></FONT>
         </TD>
     </TR>"""
 
-        # Add each output in a separate row - avoid nested tables
         for output in outputs_data:
             if isinstance(output, dict):
-                o_category = output.get("category", "?")
+                o_category_raw = output.get("category", "?")
+                o_category = html.escape(o_category_raw.replace("_", " ").title())
+                o_desc_raw = output.get("description", "")
+
+                # Truncate long output descriptions
+                if len(o_desc_raw) > MAX_OUTPUTS_LENGTH:
+                    o_desc_raw = o_desc_raw[: MAX_OUTPUTS_LENGTH - 3] + "..."
+
+                o_desc = html.escape(o_desc_raw)
+
+                item_html_content = f"<B>&nbsp;&nbsp;{o_category}</B>"
+                if o_desc:
+                    item_html_content += (
+                        f"<BR/><FONT POINT-SIZE='8' COLOR='#666666'>&nbsp;&nbsp;&nbsp;&nbsp;{o_desc}</FONT>"
+                    )
+
                 html_label += f"""
     <TR>
-        <TD ALIGN="LEFT" BORDER="1" COLOR="{node_style["color"]}" BGCOLOR="#ffffff" STYLE="rounded">
-            <FONT POINT-SIZE="11"><B>{o_category}</B></FONT>
-        </TD>
-    </TR>"""
-
-                # Add description as separate row
-                o_desc = output.get("description", "")
-                if o_desc:
-                    html_label += f"""
-    <TR>
-        <TD ALIGN="LEFT" BORDER="0" BGCOLOR="#f8f9fa">
-            <FONT POINT-SIZE="10" COLOR="#4f6e48">{o_desc}</FONT>
+        <TD ALIGN="LEFT" {bordered_cell_style} BGCOLOR="#ffffff">
+            <FONT POINT-SIZE="9">{item_html_content}</FONT>
         </TD>
     </TR>"""
             elif isinstance(output, str):
+                escaped_output = html.escape(output.replace("_", " ").title())
                 html_label += f"""
     <TR>
-        <TD ALIGN="LEFT" BORDER="1" COLOR="{node_style["color"]}" BGCOLOR="#ffffff" STYLE="rounded">
-            <FONT POINT-SIZE="11">{output}</FONT>
+        <TD ALIGN="LEFT" {bordered_cell_style} BGCOLOR="#ffffff">
+            <FONT POINT-SIZE="9">&nbsp;&nbsp;{escaped_output}</FONT>
         </TD>
     </TR>"""
 
-    # Close the table
     html_label += """
 </TABLE>>"""
-
     return html_label
 
 
@@ -245,20 +261,19 @@ def _add_node_to_graph(context: GraphBuildContext, node_dict: FunctionalityNode,
         context.graph.node(
             node_name,
             label=html_label,
-            shape="none",  # No shape border when using HTML
+            shape="none",
             margin="0",
-            color=node_style["color"],
         )
     else:
-        # Simple node without parameters
-        formatted_name = node_name.replace("_", " ").title()
+        # Simple node without parameters, description, or outputs
+        formatted_name = html.escape(node_name.replace("_", " ").title())  # Escape here too
         context.graph.node(
             node_name,
             label=formatted_name,
             fillcolor=node_style["fillcolor"],
             color=node_style["color"],
             style="filled,rounded",
-            fontsize="12",
+            fontsize="12",  # Default fontsize for simple nodes
         )
 
     context.processed_nodes.add(node_name)
@@ -280,30 +295,18 @@ def _add_edges_for_children(
             if child_name:
                 edge_key = (parent_name, child_name)
                 if edge_key not in context.processed_edges:
-                    parent_params = node_dict.get("parameters", [])
-                    parent_outputs = node_dict.get("outputs", [])
-                    child_params = child_dict.get("parameters", [])
-                    child_outputs = child_dict.get("outputs", [])
-                    parent_description = node_dict.get("description")
-                    child_description = child_dict.get("description")
-
-                    parent_has_details = (
-                        (isinstance(parent_params, list) and parent_params)
-                        or (isinstance(parent_outputs, list) and parent_outputs)
-                        or (isinstance(parent_description, str) and parent_description.strip())
+                    # Determine if parent/child nodes use HTML labels (have details)
+                    parent_has_details = any(
+                        k in node_dict for k in ("description", "parameters", "outputs") if node_dict.get(k)
                     )
-                    child_has_details = (
-                        (isinstance(child_params, list) and child_params)
-                        or (isinstance(child_outputs, list) and child_outputs)
-                        or (isinstance(child_description, str) and child_description.strip())
+                    child_has_details = any(
+                        k in child_dict for k in ("description", "parameters", "outputs") if child_dict.get(k)
                     )
 
                     source = f"{parent_name}:main" if parent_has_details else parent_name
                     target = f"{child_name}:main" if child_has_details else child_name
 
                     edge_style = {}
-                    if depth > 3:
-                        edge_style["penwidth"] = str(1.0 + (depth % 3) * 0.1)
 
                     context.graph.edge(source, target, **edge_style)
                     context.processed_edges.add(edge_key)
@@ -346,78 +349,12 @@ def _create_start_node(context: GraphBuildContext) -> str:
     return start_node_name
 
 
-def _render_graph(dot: graphviz.Digraph, output_filename_base: str) -> None:
-    """Renders the graph to a file, handling potential errors."""
-    try:
-        # Add format options for higher quality output
-        dot.render(
-            output_filename_base,
-            cleanup=True,
-            view=False,
-            format="png",
-        )
-        logger.info("Generated graph image: %s.png", output_filename_base)
-    except graphviz.backend.execute.ExecutableNotFound:
-        logger.exception("Graphviz executable not found. Please install Graphviz (https://graphviz.org/download/)")
-
-
-def generate_graph_image(structured_data: list[FunctionalityNode], output_filename_base: str) -> None:
-    """Generates a PNG visualization of the workflow graph with enhanced styling.
-
-    Args:
-        structured_data: List of root node dictionaries representing the workflow
-        output_filename_base: Base path and filename for output PNG (without extension)
-    """
-    if not structured_data or not isinstance(structured_data, list):
-        logger.warning("Skipping graph generation: No valid structured data provided")
-        return
-
-    dot = graphviz.Digraph(comment="Chatbot Workflow", format="png", engine="dot")
-    _set_graph_attributes(dot)
-
-    # Create the context object
-    context = GraphBuildContext(graph=dot)
-
-    start_node_name = _create_start_node(context)
-
-    # Process each root node in the structured data using context
-    for i, root_node_dict in enumerate(structured_data):
-        if isinstance(root_node_dict, dict):
-            # Add the root node and its subtree using context
-            root_node_name = _add_nodes_and_edges_recursive(context, root_node_dict, 0)
-
-            # Add edge from start node to this root node
-            if root_node_name:
-                edge_key = (start_node_name, root_node_name)
-                if edge_key not in context.processed_edges:
-                    params_data = root_node_dict.get("parameters", [])
-                    outputs_data = root_node_dict.get("outputs", [])
-                    description_data = root_node_dict.get("description")
-
-                    has_details = (
-                        (isinstance(params_data, list) and params_data)
-                        or (isinstance(outputs_data, list) and outputs_data)
-                        or (isinstance(description_data, str) and description_data.strip())
-                    )
-                    target = f"{root_node_name}:main" if has_details else root_node_name
-
-                    context.graph.edge(start_node_name, target)
-                    context.processed_edges.add(edge_key)
-        else:
-            logger.warning("Expected root element to be a dictionary, found %s", type(root_node_dict))
-
-    _render_graph(context.graph, output_filename_base)
-
-
-# Additional function to support different export formats
 def export_graph(
     structured_data: list[FunctionalityNode],
     output_filename_base: str,
     format: str = "pdf",
 ) -> None:
     """Exports the workflow graph in various formats with enhanced styling.
-
-    Particularly useful for vector formats like PDF.
 
     Args:
         structured_data: List of root node dictionaries representing the workflow
@@ -431,13 +368,9 @@ def export_graph(
     dot = graphviz.Digraph(comment="Chatbot Workflow", format=format, engine="dot")
     _set_graph_attributes(dot)
 
-    # Create the context object
     context = GraphBuildContext(graph=dot)
-
-    # Add a dedicated start node with simple black dot styling
     start_node_name = _create_start_node(context)
 
-    # Process each root node in the structured data using context
     for i, root_node_dict in enumerate(structured_data):
         if isinstance(root_node_dict, dict):
             root_node_name = _add_nodes_and_edges_recursive(context, root_node_dict, 0)
@@ -445,14 +378,8 @@ def export_graph(
             if root_node_name:
                 edge_key = (start_node_name, root_node_name)
                 if edge_key not in context.processed_edges:
-                    params_data = root_node_dict.get("parameters", [])
-                    outputs_data = root_node_dict.get("outputs", [])
-                    description_data = root_node_dict.get("description")
-
-                    has_details = (
-                        (isinstance(params_data, list) and params_data)
-                        or (isinstance(outputs_data, list) and outputs_data)
-                        or (isinstance(description_data, str) and description_data.strip())
+                    has_details = any(
+                        k in root_node_dict for k in ("description", "parameters", "outputs") if root_node_dict.get(k)
                     )
                     target = f"{root_node_name}:main" if has_details else root_node_name
 
@@ -462,7 +389,6 @@ def export_graph(
             logger.warning("Expected root element to be a dictionary, found %s", type(root_node_dict))
 
     try:
-        # Add format options for higher quality output
         dot.render(
             output_filename_base,
             cleanup=True,
@@ -471,6 +397,8 @@ def export_graph(
         logger.info(f"Generated graph image: {output_filename_base}.{format}")
     except graphviz.backend.execute.ExecutableNotFound:
         logger.exception("Graphviz executable not found. Please install Graphviz (https://graphviz.org/download/)")
+    except Exception as e:
+        logger.exception(f"An error occurred during graph rendering: {e}")
 
 
 # ------------------------------------------------ #
