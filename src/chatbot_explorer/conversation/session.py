@@ -173,19 +173,7 @@ def _analyze_session_and_update_nodes(
     current_node: FunctionalityNode | None,
     graph_state: ExplorationGraphState,
 ) -> tuple[list[dict[str, str]], ExplorationGraphState]:
-    """Analyzes conversation, extracts functionalities, and updates the exploration graph state.
-
-    Args:
-        conversation_history_lc: The conversation history using LangChain message objects.
-        llm: The language model instance.
-        current_node: The functionality node that was the focus of this session, if any.
-        graph_state: The current state of the exploration graph (roots, pending, explored).
-
-    Returns:
-        A tuple containing the conversation history as a list of dictionaries and the
-        updated exploration graph state.
-    """
-    # Convert LangChain messages to simple dicts for analysis functions compatibility
+    """Analyzes conversation, extracts functionalities, and updates the exploration graph state."""
     conversation_history_dict = [
         {
             "role": "system" if isinstance(m, SystemMessage) else ("assistant" if isinstance(m, AIMessage) else "user"),
@@ -194,63 +182,107 @@ def _analyze_session_and_update_nodes(
         for m in conversation_history_lc
     ]
 
-    # Extract potential new functionalities mentioned in this session's conversation
-    logger.verbose("\nAnalyzing conversation for new functionalities...")
-    newly_extracted_nodes = extract_functionality_nodes(conversation_history_dict, llm, current_node)
+    logger.debug("----------------------------------------------------------------------")
+    logger.debug(
+        "Starting Node Analysis for New Session. Current Node: %s",
+        current_node.name if current_node else "None (Initial Exploration)",
+    )
+    logger.debug("----------------------------------------------------------------------")
 
-    # Track nodes added in this session for the summary
+    logger.verbose("\nAnalyzing conversation for new functionalities...")
+    newly_extracted_nodes_raw = extract_functionality_nodes(conversation_history_dict, llm, current_node)
     session_added_nodes = []
 
-    # Process the extracted nodes if any were found
-    if newly_extracted_nodes:
-        logger.debug("Discovered %d potential new functionality nodes", len(newly_extracted_nodes))
+    if newly_extracted_nodes_raw:
+        logger.debug(">>> Raw Extracted Nodes from this Session (%d):", len(newly_extracted_nodes_raw))
+        for i, node in enumerate(newly_extracted_nodes_raw):
+            logger.debug("  RAW_EXTRACTED[%d]: Name: %s, Desc: %s...", i, node.name, node.description[:50])
 
-        # Merge similar nodes discovered *within this session* before further processing
-        processed_new_nodes = merge_similar_functionalities(newly_extracted_nodes, llm)
+        # 1. Merge similar nodes discovered *within this session's extractions*
+        logger.debug(">>> Performing Session-Local Merge on %d raw extracted nodes...", len(newly_extracted_nodes_raw))
+        processed_new_nodes_this_session = merge_similar_functionalities(newly_extracted_nodes_raw, llm)
+        logger.debug("<<< Nodes after Session-Local Merge (%d):", len(processed_new_nodes_this_session))
+        for i, node in enumerate(processed_new_nodes_this_session):
+            logger.debug("  SESSION_MERGED[%d]: Name: %s, Desc: %s...", i, node.name, node.description[:50])
 
-        # Get a snapshot of all nodes currently in the graph for duplicate checking
-        # This is done once before processing the new batch.
-        nodes_in_graph_before_adding = []
+        # Get all unique nodes currently in the graph for duplicate checking.
+        all_existing_nodes_in_graph = []
         for root in graph_state["root_nodes"]:
-            nodes_in_graph_before_adding.extend(_get_all_nodes(root))
+            all_existing_nodes_in_graph.extend(_get_all_nodes(root))  # Assuming _get_all_nodes flattens the tree
+        logger.debug("Found %d existing nodes in graph for duplicate checking.", len(all_existing_nodes_in_graph))
 
-        # Keep track of nodes added *during this analysis step* for subsequent duplicate checks
-        nodes_added_this_analysis = []
+        nodes_added_in_current_pass = []  # For duplicate checking within this session's batch
 
-        for node in processed_new_nodes:
-            # Check for duplicates against nodes already in the graph AND nodes just added in this analysis step
-            combined_check_list = nodes_in_graph_before_adding + nodes_added_this_analysis
-            if not is_duplicate_functionality(node, combined_check_list, llm):
-                # Attempt to add the non-duplicate node to the graph
-                was_added = _add_new_node_to_graph(node, current_node, graph_state, llm)
+        for new_node in processed_new_nodes_this_session:
+            logger.debug("--- Processing node for addition: '%s' ---", new_node.name)
+            # 2. Check if this new_node is a duplicate of anything already in the graph or added this pass.
+            combined_check_list = all_existing_nodes_in_graph + nodes_added_in_current_pass
+            logger.debug(
+                "Checking for duplicates of '%s' against %d existing/session-added nodes.",
+                new_node.name,
+                len(combined_check_list),
+            )
+            is_dup = is_duplicate_functionality(
+                new_node, combined_check_list, llm
+            )  # is_duplicate_functionality should log its reasoning
+
+            if not is_dup:
+                logger.debug("Node '%s' is NOT a duplicate. Attempting to add to graph.", new_node.name)
+                was_added = _add_new_node_to_graph(
+                    new_node, current_node, graph_state, llm
+                )  # _add_new_node_to_graph handles parent/child linking
                 if was_added:
-                    # If added successfully, include it in the list for subsequent duplicate checks within this loop
-                    nodes_added_this_analysis.append(node)
-                    session_added_nodes.append(node)
+                    logger.debug("Successfully added '%s' to the graph.", new_node.name)
+                    nodes_added_in_current_pass.append(new_node)
+                    session_added_nodes.append(new_node)
+                    # Update all_existing_nodes_in_graph to include the newly added node for subsequent checks in this loop
+                    all_existing_nodes_in_graph.append(new_node)
+                else:
+                    logger.warning(
+                        "Failed to add node '%s' to graph (e.g., relationship validation failed).", new_node.name
+                    )
             else:
-                logger.debug("Skipped duplicate functionality: '%s'", node.name)
+                logger.debug("Skipped adding node '%s' as it was identified as a duplicate.", new_node.name)
 
-        # After adding all new nodes from this session, re-run merge on the root nodes
-        # This handles cases where a new root might be similar to an existing root.
-        if graph_state["root_nodes"]:
-            logger.debug("Merging root nodes after additions...")
-            graph_state["root_nodes"] = merge_similar_functionalities(graph_state["root_nodes"], llm)
+        # Optional: Global merge of root nodes after session additions.
+        # This can be heavy. Consider if this is better done less frequently or as part of the end-of-exploration phase.
+        if session_added_nodes and graph_state["root_nodes"]:  # Only if new nodes were added AND there are roots
+            logger.debug(">>> Performing Post-Session Merge on all %d Root Nodes...", len(graph_state["root_nodes"]))
+            original_root_names = [r.name for r in graph_state["root_nodes"]]
+            graph_state["root_nodes"] = merge_similar_functionalities(
+                list(graph_state["root_nodes"]), llm
+            )  # Pass a copy
+            logger.debug(
+                "<<< Root Nodes after Post-Session Merge (%d). Original roots: %s",
+                len(graph_state["root_nodes"]),
+                original_root_names,
+            )
+            current_root_names = [r.name for r in graph_state["root_nodes"]]
+            if original_root_names != current_root_names:  # Check if any change happened
+                logger.debug("  Current roots: %s", current_root_names)
 
-    # Mark the node focused on in this session as explored (if applicable)
     if current_node:
         graph_state["explored_nodes"].add(current_node.name)
 
-    # Log summary of discoveries in this session
+    logger.info("--- Session Summary ---")
     if session_added_nodes:
-        logger.info("\nDiscovered %d new functionalities in this session:", len(session_added_nodes))
+        logger.info("\nDiscovered and added %d new unique functionalities in this session:", len(session_added_nodes))
         for node in session_added_nodes:
-            parent = current_node.name if current_node and node in current_node.children else "root"
-            relationship = f"(child of '{parent}')" if parent != "root" else "(root functionality)"
-            logger.info(" • %s %s", node.name, relationship)
+            # Finding parentage for logging can be tricky here as graph_state is mutable
+            # This is a simplified way to show context
+            relation_to_current = (
+                " (related to current node exploration)" if current_node and node.parent == current_node else ""
+            )
+            logger.info(" • ADDED: %s %s", node.name, relation_to_current)
     else:
-        logger.info("\nNo new functionalities discovered in this session")
+        logger.info("No new unique functionalities were added to the graph in this session.")
+    logger.debug("----------------------------------------------------------------------")
+    logger.debug(
+        "Ending Node Analysis for Session. Current Node: %s",
+        current_node.name if current_node else "None (Initial Exploration)",
+    )
+    logger.debug("----------------------------------------------------------------------\n")
 
-    # Return the history dict and the updated graph state
     return conversation_history_dict, graph_state
 
 

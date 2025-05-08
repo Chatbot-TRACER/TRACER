@@ -10,6 +10,7 @@ from langgraph.checkpoint.memory import MemorySaver
 
 try:
     from langchain_google_genai import ChatGoogleGenerativeAI
+
     GEMINI_AVAILABLE = True
 except ImportError:
     GEMINI_AVAILABLE = False
@@ -88,10 +89,9 @@ class ChatbotExplorationAgent:
 
             logger.info("Initializing Gemini model: %s", model_name)
             return ChatGoogleGenerativeAI(model=model_name)
-        else:
-            # Default to OpenAI
-            logger.info("Initializing OpenAI model: %s", model_name)
-            return ChatOpenAI(model=model_name)
+        # Default to OpenAI
+        logger.info("Initializing OpenAI model: %s", model_name)
+        return ChatOpenAI(model=model_name)
 
     def run_exploration(self, chatbot_connector: Chatbot, max_sessions: int, max_turns: int) -> dict[str, Any]:
         """Runs the initial probing and the main exploration loop.

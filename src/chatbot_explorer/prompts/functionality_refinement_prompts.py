@@ -63,40 +63,50 @@ def get_relationship_validation_prompt(parent_node: FunctionalityNode, child_nod
 def get_merge_prompt(group: list[FunctionalityNode]) -> str:
     """Generate prompt to determine if a group of nodes should be merged."""
     return f"""
-    Analyze the following functionality nodes extracted from conversations with a chatbot.
-    Determine if they represent the **EXACT SAME specific function or action from the chatbot's perspective**, or if they are distinct functionalities that should remain separate. Your default should be to KEEP SEPARATE unless criteria for merging are definitively met.
+    Analyze the following functionality nodes. Your primary goal is to determine if they represent the **same core chatbot function/action from the user's perspective**, even if there are minor variations in naming, description, or specific context mentioned (like item size or type).
 
-    Functionality Nodes:
-    {json.dumps([{"name": n.name, "description": n.description} for n in group], indent=2)}
+    Functionality Nodes to Evaluate for Merging:
+    {json.dumps([{"name": n.name, "description": n.description, "parameters": [p.model_dump_json() for p in n.parameters], "outputs": [o.model_dump_json() for o in n.outputs]} for n in group], indent=2)}
 
-    **CRITICAL CRITERIA FOR MERGING (Must meet BOTH):**
-    1.  **Identical Goal & Action:** The nodes describe the *precise same user goal* being addressed by the *precise same chatbot action*. Minor wording differences in description are acceptable ONLY IF the underlying function is identical.
-    2.  **No Functional Distinction:** There is NO difference in the *type* of task, the *level of detail* handled, the *specific workflow path* initiated, or the *object* being acted upon. They must be functionally interchangeable.
+    **CRITERIA FOR MERGING (All must generally apply):**
+    1.  **Functionally Equivalent Core Task:** ... The user goal addressed is identical.
+    *   Example: `prompt_for_item_attributes`, `ask_for_item_customizations`, `reprompt_for_item_details` likely all serve the core task of "chatbot solicits item attribute choices from user."
+    *   **Consider merging if nodes perform the same core action but differ only in specific contextual values that are, or could be, handled by parameters or are part of the conversational lead-up.** For example, `prompt_for_attributes_for_type_A_item` and `prompt_for_attributes_for_type_B_item` might merge to `prompt_for_item_attributes` if the attribute solicitation process is the same.
+    2.  **Interchangeable Outcome:** From the user's perspective, successfully interacting with any of these nodes leads to the same essential outcome or state progression in the overall task.
+    3.  **Similar Parameters/Outputs (Core Elements):** ... Minor differences in contextual parameters (e.g., one prompt refers to a 'large' item implicitly because 'large' was selected in a *previous* step, while another prompt is general) are acceptable if the *primary newly solicited input* (e.g., toppings, color) and the process of soliciting it are the same. The merged node would represent the general action.
 
-    **DO NOT MERGE IF ANY OF THESE APPLY (KEEP SEPARATE):**
-    -   **Different Variants/Paths:** One node handles a standard option/path, while another handles a custom/configurable/alternative option or path (e.g., `show_standard_packages` vs. `start_custom_config`).
-    -   **Different Workflow Steps:** The nodes represent distinct sequential steps in a larger process (e.g., `select_item` vs. `add_to_cart` vs. `proceed_to_checkout`).
-    -   **Different Objects/Topics:** The nodes perform similar actions but on fundamentally different subjects or data types (e.g., `get_product_details` vs. `get_shipping_info`; `order_main_item` vs. `order_side_item`).
-    -   **General vs. Specific:** One node is a general category or entry point, while the other is a specific sub-task, outcome, or refinement (e.g., `manage_account` vs. `update_email_address`; `search_items` vs. `apply_filter`).
-    -   **Information vs. Action:** One node primarily provides information, while the other performs a state-changing or transactional action, even if related (e.g., `list_available_options` vs. `select_option`).
+    **DO NOT MERGE IF (KEEP SEPARATE if any of these are strong distinctions):**
+    -   **Fundamentally Different Actions:** E.g., `list_available_attributes` (informational) vs. `prompt_for_attribute_selection` (input solicitation).
+    -   **Distinct Major Workflow Paths:** One handles a "standard_item_order" and another a "custom_item_configuration" if these lead to significantly different subsequent steps or data requirements.
+    -   **Different Core Objects/Topics:** E.g., `prompt_for_main_item_details` vs. `prompt_for_accessory_choice`.
+    -   **Significantly Different Scope/Granularity leading to different outcomes:** E.g., `prompt_for_entire_configuration_at_once` vs. a step-by-step `prompt_for_base_model` then `prompt_for_component_selection`.
 
-    **EXAMPLES:**
-    -   **MERGE Candidates:**
-        - `display_contact_details` and `show_contact_information` (Likely identical function)
-        - `get_order_status_update` and `check_order_progress` (Likely identical function)
-    -   **KEEP SEPARATE Examples:**
-        - `provide_standard_options` vs. `initiate_custom_build` (Different Variants/Paths)
-        - `view_cart` vs. `proceed_to_payment` (Different Workflow Steps)
-        - `order_pizza` vs. `order_drink` (Different Objects/Topics - **assuming these were extracted separately**)
-        - `explain_return_policy` vs. `initiate_return_request` (Information vs. Action)
-        - `search_products` vs. `filter_search_results` (General vs. Specific / Different Workflow Steps)
+    **Your Default should be to KEEP SEPARATE unless the criteria for merging are clearly and strongly met, indicating they are just conversational variations of the same core function.**
 
-    If they represent the **EXACT SAME** functionality based *only* on wording differences and meet the strict merge criteria, respond with exactly:
+    **EXAMPLES OF POTENTIAL MERGES (Focus on Core Function):**
+    -   Group: [`prompt_for_options_for_large_item`, `ask_for_item_options`, `reprompt_user_for_option_choices`]
+        Result: MERGE (if core function is "solicit option choices for an item")
+        Canonical Name: `prompt_for_item_option_selection`
+        Canonical Description: "Prompts the user to select or confirm desired options for their item."
+    -   Group: [`show_product_menu`, `list_available_products`]
+        Result: MERGE
+        Canonical Name: `present_product_options`
+        Canonical Description: "Presents the available product types or items to the user."
+    -   Group: [`prompt_for_customizations_for_large_item`, `ask_for_customizations_for_medium_item`, `get_item_customizations`]
+        Result: MERGE (if the core function is "solicit item customizations" and item size was determined previously or isn't a differentiator in *how* customizations are solicited)
+        Canonical Name: `prompt_for_item_customization_options`
+        Canonical Description: "Prompts the user to select or specify desired customizations for their selected item."
+
+    **Based on these criteria, should the provided group of functionalities be merged?**
+
+    If YES, they represent variations of the SAME core functionality:
+    Respond with exactly:
     MERGE
-    name: [Suggest a precise, representative snake_case name for the identical function]
-    description: [Suggest a clear, consolidated description reflecting the identical core function]
+    name: [Suggest a SINGLE, precise, canonical snake_case name for the merged function that best represents the core shared action]
+    description: [Suggest a SINGLE, clear, consolidated description for the merged function that reflects the core shared purpose]
 
-    If they are distinct functionalities according to the criteria above (or if unsure), respond with exactly:
+    If NO, they represent distinct functionalities that should remain separate:
+    Respond with exactly:
     KEEP SEPARATE
-    reason: [Briefly explain the key functional distinction based on the criteria (e.g., "Different Variants: Standard vs Custom", "Different Workflow Steps: View vs Pay")]
+    reason: [Briefly explain the key functional distinction(s) based on the criteria why they should NOT be merged (e.g., "Different core actions: one informs, one solicits input", "Handles distinct workflow paths with different subsequent steps")]
     """

@@ -18,7 +18,10 @@ Analyze the conversation to extract distinct **chatbot capabilities, actions per
 4.  **DIFFERENTIATE PATHS:** If the chatbot offers distinct choices or information categories leading to different interaction paths (e.g., standard vs. custom items), extract SEPARATE functionalities for each distinct path offered by the chatbot.
 5.  **AVOID PURELY META-FUNCTIONALITIES:** Do NOT extract functionalities that SOLELY describe the chatbot's general abilities abstractly (e.g., 'list_capabilities', 'explain_what_i_can_do').
     *   **EXCEPTION:** If listing specific, actionable choices is a *required step within a user task* (e.g., chatbot lists service types A, B, C *after* user initiates a request, and user *must* choose one to proceed), then that specific action (e.g., `present_service_type_options`) IS valid.
-6.  **NAMING CONVENTION:** Use clear, descriptive snake_case names reflecting the *specific* chatbot action or service (e.g., `prompt_for_delivery_address`, `display_order_summary`).
+6.  **NAMING CONVENTION & GENERALIZATION:**
+    *   Use clear, descriptive snake_case names reflecting the *specific core action* performed by the chatbot (e.g., `prompt_for_item_size`, `confirm_selection_and_proceed`).
+    *   **AIM FOR GENERALITY IN NAME AND DESCRIPTION:** Even if the specific instance in the conversation refers to a "large item" or "next Tuesday," if the chatbot's underlying capability is to "prompt for item size" or "confirm a date," try to name and describe the functionality in those more general terms. The specific values (like "large" or "Tuesday") might be parameters or part of the conversational context but not necessarily part of the core function's name.
+    *   Example: If chatbot says "Okay, for the large item, what color do you want?", extract `prompt_for_item_color` (parameter: `item_color`), not `prompt_for_large_item_color`. The "large" context is noted but the function is about getting a color.
 7.  **FOCUS ON SUCCESS:** Extract successful actions or information provided. Avoid functionalities that solely describe chatbot failures (e.g., 'handle_fallback').
 
 **RULES FOR IDENTIFYING PARAMETERS (User Inputs Solicited by Chatbot):**

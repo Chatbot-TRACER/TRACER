@@ -231,5 +231,7 @@ def merge_similar_functionalities(nodes: list[FunctionalityNode], llm: BaseLangu
     # Log results if any merging happened
     if len(merged_results) < len(nodes):
         logger.verbose("Merged %d nodes into %d nodes after similarity analysis", len(nodes), len(merged_results))
+    else:
+        logger.debug("No nodes were merged. Keeping original %d nodes", len(nodes))
 
     return merged_results
