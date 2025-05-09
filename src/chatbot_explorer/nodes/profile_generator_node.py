@@ -138,6 +138,13 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
         logger.warning("No functionalities with outputs found in structured functionalities")
         return {"conversation_goals": []}
 
+    logger.debug(
+        ">>> Rich Functionality Strings Prepared for Profile Grouping (%d total):", len(functionalities_with_outputs)
+    )
+    for i, rich_string in enumerate(functionalities_with_outputs):
+        logger.debug(f"  RICH_FUNC_STRING[{i}]: {rich_string}")
+    logger.debug("<<< End of Rich Functionality Strings")
+
     try:
         # Create the config dictionary
         config: ProfileGenerationConfig = {

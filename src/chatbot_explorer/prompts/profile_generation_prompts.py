@@ -165,7 +165,7 @@ Make sure profile names and roles are descriptive. Ensure ALL input functionalit
 
 def get_profile_goals_prompt(
     profile: dict[str, Any],
-    functionality_objects: list[dict[str, Any]],
+    all_structured_functionalities: list[dict[str, Any]],
     context: ProfileGoalContext,
 ) -> str:
     """Returns the prompt for generating user-centric goals for a profile.
@@ -181,52 +181,82 @@ def get_profile_goals_prompt(
     profile_name = profile.get("name", "Unnamed Profile")
     profile_role = profile.get("role", "User")
 
-    # Functionalities assigned to THIS profile (these are still the rich strings)
-    assigned_functionality_strings = profile.get("functionalities", [])
+    # Functionalities assigned to THIS profile
+    assigned_functionality_rich_strings = profile.get("functionalities", [])
 
-    # Extract just the DESCRIPTIONS of assigned functionalities for brevity in this part of the prompt
-    assigned_func_descriptions_for_prompt = []
-    for func_str in assigned_functionality_strings:
+    assigned_func_names_or_descs_for_prompt = []
+    for func_str in assigned_functionality_rich_strings:
+        name_match = re.match(r"^([\w_]+):", func_str)
         desc_match = re.match(r"^(.*?)(?: \(Inputs:|\(Outputs:|$)", func_str)
-        assigned_func_descriptions_for_prompt.append(desc_match.group(1).strip() if desc_match else func_str)
+        if name_match:
+            assigned_func_names_or_descs_for_prompt.append(name_match.group(1))
+        elif desc_match:
+            assigned_func_names_or_descs_for_prompt.append(desc_match.group(1).strip())
+        else:
+            assigned_func_names_or_descs_for_prompt.append(func_str[:100] + "...")  # Truncated
 
-    functionalities_section = "TARGET FUNCTIONALITIES FOR THIS PROFILE:\n" + "\n".join(
-        [f"- {desc}" for desc in assigned_func_descriptions_for_prompt]
+    functionalities_section = "TARGET FUNCTIONALITIES FOR THIS PROFILE (focus on testing these):\n" + "\n".join(
+        [f"- {name_or_desc}" for name_or_desc in assigned_func_names_or_descs_for_prompt]
     )
 
-    param_details_for_prompt = (
-        "\n\nPARAMETER DETAILS FOR TARGET FUNCTIONALITIES (use these to create {{variable}} placeholders in goals):\n"
-    )
-    found_params = False
-    for func_str in assigned_functionality_strings:
-        input_match = re.search(r"\(Inputs: (.*?)\)", func_str)
-        if input_match:
-            params_str = input_match.group(1)
+    param_details_for_prompt = "\n\nPARAMETER DETAILS FOR TARGET FUNCTIONALITIES (use these EXACT parameter names as {{variable_name}} placeholders in goals):\n"
+    found_params_for_profile = False
 
-            param_details_for_prompt += f"- For functionalities like '{assigned_func_descriptions_for_prompt[assigned_functionality_strings.index(func_str)]}': Parameters available are '{params_str}'. Create goals that might use these with {{placeholders}}.\n"
-            found_params = True
+    profile_func_identifiers = []
+    for rich_string in assigned_functionality_rich_strings:
+        temp_name = assigned_func_names_or_descs_for_prompt[assigned_functionality_rich_strings.index(rich_string)]
+        profile_func_identifiers.append(temp_name)
 
-    if not found_params:
-        param_details_for_prompt = "\n\nNo specific input parameters identified for these functionalities; focus goals on triggering the functionalities themselves.\n"
+    for func_dict in all_structured_functionalities:
+        func_name = func_dict.get("name")
+        if func_name in profile_func_identifiers:
+            params_in_func = []
+            for p_dict in func_dict.get("parameters", []):
+                if isinstance(p_dict, dict) and p_dict.get("name"):
+                    param_name = p_dict.get("name")
+                    param_options = p_dict.get("options", [])
+                    param_info_str = f"'{param_name}'"
+                    if param_options:
+                        param_info_str += (
+                            f" (known options: {', '.join(param_options[:3])}... use one of these or a placeholder)"
+                        )
+                    params_in_func.append(param_info_str)
 
-    output_as_param_info = "\n\nUSEFUL INFORMATION FROM PREVIOUS STEPS (can be used as input for subsequent goals):\n"
+            if params_in_func:
+                param_details_for_prompt += f"- Functionality '{func_name}': Has parameters like {', '.join(params_in_func)}. Create goals that naturally use these with `{{{{parameter_name}}}}` placeholders.\n"
+                found_params_for_profile = True
+
+    if not found_params_for_profile:
+        param_details_for_prompt = (
+            "\n\nNo specific input parameters identified for target functionalities; focus goals on triggering them.\n"
+        )
+
+    output_as_param_info = "\n\nCONTEXTUAL KNOWLEDGE - CHATBOT CAN PROVIDE THESE LISTS OF CHOICES (These can be used as inputs for subsequent goal steps):\n"
     found_output_as_param = False
+    for func_dict in all_structured_functionalities:
+        func_name = func_dict.get("name")
+        for output_spec in func_dict.get("outputs", []):
+            if isinstance(output_spec, dict):
+                output_category = output_spec.get("category")
 
-    for func_obj_dict in functionality_objects:
-        if func_obj_dict.get("outputs"):
-            for output_spec in func_obj_dict.get("outputs", []):
-                if isinstance(output_spec, dict) and "options" in output_spec and output_spec["options"]:
-                    output_category = output_spec.get("category", "unknown_output")
-                    options_list = output_spec.get("options", [])
-                    if options_list:
-                        output_as_param_info += f"- Functionality '{func_obj_dict.get('name')}' can output '{output_category}' with options: {', '.join(options_list)}. Consider using one of these options in a goal that tests a *subsequent* functionality.\n"
-                        found_output_as_param = True
+                output_desc = output_spec.get("description", "")
+                # Heuristic: if description contains commas or common list delimiters, it might be a list of options
+                potential_options = []
+                if output_desc and ("," in output_desc or ";" in output_desc or output_desc.count("\n") > 0):
+                    # Simple split for now, can be refined
+                    options_from_desc = [opt.strip() for opt in re.split(r"[,;\n]", output_desc) if opt.strip()]
+                    if len(options_from_desc) > 1:  # If we found more than one item
+                        potential_options = options_from_desc
+
+                if potential_options:
+                    output_as_param_info += f"- Functionality '{func_name}' can provide a list for '{output_category}' like: [{', '.join(potential_options[:3])}...]. A goal could be to first get this list, then use one of these values in a subsequent step.\n"
+                    found_output_as_param = True
 
     if not found_output_as_param:
-        output_as_param_info = "\n\nNo specific outputs identified that look like choices for subsequent inputs.\n"
+        output_as_param_info = "\n\n(No specific list-like outputs identified from other functionalities that could serve as choices for inputs.)\n"
 
     return f"""
-You are crafting a sequence of user goals for a specific test profile. These goals should guide a user simulator to test the assigned chatbot functionalities thoroughly, including their parameters.
+You are crafting a sequence of user goals for a specific test profile. These goals should guide a user simulator to test the assigned chatbot functionalities thoroughly, including their parameters and how they connect.
 
 PROFILE NAME: {profile_name}
 USER ROLE: {profile_role}
@@ -242,11 +272,16 @@ USER ROLE: {profile_role}
 
 1.  **Create 2-5 User-Centric Goals:** Goals must reflect what a real user wants to *achieve*.
 2.  **Sequential & Coherent:** If testing a TRANSACTIONAL chatbot or a known workflow, goals should form a logical sequence of steps a user would take. Use the WORKFLOW INFORMATION and PARAMETER DETAILS.
-3.  **Test Parameters with `{{variables}}`:** For functionalities with parameters (see PARAMETER DETAILS), formulate goals that naturally incorporate providing values for these parameters using `{{variable_name}}` placeholders. The variable name should be descriptive (e.g., `{{item_id}}`, `{{selected_option}}`, `{{user_query}}`).
-4.  **Utilize "Outputs-as-Parameters":** If USEFUL INFORMATION FROM PREVIOUS STEPS indicates that a prior functionality provides a list of choices, a subsequent goal should try to *use one of those choices* as an input. Example: If a function outputs "available_colors: Red, Blue, Green", a later goal for selecting a color might be "Choose the color {{selected_color}}" where {{selected_color}} would later be instantiated with 'Red', 'Blue', or 'Green'.
+3.  **Test Parameters with `{{variables}}`:** For functionalities with parameters (see PARAMETER DETAILS), formulate goals that naturally incorporate providing values for these parameters using their **exact names** as `{{parameter_name}}` placeholders.
+4.  **Utilize Outputs as Inputs (Parameter Chaining):**
+    Refer to "CONTEXTUAL KNOWLEDGE - CHATBOT CAN PROVIDE THESE LISTS OF CHOICES".
+    If a functionality assigned to this profile *requires an input* that matches one of those listed choice categories (e.g., profile needs to test `select_item_type`, and you know `list_item_types` outputs "item_type_choices: TypeA, TypeB"), then:
+    a. Create a goal to first *elicit* that list of choices from the chatbot (e.g., "Ask what item types are available.").
+    b. Create a subsequent goal to *use one of those choices* (e.g., "Select the item type {{chosen_item_type}}.").
+    The `{{chosen_item_type}}` variable will later be defined to iterate through TypeA, TypeB, etc.
 5.  **Cover Assigned Functionalities:** The set of goals should aim to trigger the "TARGET FUNCTIONALITIES FOR THIS PROFILE".
 6.  **Realistic & Practical:** Goals must be tasks a real user would perform.
-7.  **Variable Placeholder Format:** Strictly use `{{variable_name}}`. Do not invent values for variables within the goal string itself. `generate_variable_definitions` will handle values later.
+7.  **Variable Placeholder Format:** Strictly use `{{variable_name}}`.
 8.  **AVOID:**
     *   Goals about testing the chatbot, its limitations, or general knowledge.
     *   Meta-goals like "see what happens if I provide X."
@@ -256,8 +291,8 @@ USER ROLE: {profile_role}
 
 GOALS:
 - "First user goal, possibly using {{variable_for_param1}}."
-- "Second user goal, perhaps using an option like '{{chosen_from_output_list}}' from a previous step."
-- "Third goal continuing the workflow."
+- "Second user goal, perhaps asking for choices, like 'What {{item_category_options}} are available?'"
+- "Third goal, using a choice like 'Select the {{chosen_item_from_category}}'."
 
 Generate ONLY the goals.
 """

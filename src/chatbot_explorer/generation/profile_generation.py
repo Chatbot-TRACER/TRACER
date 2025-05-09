@@ -196,9 +196,9 @@ def _generate_profile_goals(
         "language_instruction_goals": lang_instr,
     }
     goals_prompt = get_profile_goals_prompt(
-        profile=profile,
-        functionality_objects=all_functionality_objects_as_dicts,
-        context=goal_context,
+        profile,
+        all_functionality_objects_as_dicts,
+        goal_context,
     )
 
     goals_response = config["llm"].invoke(goals_prompt)

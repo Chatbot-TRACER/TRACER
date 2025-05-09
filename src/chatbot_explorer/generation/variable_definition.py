@@ -1,6 +1,7 @@
 """Generates structured definitions for variables found in user profile goals."""
 
 import json
+import re
 from typing import Any, TypedDict
 
 from langchain_core.language_models import BaseLanguageModel
@@ -314,131 +315,114 @@ def generate_variable_definitions(
 
 def _extract_parameter_options_for_profile(
     profile: dict[str, Any],
-    functionality_structure: list[dict[str, Any]],
-    llm: BaseLanguageModel = None,
+    all_structured_functionalities: list[dict[str, Any]],
+    llm: BaseLanguageModel | None = None,
 ) -> dict[str, list[str]]:
-    """Extract parameter options from functionality structure for a specific profile.
-
-    Uses direct matching and LLM-based semantic matching to find parameter options.
-
-    Args:
-        profile: The profile being processed
-        functionality_structure: List of functionality nodes
-        llm: Optional language model for semantic matching
-
-    Returns:
-        Dictionary mapping variable names to their options
-    """
-    parameter_options = {}
+    parameter_options_for_vars = {}
     profile_name = profile.get("name", "Unnamed")
 
-    # Extract variables from the profile goals
     goal_variables = set()
-    for goal in profile.get("goals", []):
-        if isinstance(goal, str):
-            matches = VARIABLE_PATTERN.findall(goal)
-            goal_variables.update(matches)
+    for goal_str in profile.get("goals", []):
+        if isinstance(goal_str, str):
+            goal_variables.update(VARIABLE_PATTERN.findall(goal_str))
 
     if not goal_variables:
-        logger.debug("Profile '%s': No variables found in goals", profile_name)
-        return parameter_options
+        return {}
+    logger.debug(f"Profile '{profile_name}': Extracting options for variables: {goal_variables}")
 
-    logger.debug(
-        "Profile '%s': Found %d variables in goals: %s", profile_name, len(goal_variables), ", ".join(goal_variables)
-    )
+    # Create a lookup for functionalities by name for easier access
+    funcs_by_name = {f.get("name"): f for f in all_structured_functionalities if f.get("name")}
 
-    profile_funcs = profile.get("functionalities", [])
-    profile_desc = profile.get("role", "").lower()
+    # --- Part A: Match variables to DIRECTLY DEFINED parameters of functionalities ---
 
-    logger.debug(
-        "Profile '%s': Looking for parameters matching %d functionalities and description",
-        profile_name,
-        len(profile_funcs),
-    )
+    profile_func_identifiers = []
+    for func_str in profile.get("functionalities", []):
+        name_match = re.match(r"^([\w_]+):", func_str)
+        if name_match:
+            profile_func_identifiers.append(name_match.group(1))
 
-    all_parameters = []
-
-    def collect_all_parameters(node, depth=0):
-        node_name = node.get("name", "").lower()
-        node_desc = node.get("description", "").lower()
-
-        for param in node.get("parameters", []):
-            if isinstance(param, dict) and param.get("options"):
-                param_with_context = param.copy()
-                param_with_context["node_name"] = node.get("name", "")
-                param_with_context["node_description"] = node.get("description", "")
-                all_parameters.append(param_with_context)
-
-                param_name = param.get("name", "unknown")
-                param_options = param.get("options", [])
-                logger.debug(
-                    "%sFound parameter '%s' in node '%s' with %d options: %s",
-                    "  " * depth,
-                    param_name,
-                    node_name,
-                    len(param_options),
-                    param_options,
-                )
-
-        for child in node.get("children", []):
-            collect_all_parameters(child, depth + 1)
-
-    for node in functionality_structure:
-        collect_all_parameters(node)
-
-    logger.debug("Found %d total parameters with options in functionality structure", len(all_parameters))
-
-    for var_name in goal_variables:
-        var_lower = var_name.lower()
-
-        # First try exact matches by parameter name
-        for param in all_parameters:
-            param_name = param.get("name", "").lower()
-            param_options = param.get("options", [])
-
-            # Try various matching approaches
-            if (
-                var_lower == param_name
-                or var_lower.replace("_", "") == param_name.replace("_", "")
-                or var_lower in param_name
-                or param_name in var_lower
-            ):
-                parameter_options[var_name] = param_options
-                logger.debug(
-                    "Matched variable '%s' to parameter '%s' with options: %s",
-                    var_name,
-                    param.get("name", ""),
-                    param_options,
-                )
+    for var_name in list(goal_variables):
+        found_direct_param = False
+        for func_name_in_profile in profile_func_identifiers:
+            func_obj = funcs_by_name.get(func_name_in_profile)
+            if func_obj:
+                for p_dict in func_obj.get("parameters", []):
+                    if isinstance(p_dict, dict) and p_dict.get("name") == var_name and p_dict.get("options"):
+                        parameter_options_for_vars[var_name] = p_dict["options"]
+                        logger.debug(
+                            f"  Var '{var_name}': Matched DIRECT param in '{func_name_in_profile}' with options: {p_dict['options'][:3]}..."
+                        )
+                        found_direct_param = True
+                        break
+            if found_direct_param:
                 break
 
-    # Use LLM matching for remaining variables
-    if llm and goal_variables - set(parameter_options.keys()):
-        unmatched_variables = list(goal_variables - set(parameter_options.keys()))
-        logger.debug("Using LLM to match %d remaining variables", len(unmatched_variables))
-        available_params = []
+        # Optional: If not found in assigned funcs, check ALL funcs (more expensive, but might catch loose ends)
+        if not found_direct_param:
+            for func_obj in all_structured_functionalities:
+                for p_dict in func_obj.get("parameters", []):
+                    if isinstance(p_dict, dict) and p_dict.get("name") == var_name and p_dict.get("options"):
+                        parameter_options_for_vars[var_name] = p_dict["options"]
+                        logger.debug(
+                            f"  Var '{var_name}': Matched DIRECT param in global func '{func_obj.get('name')}' with options: {p_dict['options'][:3]}..."
+                        )
+                        found_direct_param = True
+                        break
+                if found_direct_param:
+                    break
 
-        for param in all_parameters:
-            param_info = {
-                "name": param.get("name", ""),
-                "description": param.get("description") or f"Specifies the {param.get('name', '')} value for this functionality",
-                "options": param.get("options", []),
-            }
-            if param_info["options"]:
-                available_params.append(param_info)
+    # --- Part B: Match variables to "Outputs-as-Parameters" ---
+    # This is for variables that might take their values from an OUTPUT of another function.
 
-        if unmatched_variables and available_params:
+    # Part C: LLM based semantic matching (your existing _match_variables_to_parameters_with_llm)
+    # This can run on any remaining unmatched variables.
+    remaining_unmatched_vars = list(goal_variables - set(parameter_options_for_vars.keys()))
+    if llm and remaining_unmatched_vars:
+        # Prepare `available_params` list for the LLM, including both direct params and identified "output-as-param" options
+        llm_available_param_defs = []
+        # Add direct parameters with options
+        for func_obj in all_structured_functionalities:
+            for p_dict in func_obj.get("parameters", []):
+                if isinstance(p_dict, dict) and p_dict.get("name") and p_dict.get("options"):
+                    llm_available_param_defs.append(
+                        {
+                            "name": p_dict.get("name"),
+                            "description": p_dict.get("description") or f"Parameter {p_dict.get('name')}",
+                            "options": p_dict.get("options"),
+                            "source_type": "direct_parameter",
+                        }
+                    )
+        # Add "output-as-parameter" options
+        for var, opts in parameter_options_for_vars.items():  # Use what we found in Part B
+            if var in remaining_unmatched_vars:  # Only if it wasn't matched by direct param name
+                # Check if this var was indeed intended to be an output-as-param
+                is_likely_output_as_param = any(kw in var for kw in ["chosen_", "selected_"])
+                if is_likely_output_as_param:
+                    llm_available_param_defs.append(
+                        {
+                            "name": var,  # The variable name from the goal is the "parameter" name here
+                            "description": f"A selection from a list of choices provided by the chatbot (e.g., {opts[0]})",
+                            "options": opts,
+                            "source_type": "output_as_parameter",
+                        }
+                    )
+
+        if llm_available_param_defs and remaining_unmatched_vars:
             logger.debug(
-                "Using LLM to match %d variables to %d parameters", len(unmatched_variables), len(available_params)
+                f"  Using LLM to match {len(remaining_unmatched_vars)} vars against {len(llm_available_param_defs)} potential param sources."
             )
+            matches = _match_variables_to_parameters_with_llm(remaining_unmatched_vars, llm_available_param_defs, llm)
+            for var_name_matched, param_info_matched in matches.items():
+                if param_info_matched.get("options"):
+                    parameter_options_for_vars[var_name_matched] = param_info_matched["options"]
+                    logger.debug(
+                        f"  Var '{var_name_matched}': Matched by LLM to param '{param_info_matched.get('name')}' with options: {param_info_matched['options'][:3]}..."
+                    )
 
-            matches = _match_variables_to_parameters_with_llm(unmatched_variables, available_params, llm)
-
-            for var_name, param_info in matches.items():
-                parameter_options[var_name] = param_info["options"]
-                logger.debug("LLM match: variable '%s' → parameter '%s'", var_name, param_info["name"])
-
-    return parameter_options
+    logger.info(
+        f"Profile '{profile_name}': Final extracted options for {len(parameter_options_for_vars)}/{len(goal_variables)} variables."
+    )
+    return parameter_options_for_vars
 
 
 def _match_variables_to_parameters_with_llm(
@@ -518,7 +502,9 @@ If a variable has no appropriate match, DO NOT include it in the results.
                             matches[var_name] = {
                                 "name": param_name,
                                 "options": list(param_options),
-                                "description": description or param.get("description") or f"Specifies the {param_name} value for this functionality",
+                                "description": description
+                                or param.get("description")
+                                or f"Specifies the {param_name} value for this functionality",
                             }
                             logger.debug("Combined options for '%s': %s", var_name, list(param_options))
                             break
