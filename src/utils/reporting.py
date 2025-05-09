@@ -76,8 +76,8 @@ def _set_graph_attributes(dot: graphviz.Digraph) -> None:
 
     dot.attr(
         "node",
-        shape="rectangle",  # Default shape
-        style="filled,rounded",  # Default style
+        shape="rectangle",
+        style="filled,rounded",
         fontname=font,
         fontsize="12",
         margin="0.2,0.15",
@@ -152,7 +152,7 @@ def _truncate_text(text: str | None, max_length: int) -> str:
 def _build_label(node: FunctionalityNode) -> str:
     """Builds an HTML table with name, description, parameters, and outputs."""
     title = html.escape(node.get("name", "").replace("_", " ").title())
-    rows = [f"<tr><td><b>{title}</b></td></tr>"]
+    rows = [f'<tr><td><font point-size="14"><b>{title}</b></font></td></tr>']
 
     # Add node description
     description = node.get("description")
@@ -203,7 +203,10 @@ def _build_label(node: FunctionalityNode) -> str:
         else:  # Fallback for non-dict parameters (always considered significant and added)
             actual_param_rows.append(f"<tr><td>&nbsp;&nbsp;<b>{html.escape(str(p_data))}</b></td></tr>")
 
-    if actual_param_rows:  # If any significant parameter rows were generated
+    if actual_param_rows:
+        rows.append("<tr><td><BR/></td></tr>")  # Add a row with a line break for spacing before HR
+        rows.append("<HR/>")  # Horizontal rule itself
+        rows.append("<tr><td><BR/></td></tr>")  # Add a row with a line break for spacing after HR, before title
         rows.append("<tr><td><u>Parameters</u></td></tr>")
         rows.extend(actual_param_rows)
 
@@ -230,7 +233,10 @@ def _build_label(node: FunctionalityNode) -> str:
         else:  # Fallback for non-dict outputs
             actual_output_rows.append(f"<tr><td>&nbsp;&nbsp;<b>{html.escape(str(o_data))}</b></td></tr>")
 
-    if actual_output_rows:  # If any significant output rows were generated
+    if actual_output_rows:
+        rows.append("<tr><td><BR/></td></tr>")  # Add a row with a line break for spacing before HR
+        rows.append("<HR/>")  # Horizontal rule itself
+        rows.append("<tr><td><BR/></td></tr>")  # Add a row with a line break for spacing after HR, before title
         rows.append("<tr><td><u>Outputs</u></td></tr>")
         rows.extend(actual_output_rows)
 
