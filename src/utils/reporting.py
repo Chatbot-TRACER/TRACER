@@ -37,8 +37,10 @@ def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "p
     _set_graph_attributes(dot)
 
     # Start node
-    dot.node("start", label="", shape="circle", style="filled", fillcolor="black", width="0.15", height="0.15")
-
+    node_dim = 0.5
+    dot.node(
+        "start", label="", shape="circle", style="filled", fillcolor="black", width=str(node_dim), height=str(node_dim)
+    )
     context = GraphBuildContext(graph=dot)
     for root in nodes:
         _add_nodes(ctx=context, node=root, parent="start", depth=0)
@@ -127,9 +129,7 @@ def _add_nodes(ctx: GraphBuildContext, node: FunctionalityNode, parent: str, dep
     html_table = _build_label(node)
     label = f"<{html_table}>"
 
-    ctx.graph.node(
-        name, label=label, **_get_node_style(depth)
-    )  # Removed labelType, shape, style, fillcolor as they are handled by defaults or _get_node_style
+    ctx.graph.node(name, label=label, **_get_node_style(depth))
     ctx.processed_nodes.add(name)
 
     if (parent, name) not in ctx.processed_edges:
@@ -160,32 +160,30 @@ def _build_label(node: FunctionalityNode) -> str:
         truncated_desc = _truncate_text(description, MAX_DESCRIPTION_LENGTH)
         rows.append(f'<tr><td><font color="#777777"><i>{truncated_desc}</i></font></td></tr>')
 
-    params = node.get("parameters") or []
-    if params:
-        rows.append("<tr><td><u>Parameters</u></td></tr>")
-        for p in params:
-            if isinstance(p, dict):
-                p_name_from_dict = p.get("name")  # Can be None
+    # Process Parameters
+    actual_param_rows = []
+    raw_params = node.get("parameters") or []
 
-                if p_name_from_dict:
-                    p_name_text = html.escape(p_name_from_dict.replace("_", " ").title())
-                    p_name_html = f"<b>{p_name_text}</b>"
-                else:
-                    p_name_text = "N/A"
-                    p_name_html = p_name_text  # Not bolded
+    for p_data in raw_params:
+        if isinstance(p_data, dict):
+            p_name = p_data.get("name")
+            p_desc = p_data.get("description")
+            p_options = p_data.get("options", [])  # Ensure options is a list
 
-                options = p.get("options", [])
-                # Check if options is a list and not empty
-                if isinstance(options, list) and options:
-                    options_display = [html.escape(str(opt)) for opt in options[:MAX_OPTIONS]]
+            # A dict parameter is significant if it has a name, or description, or non-empty options
+            is_significant = bool(p_name or p_desc or (isinstance(p_options, list) and p_options))
+
+            if is_significant:
+                p_name_html = f"<b>{html.escape(p_name.replace('_', ' ').title())}</b>" if p_name else "N/A"
+
+                if isinstance(p_options, list) and p_options:
+                    options_display = [html.escape(str(opt)) for opt in p_options[:MAX_OPTIONS]]
                     options_str_intermediate = ", ".join(options_display)
 
-                    truncated_by_count = len(options) > MAX_OPTIONS
+                    truncated_by_count = len(p_options) > MAX_OPTIONS
                     options_str_final = ""
 
                     if len(options_str_intermediate) > MAX_OPTIONS_STRING_LENGTH:
-                        # Truncate by length, ensuring "..." is added
-                        # Ensure we have enough space for "..."
                         if MAX_OPTIONS_STRING_LENGTH <= 3:
                             options_str_final = "..."
                         else:
@@ -196,44 +194,45 @@ def _build_label(node: FunctionalityNode) -> str:
                         options_str_final = options_str_intermediate + "..."
                     else:
                         options_str_final = options_str_intermediate
-                    rows.append(f"<tr><td>&nbsp;&nbsp;{p_name_html}: {options_str_final}</td></tr>")
-                else:
-                    # No options or options is not a list, display description if available
-                    p_desc_raw = p.get("description")
-                    if p_desc_raw:
-                        truncated_p_desc = _truncate_text(p_desc_raw, MAX_DESCRIPTION_LENGTH)
-                        rows.append(f"<tr><td>&nbsp;&nbsp;{p_name_html}: {truncated_p_desc}</td></tr>")
-                    else:
-                        # No options and no description
-                        rows.append(f"<tr><td>&nbsp;&nbsp;{p_name_html}</td></tr>")
-            else:
-                # Fallback for non-dict parameters
-                rows.append(f"<tr><td>&nbsp;&nbsp;<b>{html.escape(str(p))}</b></td></tr>")
+                    actual_param_rows.append(f"<tr><td>&nbsp;&nbsp;{p_name_html}: {options_str_final}</td></tr>")
+                elif p_desc:  # Has description (name might be N/A)
+                    truncated_p_desc = _truncate_text(p_desc, MAX_DESCRIPTION_LENGTH)
+                    actual_param_rows.append(f"<tr><td>&nbsp;&nbsp;{p_name_html}: {truncated_p_desc}</td></tr>")
+                elif p_name:  # Has name, but no options and no description
+                    actual_param_rows.append(f"<tr><td>&nbsp;&nbsp;{p_name_html}</td></tr>")
+        else:  # Fallback for non-dict parameters (always considered significant and added)
+            actual_param_rows.append(f"<tr><td>&nbsp;&nbsp;<b>{html.escape(str(p_data))}</b></td></tr>")
 
-    outputs = node.get("outputs") or []
-    if outputs:
+    if actual_param_rows:  # If any significant parameter rows were generated
+        rows.append("<tr><td><u>Parameters</u></td></tr>")
+        rows.extend(actual_param_rows)
+
+    # Process Outputs
+    actual_output_rows = []
+    raw_outputs = node.get("outputs") or []
+
+    for o_data in raw_outputs:
+        if isinstance(o_data, dict):
+            o_category = o_data.get("category")
+            o_desc = o_data.get("description")
+
+            # An dict output is significant if it has a category or description
+            is_significant = bool(o_category or o_desc)
+
+            if is_significant:
+                o_category_html = f"<b>{html.escape(o_category.replace('_', ' ').title())}</b>" if o_category else "N/A"
+
+                if o_desc:
+                    truncated_o_desc = _truncate_text(o_desc, MAX_OUTPUTS_LENGTH)
+                    actual_output_rows.append(f"<tr><td>&nbsp;&nbsp;{o_category_html}: {truncated_o_desc}</td></tr>")
+                elif o_category:  # Has category, but no description (name might be N/A)
+                    actual_output_rows.append(f"<tr><td>&nbsp;&nbsp;{o_category_html}</td></tr>")
+        else:  # Fallback for non-dict outputs
+            actual_output_rows.append(f"<tr><td>&nbsp;&nbsp;<b>{html.escape(str(o_data))}</b></td></tr>")
+
+    if actual_output_rows:  # If any significant output rows were generated
         rows.append("<tr><td><u>Outputs</u></td></tr>")
-        for o in outputs:
-            if isinstance(o, dict):
-                o_category_from_dict = o.get("category")  # Can be None
-
-                if o_category_from_dict:
-                    o_category_text = html.escape(o_category_from_dict.replace("_", " ").title())
-                    o_category_html = f"<b>{o_category_text}</b>"
-                else:
-                    o_category_text = "N/A"
-                    o_category_html = o_category_text  # Not bolded
-
-                o_desc_raw = o.get("description")
-                if o_desc_raw:
-                    truncated_o_desc = _truncate_text(o_desc_raw, MAX_OUTPUTS_LENGTH)
-                    rows.append(f"<tr><td>&nbsp;&nbsp;{o_category_html}: {truncated_o_desc}</td></tr>")
-                else:
-                    # Output with no description, just show the category (bolded or "N/A")
-                    rows.append(f"<tr><td>&nbsp;&nbsp;{o_category_html}</td></tr>")
-            else:
-                # Fallback for non-dict outputs
-                rows.append(f"<tr><td>&nbsp;&nbsp;<b>{html.escape(str(o))}</b></td></tr>")
+        rows.extend(actual_output_rows)
 
     # Return inner HTML for table (without extra brackets)
     return '<table border="0" cellborder="0" cellspacing="0">' + "".join(rows) + "</table>"
