@@ -1,0 +1,73 @@
+test_name: Pizza Order Placement
+llm:
+  temperature: 1.0
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A customer ordering pizza and drinks for pickup.
+  context:
+  - 'personality: personalities/impatient-user'
+  - You're ordering pizza for a small family movie night and need to pick it up on the way home from work.
+  - You have a coupon for $5 off any large pizza, but you're not sure if it's still valid.
+  - You prefer to pay with cash upon pickup rather than using a credit card online.
+  goals:
+  - Ask what types of pizza are available.
+  - Order a {{pizza_type}} pizza.
+  - Specify that I want a {{pizza_size}} pizza.
+  - Ask how many drinks I can order.
+  - Order {{number_of_drinks}} drinks.
+  - Confirm the total cost of the order.
+  - number_of_drinks:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 6
+        step: 1
+  - pizza_size:
+      function: random()
+      type: string
+      data:
+      - small
+      - medium
+      - large
+      - extra large
+  - pizza_type:
+      function: forward()
+      type: string
+      data:
+      - We have Margarita
+      - Carbonara
+      - Marinera
+      - Hawaiian
+      - Four cheese
+      - Vegetarian
+      - and Custom (you choose the ingredients)
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. Can you rephrase?`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - available_pizza_types:
+      type: str
+      description: A comma-separated list of pizza types the chatbot offers (e.g., Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian, and Custom). This is extracted from the chatbot's response when the user asks about available pizza types.
+  - margarita_medium_price:
+      type: float
+      description: The price of a medium Margarita pizza, as stated by the chatbot when discussing pizza prices.
+  - opening_hours:
+      type: str
+      description: The opening hours of the pizza place, as stated by the chatbot (e.g., "Every day from 1pm to 11:30pm").
+  - estimated_pickup_time:
+      type: str
+      description: The estimated time the order will be ready for pickup, as stated by the chatbot after the order is placed.
+conversation:
+  number: 4
+  max_cost: 0.75
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - change your mind
+  - single question

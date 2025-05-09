@@ -1,104 +1,180 @@
 === CHATBOT FUNCTIONALITY ANALYSIS ===
 
+
 ## FUNCTIONALITIES (Workflow Structure)
-- list_main_functions: The chatbot provides a brief overview of its main functions related to ordering pizzas and drinks.
-  - provide_predefined_pizza_options: The chatbot lists the predefined pizza options available for ordering.
-    - collect_pizza_size: The chatbot prompts the user to specify the size of the pizza they would like to order. (Params: pizza_type)
-      - confirm_pizza_order: The chatbot confirms the user's selection of pizza type and size. (Params: pizza_type, pizza_size)
-        - collect_drink_quantity: The chatbot asks the user how many drinks they would like to order. (Params: pizza_type, pizza_size)
-          - provide_drink_options: The chatbot lists the drink options available for the user to choose from.
-            - collect_drink_selection: The chatbot prompts the user to specify their drink choices after confirming the quantity. (Params: drink_quantity)
-              - provide_order_summary: The chatbot provides a summary of the user's order, including total cost, preparation time, pickup location, and order ID. (Params: pizza_size, additional_items, total_cost, preparation_time, pickup_location, order_id)
-- list_main_capabilities: The chatbot lists the types of information or assistance it can provide related to pizza orders.
-- prompt_for_drink_selection: The chatbot prompts the user to specify the type of drink they would like to order.
+- provide_number_of_slices_in_pizza: Provides the typical number of slices in a large marinera pizza. | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [number_of_slices: A large marinera pizza typically has 8 slices.]
+- state_available_information_topics: Informs the user about the topics the chatbot can provide information on, including opening hours, pizza types, prices, order pickup, and estimated order time, and handles cases where the user's question is outside of these topics. | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [available_information_topics: List of topics the chatbot can provide information about, including opening hours, pizza types, prices, order pickup, and estimated order time.; available_topics: Opening hours, types of pizza we serve, prices of pizzas and beverages, how to get the order, and how much time it takes to get an order.]
+- provide_opening_hours: Provides the opening hours of the pizza place. | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [opening_hours: Every day from 1pm to 11:30pm]
+- provide_pizza_prices: Provides the prices for different sizes and types of pizzas, including specific pricing for Margarita and Carbonara pizzas, as well as the price difference for other pizza types. | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [pizza_prices: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The rest, except for carbonara are 2$ more for each size. Carbonara is 2.5$ more for each size.; margarita_prices: 10$ for small, 15$ for medium and 20$ for big; other_pizza_prices: 2$ more than Margarita for each size, except Carbonara; carbonara_prices: 2.5$ more than Margarita for each size.]
+- list_available_pizza_types: Lists the available pizza types, including options for custom pizzas. | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [pizza_types: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian, and Custom (you choose the ingredients); available_pizza_types: Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian, and Custom (you choose the ingredients)]
+  - prompt_for_pizza_size: Prompts the user to specify the desired size (small, medium, or large) of their pizza, optionally reminding them of previous selections. | Params: [pizza_size: The desired size of the pizza. [options: small, medium, large]] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+    - prompt_for_number_of_drinks: Asks the user how many drinks they would like to order. | Params: [number_of_drinks: The number of drinks the user wants to order.] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+      - confirm_drink_order: Confirms the drink order, including the number and type of drinks. | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+        - provide_order_total: Provides the total cost of the order. | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [total_cost: The final price for the order.]
 
 ## FUNCTIONALITIES (Raw JSON Structure)
 [
   {
-    "name": "list_main_functions",
-    "description": "The chatbot provides a brief overview of its main functions related to ordering pizzas and drinks.",
-    "parameters": [],
+    "name": "provide_number_of_slices_in_pizza",
+    "description": "Provides the typical number of slices in a large marinera pizza.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "number_of_slices",
+        "description": "A large marinera pizza typically has 8 slices."
+      }
+    ],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "state_available_information_topics",
+    "description": "Informs the user about the topics the chatbot can provide information on, including opening hours, pizza types, prices, order pickup, and estimated order time, and handles cases where the user's question is outside of these topics.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "available_information_topics",
+        "description": "List of topics the chatbot can provide information about, including opening hours, pizza types, prices, order pickup, and estimated order time."
+      },
+      {
+        "category": "available_topics",
+        "description": "Opening hours, types of pizza we serve, prices of pizzas and beverages, how to get the order, and how much time it takes to get an order."
+      }
+    ],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "provide_opening_hours",
+    "description": "Provides the opening hours of the pizza place.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "opening_hours",
+        "description": "Every day from 1pm to 11:30pm"
+      }
+    ],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "provide_pizza_prices",
+    "description": "Provides the prices for different sizes and types of pizzas, including specific pricing for Margarita and Carbonara pizzas, as well as the price difference for other pizza types.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "pizza_prices",
+        "description": "Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The rest, except for carbonara are 2$ more for each size. Carbonara is 2.5$ more for each size."
+      },
+      {
+        "category": "margarita_prices",
+        "description": "10$ for small, 15$ for medium and 20$ for big"
+      },
+      {
+        "category": "other_pizza_prices",
+        "description": "2$ more than Margarita for each size, except Carbonara"
+      },
+      {
+        "category": "carbonara_prices",
+        "description": "2.5$ more than Margarita for each size."
+      }
+    ],
+    "parent_names": [],
+    "children": []
+  },
+  {
+    "name": "list_available_pizza_types",
+    "description": "Lists the available pizza types, including options for custom pizzas.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "pizza_types",
+        "description": "We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian, and Custom (you choose the ingredients)"
+      },
+      {
+        "category": "available_pizza_types",
+        "description": "Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian, and Custom (you choose the ingredients)"
+      }
+    ],
     "parent_names": [],
     "children": [
       {
-        "name": "provide_predefined_pizza_options",
-        "description": "The chatbot lists the predefined pizza options available for ordering.",
-        "parameters": [],
+        "name": "prompt_for_pizza_size",
+        "description": "Prompts the user to specify the desired size (small, medium, or large) of their pizza, optionally reminding them of previous selections.",
+        "parameters": [
+          {
+            "name": "pizza_size",
+            "description": "The desired size of the pizza.",
+            "options": [
+              "small",
+              "medium",
+              "large"
+            ]
+          }
+        ],
+        "outputs": [
+          null
+        ],
         "parent_names": [
-          "list_main_functions"
+          "list_available_pizza_types"
         ],
         "children": [
           {
-            "name": "collect_pizza_size",
-            "description": "The chatbot prompts the user to specify the size of the pizza they would like to order.",
+            "name": "prompt_for_number_of_drinks",
+            "description": "Asks the user how many drinks they would like to order.",
             "parameters": [
-              "pizza_type"
+              {
+                "name": "number_of_drinks",
+                "description": "The number of drinks the user wants to order.",
+                "options": []
+              }
+            ],
+            "outputs": [
+              null
             ],
             "parent_names": [
-              "provide_predefined_pizza_options"
+              "prompt_for_pizza_size"
             ],
             "children": [
               {
-                "name": "confirm_pizza_order",
-                "description": "The chatbot confirms the user's selection of pizza type and size.",
+                "name": "confirm_drink_order",
+                "description": "Confirms the drink order, including the number and type of drinks.",
                 "parameters": [
-                  "pizza_type",
-                  "pizza_size"
+                  null
+                ],
+                "outputs": [
+                  null
                 ],
                 "parent_names": [
-                  "collect_pizza_size"
+                  "prompt_for_number_of_drinks"
                 ],
                 "children": [
                   {
-                    "name": "collect_drink_quantity",
-                    "description": "The chatbot asks the user how many drinks they would like to order.",
+                    "name": "provide_order_total",
+                    "description": "Provides the total cost of the order.",
                     "parameters": [
-                      "pizza_type",
-                      "pizza_size"
+                      null
+                    ],
+                    "outputs": [
+                      {
+                        "category": "total_cost",
+                        "description": "The final price for the order."
+                      }
                     ],
                     "parent_names": [
-                      "confirm_pizza_order"
+                      "confirm_drink_order"
                     ],
-                    "children": [
-                      {
-                        "name": "provide_drink_options",
-                        "description": "The chatbot lists the drink options available for the user to choose from.",
-                        "parameters": [],
-                        "parent_names": [
-                          "collect_drink_quantity"
-                        ],
-                        "children": [
-                          {
-                            "name": "collect_drink_selection",
-                            "description": "The chatbot prompts the user to specify their drink choices after confirming the quantity.",
-                            "parameters": [
-                              "drink_quantity"
-                            ],
-                            "parent_names": [
-                              "provide_drink_options"
-                            ],
-                            "children": [
-                              {
-                                "name": "provide_order_summary",
-                                "description": "The chatbot provides a summary of the user's order, including total cost, preparation time, pickup location, and order ID.",
-                                "parameters": [
-                                  "pizza_size",
-                                  "additional_items",
-                                  "total_cost",
-                                  "preparation_time",
-                                  "pickup_location",
-                                  "order_id"
-                                ],
-                                "parent_names": [
-                                  "collect_drink_selection"
-                                ],
-                                "children": []
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
+                    "children": []
                   }
                 ]
               }
@@ -107,27 +183,13 @@
         ]
       }
     ]
-  },
-  {
-    "name": "list_main_capabilities",
-    "description": "The chatbot lists the types of information or assistance it can provide related to pizza orders.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
-  },
-  {
-    "name": "prompt_for_drink_selection",
-    "description": "The chatbot prompts the user to specify the type of drink they would like to order.",
-    "parameters": [],
-    "parent_names": [],
-    "children": []
   }
 ]
 ## LIMITATIONS
-No limitations discovered.
+No limitations discovered (empty list).
 
 ## SUPPORTED LANGUAGES
 1. English
 
 ## FALLBACK MESSAGE
-I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks. For troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+I'm sorry, I did not get what you said. Can you rephrase?`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
