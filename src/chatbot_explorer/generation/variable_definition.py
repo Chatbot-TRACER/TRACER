@@ -421,7 +421,7 @@ def _extract_parameter_options_for_profile(
         for param in all_parameters:
             param_info = {
                 "name": param.get("name", ""),
-                "description": param.get("description", f"Parameter {param.get('name', '')}"),
+                "description": param.get("description") or f"Specifies the {param.get('name', '')} value for this functionality",
                 "options": param.get("options", []),
             }
             if param_info["options"]:
@@ -474,11 +474,13 @@ IMPORTANT MATCHING RULES:
 4. If a variable name contains specific domain indicators (e.g., 'drink', 'pizza', 'size'), ONLY match with parameters in that domain
 5. DO NOT match across incompatible semantic domains under any circumstances
 6. If uncertain about domain compatibility, DO NOT create a match
+7. For each matched parameter, include a MEANINGFUL DESCRIPTION that explains what the parameter represents in context
 
 Return your matches in JSON format:
 {{
   "variable_name": {{
     "parameter_name": "matched_parameter_name",
+    "description": "A meaningful description of what this parameter represents",
     "options": [list, of, parameter, options]
   }},
   ...
@@ -504,6 +506,7 @@ If a variable has no appropriate match, DO NOT include it in the results.
                     # Find the corresponding parameter
                     param_name = match_info.get("parameter_name")
                     options = match_info.get("options", [])
+                    description = match_info.get("description", "")
 
                     # Use both the original parameter options and any additional options from the LLM
                     for param in parameters:
@@ -515,7 +518,7 @@ If a variable has no appropriate match, DO NOT include it in the results.
                             matches[var_name] = {
                                 "name": param_name,
                                 "options": list(param_options),
-                                "description": param.get("description", ""),
+                                "description": description or param.get("description") or f"Specifies the {param_name} value for this functionality",
                             }
                             logger.debug("Combined options for '%s': %s", var_name, list(param_options))
                             break

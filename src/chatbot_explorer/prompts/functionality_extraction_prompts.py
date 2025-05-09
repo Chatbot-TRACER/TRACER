@@ -91,7 +91,7 @@ Format EXACTLY as:
 FUNCTIONALITY:
 name: chatbot_specific_action_name
 description: What the chatbot specifically does or provides in this functionality.
-parameters: param1 (option1/option2/option3), param2
+parameters: param1 (option1/option2/option3): meaningful description of what param1 represents, param2: description of param2
 output_options: category1: description1; category2: description2
 
 If there are no parameters, write "None".

@@ -20,8 +20,8 @@ def _parse_parameter_string(params_str: str) -> list[ParameterDefinition]:
     """Parses the 'parameters' string into a list of parameter dictionaries with options.
 
     Args:
-        params_str: String containing parameters, possibly with options in parentheses
-                   Format: "param1 (option1/option2), param2, param3 (optA/optB)"
+        params_str: String containing parameters, possibly with options in parentheses and descriptions after colon
+                   Format: "param1 (option1/option2): description1, param2: description2"
 
     Returns:
         List of ParameterDefinition objects
@@ -30,23 +30,45 @@ def _parse_parameter_string(params_str: str) -> list[ParameterDefinition]:
     if params_str.lower().strip() == "none":
         return parameters
 
-    # Split parameters and extract options
-    param_pattern = re.compile(r"([^,]+?)(?:\s*\(([^)]+)\))?\s*(?:,|$)")
-    param_matches = param_pattern.findall(params_str)
+    # Split the parameters by comma, but not inside parentheses
+    param_entries = []
+    start = 0
+    paren_level = 0
+    for i, char in enumerate(params_str):
+        if char == '(':
+            paren_level += 1
+        elif char == ')':
+            paren_level -= 1
+        elif char == ',' and paren_level == 0:
+            param_entries.append(params_str[start:i].strip())
+            start = i + 1
+    # Add the last parameter
+    if start < len(params_str):
+        param_entries.append(params_str[start:].strip())
 
-    for param_name, options_str in param_matches:
-        param_name_content = param_name.strip()
-        if not param_name_content:
+    for param_entry in param_entries:
+        # Extract parameter name and options (if any)
+        param_info, *description_parts = param_entry.split(':', 1)
+        param_description = description_parts[0].strip() if description_parts else ""
+
+        # Extract name and options
+        if '(' in param_info and ')' in param_info:
+            parts = param_info.split('(', 1)
+            param_name = parts[0].strip()
+            options_str = parts[1].split(')', 1)[0].strip()
+            options = [opt.strip() for opt in options_str.split('/') if opt.strip()]
+        else:
+            param_name = param_info.strip()
+            options = []
+
+        if not param_name:
             continue
 
-        # Process options if they exist
-        options = []
-        if options_str:
-            options = [opt.strip() for opt in options_str.split("/") if opt.strip()]
-
-        # Create a ParameterDefinition object
+        # Create a ParameterDefinition object with a meaningful description
         param = ParameterDefinition(
-            name=param_name_content, description=f"Parameter {param_name_content}", options=options
+            name=param_name,
+            description=param_description if param_description else f"Specifies the {param_name} value for this functionality",
+            options=options
         )
         parameters.append(param)
 
