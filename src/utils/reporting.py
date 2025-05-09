@@ -204,9 +204,9 @@ def _build_label(node: FunctionalityNode) -> str:
             actual_param_rows.append(f"<tr><td>&nbsp;&nbsp;<b>{html.escape(str(p_data))}</b></td></tr>")
 
     if actual_param_rows:
-        rows.append("<tr><td><BR/></td></tr>")  # Add a row with a line break for spacing before HR
+        rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Minimal space before HR
         rows.append("<HR/>")  # Horizontal rule itself
-        rows.append("<tr><td><BR/></td></tr>")  # Add a row with a line break for spacing after HR, before title
+        rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Minimal space after HR
         rows.append("<tr><td><u>Parameters</u></td></tr>")
         rows.extend(actual_param_rows)
 
@@ -234,9 +234,9 @@ def _build_label(node: FunctionalityNode) -> str:
             actual_output_rows.append(f"<tr><td>&nbsp;&nbsp;<b>{html.escape(str(o_data))}</b></td></tr>")
 
     if actual_output_rows:
-        rows.append("<tr><td><BR/></td></tr>")  # Add a row with a line break for spacing before HR
+        rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Minimal space before HR
         rows.append("<HR/>")  # Horizontal rule itself
-        rows.append("<tr><td><BR/></td></tr>")  # Add a row with a line break for spacing after HR, before title
+        rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Minimal space after HR
         rows.append("<tr><td><u>Outputs</u></td></tr>")
         rows.extend(actual_output_rows)
 
