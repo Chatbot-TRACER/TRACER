@@ -276,14 +276,70 @@ def generate_variable_definitions(
             # Check if we have pre-extracted options for this variable
             if variable_name in profile_parameter_options:
                 # Use the extracted options directly
-                options = profile_parameter_options[variable_name]
+                dirty_options = profile_parameter_options[variable_name]
+
+                final_options = dirty_options
+
+                logger.debug(
+                    f"Variable '{variable_name}': Using pre-matched options. Attempting to clean and get negative suggestion."
+                )
+                logger.debug(f"  Dirty options for '{variable_name}': {dirty_options}")
+
+                clean_and_negative_prompt = get_clean_and_suggest_negative_option_prompt(
+                    dirty_options=dirty_options,
+                    variable_name=variable_name,
+                    profile_goals_context=goals_text,
+                    language=primary_language,
+                )
+
+                response_content = llm.invoke(clean_and_negative_prompt).content.strip()
+
+                logger.debug(f"  LLM response for cleaning '{variable_name}': {response_content}")
+
+                cleaned_options = []
+                invalid_option = None
+
+                # Parse CLEANED_OPTIONS
+                if "CLEANED_OPTIONS:" in response_content:
+                    options_section = response_content.split("CLEANED_OPTIONS:")[1].split("INVALID_OPTION_SUGGESTION:")[
+                        0
+                    ]
+                    cleaned_options = [
+                        line[2:].strip()
+                        for line in options_section.strip().split("\n")
+                        if line.strip().startswith("- ") and line[2:].strip()
+                    ]
+                    # Further unique sort
+                    cleaned_options = sorted(list(set(opt for opt in cleaned_options if opt)))
+
+                if not cleaned_options:
+                    logger.warning(
+                        f"LLM cleaning resulted in no valid options for '{variable_name}'. Original dirty: {dirty_options}. Will try LLM fallback for definition."
+                    )
+                else:
+                    # Use cleaned options as final options
+                    final_options = cleaned_options
+
+                # Parse INVALID_OPTION_SUGGESTION
+                if "INVALID_OPTION_SUGGESTION:" in response_content:
+                    invalid_section = response_content.split("INVALID_OPTION_SUGGESTION:")[1].strip()
+                    if invalid_section and invalid_section.lower() != "none":
+                        invalid_option = invalid_section.split("\n")[0].strip()
+
+                if not invalid_option:
+                    logger.warning(
+                        f"LLM did not suggest an invalid option for '{variable_name}'. Original dirty: {dirty_options}"
+                    )
+                else:
+                    final_options.append(invalid_option)
+
                 parsed_def = {
                     "function": "forward()",
                     "type": "string",
-                    "data": options,
+                    "data": final_options,
                 }
                 logger.debug(
-                    f"Using pre-matched options for variable '{variable_name}'. Options count: {len(options)}. Preview: {options[:3]}{'...' if len(options) > 3 else ''}"
+                    f"Using pre-matched options for variable '{variable_name}'. Options count: {len(final_options)}. Preview: {final_options[:3]}{'...' if len(final_options) > 3 else ''}"
                 )
             else:
                 # No pre-matched options, generate definition (function, type, data) with LLM
@@ -590,3 +646,77 @@ def _match_variables_to_data_sources_with_llm(
     except Exception as e:
         logger.error(f"Error during LLM variable matching or parsing: {e}")
         return {}
+
+
+def get_clean_and_suggest_negative_option_prompt(
+    dirty_options: list[str],
+    variable_name: str,
+    profile_goals_context: str,
+    language: str,
+) -> str:
+    options_str = "\n".join([f"- {opt}" for opt in dirty_options])
+
+    return f"""
+You are an AI assistant helping prepare test data for a chatbot.
+Your task is to process a list of "dirty" options for a variable named '{variable_name}'. These options were extracted from chatbot messages and may contain extra descriptive text.
+
+This variable '{variable_name}' is used in user goals like:
+{profile_goals_context[:300]}...
+
+Language of options: {language}
+
+"Dirty" Options List for '{variable_name}':
+{options_str}
+
+**Your Tasks:**
+
+1.  **Clean the Options:**
+    *   For each item in the "Dirty" Options List, extract only the core, usable option name or value.
+    *   Remove any surrounding explanatory text (e.g., "Price for", "in small sizes", "option for").
+    *   If an option becomes empty after cleaning, omit it from the cleaned list.
+    *   Try to preserve original casing if it seems important (e.g., proper nouns like "Coke", "Margarita").
+    *   Present the cleaned options as a list, each item starting with '- '.
+
+2.  **Suggest One Out-of-Scope/Invalid Option:**
+    *   Based on the cleaned valid options and the goals, suggest ONE plausible but LIKELY UNSUPPORTED or INVALID option for the variable '{variable_name}'.
+    *   This invalid option should be something a user might mistakenly ask for related to the variable's purpose (e.g., if valid options are types of {variable_name}, suggest another related but unsupported type of {variable_name}).
+    *   Avoid generic gibberish. The invalid option should make sense in the context but not be in the valid list.
+    *   If you cannot confidently suggest a distinct invalid option, output "None".
+
+**Output Format (Strictly follow this):**
+
+CLEANED_OPTIONS:
+- [Cleaned Option 1]
+- [Cleaned Option 2]
+...
+
+INVALID_OPTION_SUGGESTION:
+[Your single suggested invalid option OR the word "None"]
+
+**Example:**
+Dirty Options List for 'drink_type':
+- Price for Coke
+- Sprite is also available
+- The Water option
+
+CLEANED_OPTIONS:
+- Coke
+- Sprite
+- Water
+
+INVALID_OPTION_SUGGESTION:
+Fanta
+---
+Dirty Options List for 'item_size':
+- Small size (S)
+- The medium option
+- Large (L)
+
+CLEANED_OPTIONS:
+- Small
+- Medium
+- Large
+
+INVALID_OPTION_SUGGESTION:
+Extra Large
+"""
