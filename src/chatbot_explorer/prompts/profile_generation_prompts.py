@@ -1,5 +1,6 @@
 """Prompts for grouping functionalities and generating profile goals."""
 
+import re
 from typing import Any, TypedDict
 
 # --- Data Structures for Prompt Arguments ---
@@ -164,91 +165,99 @@ Make sure profile names and roles are descriptive. Ensure ALL input functionalit
 
 def get_profile_goals_prompt(
     profile: dict[str, Any],
+    functionality_objects: list[dict[str, Any]],
     context: ProfileGoalContext,
 ) -> str:
     """Returns the prompt for generating user-centric goals for a profile.
 
     Args:
         profile: The specific profile dictionary (containing name, role, functionalities).
+        functionality_objects: A list of functionality objects related to the profile.
         context: A dictionary containing various contextual strings for the prompt.
 
     Returns:
         A formatted string representing the LLM prompt.
     """
+    profile_name = profile.get("name", "Unnamed Profile")
+    profile_role = profile.get("role", "User")
+
+    # Functionalities assigned to THIS profile (these are still the rich strings)
+    assigned_functionality_strings = profile.get("functionalities", [])
+
+    # Extract just the DESCRIPTIONS of assigned functionalities for brevity in this part of the prompt
+    assigned_func_descriptions_for_prompt = []
+    for func_str in assigned_functionality_strings:
+        desc_match = re.match(r"^(.*?)(?: \(Inputs:|\(Outputs:|$)", func_str)
+        assigned_func_descriptions_for_prompt.append(desc_match.group(1).strip() if desc_match else func_str)
+
+    functionalities_section = "TARGET FUNCTIONALITIES FOR THIS PROFILE:\n" + "\n".join(
+        [f"- {desc}" for desc in assigned_func_descriptions_for_prompt]
+    )
+
+    param_details_for_prompt = (
+        "\n\nPARAMETER DETAILS FOR TARGET FUNCTIONALITIES (use these to create {{variable}} placeholders in goals):\n"
+    )
+    found_params = False
+    for func_str in assigned_functionality_strings:
+        input_match = re.search(r"\(Inputs: (.*?)\)", func_str)
+        if input_match:
+            params_str = input_match.group(1)
+
+            param_details_for_prompt += f"- For functionalities like '{assigned_func_descriptions_for_prompt[assigned_functionality_strings.index(func_str)]}': Parameters available are '{params_str}'. Create goals that might use these with {{placeholders}}.\n"
+            found_params = True
+
+    if not found_params:
+        param_details_for_prompt = "\n\nNo specific input parameters identified for these functionalities; focus goals on triggering the functionalities themselves.\n"
+
+    output_as_param_info = "\n\nUSEFUL INFORMATION FROM PREVIOUS STEPS (can be used as input for subsequent goals):\n"
+    found_output_as_param = False
+
+    for func_obj_dict in functionality_objects:
+        if func_obj_dict.get("outputs"):
+            for output_spec in func_obj_dict.get("outputs", []):
+                if isinstance(output_spec, dict) and "options" in output_spec and output_spec["options"]:
+                    output_category = output_spec.get("category", "unknown_output")
+                    options_list = output_spec.get("options", [])
+                    if options_list:
+                        output_as_param_info += f"- Functionality '{func_obj_dict.get('name')}' can output '{output_category}' with options: {', '.join(options_list)}. Consider using one of these options in a goal that tests a *subsequent* functionality.\n"
+                        found_output_as_param = True
+
+    if not found_output_as_param:
+        output_as_param_info = "\n\nNo specific outputs identified that look like choices for subsequent inputs.\n"
+
     return f"""
-Generate a set of coherent **user-centric** goals for this conversation scenario:
+You are crafting a sequence of user goals for a specific test profile. These goals should guide a user simulator to test the assigned chatbot functionalities thoroughly, including their parameters.
 
-CONVERSATION SCENARIO: {profile["name"]}
-ROLE: {profile["role"]}
-
+PROFILE NAME: {profile_name}
+USER ROLE: {profile_role}
 {context["chatbot_type_context"]}
-
-RELEVANT FUNCTIONALITIES:
-{", ".join(profile["functionalities"])}
-
+{functionalities_section}
+{param_details_for_prompt}
+{output_as_param_info}
 {context["workflow_context"]}
-
-LIMITATIONS (keep in mind only; do NOT let these drive the goals):
-{", ".join(context["limitations"])}
-
 {context["conversation_context"]}
-
 {context["language_instruction_goals"]}
 
-ABOUT VARIABLES:
-- Only use {{variable}} where the user might provide different values each time (e.g. {{date}}, {{amount}}, {{reference_number}})
-- These are purely placeholders for possible user input. For example, {{employee_id}} does not mean we must always request an ID; it's just a potential input that could vary.
-- Do NOT put fixed names like "IT Department" or organization names inside {{ }} (they are not interchangeable).
-- Variables must be legitimate parameters the user could change (e.g., different dates, amounts, or IDs).
+**Goal Generation Instructions:**
 
-EXTREMELY IMPORTANT RESTRICTIONS:
-1. NEVER create goals about asking for chatbot limitations or capabilities
-2. NEVER create goals about testing the chatbot's understanding or knowledge
-3. NEVER include meta-goals like "find out what the chatbot can do"
-4. Goals MUST be about actual tasks a real user would want to accomplish
-5. Focus on practical, realistic user tasks ONLY
+1.  **Create 2-5 User-Centric Goals:** Goals must reflect what a real user wants to *achieve*.
+2.  **Sequential & Coherent:** If testing a TRANSACTIONAL chatbot or a known workflow, goals should form a logical sequence of steps a user would take. Use the WORKFLOW INFORMATION and PARAMETER DETAILS.
+3.  **Test Parameters with `{{variables}}`:** For functionalities with parameters (see PARAMETER DETAILS), formulate goals that naturally incorporate providing values for these parameters using `{{variable_name}}` placeholders. The variable name should be descriptive (e.g., `{{item_id}}`, `{{selected_option}}`, `{{user_query}}`).
+4.  **Utilize "Outputs-as-Parameters":** If USEFUL INFORMATION FROM PREVIOUS STEPS indicates that a prior functionality provides a list of choices, a subsequent goal should try to *use one of those choices* as an input. Example: If a function outputs "available_colors: Red, Blue, Green", a later goal for selecting a color might be "Choose the color {{selected_color}}" where {{selected_color}} would later be instantiated with 'Red', 'Blue', or 'Green'.
+5.  **Cover Assigned Functionalities:** The set of goals should aim to trigger the "TARGET FUNCTIONALITIES FOR THIS PROFILE".
+6.  **Realistic & Practical:** Goals must be tasks a real user would perform.
+7.  **Variable Placeholder Format:** Strictly use `{{variable_name}}`. Do not invent values for variables within the goal string itself. `generate_variable_definitions` will handle values later.
+8.  **AVOID:**
+    *   Goals about testing the chatbot, its limitations, or general knowledge.
+    *   Meta-goals like "see what happens if I provide X."
+    *   Goals that are too vague or too complex for a single user turn.
 
-Create 2-4 goals that focus strictly on what the user intends to achieve with the chatbot.
-Avoid vague or indirect objectives like "understand the chatbot's capabilities" or "test the system's knowledge."
-
-IMPORTANT:
-- If the chatbot is TRANSACTIONAL, goals should follow a natural workflow progression. Create goals that represent steps in completing a process or transaction.
-- If the chatbot is INFORMATIONAL, goals can be more independent questions, but should still be related to the same general topic.
-- If workflow information is provided, create goals that follow natural conversation flows discovered during exploration.
-
-Examples for TRANSACTIONAL chatbots:
-
-Example 1 (IT Support):
-- "Report a technical issue with my {{device_type}}"
-- "Provide additional details about the problem"
-- "Request an estimated resolution time"
-- "Ask for a ticket confirmation number"
-
-Example 2 (Appointment Scheduling):
-- "Schedule an appointment for {{service_type}}"
-- "Select a preferred date from {{available_dates}}"
-- "Confirm the appointment details"
-- "Request a reminder option"
-
-Examples for INFORMATIONAL chatbots:
-
-Example 1 (University Information):
-- "Ask about admission requirements for {{program_name}}"
-- "Request information about application deadlines"
-- "Inquire about scholarship opportunities"
-
-Example 2 (Government Services):
-- "Ask about the process for renewing a {{document_type}}"
-- "Inquire about required documentation"
-- "Find out about processing times"
-
-FORMAT YOUR RESPONSE AS:
+**Output Format:**
 
 GOALS:
-- "first user-centric goal with {{variable}} if needed"
-- "second related goal"
-- "third goal that follows naturally"
+- "First user goal, possibly using {{variable_for_param1}}."
+- "Second user goal, perhaps using an option like '{{chosen_from_output_list}}' from a previous step."
+- "Third goal continuing the workflow."
 
-DO NOT include any definitions for variables - just use {{varname}} placeholders.
-Make sure all goals fit naturally in ONE conversation with the chatbot, and remain strictly focused on user tasks.
-"""  # noqa: S608
+Generate ONLY the goals.
+"""

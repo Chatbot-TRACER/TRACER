@@ -186,6 +186,8 @@ def _generate_profile_goals(
 
     chatbot_type_context = f"CHATBOT TYPE: {config['chatbot_type'].upper()}\n"
 
+    all_functionality_objects_as_dicts = config["workflow_structure"]
+
     goal_context: ProfileGoalContext = {
         "chatbot_type_context": chatbot_type_context,
         "workflow_context": wf_context,
@@ -193,9 +195,9 @@ def _generate_profile_goals(
         "conversation_context": conv_context,
         "language_instruction_goals": lang_instr,
     }
-
     goals_prompt = get_profile_goals_prompt(
         profile=profile,
+        functionality_objects=all_functionality_objects_as_dicts,
         context=goal_context,
     )
 
