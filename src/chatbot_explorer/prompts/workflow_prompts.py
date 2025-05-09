@@ -58,42 +58,63 @@ def create_transactional_prompt(func_list_str: str, conversation_snippets: str) 
 def create_informational_prompt(func_list_str: str, conversation_snippets: str) -> str:
     """Create a prompt specifically for informational chatbot analysis."""
     return f"""
-    You are a Workflow Dependency Analyzer. Analyze the discovered interaction steps (functionalities) and conversation snippets to model the interaction flow, recognizing that it might be **non-sequential Q&A**.
+    You are a meticulous Workflow Dependency Analyzer. Your task is to analyze the provided functionalities (interaction steps) and conversation snippets to model the **interaction flow**.
+    You MUST recognize that for an **Informational/Q&A chatbot**, most functionalities will likely be **independent topics/root nodes**.
 
-    **CRITICAL CONTEXT:** This chatbot appears primarily **Informational/Q&A**. Users likely ask about independent topics.
+    **CRITICAL CONTEXT FOR THIS TASK:**
+    - This chatbot appears primarily **Informational/Q&A**. Users likely ask about independent topics.
+    - **Your DEFAULT action MUST be to assign `parent_names: []` (root node) to each functionality.**
+    - ONLY create parent-child links if conversational evidence for a *strict, forced functional dependency* is EXPLICIT, CONSISTENT, and UNDENIABLE.
 
-    Input Functionalities (Extracted Steps):
+    Input Functionalities (Name and Description Only):
     {func_list_str}
+    # Note: Full Parameter and Output details for each functionality are known but omitted here for brevity.
+    # YOU MUST PRESERVE the original parameters and outputs associated with each
+    # functionality name when generating the final JSON output. Your task is ONLY to determine `parent_names`.
 
-    Conversation History Snippets (Context from Multiple Sessions):
+    Conversation History Snippets (Context for Flow):
     {conversation_snippets}
 
-    CRITICAL TASK: Determine relationships based *only* on **strong conversational evidence ACROSS MULTIPLE SESSIONS**.
-    - **Sequences/Branches:** Create parent-child relationships (`parent_names`) ONLY IF the chatbot *explicitly forces* a sequence OR if a step is *impossible* without completing a prior one, AND this dependency is observed CONSISTENTLY.
-    - **Independent Topics:** If users ask about different topics independently, treat these functionalities as **separate root nodes** (assign `parent_names: []`). **DO NOT infer dependency just because Topic B was discussed after Topic A in one session.**
-    - **Meta-Interactions (like asking "What can you do?", "Help", greetings, asking for general info about the bot itself) should almost always be root nodes (`parent_names: []`)**. They describe the interaction *about* the bot, not the core informational topics themselves.
+    **CRITICAL TASK: Determine Minimal Functional Dependencies to Assign `parent_names`**
 
-    **RULE: Your DEFAULT action MUST be to create separate root nodes (empty `parent_names`: `[]`). Only create parent-child links if the conversational evidence for functional dependency is EXPLICIT, CONSISTENT, and UNDENIABLE.** Avoid forcing hierarchies onto informational interactions.
+    For EACH functionality provided in the input, you MUST determine its `parent_names`. Your **default is `parent_names: []`**.
+    Assign a parent (i.e., a non-empty `parent_names` list) ONLY IF Parent P meets **ALL** of the following extremely strict criteria:
+    1.  **Explicit Forced Sequence:** The chatbot *explicitly states* or *programmatically forces* the user from Parent P to Child F (e.g., asks a clarifying question P whose answer F is required).
+    2.  **Absolute Functional Necessity:** Child F is *literally impossible or completely nonsensical* without the specific information or state created by Parent P immediately preceding it.
+    3.  **Consistent Observation (Ideal):** This explicit dependency should ideally be observed consistently whenever these functionalities appear.
+    4.  **Closest Functional Link:** Even if a rare dependency exists, only list the *single closest* necessary parent step.
 
-    Structure the output as a JSON list of nodes. Each node MUST include:
+    **RULES FOR `parent_names` ASSIGNMENT (Informational Context):**
+    *   **Unique Functionalities:** The output JSON list should contain each unique functionality name from the input ONCE. Your primary task is to assign the correct `parent_names` (defaulting to `[]`).
+    *   **OVERWHELMING DEFAULT: Root Nodes (`parent_names: []`):**
+        *   Assign `[]` to functionalities representing distinct informational topics (e.g., `provide_opening_hours`, `explain_return_policy`, `describe_product_X_features`).
+        *   Assume ALL topics are independent unless an EXPLICIT forced sequence is proven by the conversation.
+        *   Meta-interactions (e.g., `greet_user`, `list_capabilities`, `request_rephrasing`) are ALWAYS roots.
+        *   If in ANY doubt, assign `parent_names: []`.
+    *   **RARE Exceptions for Non-Root Nodes (Potential Parents):**
+        *   A node that presents clarification options for a complex topic (e.g., `offer_topic_A_subcategories`) *might* be a parent to a node providing details on a chosen subcategory (`provide_details_for_subcategory_A1`), but ONLY if the chatbot *forces* this selection path.
+        *   A node asking for essential identifying information *before* providing specific data (e.g., `prompt_for_policy_document_name`) *might* be a parent to the node providing that specific document (`display_policy_document_X`), if the document cannot be displayed otherwise.
+    *   **AVOID Inferring Links:**
+        *   Do NOT link `topic_A` to `topic_B` just because a user asked about them sequentially in one conversation.
+        *   Do NOT link based on simple topical similarity.
+        *   Do NOT link just because one piece of information *could* be useful before another, unless the chatbot *forces* that order.
+
+    **ANALYSIS FOCUS:**
+    For every functionality, assume `parent_names: []`. Only override this default if you find **undeniable proof** in the conversation snippets of an **explicitly forced sequence** or **absolute functional necessity** linking it directly to an immediate predecessor performed by the chatbot.
+
+    **OUTPUT STRUCTURE:**
+    Return a JSON list where each object represents one of the unique input functionalities, augmented ONLY with the determined `parent_names`.
     - "name": Functionality name (string).
     - "description": Description (string).
-    - "parameters": List of parameter objects. Each parameter object should include:
-        - "name": Parameter name (string).
-        - "description": Parameter description (string).
-        - "options": List of available options for the parameter (list of strings or [] if no specific options).
-      If a functionality has no parameters, use an empty list `[]`.
-    - "outputs": List of output objects. Each output object should include:
-        - "category": Category name (string).
-        - "description": Description of the output (string).
-      If a functionality has no outputs, use an empty list `[]`.
-    - "parent_names": List of names of functionalities that MUST be completed immediately before this one based on the rules above. **Use `[]` for root nodes / independent topics / meta-interactions.**
+    - "parameters": (Preserve EXACTLY from original data - **DO NOT OMIT**).
+    - "outputs": (Preserve EXACTLY from original data - **DO NOT OMIT**).
+    - "parent_names": List of names of functionalities that meet ALL the STRICT criteria above (this will be `[]` for MOST, if not all, nodes).
 
-    Rules for Output:
-    - Reflect dependencies (or lack thereof) based STRICTLY on consistent conversational evidence and functional necessity.
-    - Use the 'name' field as the identifier.
-    - IMPORTANT: Preserve ALL parameters AND outputs from the input functionalities.
-    - Output MUST be valid JSON. Use [] for empty lists.
+    **FINAL INSTRUCTIONS:**
+    -   Preserve ALL original details (name, description, parameters, outputs) for each functionality in the final JSON.
+    -   The list should contain each input functionality name exactly once.
+    -   Focus entirely on deriving the most accurate `parent_names`, defaulting STRONGLY to `[]`.
+    -   Output valid JSON. Ensure the entire response is a single, well-formed JSON list.
 
-    Generate the JSON list representing the interaction flow structure:
+    Generate the JSON list:
     """
