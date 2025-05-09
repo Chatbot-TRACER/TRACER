@@ -202,7 +202,7 @@ def _generate_reports(
     if functionality_dicts:
         graph_output_base = Path(output_dir) / "workflow_graph"
         try:
-            export_graph(functionality_dicts, str(graph_output_base), "png")
+            export_graph(functionality_dicts, str(graph_output_base), "pdf")
         except Exception:
             logger.exception("Failed to generate workflow graph image")
     else:

@@ -200,7 +200,8 @@ def _build_label(node: FunctionalityNode) -> str:
                     actual_param_rows.append(f"<tr><td>&nbsp;&nbsp;{p_name_html}: {truncated_p_desc}</td></tr>")
                 elif p_name:  # Has name, but no options and no description
                     actual_param_rows.append(f"<tr><td>&nbsp;&nbsp;{p_name_html}</td></tr>")
-        else:  # Fallback for non-dict parameters (always considered significant and added)
+        elif p_data is not None:  # Fallback for non-dict parameters, skip if None
+            # Considered significant if not None and added
             actual_param_rows.append(f"<tr><td>&nbsp;&nbsp;<b>{html.escape(str(p_data))}</b></td></tr>")
 
     if actual_param_rows:
@@ -230,7 +231,8 @@ def _build_label(node: FunctionalityNode) -> str:
                     actual_output_rows.append(f"<tr><td>&nbsp;&nbsp;{o_category_html}: {truncated_o_desc}</td></tr>")
                 elif o_category:  # Has category, but no description (name might be N/A)
                     actual_output_rows.append(f"<tr><td>&nbsp;&nbsp;{o_category_html}</td></tr>")
-        else:  # Fallback for non-dict outputs
+        elif o_data is not None:  # Fallback for non-dict outputs, skip if None
+            # Considered significant if not None and added
             actual_output_rows.append(f"<tr><td>&nbsp;&nbsp;<b>{html.escape(str(o_data))}</b></td></tr>")
 
     if actual_output_rows:
