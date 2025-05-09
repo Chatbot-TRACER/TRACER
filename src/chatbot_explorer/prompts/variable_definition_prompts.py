@@ -176,8 +176,9 @@ Example JSON Output:
   }}
 }}
 
-If a GOAL VARIABLE has no good match in the AVAILABLE DATA SOURCES, DO NOT include it in your JSON output.
-Return ONLY the JSON object.
+If a GOAL VARIABLE has no good match in the AVAILABLE DATA SOURCES, **DO NOT include it in your JSON output.**
+**It is critical that you only provide a match if the options from the data source are semantically appropriate for the variable. For example, do not match a variable like 'number_of_items' to a data source that lists item types.**
+Return ONLY the JSON object, which might be empty if no good matches are found.
 """
 
 
