@@ -167,9 +167,8 @@ def _generate_profile_groupings(
     }
 
     grouping_prompt = get_profile_grouping_prompt(
-        functionalities=config["functionalities"],
-        context=grouping_context,
-        suggested_profiles=suggested_profiles,
+        config["functionalities"],
+        grouping_context,
     )
 
     profiles_response = config["llm"].invoke(grouping_prompt)

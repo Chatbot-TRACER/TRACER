@@ -77,13 +77,12 @@ LANGUAGE REQUIREMENT:
 
 
 def get_profile_grouping_prompt(
-    functionalities: list[str],
+    functionalities_with_details: list[str],
     context: ProfileGroupingContext,
-    suggested_profiles: int,
 ) -> str:
     """Generates a prompt to group functionalities into logical user profiles."""
-    functionality_list_str = "\n".join([f"- {f}" for f in functionalities])
-    num_functionalities = len(functionalities)
+    functionality_list_str = "\n".join([f"- {f}" for f in functionalities_with_details])
+    num_functionalities = len(functionalities_with_details)
 
     # Construct context section only if parts are available
     context_str = "\n--- CONTEXTUAL INFORMATION ---\n"
@@ -107,53 +106,60 @@ def get_profile_grouping_prompt(
     else:
         context_str += "--- END CONTEXTUAL INFORMATION ---\n\n"
 
+    # Add specific instructions based on chatbot_type
+    grouping_strategy_instruction = ""
+    if "TRANSACTIONAL" in context["chatbot_type_context"].upper():
+        grouping_strategy_instruction = """
+    **Grouping Strategy for TRANSACTIONAL Chatbot:**
+    - Prioritize grouping functionalities that form a single, end-to-end user transaction or a significant sub-part of one (e.g., entire item ordering process, user registration, booking an appointment).
+    - A single profile might cover an entire common transaction.
+    - If multiple distinct transactions exist (e.g., 'make a purchase' vs. 'track an order'), create separate profiles for them.
+    - Informational functionalities directly supporting a transaction (e.g., 'view item details' before 'add to cart') can be grouped within that transactional profile.
+    """
+    elif "INFORMATIONAL" in context["chatbot_type_context"].upper():
+        grouping_strategy_instruction = """
+    **Grouping Strategy for INFORMATIONAL Chatbot:**
+    - Group functionalities that relate to a common theme, topic, or area of inquiry (e.g., all functionalities about 'account settings', all about 'product specifications for category X').
+    - A single profile can cover multiple related questions a user might ask within one thematic session.
+    - Aim for profiles that represent a user trying to get comprehensive information about a particular subject area.
+    """
+
     return f"""
-You are a User Profile Designer for chatbot testing. Your task is to group the following chatbot functionalities into logical user profiles. The goal is to create distinct user personas/roles, each focused on achieving a related set of goals using a subset of the chatbot's capabilities, ensuring all functionalities are covered across the profiles.
+You are a User Profile Designer for chatbot testing. Your task is to group the following chatbot functionalities into a MINIMAL number of LOGICAL user profiles.
+The primary goal is to ensure ALL functionalities are covered for testing across the generated profiles, using as FEW profiles as reasonably possible.
 
-EXTREMELY IMPORTANT RESTRICTIONS:
+EXTREMELY IMPORTANT RESTRICTIONS (Apply to ALL profiles):
+- Create ONLY profiles for realistic end users with PRACTICAL GOALS.
+- NEVER create profiles about users asking about chatbot capabilities or limitations.
+- NEVER create profiles where the user is trying to test or evaluate the chatbot.
+- Focus ONLY on real-world user tasks and objectives.
+- Profiles should be genuine use cases, not meta-conversations about the chatbot itself.
 
-    Create ONLY profiles for realistic end users with PRACTICAL GOALS
-
-    NEVER create profiles about users asking about chatbot capabilities or limitations
-
-    NEVER create profiles where the user is trying to test or evaluate the chatbot
-
-    Focus ONLY on real-world user tasks and objectives
-
-    The profiles should be genuine use cases, not meta-conversations about the chatbot itself
-
-AVAILABLE CHATBOT FUNCTIONALITIES ({num_functionalities} total):
+AVAILABLE CHATBOT FUNCTIONALITIES ({num_functionalities} total, including input/output details):
 {functionality_list_str}
 {context_str}
 **Instructions for Grouping:**
 
-1.  **Analyze Relationships:** Examine the list of functionalities. Identify functionalities that are related or often used together in a single user journey or to achieve a larger goal. Use the WORKFLOW INFORMATION (if provided) to see which functionalities often follow others.
-2.  **Define Coherent Roles/Personas:** Create distinct user roles or personas. Each role should represent a plausible type of user with a specific set of needs or tasks they want to accomplish using the chatbot (e.g., "New Customer Inquiry," "Existing User Order Tracking," "Product Configurator," "Information Seeker about Topic X").
-3.  **Group Functionalities Logically:** Assign each functionality to the *most relevant* user profile/role. A profile should contain a set of functionalities that make sense for that specific user persona to use together.
-    *   Group steps that form a sequence (e.g., select item, add to cart, checkout).
-    *   Group informational functions related to a specific topic (e.g., all functions related to pricing, all related to account settings).
-    *   Group functions related to a specific high-level task (e.g., placing a new order, checking status, getting support).
-4.  **Ensure Coverage:** Distribute ALL functionalities across the profiles. Each functionality should ideally belong to at least one profile. Avoid leaving functionalities unassigned.
-5.  **Balance Profile Size (Guideline):** Aim for roughly {suggested_profiles} distinct profiles, but prioritize logical coherence over strictly hitting this number. It's better to have fewer, well-defined profiles or slightly more if needed for logical separation. Avoid profiles with only one trivial functionality if it can logically fit elsewhere. Don't create overly large profiles containing unrelated functions.
-6.  **Describe the Role:** For each profile, provide a concise description of the user's role or primary objective.
-7.  **Output Format:** Structure your response exactly as follows, with each profile starting with `## PROFILE:`, followed by the profile name, role, and functionalities list:
+1.  **Analyze Relationships & Workflow:** Examine the functionalities. Identify functionalities that are intrinsically related, often used together, or form a sequence in a user journey. The WORKFLOW INFORMATION (if provided) is CRITICAL for grouping sequential transactional steps.
+2.  **Define Coherent Roles/Personas:** For each group of functionalities, define a user role/persona that would naturally use them together (e.g., "Prospective Student Inquiring about Admissions," "Customer Placing a Standard Order," "User Troubleshooting an Issue").
+{grouping_strategy_instruction}
+3.  **Logical Grouping for Coverage & Efficiency:** Assign functionalities to profiles to ensure:
+    *   **Complete Coverage:** Every functionality from the input list MUST be assigned to at least one profile.
+    *   **Logical Cohesion:** Functionalities within a profile should make sense for the defined role to perform in a related series of interactions.
+    *   **Efficiency:** Aim for the minimum number of profiles needed to cover all functionalities logically. A profile can and often should cover multiple related functionalities. Avoid creating profiles for single, isolated functionalities if they can be logically grouped.
+4.  **Describe the Role:** For each profile, provide a concise description of the user's role or primary objective.
+5.  **Output Format:** Structure your response exactly as follows:
 
-## PROFILE: [Profile Name (e.g., New Order Placer)]
+## PROFILE: [Profile Name (e.g., New Item Order and Customization)]
 ROLE: [Description of the user role/objective for this profile]
 FUNCTIONALITIES:
-- [Functionality description assigned to this profile]
-- [Another functionality description assigned to this profile]
-...
-
-## PROFILE: [Another Profile Name (e.g., Account Manager)]
-ROLE: [Description of this role]
-FUNCTIONALITIES:
-- [Functionality description]
+- [Full functionality description string as provided in input, assigned to this profile]
+- [Another full functionality description string assigned to this profile]
 ...
 
 {context["language_instruction_grouping"]}
-Make sure the profile names and roles are descriptive and distinct. Ensure all functionalities from the input list are assigned to a profile.
-"""  # noqa: S608
+Make sure profile names and roles are descriptive. Ensure ALL input functionalities are assigned. The goal is to create the SMALLEST number of profiles that logically cover all functionalities.
+"""
 
 
 def get_profile_goals_prompt(
