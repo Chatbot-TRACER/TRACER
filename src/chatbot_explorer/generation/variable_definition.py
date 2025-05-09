@@ -406,10 +406,17 @@ def _extract_parameter_options_for_profile(
     # --- Prepare a comprehensive list of potential data sources for variables ---
     potential_data_sources = []
 
-    for func_dict in all_structured_functionalities:
+    logger.debug("--- Input to _extract_parameter_options_for_profile: Sample Functionalities ---")
+    for i, func_d in enumerate(all_structured_functionalities[:15]):  # Log first 15
+        logger.debug(
+            f"  Func {i}: Name='{func_d.get('name')}', Params='{func_d.get('parameters')}', Outputs='{func_d.get('outputs')}'"
+        )
+
+    # Recursive function to process functionality and its children
+    def process_functionality(func_dict):
         func_name = func_dict.get("name", "unknown_functionality")
 
-        # Source 1: Direct Parameters of any functionality
+        # Source 1: Direct Parameters of functionality
         for p_dict in func_dict.get("parameters", []):
             if isinstance(p_dict, dict) and p_dict.get("name") and p_dict.get("options"):
                 # Only consider parameters that actually have options defined
@@ -425,7 +432,7 @@ def _extract_parameter_options_for_profile(
                         }
                     )
 
-        # Source 2: "Outputs-as-Parameters" from any functionality
+        # Source 2: "Outputs-as-Parameters" from functionality
         for o_dict in func_dict.get("outputs", []):
             if isinstance(o_dict, dict) and o_dict.get("category"):
                 output_category = o_dict["category"]
@@ -436,7 +443,7 @@ def _extract_parameter_options_for_profile(
                     delimiters = r"[,;\n]|\band\b|\bor\b"  # Split by common delimiters
                     # Further clean each part and check if it looks like a distinct option
                     possible_opts = [
-                        opt.strip().strip("'\"`‘’“”")
+                        opt.strip().strip("'\"`''""")
                         for opt in re.split(delimiters, output_desc)
                         if opt and 2 < len(opt.strip()) < 50
                     ]
@@ -473,6 +480,15 @@ def _extract_parameter_options_for_profile(
                             "origin_func": func_name,
                         }
                     )
+
+        # Process all children recursively
+        for child in func_dict.get("children", []):
+            if isinstance(child, dict):
+                process_functionality(child)
+
+    # Process all functionalities recursively
+    for func_dict in all_structured_functionalities:
+        process_functionality(func_dict)
 
     if not potential_data_sources:
         logger.debug(
@@ -563,7 +579,7 @@ def _match_variables_to_data_sources_with_llm(
                         matched_source_detail = potential_data_sources[source_index]
                         final_matches[cleaned_var_name] = {
                             "source_name": matched_source_detail.get("source_name"),
-                            "source_type": matched_source_detail.get("source_type"),
+                            "type": matched_source_detail.get("type"),
                             "options": matched_source_detail.get("options", []),  # Use FULL options
                         }
                     else:

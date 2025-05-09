@@ -131,7 +131,7 @@ def get_variable_to_datasource_matching_prompt(
 
         sources_str_list.append(
             f"  {i + 1}. ID: DS{i + 1} ## Source Name: '{source.get('source_name')}'\n"
-            f"     Type: {source.get('source_type', 'unknown')}\n"
+            f"     Type: {source.get('type', 'unknown')}\n"
             f"     Description: {source.get('source_description', 'N/A')}\n"
             f"     Example Options Preview: {options_preview_str}\n"
             f"     Origin Functionality: '{source.get('origin_func')}'"
