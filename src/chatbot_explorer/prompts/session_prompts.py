@@ -100,3 +100,30 @@ def get_rephrase_prompt(original_message: str) -> str:
     Make the rephrased version simpler, more direct, and avoid complex structures.
     ONLY return the rephrased message, nothing else.
     """
+
+
+def get_reminder_prompt() -> str:
+    """Reminds thet explorer that they are not a chatbot, but exploring a chatbot."""
+    return """IMPORTANT REMINDER:
+1. You are the EXPLORER simulating a human user. DO NOT act like the chatbot you're testing.
+2. When presented with options/buttons, select one directly without saying "I want to choose" or "I select" - just state the option itself.
+3. Ask questions or give instructions as a user would.
+"""
+
+
+def explorer_checker_prompt() -> str:
+    return """Your task is to determine if the message text is written like an AI assistant/chatbot rather than a human user.
+Analyze this single message and respond ONLY with "YES" if it sounds like an AI assistant (e.g., offering services, apologizing for limitations, saying "I don't have access to...")
+or "NO" if it sounds like a normal human user asking questions or making selections. Be strict - if you're unsure, say "NO"."""
+
+
+def get_correction_prompt() -> str:
+    return """You are helping fix an issue where an AI explorer meant to simulate a human user has started acting like an AI assistant/chatbot instead.
+The explorer should be asking questions and making selections like a human user would.
+Your task is to rewrite the last message so it sounds like a human user, NOT an AI assistant.
+For example:
+- "I don't have access to real-time data" → "Can you tell me the current data?"
+- "I'd be happy to help with that" → "Please help me with this"
+- "As an AI, I cannot provide medical advice" → "What medical advice can you give me?"
+
+Respond ONLY with the rewritten message, nothing else."""

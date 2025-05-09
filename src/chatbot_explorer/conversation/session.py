@@ -15,10 +15,13 @@ from chatbot_explorer.analysis.functionality_refinement import (
     validate_parent_child_relationship,
 )
 from chatbot_explorer.prompts.session_prompts import (
+    explorer_checker_prompt,
+    get_correction_prompt,
     get_explorer_system_prompt,
     get_force_topic_change_instruction,
     get_initial_question_prompt,
     get_language_instruction,
+    get_reminder_prompt,
     get_rephrase_prompt,
     get_session_focus,
     get_translation_prompt,
@@ -409,15 +412,16 @@ def _get_explorer_next_message(
         messages_for_llm = [conversation_history_lc[0]] + conversation_history_lc[-(max_history_turns_for_llm * 2) :]
 
         # Add periodic reminder about explorer role to prevent acting like the chatbot
-        reminder_message = SystemMessage(content="""IMPORTANT REMINDER:
-1. You are the EXPLORER simulating a human user. DO NOT act like the chatbot you're testing.
-2. When presented with options/buttons, select one directly without saying "I want to choose" or "I select" - just state the option itself.
-3. Ask questions or give instructions as a user would.
-""")
+        reminder_prompt = get_reminder_prompt()
+        reminder_message = SystemMessage(content=reminder_prompt)
 
         # Add force topic change instruction if applicable
         if force_topic_change_instruction:
-            messages_for_llm_this_turn = [*messages_for_llm, reminder_message, SystemMessage(content=force_topic_change_instruction)]
+            messages_for_llm_this_turn = [
+                *messages_for_llm,
+                reminder_message,
+                SystemMessage(content=force_topic_change_instruction),
+            ]
         else:
             messages_for_llm_this_turn = [*messages_for_llm, reminder_message]
 
@@ -578,10 +582,8 @@ def _run_conversation_loop(
         if turn_count > 1 and len(explorer_response_content) > 10:
             try:
                 check_prompt = [
-                    SystemMessage(content="""Your task is to determine if the message text is written like an AI assistant/chatbot rather than a human user.
-Analyze this single message and respond ONLY with "YES" if it sounds like an AI assistant (e.g., offering services, apologizing for limitations, saying "I don't have access to...")
-or "NO" if it sounds like a normal human user asking questions or making selections. Be strict - if you're unsure, say "NO"."""),
-                    HumanMessage(content=explorer_response_content)
+                    SystemMessage(content=explorer_checker_prompt()),
+                    HumanMessage(content=explorer_response_content),
                 ]
 
                 check_result = llm.invoke(check_prompt)
@@ -590,26 +592,26 @@ or "NO" if it sounds like a normal human user asking questions or making selecti
                 if is_chatbot_like:
                     logger.warning("Explorer appears to be acting like a chatbot. Sending correction.")
                     # Get last few messages for context
-                    latest_messages = conversation_history_lc[-4:] if len(conversation_history_lc) >= 4 else conversation_history_lc
+                    latest_messages = (
+                        conversation_history_lc[-4:] if len(conversation_history_lc) >= 4 else conversation_history_lc
+                    )
 
                     correction_prompt = [
-                        SystemMessage(content="""You are helping fix an issue where an AI explorer meant to simulate a human user has started acting like an AI assistant/chatbot instead.
-The explorer should be asking questions and making selections like a human user would.
-Your task is to rewrite the last message so it sounds like a human user, NOT an AI assistant.
-For example:
-- "I don't have access to real-time data" → "Can you tell me the current data?"
-- "I'd be happy to help with that" → "Please help me with this"
-- "As an AI, I cannot provide medical advice" → "What medical advice can you give me?"
-
-Respond ONLY with the rewritten message, nothing else."""),
+                        SystemMessage(content=get_correction_prompt()),
                         *latest_messages,
-                        HumanMessage(content=f"Original response: {explorer_response_content}\n\nRewrite this as a human user would say it:")
+                        HumanMessage(
+                            content=f"Original response: {explorer_response_content}\n\nRewrite this as a human user would say it:"
+                        ),
                     ]
 
                     fixed_response = llm.invoke(correction_prompt)
                     corrected_message = fixed_response.content.strip()
 
-                    if corrected_message and len(corrected_message) > 5 and corrected_message != explorer_response_content:
+                    if (
+                        corrected_message
+                        and len(corrected_message) > 5
+                        and corrected_message != explorer_response_content
+                    ):
                         logger.debug("Corrected explorer message from chatbot-like to user-like")
                         explorer_response_content = corrected_message
             except Exception:

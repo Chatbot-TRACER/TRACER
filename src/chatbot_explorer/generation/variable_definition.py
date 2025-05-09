@@ -9,7 +9,12 @@ from typing import Any, TypedDict
 from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.constants import VARIABLE_PATTERN
-from chatbot_explorer.prompts.variable_definition_prompts import ProfileContext, get_variable_definition_prompt
+from chatbot_explorer.prompts.variable_definition_prompts import (
+    ProfileContext,
+    get_clean_and_suggest_negative_option_prompt,
+    get_variable_definition_prompt,
+    get_variable_to_datasource_matching_prompt,
+)
 from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
@@ -511,75 +516,6 @@ def _extract_parameter_options_for_profile(
     return final_options_dict
 
 
-def get_variable_to_datasource_matching_prompt(
-    goal_variable_names: list[str],
-    potential_data_sources: list[dict[str, Any]],
-    profile_role_and_goals: str,
-) -> str:
-    """Generates a prompt for the LLM to match goal variables to potential data sources
-    (which can be direct parameters or list-like outputs from functionalities).
-    """
-    sources_str_list = []
-    for i, source in enumerate(potential_data_sources):
-        full_options = source.get("options", [])
-        options_preview_str = "N/A"
-        if isinstance(full_options, list) and full_options:
-            options_preview_str = (
-                f"{full_options[:3]}{'...' if len(full_options) > 3 else ''} (Total: {len(full_options)} options)"
-            )
-
-        sources_str_list.append(
-            f"  {i + 1}. ID: DS{i + 1} ## Source Name: '{source.get('source_name')}'\n"
-            f"     Type: {source.get('source_type', 'unknown')}\n"
-            f"     Description: {source.get('source_description', 'N/A')}\n"
-            f"     Example Options Preview: {options_preview_str}\n"
-            f"     Origin Functionality: '{source.get('origin_func')}'"
-        )
-    sources_formatted_str = "\n".join(sources_str_list)
-
-    variables_formatted_str = "\n".join([f"- '{var}'" for var in goal_variable_names])
-
-    return f"""
-You are an AI assistant helping to define test data for chatbot user profile goals.
-Your task is to match variables found in user goals with the most appropriate data source from a provided list.
-A data source can be a direct input parameter of a chatbot function OR an output of a chatbot function that provides a list of choices.
-
-PROFILE CONTEXT (Role and Goals):
-{profile_role_and_goals}
-
-GOAL VARIABLES TO MATCH:
-{variables_formatted_str}
-
-AVAILABLE DATA SOURCES (Parameters or List-like Outputs):
-{sources_formatted_str}
-
-**MATCHING INSTRUCTIONS:**
-1.  For each 'GOAL VARIABLE', find the BEST 'DATA SOURCE' from the list above.
-2.  A match is good if the variable's intended meaning aligns with the data source's name, description, and example options.
-3.  **Prioritize sources of type 'direct_parameter' if the variable name closely matches the source_name of a direct parameter.**
-4.  Consider 'output_as_parameter_options' when a goal variable seems to represent a *choice to be made from a list that the chatbot would provide*. The variable name might be more generic (e.g., `{{chosen_item}}`) while the data source name is more specific (e.g., `item_type_options`).
-5.  If a variable clearly relates to a specific "Origin Functionality" mentioned in a data source, that increases match likelihood.
-6.  If multiple data sources seem plausible, choose the one whose `source_name` or `source_description` is most semantically similar to the GOAL VARIABLE.
-7.  **Crucially, the `options` from the matched DATA SOURCE will be used as the data for the GOAL VARIABLE.**
-
-Output your matches as a JSON object where keys are the **exact** 'GOAL VARIABLE' names and values are objects containing:
-- "matched_data_source_id": "The ID of the matched Data Source (e.g., DS1, DS2)".
-
-Example JSON Output:
-{{
-  "{{variable_name_from_goal1}}": {{
-    "matched_data_source_id": "DS3"
-  }},
-  "{{variable_name_from_goal2}}": {{
-    "matched_data_source_id": "DS1"
-  }}
-}}
-
-If a GOAL VARIABLE has no good match in the AVAILABLE DATA SOURCES, DO NOT include it in your JSON output.
-Return ONLY the JSON object.
-"""
-
-
 def _match_variables_to_data_sources_with_llm(
     goal_variable_names: list[str], potential_data_sources: list[dict[str, Any]], llm: BaseLanguageModel
 ) -> dict[str, dict]:
@@ -646,77 +582,3 @@ def _match_variables_to_data_sources_with_llm(
     except Exception as e:
         logger.error(f"Error during LLM variable matching or parsing: {e}")
         return {}
-
-
-def get_clean_and_suggest_negative_option_prompt(
-    dirty_options: list[str],
-    variable_name: str,
-    profile_goals_context: str,
-    language: str,
-) -> str:
-    options_str = "\n".join([f"- {opt}" for opt in dirty_options])
-
-    return f"""
-You are an AI assistant helping prepare test data for a chatbot.
-Your task is to process a list of "dirty" options for a variable named '{variable_name}'. These options were extracted from chatbot messages and may contain extra descriptive text.
-
-This variable '{variable_name}' is used in user goals like:
-{profile_goals_context[:300]}...
-
-Language of options: {language}
-
-"Dirty" Options List for '{variable_name}':
-{options_str}
-
-**Your Tasks:**
-
-1.  **Clean the Options:**
-    *   For each item in the "Dirty" Options List, extract only the core, usable option name or value.
-    *   Remove any surrounding explanatory text (e.g., "Price for", "in small sizes", "option for").
-    *   If an option becomes empty after cleaning, omit it from the cleaned list.
-    *   Try to preserve original casing if it seems important (e.g., proper nouns like "Coke", "Margarita").
-    *   Present the cleaned options as a list, each item starting with '- '.
-
-2.  **Suggest One Out-of-Scope/Invalid Option:**
-    *   Based on the cleaned valid options and the goals, suggest ONE plausible but LIKELY UNSUPPORTED or INVALID option for the variable '{variable_name}'.
-    *   This invalid option should be something a user might mistakenly ask for related to the variable's purpose (e.g., if valid options are types of {variable_name}, suggest another related but unsupported type of {variable_name}).
-    *   Avoid generic gibberish. The invalid option should make sense in the context but not be in the valid list.
-    *   If you cannot confidently suggest a distinct invalid option, output "None".
-
-**Output Format (Strictly follow this):**
-
-CLEANED_OPTIONS:
-- [Cleaned Option 1]
-- [Cleaned Option 2]
-...
-
-INVALID_OPTION_SUGGESTION:
-[Your single suggested invalid option OR the word "None"]
-
-**Example:**
-Dirty Options List for 'drink_type':
-- Price for Coke
-- Sprite is also available
-- The Water option
-
-CLEANED_OPTIONS:
-- Coke
-- Sprite
-- Water
-
-INVALID_OPTION_SUGGESTION:
-Fanta
----
-Dirty Options List for 'item_size':
-- Small size (S)
-- The medium option
-- Large (L)
-
-CLEANED_OPTIONS:
-- Small
-- Medium
-- Large
-
-INVALID_OPTION_SUGGESTION:
-Extra Large
-"""
