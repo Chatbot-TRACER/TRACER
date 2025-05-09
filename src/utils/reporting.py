@@ -2,6 +2,8 @@
 
 import html
 import json
+import os
+from contextlib import redirect_stderr
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TextIO
@@ -46,9 +48,14 @@ def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "p
         _add_nodes(ctx=context, node=root, parent="start", depth=0)
 
     try:
-        dot.render(output_path, cleanup=True)
+        # Suppress Graphviz warnings/errors to devnull because it clutters the terminal and things are getting properly rendered
+        with open(os.devnull, "w", encoding="utf-8") as fnull:
+            with redirect_stderr(fnull):
+                dot.render(output_path, cleanup=True)
     except graphviz.backend.execute.ExecutableNotFound:
-        raise RuntimeError("Graphviz 'dot' executable not found. Ensure Graphviz is installed.")
+        raise RuntimeError(
+            "Graphviz 'dot' executable not found. Ensure Graphviz is installed and in your system's PATH."
+        )
 
 
 def _set_graph_attributes(dot: graphviz.Digraph) -> None:
