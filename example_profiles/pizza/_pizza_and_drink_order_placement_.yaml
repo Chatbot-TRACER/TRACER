@@ -1,0 +1,79 @@
+test_name: '[Pizza and Drink Order Placement]'
+llm:
+  temperature: 0.6
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: Customer wanting to place an order for pizza and drinks at Fast Pizza.
+  context:
+  - You're feeling hungry and don't want to cook tonight, so you've decided to order from Fast Pizza.
+  - You've ordered from Fast Pizza before and remember liking their "Spicy Supreme" pizza.
+  - You are on a budget and want to be mindful of the total cost of the order.
+  goals:
+  - Ask what types of pizza are available.
+  - Order a {{pizza_type}} pizza.
+  - Specify that I want a {{pizza_size}} size.
+  - Order {{number_of_drinks}} {{drink_type}}.
+  - drink_type:
+      function: forward()
+      type: string
+      data:
+      - coke
+      - sprite
+      - water
+      - Juice
+  - number_of_drinks:
+      function: random()
+      type: int
+      data:
+        min: 1
+        max: 4
+        step: 1
+  - pizza_size:
+      function: forward()
+      type: string
+      data:
+      - large
+      - medium
+      - small
+      - Extra Large
+  - pizza_type:
+      function: forward()
+      type: string
+      data:
+      - Carbonara
+      - Custom
+      - Four cheese
+      - Hawaiian
+      - Margarita
+      - Marinera
+      - Vegetarian
+      - Pepperoni
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. Can you rephrase?`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - chatbot_identity:
+      type: str
+      description: The chatbot's introductory statement, including that it's an assistant for Fast Pizza and can help with ordering. This should be extracted from the initial greeting message.
+  - available_pizza_types:
+      type: str
+      description: A list of the pizza types that the chatbot states are available. This should be extracted from the chatbot's response when the user asks about available pizzas.
+  - available_pizza_sizes:
+      type: str
+      description: A list of the pizza sizes that the chatbot states are available. This should be extracted when the chatbot asks about the pizza size.
+  - available_drinks:
+      type: str
+      description: A list of the drink types that the chatbot states are available (coke, sprite, water). This should be extracted from the chatbot's response when asking about the drinks.
+conversation:
+  number: 3
+  max_cost: 0.75
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - change your mind
+  - single question

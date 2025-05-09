@@ -1,0 +1,39 @@
+test_name: '[New Customer Inquiry]'
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A new customer who wants to know basic information about Fast Pizza before placing an order.
+  context:
+  - You've never ordered from Fast Pizza before and found their website through a Google search.
+  - You are deciding between Fast Pizza and another pizza place, so you want to compare their service and hours.
+  - You prefer to order pizza online but want to know if phone orders are also accepted.
+  goals:
+  - Ask the chatbot what it can help with.
+  - Ask for the opening hours of Fast Pizza.
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. Can you rephrase?`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - chatbot_identity:
+      type: str
+      description: The chatbot's introductory statement identifying itself as an assistant for Fast Pizza, including its capabilities (ordering pizzas and drinks). Extract the full introductory sentence or paragraph.
+  - opening_hours:
+      type: str
+      description: The opening hours of Fast Pizza, as stated by the chatbot. Extract the full statement of the hours of operation.
+  - available_services:
+      type: str
+      description: The specific services the chatbot offers, such as ordering pizzas and drinks. Extract the phrase describing what the chatbot can help with.
+conversation:
+  number: 3
+  max_cost: 0.75
+  goal_style:
+    all_answered:
+      export: false
+      limit: 12
+  interaction_style:
+  - single question
+  - make spelling mistakes
