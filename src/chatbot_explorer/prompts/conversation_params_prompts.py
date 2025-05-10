@@ -66,26 +66,40 @@ def get_number_prompt(
     Returns:
         The formatted prompt string for the LLM.
     """
+    # Get maximum forward variable length for calculation
+    max_forward_size = 1
+    for var_name, var_def in profile.items():
+        if isinstance(var_def, dict) and "function" in var_def and "data" in var_def:
+            data = var_def.get("data", [])
+            if isinstance(data, list):
+                current_size = len(data)
+                if current_size > max_forward_size:
+                    max_forward_size = current_size
+
     if has_nested_forwards:
-        number_section = """
+        number_section = f"""
         NUMBER:
         Choose ONE option:
-        - Enter a fixed number (e.g., 2-5) for a specific number of conversations.
+        - Enter a fixed number matching the maximum variable size (current max: {max_forward_size}) to cover possible combinations.
         - "all_combinations" to try all possible combinations (ONLY if there are fewer than 5 total combinations).
         - "sample(X)" where X is a decimal between 0.1 and 1.0 to test a fraction of the combinations.
 
         RECOMMENDATION:
-        - For nested forwards, if total combinations are low (<5), you may choose "all_combinations".
-        - Otherwise, consider using "sample(0.2)" or "sample(0.5)" based on your testing needs, or simply specify a fixed number.
+        - For variables with forward dependencies, use the size of the largest variable array ({max_forward_size} in this case) to ensure adequate coverage.
+        - For nested forwards, if total combinations are low (<5), choose "all_combinations".
+        - Otherwise, consider using "sample(0.2)" or "sample(0.5)" based on your testing needs, or specify a fixed number.
         """
     else:
-        number_section = """
+        number_section = f"""
         NUMBER:
-        Choose a specific number between 2-5 conversations to generate.
+        Choose a specific number based on the conversation complexity:
+        - For simple conversations without variables: 2-3 runs
+        - For conversations with variables: Use at least the maximum size of any variable list ({max_forward_size}) to ensure all possibilities are tested
 
         RECOMMENDATION:
-        - 2-3 for simple, straightforward conversations.
-        - 4-5 for more complex scenarios with multiple user goals.
+        - If the profile has forward dependencies with {max_forward_size} options, use at least {max_forward_size} runs.
+        - For simple, straightforward conversations: 2-3 runs is sufficient.
+        - For more complex scenarios with multiple user goals: 4-5 runs may be needed.
         """
 
     return f"""
@@ -101,7 +115,7 @@ def get_number_prompt(
     NUMBER: specific_number or all_combinations or sample(0.X)
 
     Examples:
-    NUMBER: 3
+    NUMBER: {max_forward_size}
     NUMBER: all_combinations
     NUMBER: sample(0.5)
     """

@@ -26,26 +26,114 @@ MAX_DISPLAYED_STYLES = 2
 
 def _get_profile_variables(profile: dict[str, Any]) -> list[str]:
     """Extracts all defined variable names from a profile."""
-    return [
+    variables = []
+
+    # Check for variables at the top level (original behavior)
+    variables.extend([
         var_name
         for var_name, var_def in profile.items()
         if isinstance(var_def, dict) and "function" in var_def and "data" in var_def
-    ]
+    ])
+
+    # Also check for variables nested within the 'goals' list
+    if "goals" in profile and isinstance(profile["goals"], list):
+        for item in profile["goals"]:
+            # If the goal item itself is a dictionary with 'function' and 'data'
+            if isinstance(item, dict) and "function" in item and "data" in item:
+                # Try to find a name for this variable
+                for key, value in item.items():
+                    if key not in ["function", "data", "type"]:
+                        variables.append(key)
+                        break
+
+            # If the goal item is a dictionary with key-value pairs where values are variable definitions
+            elif isinstance(item, dict):
+                for key, value in item.items():
+                    if isinstance(value, dict) and "function" in value and "data" in value:
+                        variables.append(key)
+
+    return variables
+
+
+def _get_variable_def(profile: dict[str, Any], var_name: str) -> dict | None:
+    """Gets the variable definition from the profile, checking both top level and within goals."""
+    # Check at top level first
+    var_def = profile.get(var_name)
+    if isinstance(var_def, dict) and "function" in var_def and "data" in var_def:
+        return var_def
+
+    # Check within goals if not found at top level
+    if "goals" in profile and isinstance(profile["goals"], list):
+        for item in profile["goals"]:
+            # If the goal item is a dictionary with key-value pairs
+            if isinstance(item, dict):
+                # Check if the item itself is a variable definition with the matching name
+                for key, value in item.items():
+                    if key == var_name and isinstance(value, dict) and "function" in value and "data" in value:
+                        return value
+
+                # Or if the item directly has the var_name key
+                if var_name in item and isinstance(item[var_name], dict) and "function" in item[var_name] and "data" in item[var_name]:
+                    return item[var_name]
+
+    return None
 
 
 def _calculate_combinations(profile: dict[str, Any], variables: list[str]) -> int:
-    """Calculates the potential number of combinations based on variable definitions."""
+    """Calculates the potential number of combinations based on variable definitions.
+
+    This function determines how many different combinations could be created from
+    the variables in a profile, taking into account list sizes and range-defined values.
+    """
     combinations = 1
+    var_sizes = {}
+
+    # Calculate the size of each variable
     for var_name in variables:
-        var_def = profile.get(var_name, {})
-        if isinstance(var_def, dict) and "data" in var_def:
+        var_def = _get_variable_def(profile, var_name)
+        if var_def and "data" in var_def:
             data = var_def.get("data", [])
+            var_size = 1  # Default size
+
             if isinstance(data, list):
-                combinations *= len(data) if data else 1
+                var_size = len(data) if data else 1
             elif isinstance(data, dict) and all(k in data for k in ["min", "max", "step"]) and data["step"] != 0:
                 steps = (data["max"] - data["min"]) / data["step"] + 1
-                combinations *= int(steps) if steps >= 1 else 1
-    return combinations
+                var_size = int(steps) if steps > 0 else 1
+
+            var_sizes[var_name] = var_size
+            combinations *= var_size
+
+    # If we have forward dependencies, adjust the combinations calculation
+    if "forward_dependencies" in profile:
+        forward_dependencies = profile["forward_dependencies"]
+
+        # For each dependent variable, determine if its size is already accounted for
+        for dependent_var, source_vars in forward_dependencies.items():
+            # Skip variables that couldn't be sized
+            if dependent_var not in var_sizes:
+                continue
+
+            # If the dependent variable depends on variables we've already counted,
+            # we need to avoid double-counting those combinations
+            if any(source_var in var_sizes for source_var in source_vars):
+                # This approach is simplified - in complex cases with nested dependencies,
+                # we would need a more sophisticated graph analysis
+                combinations = combinations // var_sizes[dependent_var]
+
+    # Additional check for nested forward references in custom format
+    for var_name in variables:
+        var_def = _get_variable_def(profile, var_name)
+        if var_def and "function" in var_def:
+            func = var_def["function"]
+            if "forward" in func and "(" in func and ")" in func:
+                param = func.split("(")[1].split(")")[0]
+                if param and param != "rand" and not param.isdigit() and param in var_sizes:
+                    # This variable depends on another, adjust to avoid double-counting
+                    if var_name in var_sizes:
+                        combinations = combinations // var_sizes[var_name]
+
+    return max(combinations, 1)  # Ensure at least 1 combination
 
 
 def _check_nested_forwards(profile: dict[str, Any], variables: list[str]) -> tuple[bool, list[str], str]:
@@ -67,17 +155,19 @@ def _check_nested_forwards(profile: dict[str, Any], variables: list[str]) -> tup
                 combinations = _calculate_combinations(profile, variables)
                 nested_forward_info += f"\nPotential combinations: approximately {combinations}"
     else:  # Fallback if structured dependencies aren't present
-        for var_name, var_def in profile.items():
-            if (
-                isinstance(var_def, dict)
-                and "function" in var_def
-                and "forward" in var_def["function"]
-                and "(" in var_def["function"]
-                and ")" in var_def["function"]
-            ):
-                param = var_def["function"].split("(")[1].split(")")[0]
-                if param and param != "rand" and not param.isdigit():
-                    forward_with_dependencies.append(var_name)
+        # Check for forward dependencies in variable definitions
+        for var_name in variables:
+            var_def = _get_variable_def(profile, var_name)
+            if var_def and "function" in var_def:
+                func = var_def["function"]
+                if "forward" in func and "(" in func and ")" in func:
+                    param = func.split("(")[1].split(")")[0]
+                    if param and param != "rand" and not param.isdigit():
+                        forward_with_dependencies.append(var_name)
+                        # If the referenced parameter is itself a forward, that's a nested forward
+                        ref_var_def = _get_variable_def(profile, param)
+                        if ref_var_def and "function" in ref_var_def and "forward" in ref_var_def["function"]:
+                            has_nested_forwards = True
 
     return has_nested_forwards, forward_with_dependencies, nested_forward_info
 
@@ -185,9 +275,43 @@ def _parse_number_response(response_text: str, default_number: str | int) -> str
     return extracted_number if extracted_number is not None else default_number
 
 
+def _get_max_variable_size(profile: dict[str, Any]) -> int:
+    """Determines the maximum size of any variable list in the profile."""
+    max_size = 1  # Default minimum size
+    variables = _get_profile_variables(profile)
+
+    for var_name in variables:
+        var_def = _get_variable_def(profile, var_name)
+        if var_def and "data" in var_def:
+            data = var_def.get("data", [])
+            if isinstance(data, list):
+                current_size = len(data)
+                if current_size > max_size:
+                    max_size = current_size
+            elif isinstance(data, dict) and all(k in data for k in ["min", "max", "step"]) and data["step"] != 0:
+                # Handle range-defined variables
+                steps = (data["max"] - data["min"]) / data["step"] + 1
+                current_size = int(steps) if steps >= 1 else 1
+                if current_size > max_size:
+                    max_size = current_size
+
+    return max_size
+
+
 def request_number_from_llm(context: ParamRequestContext, variables: list[str]) -> str | int:
     """Prompts LLM to determine the NUMBER parameter."""
-    default_number = "sample(0.2)" if context["has_nested_forwards"] else (5 if variables else 2)
+    # Get the maximum variable size for better default calculation
+    max_var_size = _get_max_variable_size(context["profile"])
+
+    # Set a smarter default based on variables and their sizes
+    if context["has_nested_forwards"]:
+        if _calculate_combinations(context["profile"], variables) < 5:
+            default_number = "all_combinations"
+        else:
+            default_number = f"sample(0.2)"
+    else:
+        default_number = max(max_var_size, 2) if variables else 2
+
     prompt = get_number_prompt(
         profile=context["profile"],
         variables_info=context["variables_info"],
@@ -195,6 +319,8 @@ def request_number_from_llm(context: ParamRequestContext, variables: list[str]) 
         has_nested_forwards=context["has_nested_forwards"],
     )
     response = context["llm"].invoke(prompt)
+
+    # Parse response with the more intelligent default
     return _parse_number_response(response.content.strip(), default_number)
 
 
@@ -343,9 +469,18 @@ def generate_conversation_parameters(
         # Extract variables information
         variables, forward_vars, has_nested_forwards, _, variables_info = extract_profile_variables(profile)
 
+        # Calculate potential combinations for more informed decisions
+        max_var_size = _get_max_variable_size(profile)
+        total_combinations = _calculate_combinations(profile, variables)
+
         if variables:
             var_summary = ", ".join(variables)
             logger.debug("Profile has %d variables: %s", len(variables), var_summary)
+            logger.debug(
+                "Maximum variable size: %d, potential combinations: %d",
+                max_var_size,
+                total_combinations,
+            )
 
             if forward_vars:
                 logger.debug(
@@ -388,13 +523,34 @@ def generate_conversation_parameters(
 
         logger.info(" ✅ Generated conversation parameters %d/%d: '%s'", i, total_profiles, profile_name)
 
-        logger.debug(
-            "Parameters: number=%s, cost=%.2f, goal=%s%s",
-            number_value,
-            max_cost,
-            goal_style_type,
-            interaction_style_summary,
-        )
+        # Log detailed information about number selection based on variables
+        if variables:
+            number_reason = ""
+            if number_value == "all_combinations":
+                number_reason = f" (testing all {total_combinations} combinations)"
+            elif isinstance(number_value, str) and "sample" in number_value:
+                sample_pct = number_value.split("(")[1].split(")")[0]
+                approx_count = round(float(sample_pct) * total_combinations)
+                number_reason = f" (sampling ~{approx_count} of {total_combinations} combinations)"
+            elif isinstance(number_value, int) and number_value >= max_var_size:
+                number_reason = f" (adequate to cover largest variable with {max_var_size} options)"
+
+            logger.debug(
+                "Parameters: number=%s%s, cost=%.2f, goal=%s%s",
+                number_value,
+                number_reason,
+                max_cost,
+                goal_style_type,
+                interaction_style_summary,
+            )
+        else:
+            logger.debug(
+                "Parameters: number=%s, cost=%.2f, goal=%s%s",
+                number_value,
+                max_cost,
+                goal_style_type,
+                interaction_style_summary,
+            )
 
         # Build and assign parameters
         conversation_params = {"number": number_value, "max_cost": max_cost, "goal_style": goal_style}
