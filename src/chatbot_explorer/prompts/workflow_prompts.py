@@ -4,7 +4,7 @@
 def create_transactional_prompt(func_list_str: str, conversation_snippets: str) -> str:
     """Create a prompt specifically for transactional chatbot analysis."""
     return f"""
-    You are a meticulous Workflow Dependency Analyzer. Your task is to analyze the provided functionalities (extracted interaction steps) and conversation snippets to model the **precise sequential workflow** a user follows to complete a transaction or achieve a core goal.
+    You are a meticulous Workflow Dependency Analyzer AND Thematic Categorizer. Your primary task is to analyze the provided functionalities (extracted interaction steps) and conversation snippets to model the **precise sequential workflow** a user follows to complete a transaction or achieve a core goal. Your secondary task is to suggest a high-level thematic category for each functionality.
 
     Input Functionalities (Extracted Steps):
     {func_list_str}
@@ -12,7 +12,7 @@ def create_transactional_prompt(func_list_str: str, conversation_snippets: str) 
     Conversation History Snippets (Context for Flow):
     {conversation_snippets}
 
-    **CRITICAL TASK: Determine Functional Dependencies to Assign `parent_names`**
+    **TASK 1: Determine Functional Dependencies to Assign `parent_names`**
 
     For EACH functionality provided in the input, you MUST determine its `parent_names`. A functionality (Child F) should have a parent functionality (Parent P) in `parent_names` ONLY IF Parent P meets **ALL** of the following strict criteria:
     1.  **Immediate & Necessary Prerequisite:** Parent P must be a step (an action or prompt by the chatbot) that is **DIRECTLY AND IMMEDIATELY NECESSARY** for Child F to occur or make logical sense in the conversation. Ask: "Is Child F impossible or nonsensical if Parent P did not *just* happen?" If Child F could happen without P, or if other steps intervene, P is NOT an immediate parent.
@@ -34,21 +34,37 @@ def create_transactional_prompt(func_list_str: str, conversation_snippets: str) 
     *   **Joins:** If distinct paths (e.g., `complete_path1_final_step` and `complete_path2_final_step`) BOTH can directly lead to a common subsequent step (e.g., `display_final_summary`), then `display_final_summary` would have `parent_names: ["complete_path1_final_step", "complete_path2_final_step"]`.
     *   **AVOID Conversational Fluff as Parents:** Steps like `thank_user`, `acknowledge_input_received`, or general empathetic statements are RARELY functional parents. Do NOT list them as parents if a more direct data-gathering step or action-enabling step is the true prerequisite.
 
+    **TASK 2: Suggest a Thematic Category**
+
+    For EACH functionality, assign a `suggested_category` - a short, descriptive thematic label that groups similar functionalities together. Aim for a small, consistent set of broad categories.
+
+    Examples of good categories for transactional chatbots:
+    * "Order Placement" - For steps related to selecting and specifying an order
+    * "Payment" - For steps related to payment methods, billing, etc.
+    * "User Authentication" - For steps related to login, verification, etc.
+    * "Order Confirmation" - For steps confirming or summarizing an order
+    * "Chatbot Meta" - For general chatbot interaction like greetings, explanations
+    * "Customer Support" - For troubleshooting or help-related functionalities
+
+    Maintain consistency by reusing categories when appropriate rather than creating too many unique ones.
+
     **ANALYSIS FOCUS:**
     For every functionality, meticulously trace back in the conversation: What was the *chatbot's very last action or prompt* that was *essential* for this current functionality to proceed? That is its parent. If no such single essential step exists, it's likely a root node or its parent is misidentified.
 
     **OUTPUT STRUCTURE:**
-    Return a JSON list where each object represents one of the unique input functionalities, augmented ONLY with the determined `parent_names`.
+    Return a JSON list where each object represents one of the unique input functionalities, augmented with the determined `parent_names` and `suggested_category`.
     - "name": Functionality name (string).
     - "description": Description (string).
     - "parameters": (Preserve EXACTLY from input).
     - "outputs": (Preserve EXACTLY from input).
     - "parent_names": List of names of functionalities that meet ALL the STRICT criteria above. Use `[]` for root nodes.
+    - "suggested_category": A short string for the thematic category (e.g., "Order Placement", "Payment").
 
     **FINAL INSTRUCTIONS:**
     -   Preserve ALL original details (name, description, parameters, outputs) for each functionality.
     -   The list should contain each input functionality name exactly once.
     -   Focus entirely on deriving the most accurate, functionally necessary `parent_names`.
+    -   The `suggested_category` is for organizational purposes and does not influence `parent_names`.
     -   Output valid JSON.
 
     Generate the JSON list:
@@ -58,8 +74,8 @@ def create_transactional_prompt(func_list_str: str, conversation_snippets: str) 
 def create_informational_prompt(func_list_str: str, conversation_snippets: str) -> str:
     """Create a prompt specifically for informational chatbot analysis."""
     return f"""
-    You are a meticulous Workflow Dependency Analyzer. Your task is to analyze the provided functionalities (interaction steps) and conversation snippets to model the **interaction flow**.
-    You MUST recognize that for an **Informational/Q&A chatbot**, most functionalities will likely be **independent topics/root nodes**.
+    You are a meticulous Workflow Dependency Analyzer AND Thematic Categorizer. Your primary task is to analyze the provided functionalities (interaction steps) and conversation snippets to model the **interaction flow**.
+    You MUST recognize that for an **Informational/Q&A chatbot**, most functionalities will likely be **independent topics/root nodes**. Your secondary task is to suggest a high-level thematic category for each functionality.
 
     **CRITICAL CONTEXT FOR THIS TASK:**
     - This chatbot appears primarily **Informational/Q&A**. Users likely ask about independent topics.
@@ -70,12 +86,12 @@ def create_informational_prompt(func_list_str: str, conversation_snippets: str) 
     {func_list_str}
     # Note: Full Parameter and Output details for each functionality are known but omitted here for brevity.
     # YOU MUST PRESERVE the original parameters and outputs associated with each
-    # functionality name when generating the final JSON output. Your task is ONLY to determine `parent_names`.
+    # functionality name when generating the final JSON output. Your task is to determine `parent_names` and suggest a thematic category.
 
     Conversation History Snippets (Context for Flow):
     {conversation_snippets}
 
-    **CRITICAL TASK: Determine Minimal Functional Dependencies to Assign `parent_names`**
+    **TASK 1: Determine Minimal Functional Dependencies to Assign `parent_names`**
 
     For EACH functionality provided in the input, you MUST determine its `parent_names`. Your **default is `parent_names: []`**.
     Assign a parent (i.e., a non-empty `parent_names` list) ONLY IF Parent P meets **ALL** of the following extremely strict criteria:
@@ -99,21 +115,37 @@ def create_informational_prompt(func_list_str: str, conversation_snippets: str) 
         *   Do NOT link based on simple topical similarity.
         *   Do NOT link just because one piece of information *could* be useful before another, unless the chatbot *forces* that order.
 
+    **TASK 2: Suggest a Thematic Category**
+
+    For EACH functionality, assign a `suggested_category` - a short, descriptive thematic label that groups similar functionalities together. Aim for a small, consistent set of broad categories.
+
+    Examples of good categories for informational chatbots:
+    * "Account & Access" - For account management, login issues, access rights
+    * "Network & Connectivity" - For network setup, troubleshooting, connections
+    * "Software & Applications" - For software features, updates, compatibility
+    * "Hardware Support" - For device-specific information and troubleshooting
+    * "General Information" - For company info, policies, etc.
+    * "Chatbot Meta" - For chatbot capabilities, help commands, etc.
+
+    Maintain consistency by reusing categories when appropriate rather than creating too many unique ones.
+
     **ANALYSIS FOCUS:**
     For every functionality, assume `parent_names: []`. Only override this default if you find **undeniable proof** in the conversation snippets of an **explicitly forced sequence** or **absolute functional necessity** linking it directly to an immediate predecessor performed by the chatbot.
 
     **OUTPUT STRUCTURE:**
-    Return a JSON list where each object represents one of the unique input functionalities, augmented ONLY with the determined `parent_names`.
+    Return a JSON list where each object represents one of the unique input functionalities, augmented with the determined `parent_names` and `suggested_category`.
     - "name": Functionality name (string).
     - "description": Description (string).
     - "parameters": (Preserve EXACTLY from original data - **DO NOT OMIT**).
     - "outputs": (Preserve EXACTLY from original data - **DO NOT OMIT**).
     - "parent_names": List of names of functionalities that meet ALL the STRICT criteria above (this will be `[]` for MOST, if not all, nodes).
+    - "suggested_category": A short string for the thematic category (e.g., "Account & Access", "Network & Connectivity").
 
     **FINAL INSTRUCTIONS:**
     -   Preserve ALL original details (name, description, parameters, outputs) for each functionality in the final JSON.
     -   The list should contain each input functionality name exactly once.
     -   Focus entirely on deriving the most accurate `parent_names`, defaulting STRONGLY to `[]`.
+    -   The `suggested_category` is for organizational purposes and does not influence `parent_names`.
     -   Output valid JSON. Ensure the entire response is a single, well-formed JSON list.
 
     Generate the JSON list:

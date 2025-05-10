@@ -47,9 +47,49 @@ def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "p
     dot.node(
         "start", label="", shape="circle", style="filled", fillcolor="black", width=str(node_dim), height=str(node_dim)
     )
+
     context = GraphBuildContext(graph=dot)
+
+    # Group nodes by category
+    nodes_by_category = {}
     for root in nodes:
-        _add_nodes(ctx=context, node=root, parent="start", depth=0, graph_font_size=graph_font_size, compact=compact)
+        category = root.get("suggested_category", "Uncategorized")
+        if category not in nodes_by_category:
+            nodes_by_category[category] = []
+        nodes_by_category[category].append(root)
+
+    # Create a subgraph for each category
+    for category, category_nodes in nodes_by_category.items():
+        # Only create a cluster if we have more than one node in this category or total categories > 1
+        if len(category_nodes) > 1 or len(nodes_by_category) > 1:
+            cluster_name = f"cluster_{category.replace(' ', '_').lower()}"
+
+            # Create a subgraph with a unique name for this category
+            category_graph = graphviz.Digraph(name=cluster_name)
+            category_graph.attr(
+                label=category,
+                style="rounded,filled",
+                color="#DDDDDD",
+                fillcolor="#F8F8F8:#EEEEEE",
+                gradientangle="270",
+                fontsize=str(graph_font_size + 1),
+                fontname="Helvetica Neue, Helvetica, Arial, sans-serif",
+                margin="15"
+            )
+            context.node_clusters[category] = category_graph
+
+            # Process each node in this category
+            for root_node in category_nodes:
+                _add_nodes(ctx=context, node=root_node, parent="start", depth=0,
+                          graph_font_size=graph_font_size, compact=compact, category=category)
+
+            # Add the subgraph to the main graph
+            dot.subgraph(category_graph)
+        else:
+            # If only one node in category and it's the only category, don't create a cluster
+            for root_node in category_nodes:
+                _add_nodes(ctx=context, node=root_node, parent="start", depth=0,
+                          graph_font_size=graph_font_size, compact=compact)
 
     try:
         # Suppress Graphviz warnings/errors to devnull because it clutters the terminal and things are getting properly rendered
@@ -158,7 +198,7 @@ def _get_node_style(depth: int) -> dict[str, str]:
     return color_schemes[depth_mod]
 
 
-def _add_nodes(ctx: GraphBuildContext, node: FunctionalityNode, parent: str, depth: int, graph_font_size: int = 12, compact: bool = False):
+def _add_nodes(ctx: GraphBuildContext, node: FunctionalityNode, parent: str, depth: int, graph_font_size: int = 12, compact: bool = False, category: str = None):
     """Recursively adds nodes and edges to the graph."""
     name = node.get("name")
     if not name or name in ctx.processed_nodes:
@@ -168,15 +208,31 @@ def _add_nodes(ctx: GraphBuildContext, node: FunctionalityNode, parent: str, dep
     html_table = _build_label(node, graph_font_size, compact)
     label = f"<{html_table}>"
 
-    ctx.graph.node(name, label=label, **_get_node_style(depth))
+    # Determine which graph to add the node to
+    target_graph = ctx.graph
+    if category and category in ctx.node_clusters:
+        target_graph = ctx.node_clusters[category]
+
+    target_graph.node(name, label=label, **_get_node_style(depth))
     ctx.processed_nodes.add(name)
 
     if (parent, name) not in ctx.processed_edges:
-        ctx.graph.edge(parent, name)
+        if parent == "start" and category and category in ctx.node_clusters:
+            # Edge from start to node within a cluster should be in main graph
+            ctx.graph.edge(parent, name)
+        else:
+            target_graph.edge(parent, name)
         ctx.processed_edges.add((parent, name))
 
     for child in node.get("children", []):
-        _add_nodes(ctx, child, parent=name, depth=depth + 1, graph_font_size=graph_font_size, compact=compact)
+        # Pass on the category info if child is in same category
+        child_category = child.get("suggested_category", category)
+        if child_category == category:
+            _add_nodes(ctx, child, parent=name, depth=depth + 1, graph_font_size=graph_font_size,
+                     compact=compact, category=category)
+        else:
+            _add_nodes(ctx, child, parent=name, depth=depth + 1, graph_font_size=graph_font_size,
+                     compact=compact)
 
 
 def _truncate_text(text: str | None, max_length: int) -> str:
@@ -223,6 +279,11 @@ def _build_label(node: FunctionalityNode, graph_font_size: int = 12, compact: bo
         options_max_length = 50
 
     rows = [f'<tr><td><font point-size="{title_font_size}"><b>{title}</b></font></td></tr>']
+
+    # Add category if present and not displaying in a cluster
+    category = node.get("suggested_category")
+    if category:
+        rows.append(f'<tr><td><font color="#555555" point-size="{small_font_size}"><b>[{html.escape(category)}]</b></font></td></tr>')
 
     # Add node description
     description = node.get("description")
@@ -417,9 +478,15 @@ def print_structured_functionalities(f: TextIO, nodes: list[FunctionalityNode], 
         elif outputs_data:
             output_str = f" | Outputs: InvalidFormat({type(outputs_data)})"
 
+        # Get category if available
+        category_str = ""
+        category = node.get("suggested_category")
+        if category:
+            category_str = f" | Category: {category}"
+
         node_name = node.get("name", "Unnamed Node")
         node_desc = node.get("description", "No description")
-        f.write(f"{indent}- {node_name}: {node_desc}{param_str}{output_str}\n")
+        f.write(f"{indent}- {node_name}: {node_desc}{category_str}{param_str}{output_str}\n")
 
         children = node.get("children", [])
         if children and isinstance(children, list):
@@ -461,6 +528,58 @@ def _write_functionalities_section(f: TextIO, functionalities: list[Functionalit
         f.write("Functionality structure is a list, but elements are not recognized objects.\n")
         f.write(f"First element type: {type(functionalities[0])}\n")
         return
+
+
+def _write_functionality_categories_section(f: TextIO, functionalities: list[FunctionalityNode]) -> None:
+    """Write the functionalities grouped by category to the report file."""
+    _write_section_header(f, "FUNCTIONALITIES (By Category)")
+
+    if not isinstance(functionalities, list):
+        f.write(f"Functionality structure not in expected list format.\nType: {type(functionalities)}\n")
+        return
+
+    if not functionalities:
+        f.write("No functionalities structure discovered (empty list).\n")
+        return
+
+    # Group nodes by their suggested category
+    categories = {}
+
+    def add_node_to_categories(node):
+        if isinstance(node, dict):
+            category = node.get("suggested_category", "Uncategorized")
+            if category not in categories:
+                categories[category] = []
+            categories[category].append(node)
+
+            # Process children recursively
+            for child in node.get("children", []):
+                add_node_to_categories(child)
+
+    # Populate categories dictionary
+    for node in functionalities:
+        add_node_to_categories(node)
+
+    # Display nodes by category
+    if not categories:
+        f.write("No categorized functionalities found.\n")
+        return
+
+    # Sort categories alphabetically, but put "Uncategorized" at the end if it exists
+    sorted_categories = sorted(categories.keys())
+    if "Uncategorized" in sorted_categories:
+        sorted_categories.remove("Uncategorized")
+        sorted_categories.append("Uncategorized")
+
+    for category in sorted_categories:
+        nodes = categories[category]
+        f.write(f"\n### CATEGORY: {category} ({len(nodes)} functions)\n")
+
+        # List all node names in this category
+        for node in nodes:
+            node_name = node.get("name", "Unnamed Node")
+            node_desc = node.get("description", "No description")
+            f.write(f"- {node_name}: {node_desc}\n")
 
 
 def _write_json_section(f: TextIO, data: list[FunctionalityNode]) -> None:
@@ -555,6 +674,7 @@ def write_report(
             f.write("=== CHATBOT FUNCTIONALITY ANALYSIS ===\n\n")
 
             _write_functionalities_section(f, structured_functionalities)
+            _write_functionality_categories_section(f, structured_functionalities)
             _write_json_section(f, structured_functionalities)
             _write_limitations_section(f, limitations)
             _write_languages_section(f, supported_languages)
