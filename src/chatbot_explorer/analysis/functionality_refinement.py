@@ -63,8 +63,8 @@ def is_duplicate_functionality(
         # First try exact format "DUPLICATE_OF: nodename"
         match = re.search(r"DUPLICATE_OF:\s*([\w_]+)", result_content)
         if not match:
-            # Fallback to more flexible pattern if exact format isn't found
-            match = re.search(r"DUPLICATE_OF:?\s*[\'\"]*([A-Za-z0-9_]+)[\'\"]*", result_content)
+            # Try more flexible pattern to catch more variations
+            match = re.search(r"DUPLICATE.*?[\'\"]*([A-Za-z0-9_]+)[\'\"]*", result_content)
 
         if match:
             existing_node_name = match.group(1)
