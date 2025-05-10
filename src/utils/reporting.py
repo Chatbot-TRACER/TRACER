@@ -25,7 +25,14 @@ class GraphBuildContext:
     node_clusters: dict[str, graphviz.Digraph] = field(default_factory=dict)
 
 
-def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "pdf", graph_font_size: int = 12, dpi: int = 300, compact: bool = False):
+def export_graph(
+    nodes: list[FunctionalityNode],
+    output_path: str,
+    fmt: str = "pdf",
+    graph_font_size: int = 12,
+    dpi: int = 300,
+    compact: bool = False,
+):
     """Creates and renders a directed graph of chatbot functionality.
 
     Args:
@@ -74,22 +81,42 @@ def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "p
                 gradientangle="270",
                 fontsize=str(graph_font_size + 1),
                 fontname="Helvetica Neue, Helvetica, Arial, sans-serif",
-                margin="15"
+                margin="15",
             )
             context.node_clusters[category] = category_graph
 
             # Process each node in this category
             for root_node in category_nodes:
-                _add_nodes(ctx=context, node=root_node, parent="start", depth=0,
-                          graph_font_size=graph_font_size, compact=compact, category=category)
+                # Root nodes in a cluster are added to the category_graph
+                # Their labels don't need to repeat the category, as the cluster shows it.
+                _add_nodes(
+                    ctx=context,
+                    node=root_node,
+                    parent="start",
+                    depth=0,
+                    graph_font_size=graph_font_size,
+                    compact=compact,
+                    target_graph=category_graph,
+                    category_for_label=None,
+                )
 
             # Add the subgraph to the main graph
             dot.subgraph(category_graph)
         else:
             # If only one node in category and it's the only category, don't create a cluster
             for root_node in category_nodes:
-                _add_nodes(ctx=context, node=root_node, parent="start", depth=0,
-                          graph_font_size=graph_font_size, compact=compact)
+                # Root nodes not in a cluster are added to the main graph
+                # Their labels should show their category.
+                _add_nodes(
+                    ctx=context,
+                    node=root_node,
+                    parent="start",
+                    depth=0,
+                    graph_font_size=graph_font_size,
+                    compact=compact,
+                    target_graph=context.graph,
+                    category_for_label=root_node.get("suggested_category"),
+                )
 
     try:
         # Suppress Graphviz warnings/errors to devnull because it clutters the terminal and things are getting properly rendered
@@ -102,7 +129,9 @@ def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "p
         )
 
 
-def _set_graph_attributes(dot: graphviz.Digraph, graph_font_size: int = 12, dpi: int = 300, compact: bool = False) -> None:
+def _set_graph_attributes(
+    dot: graphviz.Digraph, graph_font_size: int = 12, dpi: int = 300, compact: bool = False
+) -> None:
     """Sets default attributes for the Graphviz graph, nodes, and edges.
 
     Args:
@@ -198,41 +227,53 @@ def _get_node_style(depth: int) -> dict[str, str]:
     return color_schemes[depth_mod]
 
 
-def _add_nodes(ctx: GraphBuildContext, node: FunctionalityNode, parent: str, depth: int, graph_font_size: int = 12, compact: bool = False, category: str = None):
+def _add_nodes(
+    ctx: GraphBuildContext,
+    node: FunctionalityNode,
+    parent: str,
+    depth: int,
+    graph_font_size: int = 12,
+    compact: bool = False,
+    target_graph: graphviz.Digraph = None,
+    category_for_label: str | None = None,
+):
     """Recursively adds nodes and edges to the graph."""
     name = node.get("name")
     if not name or name in ctx.processed_nodes:
         return
 
     # Build HTML label with outer brackets
-    html_table = _build_label(node, graph_font_size, compact)
+    html_table = _build_label(node, graph_font_size, compact, category_to_display=category_for_label)
     label = f"<{html_table}>"
-
-    # Determine which graph to add the node to
-    target_graph = ctx.graph
-    if category and category in ctx.node_clusters:
-        target_graph = ctx.node_clusters[category]
 
     target_graph.node(name, label=label, **_get_node_style(depth))
     ctx.processed_nodes.add(name)
 
     if (parent, name) not in ctx.processed_edges:
-        if parent == "start" and category and category in ctx.node_clusters:
-            # Edge from start to node within a cluster should be in main graph
+        # If the current node (name) is being added to a cluster (target_graph != ctx.graph)
+        # AND its parent is "start", then the edge (start, name) must be on the main graph (ctx.graph)
+        # to connect *to* the cluster.
+        if parent == "start" and target_graph != ctx.graph:
             ctx.graph.edge(parent, name)
         else:
+            # Otherwise, the edge is within the target_graph (either main graph or a cluster graph)
             target_graph.edge(parent, name)
         ctx.processed_edges.add((parent, name))
 
     for child in node.get("children", []):
-        # Pass on the category info if child is in same category
-        child_category = child.get("suggested_category", category)
-        if child_category == category:
-            _add_nodes(ctx, child, parent=name, depth=depth + 1, graph_font_size=graph_font_size,
-                     compact=compact, category=category)
-        else:
-            _add_nodes(ctx, child, parent=name, depth=depth + 1, graph_font_size=graph_font_size,
-                     compact=compact)
+        # Children are always added to the main graph (ctx.graph).
+        # Their labels should show their own category, if any.
+        child_category_for_label = child.get("suggested_category")
+        _add_nodes(
+            ctx,
+            child,
+            parent=name,
+            depth=depth + 1,
+            graph_font_size=graph_font_size,
+            compact=compact,
+            target_graph=ctx.graph,  # Children go to the main graph
+            category_for_label=child_category_for_label,
+        )
 
 
 def _truncate_text(text: str | None, max_length: int) -> str:
@@ -244,13 +285,16 @@ def _truncate_text(text: str | None, max_length: int) -> str:
     return html.escape(text)
 
 
-def _build_label(node: FunctionalityNode, graph_font_size: int = 12, compact: bool = False) -> str:
+def _build_label(
+    node: FunctionalityNode, graph_font_size: int = 12, compact: bool = False, category_to_display: str | None = None
+) -> str:
     """Builds an HTML table with name, description, parameters, and outputs.
 
     Args:
         node: Functionality node
         graph_font_size: Font size for graph text elements
         compact: Whether to generate more compact node labels
+        category_to_display: If provided, this category string will be displayed in the label.
     """
     title = html.escape(node.get("name", "").replace("_", " ").title())
 
@@ -280,16 +324,19 @@ def _build_label(node: FunctionalityNode, graph_font_size: int = 12, compact: bo
 
     rows = [f'<tr><td><font point-size="{title_font_size}"><b>{title}</b></font></td></tr>']
 
-    # Add category if present and not displaying in a cluster
-    category = node.get("suggested_category")
-    if category:
-        rows.append(f'<tr><td><font color="#555555" point-size="{small_font_size}"><b>[{html.escape(category)}]</b></font></td></tr>')
+    # Add category if provided for display
+    if category_to_display:
+        rows.append(
+            f'<tr><td><font color="#555555" point-size="{small_font_size}"><b>[{html.escape(category_to_display)}]</b></font></td></tr>'
+        )
 
     # Add node description
     description = node.get("description")
     if description:
         truncated_desc = _truncate_text(description, desc_max_length)
-        rows.append(f'<tr><td><font color="#777777" point-size="{small_font_size if compact else normal_font_size}"><i>{truncated_desc}</i></font></td></tr>')
+        rows.append(
+            f'<tr><td><font color="#777777" point-size="{small_font_size if compact else normal_font_size}"><i>{truncated_desc}</i></font></td></tr>'
+        )
 
     # Process Parameters
     if compact:
@@ -314,14 +361,18 @@ def _build_label(node: FunctionalityNode, graph_font_size: int = 12, compact: bo
                     options_str = options_str[:options_max_length] + "..."
                 if len(p_options) > max_options:
                     options_str += "..."
-                actual_param_rows.append(f'<tr><td><font point-size="{small_font_size}">{p_name_html}: {options_str}</font></td></tr>')
+                actual_param_rows.append(
+                    f'<tr><td><font point-size="{small_font_size}">{p_name_html}: {options_str}</font></td></tr>'
+                )
             else:
                 actual_param_rows.append(f'<tr><td><font point-size="{small_font_size}">{p_name_html}</font></td></tr>')
 
         # Show parameter count if there are more parameters than we're displaying
         if len(significant_params) > len(shown_params):
             more_count = len(significant_params) - len(shown_params)
-            actual_param_rows.append(f'<tr><td><font point-size="{small_font_size}"><i>+{more_count} more params</i></font></td></tr>')
+            actual_param_rows.append(
+                f'<tr><td><font point-size="{small_font_size}"><i>+{more_count} more params</i></font></td></tr>'
+            )
     else:
         # Standard parameter display
         actual_param_rows = []
@@ -341,17 +392,25 @@ def _build_label(node: FunctionalityNode, graph_font_size: int = 12, compact: bo
                         options_display = [html.escape(str(opt)) for opt in p_options[:max_options]]
                         options_str = ", ".join(options_display)
                         if len(options_str) > options_max_length:
-                            options_str = options_str[:options_max_length-3] + "..."
+                            options_str = options_str[: options_max_length - 3] + "..."
                         if len(p_options) > max_options:
                             options_str += "..."
-                        actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}: {options_str}</font></td></tr>')
+                        actual_param_rows.append(
+                            f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}: {options_str}</font></td></tr>'
+                        )
                     elif p_desc:  # Has description
                         truncated_p_desc = _truncate_text(p_desc, desc_max_length)
-                        actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}: {truncated_p_desc}</font></td></tr>')
+                        actual_param_rows.append(
+                            f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}: {truncated_p_desc}</font></td></tr>'
+                        )
                     elif p_name:  # Has name, but no options and no description
-                        actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}</font></td></tr>')
+                        actual_param_rows.append(
+                            f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}</font></td></tr>'
+                        )
             elif p_data is not None:  # Fallback for non-dict parameters
-                actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;<b>{html.escape(str(p_data))}</b></font></td></tr>')
+                actual_param_rows.append(
+                    f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;<b>{html.escape(str(p_data))}</b></font></td></tr>'
+                )
 
     if actual_param_rows:
         if not compact:
@@ -379,31 +438,47 @@ def _build_label(node: FunctionalityNode, graph_font_size: int = 12, compact: bo
                         if o_desc:
                             truncated_o_desc = _truncate_text(o_desc, output_max_length)
                             if o_category:
-                                actual_output_rows.append(f'<tr><td><font point-size="{small_font_size}">{o_category_html}: {truncated_o_desc}</font></td></tr>')
+                                actual_output_rows.append(
+                                    f'<tr><td><font point-size="{small_font_size}">{o_category_html}: {truncated_o_desc}</font></td></tr>'
+                                )
                             else:
-                                actual_output_rows.append(f'<tr><td><font point-size="{small_font_size}">{truncated_o_desc}</font></td></tr>')
+                                actual_output_rows.append(
+                                    f'<tr><td><font point-size="{small_font_size}">{truncated_o_desc}</font></td></tr>'
+                                )
                         elif o_category:
-                            actual_output_rows.append(f'<tr><td><font point-size="{small_font_size}">{o_category_html}</font></td></tr>')
+                            actual_output_rows.append(
+                                f'<tr><td><font point-size="{small_font_size}">{o_category_html}</font></td></tr>'
+                            )
                     else:
                         # Standard formatting for outputs
-                        o_category_html = f"<b>{html.escape(o_category.replace('_', ' ').title())}</b>" if o_category else "N/A"
+                        o_category_html = (
+                            f"<b>{html.escape(o_category.replace('_', ' ').title())}</b>" if o_category else "N/A"
+                        )
                         if o_desc:
                             truncated_o_desc = _truncate_text(o_desc, output_max_length)
-                            actual_output_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{o_category_html}: {truncated_o_desc}</font></td></tr>')
+                            actual_output_rows.append(
+                                f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{o_category_html}: {truncated_o_desc}</font></td></tr>'
+                            )
                         elif o_category:
-                            actual_output_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{o_category_html}</font></td></tr>')
+                            actual_output_rows.append(
+                                f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{o_category_html}</font></td></tr>'
+                            )
             elif o_data is not None:
                 # Non-dict outputs
                 font_size = small_font_size if compact else normal_font_size
                 indent = "" if compact else "&nbsp;&nbsp;"
-                actual_output_rows.append(f'<tr><td><font point-size="{font_size}">{indent}<b>{html.escape(str(o_data))}</b></font></td></tr>')
+                actual_output_rows.append(
+                    f'<tr><td><font point-size="{font_size}">{indent}<b>{html.escape(str(o_data))}</b></font></td></tr>'
+                )
 
     if actual_output_rows:
         # Limit to max 3 outputs in compact mode
         if compact and len(actual_output_rows) > 3:
             shown_outputs = actual_output_rows[:3]
             remaining = len(actual_output_rows) - 3
-            shown_outputs.append(f'<tr><td><font point-size="{small_font_size}"><i>+{remaining} more outputs</i></font></td></tr>')
+            shown_outputs.append(
+                f'<tr><td><font point-size="{small_font_size}"><i>+{remaining} more outputs</i></font></td></tr>'
+            )
             actual_output_rows = shown_outputs
 
         if not compact:
