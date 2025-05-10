@@ -30,13 +30,20 @@ class GraphBuildContext:
     node_clusters: dict[str, graphviz.Digraph] = field(default_factory=dict)
 
 
-def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "pdf"):
-    """Creates and renders a directed graph of chatbot functionality."""
+def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "pdf", graph_font_size: int = 12):
+    """Creates and renders a directed graph of chatbot functionality.
+
+    Args:
+        nodes: List of functionality nodes
+        output_path: Path to save the graph
+        fmt: Format to render (pdf, png, etc)
+        graph_font_size: Font size for graph text elements
+    """
     if not nodes:
         return
 
     dot = graphviz.Digraph(format=fmt)
-    _set_graph_attributes(dot)
+    _set_graph_attributes(dot, graph_font_size)
 
     # Start node
     node_dim = 0.5
@@ -45,7 +52,7 @@ def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "p
     )
     context = GraphBuildContext(graph=dot)
     for root in nodes:
-        _add_nodes(ctx=context, node=root, parent="start", depth=0)
+        _add_nodes(ctx=context, node=root, parent="start", depth=0, graph_font_size=graph_font_size)
 
     try:
         # Suppress Graphviz warnings/errors to devnull because it clutters the terminal and things are getting properly rendered
@@ -58,19 +65,29 @@ def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "p
         )
 
 
-def _set_graph_attributes(dot: graphviz.Digraph) -> None:
-    """Sets default attributes for the Graphviz graph, nodes, and edges."""
+def _set_graph_attributes(dot: graphviz.Digraph, graph_font_size: int = 12) -> None:
+    """Sets default attributes for the Graphviz graph, nodes, and edges.
+
+    Args:
+        dot: Graphviz Digraph object
+        graph_font_size: Font size for graph text elements
+    """
     # Clean modern style
     bgcolor = "#ffffff"
     fontcolor = "#333333"
     edge_color = "#9DB2BF"
     font = "Helvetica Neue, Helvetica, Arial, sans-serif"
 
+    # Calculate sizes relative to the font size
+    node_fontsize = str(graph_font_size)
+    graph_fontsize = str(graph_font_size + 1)  # Graph title slightly larger
+    title_fontsize = str(graph_font_size + 2)  # Node titles larger than normal text
+
     dot.attr(
         rankdir="LR",
         bgcolor=bgcolor,
         fontname=font,
-        fontsize="13",
+        fontsize=graph_fontsize,
         pad="0.7",
         nodesep="0.8",
         ranksep="1.5",
@@ -86,7 +103,7 @@ def _set_graph_attributes(dot: graphviz.Digraph) -> None:
         shape="rectangle",
         style="filled,rounded",
         fontname=font,
-        fontsize="12",
+        fontsize=node_fontsize,
         margin="0.2,0.15",
         penwidth="1.5",
         fontcolor=fontcolor,
@@ -126,14 +143,14 @@ def _get_node_style(depth: int) -> dict[str, str]:
     return color_schemes[depth_mod]
 
 
-def _add_nodes(ctx: GraphBuildContext, node: FunctionalityNode, parent: str, depth: int):
+def _add_nodes(ctx: GraphBuildContext, node: FunctionalityNode, parent: str, depth: int, graph_font_size: int = 12):
     """Recursively adds nodes and edges to the graph."""
     name = node.get("name")
     if not name or name in ctx.processed_nodes:
         return
 
     # Build HTML label with outer brackets
-    html_table = _build_label(node)
+    html_table = _build_label(node, graph_font_size)
     label = f"<{html_table}>"
 
     ctx.graph.node(name, label=label, **_get_node_style(depth))
@@ -144,7 +161,7 @@ def _add_nodes(ctx: GraphBuildContext, node: FunctionalityNode, parent: str, dep
         ctx.processed_edges.add((parent, name))
 
     for child in node.get("children", []):
-        _add_nodes(ctx, child, parent=name, depth=depth + 1)
+        _add_nodes(ctx, child, parent=name, depth=depth + 1, graph_font_size=graph_font_size)
 
 
 def _truncate_text(text: str | None, max_length: int) -> str:
@@ -156,16 +173,27 @@ def _truncate_text(text: str | None, max_length: int) -> str:
     return html.escape(text)
 
 
-def _build_label(node: FunctionalityNode) -> str:
-    """Builds an HTML table with name, description, parameters, and outputs."""
+def _build_label(node: FunctionalityNode, graph_font_size: int = 12) -> str:
+    """Builds an HTML table with name, description, parameters, and outputs.
+
+    Args:
+        node: Functionality node
+        graph_font_size: Font size for graph text elements
+    """
     title = html.escape(node.get("name", "").replace("_", " ").title())
-    rows = [f'<tr><td><font point-size="14"><b>{title}</b></font></td></tr>']
+
+    # Calculate font sizes based on the graph_font_size
+    title_font_size = graph_font_size + 2  # Title slightly larger
+    normal_font_size = graph_font_size
+    small_font_size = max(graph_font_size - 1, 8)  # Small font but not too small
+
+    rows = [f'<tr><td><font point-size="{title_font_size}"><b>{title}</b></font></td></tr>']
 
     # Add node description
     description = node.get("description")
     if description:
         truncated_desc = _truncate_text(description, MAX_DESCRIPTION_LENGTH)
-        rows.append(f'<tr><td><font color="#777777"><i>{truncated_desc}</i></font></td></tr>')
+        rows.append(f'<tr><td><font color="#777777" point-size="{normal_font_size}"><i>{truncated_desc}</i></font></td></tr>')
 
     # Process Parameters
     actual_param_rows = []
@@ -201,21 +229,21 @@ def _build_label(node: FunctionalityNode) -> str:
                         options_str_final = options_str_intermediate + "..."
                     else:
                         options_str_final = options_str_intermediate
-                    actual_param_rows.append(f"<tr><td>&nbsp;&nbsp;{p_name_html}: {options_str_final}</td></tr>")
+                    actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}: {options_str_final}</font></td></tr>')
                 elif p_desc:  # Has description (name might be N/A)
                     truncated_p_desc = _truncate_text(p_desc, MAX_DESCRIPTION_LENGTH)
-                    actual_param_rows.append(f"<tr><td>&nbsp;&nbsp;{p_name_html}: {truncated_p_desc}</td></tr>")
+                    actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}: {truncated_p_desc}</font></td></tr>')
                 elif p_name:  # Has name, but no options and no description
-                    actual_param_rows.append(f"<tr><td>&nbsp;&nbsp;{p_name_html}</td></tr>")
+                    actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}</font></td></tr>')
         elif p_data is not None:  # Fallback for non-dict parameters, skip if None
             # Considered significant if not None and added
-            actual_param_rows.append(f"<tr><td>&nbsp;&nbsp;<b>{html.escape(str(p_data))}</b></td></tr>")
+            actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;<b>{html.escape(str(p_data))}</b></font></td></tr>')
 
     if actual_param_rows:
         rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Minimal space before HR
         rows.append("<HR/>")  # Horizontal rule itself
         rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Minimal space after HR
-        rows.append("<tr><td><u>Parameters</u></td></tr>")
+        rows.append(f'<tr><td><font point-size="{normal_font_size}"><u>Parameters</u></font></td></tr>')
         rows.extend(actual_param_rows)
 
     # Process Outputs
@@ -235,18 +263,18 @@ def _build_label(node: FunctionalityNode) -> str:
 
                 if o_desc:
                     truncated_o_desc = _truncate_text(o_desc, MAX_OUTPUTS_LENGTH)
-                    actual_output_rows.append(f"<tr><td>&nbsp;&nbsp;{o_category_html}: {truncated_o_desc}</td></tr>")
+                    actual_output_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{o_category_html}: {truncated_o_desc}</font></td></tr>')
                 elif o_category:  # Has category, but no description (name might be N/A)
-                    actual_output_rows.append(f"<tr><td>&nbsp;&nbsp;{o_category_html}</td></tr>")
+                    actual_output_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{o_category_html}</font></td></tr>')
         elif o_data is not None:  # Fallback for non-dict outputs, skip if None
             # Considered significant if not None and added
-            actual_output_rows.append(f"<tr><td>&nbsp;&nbsp;<b>{html.escape(str(o_data))}</b></td></tr>")
+            actual_output_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;<b>{html.escape(str(o_data))}</b></font></td></tr>')
 
     if actual_output_rows:
         rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Minimal space before HR
         rows.append("<HR/>")  # Horizontal rule itself
         rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Minimal space after HR
-        rows.append("<tr><td><u>Outputs</u></td></tr>")
+        rows.append(f'<tr><td><font point-size="{normal_font_size}"><u>Outputs</u></font></td></tr>')
         rows.extend(actual_output_rows)
 
     # Return inner HTML for table (without extra brackets)

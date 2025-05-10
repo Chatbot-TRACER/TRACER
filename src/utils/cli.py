@@ -14,6 +14,7 @@ def parse_arguments() -> Namespace:
     default_model = "gpt-4o-mini"
     default_output_dir = "output"
     default_technology = "taskyto"
+    default_graph_font_size = 12
 
     parser.add_argument(
         "-v",
@@ -69,6 +70,14 @@ def parse_arguments() -> Namespace:
         type=str,
         default=default_output_dir,
         help=f"Output directory for results and profiles (default: {default_output_dir})",
+    )
+
+    parser.add_argument(
+        "-gfs",
+        "--graph-font-size",
+        type=int,
+        default=default_graph_font_size,
+        help=f"Font size for graph text elements (default: {default_graph_font_size})",
     )
 
     return parser.parse_args()

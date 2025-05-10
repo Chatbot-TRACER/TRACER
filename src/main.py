@@ -171,6 +171,7 @@ def _generate_reports(
     output_dir: str,
     exploration_results: dict[str, Any],
     analysis_results: dict[str, Any],
+    graph_font_size: int = 12,
 ) -> None:
     """Saves generated profiles, writes the final report, and generates the workflow graph image.
 
@@ -178,6 +179,7 @@ def _generate_reports(
         output_dir (str): The directory to save output files.
         exploration_results (Dict[str, Any]): Results from the exploration phase.
         analysis_results (Dict[str, Any]): Results from the analysis phase.
+        graph_font_size (int): Font size to use for graph text elements.
     """
     built_profiles = analysis_results.get("built_profiles", [])
     functionality_dicts = analysis_results.get("discovered_functionalities", {})
@@ -202,7 +204,7 @@ def _generate_reports(
     if functionality_dicts:
         graph_output_base = Path(output_dir) / "workflow_graph"
         try:
-            export_graph(functionality_dicts, str(graph_output_base), "pdf")
+            export_graph(functionality_dicts, str(graph_output_base), "pdf", graph_font_size=graph_font_size)
         except Exception:
             logger.exception("Failed to generate workflow graph image")
     else:
@@ -222,6 +224,7 @@ def main() -> None:
     logger.verbose("Max turns per session:\t%d", args.turns)
     logger.verbose("Using model:\t\t%s", args.model)
     logger.verbose("Output directory:\t%s", args.output)
+    logger.verbose("Graph font size:\t\t%d", args.graph_font_size)
     logger.verbose("======================================\n")
 
     # 4. Initialization
@@ -235,7 +238,7 @@ def main() -> None:
     analysis_results = _run_analysis_phase(agent, exploration_results)
 
     # 7. Generate Reports
-    _generate_reports(args.output, exploration_results, analysis_results)
+    _generate_reports(args.output, exploration_results, analysis_results, args.graph_font_size)
 
     # 8. Finish
     logger.info("\n---------------------------------")
