@@ -1,0 +1,46 @@
+test_name: Information Seeker - Restaurant Details
+llm:
+  temperature: 0.9
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A customer seeking general information about the restaurant.
+  context:
+  - You're planning a casual pizza night with friends this weekend and want to compare this restaurant with another one you know.
+  - You've heard the restaurant has good reviews for its pizza but want to confirm details like pricing and delivery before deciding.
+  - You're on a tight schedule and need to quickly gather the information you need; you don't have time for a lengthy conversation.
+  goals:
+  - Ask what types of questions the chatbot can answer.
+  - Ask what the opening hours are.
+  - Ask what pizza options are available.
+  - Ask for the contact information of the restaurant.
+  - Ask about delivery options.
+  - Ask for the pricing information for the pizzas.
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. Can you rephrase?`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - opening_hours:
+      type: str
+      description: The restaurant's opening and closing times, as stated by the chatbot. This should be extracted from the chatbot's response when the user asks about opening hours.
+  - available_pizza_types:
+      type: str
+      description: A comma-separated list of the pizza types the chatbot mentions are available. This should be extracted from the chatbot's response when the user asks about pizza options.
+  - delivery_options:
+      type: str
+      description: A description of the delivery services offered (e.g., "We offer delivery through DoorDash and Uber Eats" or "We do not currently offer delivery"), as stated by the chatbot.
+  - contact_information:
+      type: str
+      description: The restaurant's contact information (phone number, email address, or physical address) provided by the chatbot.
+conversation:
+  number: 2
+  max_cost: 0.75
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question
+  - make spelling mistakes

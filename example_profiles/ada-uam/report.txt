@@ -1,0 +1,315 @@
+=== CHATBOT FUNCTIONALITY ANALYSIS ===
+
+
+## FUNCTIONALITIES (Workflow Structure)
+- request_rephrasing_or_present_service_catalog: Asks the user to rephrase their question or offers to direct them to the service catalog. | Category: Chatbot Meta | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- provide_cau_contact_information: Provides contact information for the Centro de Atenci\u00f3n a Usuarios (CAU), including email, phone number, physical address, and operating hours, including standard, holiday, and suspension hours. | Category: Helpdesk Information | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [cau_email: The email address of the CAU (Customer Assistance Unit).; cau_phone_number: The phone number of the CAU (Customer Assistance Unit).; cau_physical_address: The physical address of the CAU (Customer Assistance Unit).; cau_operating_hours: The operating hours of the CAU (Customer Assistance Unit), including standard and holiday hours.; cau_operating_hours_suspension: The operating hours of the CAU (Customer Assistance Unit) during periods of suspension of labor activity at the UAM.]
+- inform_holiday_hours_unavailable: Informs the user that information about holiday hours is not available from the IT service and suggests consulting the relevant school or faculty. | Category: General Information | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- provide_uam_description_and_faculty_list_link: Provides a general description of the Universidad Autónoma de Madrid and a link to a list of faculties and schools. | Category: General Information | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [university_description: brief description of UAM; faculty_list_link: link to the list of faculties and schools at UAM]
+- provide_academic_certificate_information: Provides information on how to request an Academic Certificate from the Electronic Headquarters, differentiating between current students (access with UAM username and password), former students (access with Cl@ve), and former foreign students (contact the Secretariat of their Faculty or School). | Category: Student Services | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [certificate_instructions_current_students: Instructions for current students to access or obtain their certificate using UAM credentials.; certificate_instructions_former_students: Instructions for former students to access or obtain their certificate using Cl@ve.; certificate_instructions_former_foreign_students: Instructions for former foreign students to obtain their certificate, typically by contacting their faculty secretariat.]
+- provide_uam_identity_management_policy_information: Provides information about the UAM's identity management and logical access control policy, including email and service usage extensions after the end of the binding relationship with the university. It also provides links to FAQs for saving email content and contact information for the CAU. | Category: Account & Access | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [policy_summary: Summary of the identity management policy including email and service usage extensions; faq_link: Link to FAQ about saving email content; cau_contact: Contact information for the CAU]
+- provide_id_uam_account_recovery_information: Provides information on how to recover a forgotten ID-UAM user ID or password, including links to search for the ID by DNI, contact the CAU, generate an activation code, or change the password with an activation code. Also provides a link to detailed instructions. | Category: Account & Access | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [id_recovery_instructions: instructions for recovering ID-UAM user id and password, including links to relevant resources and the CAU contact information; password_change_instructions: instructions for changing password using activation code and link to FAQ with detailed instructions.]
+- provide_directory_update_information: Provides information about UAM directory inclusion criteria and contact information for PTGAS, PDI, and Personal Investigador services to facilitate directory information updates. | Category: General Information | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [directory_inclusion_criteria: Explains that only PTGAS and PDI with active contractual relationships with UAM are included in the directory.; service_contact_email: Email addresses for contacting PTGAS, PDI, and Personal Investigador services.]
+- suggest_teams_help_resources: Suggests consulting TEAMS tutorials and provides button links related to common TEAMS issues and help options. | Category: Software & Applications | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [teams_tutorial_link: Link(s) to tutorials for using UAD TEAMS.; teams_help_options: List of common TEAMS issues with links to help resources and troubleshooting actions (e.g., button links).]
+- inform_about_teams_telephony_migration_and_redirect: Informs the user about the ongoing migration of telephony to Microsoft Teams and redirects them to a service request form or provides instructions on how to submit one. | Category: Software & Applications | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [migration_status: Informs the user that the migration of telephony to Microsoft Teams is currently in progress.; migration_support_contact: Explains that users will be contacted by CAU technical staff with information and support regarding the Teams telephony migration.; telephony_service_request_instructions: Instructs users to complete a form for submitting telephony service requests.; teams_telephony_migration_information: Provides an explanation of the Microsoft Teams telephony migration process.; service_request_form_link: Provides a link to the telephony service request form, enabling users to submit requests.]
+- present_directory_options: Presents options related to the UAM contact directory (e.g., updating data, finding emails) and allows the user to select an action. | Category: General Information | Params: [directory_option: User's choice of directory-related action. [options: ACTUALIZAR DATOS DIRECTORIO UAM, CONOCER E-MAIL DEL PERSONAL UAM]] | Outputs: [available_actions: Options to update directory data or find UAM personnel emails.]
+- provide_uam_contact_directory_link: Provides a link to the UAM contact directory (PÁGINAS BLANCAS) where users can find contact information for UAM personnel. | Category: General Information | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [directory_link: URL to the UAM contact directory (PÁGINAS BLANCAS).]
+
+## FUNCTIONALITIES (By Category)
+
+### CATEGORY: Account & Access (2 functions)
+- provide_uam_identity_management_policy_information: Provides information about the UAM's identity management and logical access control policy, including email and service usage extensions after the end of the binding relationship with the university. It also provides links to FAQs for saving email content and contact information for the CAU.
+- provide_id_uam_account_recovery_information: Provides information on how to recover a forgotten ID-UAM user ID or password, including links to search for the ID by DNI, contact the CAU, generate an activation code, or change the password with an activation code. Also provides a link to detailed instructions.
+
+### CATEGORY: Chatbot Meta (1 functions)
+- request_rephrasing_or_present_service_catalog: Asks the user to rephrase their question or offers to direct them to the service catalog.
+
+### CATEGORY: General Information (5 functions)
+- inform_holiday_hours_unavailable: Informs the user that information about holiday hours is not available from the IT service and suggests consulting the relevant school or faculty.
+- provide_uam_description_and_faculty_list_link: Provides a general description of the Universidad Autónoma de Madrid and a link to a list of faculties and schools.
+- provide_directory_update_information: Provides information about UAM directory inclusion criteria and contact information for PTGAS, PDI, and Personal Investigador services to facilitate directory information updates.
+- present_directory_options: Presents options related to the UAM contact directory (e.g., updating data, finding emails) and allows the user to select an action.
+- provide_uam_contact_directory_link: Provides a link to the UAM contact directory (PÁGINAS BLANCAS) where users can find contact information for UAM personnel.
+
+### CATEGORY: Helpdesk Information (1 functions)
+- provide_cau_contact_information: Provides contact information for the Centro de Atenci\u00f3n a Usuarios (CAU), including email, phone number, physical address, and operating hours, including standard, holiday, and suspension hours.
+
+### CATEGORY: Software & Applications (2 functions)
+- suggest_teams_help_resources: Suggests consulting TEAMS tutorials and provides button links related to common TEAMS issues and help options.
+- inform_about_teams_telephony_migration_and_redirect: Informs the user about the ongoing migration of telephony to Microsoft Teams and redirects them to a service request form or provides instructions on how to submit one.
+
+### CATEGORY: Student Services (1 functions)
+- provide_academic_certificate_information: Provides information on how to request an Academic Certificate from the Electronic Headquarters, differentiating between current students (access with UAM username and password), former students (access with Cl@ve), and former foreign students (contact the Secretariat of their Faculty or School).
+
+## FUNCTIONALITIES (Raw JSON Structure)
+[
+  {
+    "name": "request_rephrasing_or_present_service_catalog",
+    "description": "Asks the user to rephrase their question or offers to direct them to the service catalog.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "provide_cau_contact_information",
+    "description": "Provides contact information for the Centro de Atenci\\u00f3n a Usuarios (CAU), including email, phone number, physical address, and operating hours, including standard, holiday, and suspension hours.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "cau_email",
+        "description": "The email address of the CAU (Customer Assistance Unit)."
+      },
+      {
+        "category": "cau_phone_number",
+        "description": "The phone number of the CAU (Customer Assistance Unit)."
+      },
+      {
+        "category": "cau_physical_address",
+        "description": "The physical address of the CAU (Customer Assistance Unit)."
+      },
+      {
+        "category": "cau_operating_hours",
+        "description": "The operating hours of the CAU (Customer Assistance Unit), including standard and holiday hours."
+      },
+      {
+        "category": "cau_operating_hours_suspension",
+        "description": "The operating hours of the CAU (Customer Assistance Unit) during periods of suspension of labor activity at the UAM."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Helpdesk Information",
+    "children": []
+  },
+  {
+    "name": "inform_holiday_hours_unavailable",
+    "description": "Informs the user that information about holiday hours is not available from the IT service and suggests consulting the relevant school or faculty.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "provide_uam_description_and_faculty_list_link",
+    "description": "Provides a general description of the Universidad Autónoma de Madrid and a link to a list of faculties and schools.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "university_description",
+        "description": "brief description of UAM"
+      },
+      {
+        "category": "faculty_list_link",
+        "description": "link to the list of faculties and schools at UAM"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "provide_academic_certificate_information",
+    "description": "Provides information on how to request an Academic Certificate from the Electronic Headquarters, differentiating between current students (access with UAM username and password), former students (access with Cl@ve), and former foreign students (contact the Secretariat of their Faculty or School).",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "certificate_instructions_current_students",
+        "description": "Instructions for current students to access or obtain their certificate using UAM credentials."
+      },
+      {
+        "category": "certificate_instructions_former_students",
+        "description": "Instructions for former students to access or obtain their certificate using Cl@ve."
+      },
+      {
+        "category": "certificate_instructions_former_foreign_students",
+        "description": "Instructions for former foreign students to obtain their certificate, typically by contacting their faculty secretariat."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Student Services",
+    "children": []
+  },
+  {
+    "name": "provide_uam_identity_management_policy_information",
+    "description": "Provides information about the UAM's identity management and logical access control policy, including email and service usage extensions after the end of the binding relationship with the university. It also provides links to FAQs for saving email content and contact information for the CAU.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "policy_summary",
+        "description": "Summary of the identity management policy including email and service usage extensions"
+      },
+      {
+        "category": "faq_link",
+        "description": "Link to FAQ about saving email content"
+      },
+      {
+        "category": "cau_contact",
+        "description": "Contact information for the CAU"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Account & Access",
+    "children": []
+  },
+  {
+    "name": "provide_id_uam_account_recovery_information",
+    "description": "Provides information on how to recover a forgotten ID-UAM user ID or password, including links to search for the ID by DNI, contact the CAU, generate an activation code, or change the password with an activation code. Also provides a link to detailed instructions.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "id_recovery_instructions",
+        "description": "instructions for recovering ID-UAM user id and password, including links to relevant resources and the CAU contact information"
+      },
+      {
+        "category": "password_change_instructions",
+        "description": "instructions for changing password using activation code and link to FAQ with detailed instructions."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Account & Access",
+    "children": []
+  },
+  {
+    "name": "provide_directory_update_information",
+    "description": "Provides information about UAM directory inclusion criteria and contact information for PTGAS, PDI, and Personal Investigador services to facilitate directory information updates.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "directory_inclusion_criteria",
+        "description": "Explains that only PTGAS and PDI with active contractual relationships with UAM are included in the directory."
+      },
+      {
+        "category": "service_contact_email",
+        "description": "Email addresses for contacting PTGAS, PDI, and Personal Investigador services."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "suggest_teams_help_resources",
+    "description": "Suggests consulting TEAMS tutorials and provides button links related to common TEAMS issues and help options.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "teams_tutorial_link",
+        "description": "Link(s) to tutorials for using UAD TEAMS."
+      },
+      {
+        "category": "teams_help_options",
+        "description": "List of common TEAMS issues with links to help resources and troubleshooting actions (e.g., button links)."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Software & Applications",
+    "children": []
+  },
+  {
+    "name": "inform_about_teams_telephony_migration_and_redirect",
+    "description": "Informs the user about the ongoing migration of telephony to Microsoft Teams and redirects them to a service request form or provides instructions on how to submit one.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "migration_status",
+        "description": "Informs the user that the migration of telephony to Microsoft Teams is currently in progress."
+      },
+      {
+        "category": "migration_support_contact",
+        "description": "Explains that users will be contacted by CAU technical staff with information and support regarding the Teams telephony migration."
+      },
+      {
+        "category": "telephony_service_request_instructions",
+        "description": "Instructs users to complete a form for submitting telephony service requests."
+      },
+      {
+        "category": "teams_telephony_migration_information",
+        "description": "Provides an explanation of the Microsoft Teams telephony migration process."
+      },
+      {
+        "category": "service_request_form_link",
+        "description": "Provides a link to the telephony service request form, enabling users to submit requests."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Software & Applications",
+    "children": []
+  },
+  {
+    "name": "present_directory_options",
+    "description": "Presents options related to the UAM contact directory (e.g., updating data, finding emails) and allows the user to select an action.",
+    "parameters": [
+      {
+        "name": "directory_option",
+        "description": "User's choice of directory-related action.",
+        "options": [
+          "ACTUALIZAR DATOS DIRECTORIO UAM",
+          "CONOCER E-MAIL DEL PERSONAL UAM"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "category": "available_actions",
+        "description": "Options to update directory data or find UAM personnel emails."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "provide_uam_contact_directory_link",
+    "description": "Provides a link to the UAM contact directory (PÁGINAS BLANCAS) where users can find contact information for UAM personnel.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "directory_link",
+        "description": "URL to the UAM contact directory (PÁGINAS BLANCAS)."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  }
+]
+## LIMITATIONS
+No limitations discovered (empty list).
+
+## SUPPORTED LANGUAGES
+1. Spanish
+
+## FALLBACK MESSAGE
+¿Me puedes repetir la pregunta con otras palabras? o, si lo prefieres, puedes consultar nuestro
+catálogo de servicios
+.
+Respondo a preguntas dirigidas al
+Centro de Atención a Usuarios del servicio de Tecnologías de la Información.
