@@ -15,7 +15,6 @@ def parse_arguments() -> Namespace:
     default_output_dir = "output"
     default_technology = "taskyto"
     default_graph_font_size = 12
-    default_dpi = 300
 
     parser.add_argument(
         "-v",
@@ -23,14 +22,6 @@ def parse_arguments() -> Namespace:
         action="count",
         default=0,
         help="Increase output verbosity (-v for details, -vv for debug)",
-    )
-
-    parser.add_argument(
-        "-dpi",
-        "--graph-dpi",
-        type=int,
-        default=default_dpi,
-        help=f"DPI for graph rendering (higher values increase image resolution, default: {default_dpi})",
     )
 
     parser.add_argument(
@@ -87,6 +78,13 @@ def parse_arguments() -> Namespace:
         type=int,
         default=default_graph_font_size,
         help=f"Font size for graph text elements (default: {default_graph_font_size})",
+    )
+
+    parser.add_argument(
+        "-c",
+        "--compact",
+        action="store_true",
+        help="Generate a more compact graph with simplified nodes and tighter spacing",
     )
 
     return parser.parse_args()

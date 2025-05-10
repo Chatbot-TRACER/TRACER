@@ -16,11 +16,6 @@ from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
 
-MAX_DESCRIPTION_LENGTH = 70
-MAX_OUTPUTS_LENGTH = 50
-MAX_OPTIONS = 4
-MAX_OPTIONS_STRING_LENGTH = 50
-
 
 @dataclass
 class GraphBuildContext:
@@ -30,7 +25,7 @@ class GraphBuildContext:
     node_clusters: dict[str, graphviz.Digraph] = field(default_factory=dict)
 
 
-def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "pdf", graph_font_size: int = 12, dpi: int = 300):
+def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "pdf", graph_font_size: int = 12, dpi: int = 300, compact: bool = False):
     """Creates and renders a directed graph of chatbot functionality.
 
     Args:
@@ -39,12 +34,13 @@ def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "p
         fmt: Format to render (pdf, png, etc)
         graph_font_size: Font size for graph text elements
         dpi: Resolution of the output image in dots per inch
+        compact: Whether to generate a more compact graph layout
     """
     if not nodes:
         return
 
     dot = graphviz.Digraph(format=fmt)
-    _set_graph_attributes(dot, graph_font_size, dpi)
+    _set_graph_attributes(dot, graph_font_size, dpi, compact)
 
     # Start node
     node_dim = 0.5
@@ -53,7 +49,7 @@ def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "p
     )
     context = GraphBuildContext(graph=dot)
     for root in nodes:
-        _add_nodes(ctx=context, node=root, parent="start", depth=0, graph_font_size=graph_font_size)
+        _add_nodes(ctx=context, node=root, parent="start", depth=0, graph_font_size=graph_font_size, compact=compact)
 
     try:
         # Suppress Graphviz warnings/errors to devnull because it clutters the terminal and things are getting properly rendered
@@ -66,13 +62,14 @@ def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "p
         )
 
 
-def _set_graph_attributes(dot: graphviz.Digraph, graph_font_size: int = 12, dpi: int = 300) -> None:
+def _set_graph_attributes(dot: graphviz.Digraph, graph_font_size: int = 12, dpi: int = 300, compact: bool = False) -> None:
     """Sets default attributes for the Graphviz graph, nodes, and edges.
 
     Args:
         dot: Graphviz Digraph object
         graph_font_size: Font size for graph text elements
         dpi: Resolution of the output image in dots per inch
+        compact: Whether to generate a more compact graph layout
     """
     # Clean modern style
     bgcolor = "#ffffff"
@@ -85,16 +82,32 @@ def _set_graph_attributes(dot: graphviz.Digraph, graph_font_size: int = 12, dpi:
     graph_fontsize = str(graph_font_size + 1)  # Graph title slightly larger
     title_fontsize = str(graph_font_size + 2)  # Node titles larger than normal text
 
+    # Adjust layout parameters based on compact mode
+    if compact:
+        # Compact mode - tighter spacing, orthogonal lines
+        pad = "0.4"
+        nodesep = "0.4"
+        ranksep = "0.7"
+        splines = "ortho"
+        overlap = "compress"
+    else:
+        # Standard mode - more spacious layout, curved lines
+        pad = "0.7"
+        nodesep = "0.8"
+        ranksep = "1.3"  # Slightly reduced from original 1.5
+        splines = "curved"
+        overlap = "false"
+
     dot.attr(
         rankdir="LR",
         bgcolor=bgcolor,
         fontname=font,
         fontsize=graph_fontsize,
-        pad="0.7",
-        nodesep="0.8",
-        ranksep="1.5",
-        splines="curved",
-        overlap="false",
+        pad=pad,
+        nodesep=nodesep,
+        ranksep=ranksep,
+        splines=splines,
+        overlap=overlap,
         dpi=str(dpi),
         labelloc="t",
         fontcolor=fontcolor,
@@ -145,14 +158,14 @@ def _get_node_style(depth: int) -> dict[str, str]:
     return color_schemes[depth_mod]
 
 
-def _add_nodes(ctx: GraphBuildContext, node: FunctionalityNode, parent: str, depth: int, graph_font_size: int = 12):
+def _add_nodes(ctx: GraphBuildContext, node: FunctionalityNode, parent: str, depth: int, graph_font_size: int = 12, compact: bool = False):
     """Recursively adds nodes and edges to the graph."""
     name = node.get("name")
     if not name or name in ctx.processed_nodes:
         return
 
     # Build HTML label with outer brackets
-    html_table = _build_label(node, graph_font_size)
+    html_table = _build_label(node, graph_font_size, compact)
     label = f"<{html_table}>"
 
     ctx.graph.node(name, label=label, **_get_node_style(depth))
@@ -163,7 +176,7 @@ def _add_nodes(ctx: GraphBuildContext, node: FunctionalityNode, parent: str, dep
         ctx.processed_edges.add((parent, name))
 
     for child in node.get("children", []):
-        _add_nodes(ctx, child, parent=name, depth=depth + 1, graph_font_size=graph_font_size)
+        _add_nodes(ctx, child, parent=name, depth=depth + 1, graph_font_size=graph_font_size, compact=compact)
 
 
 def _truncate_text(text: str | None, max_length: int) -> str:
@@ -175,108 +188,174 @@ def _truncate_text(text: str | None, max_length: int) -> str:
     return html.escape(text)
 
 
-def _build_label(node: FunctionalityNode, graph_font_size: int = 12) -> str:
+def _build_label(node: FunctionalityNode, graph_font_size: int = 12, compact: bool = False) -> str:
     """Builds an HTML table with name, description, parameters, and outputs.
 
     Args:
         node: Functionality node
         graph_font_size: Font size for graph text elements
+        compact: Whether to generate more compact node labels
     """
     title = html.escape(node.get("name", "").replace("_", " ").title())
 
-    # Calculate font sizes based on the graph_font_size
-    title_font_size = graph_font_size + 2  # Title slightly larger
-    normal_font_size = graph_font_size
-    small_font_size = max(graph_font_size - 1, 8)  # Small font but not too small
+    # Calculate font sizes based on the graph_font_size and compactness
+    if compact:
+        title_font_size = graph_font_size + 1  # Smaller title in compact mode
+        normal_font_size = max(graph_font_size - 1, 8)  # Smaller content
+        small_font_size = max(graph_font_size - 2, 7)  # Very small details
+
+        # Shorter max lengths for compact mode
+        desc_max_length = 45
+        output_max_length = 30
+        max_params = 3
+        max_options = 3
+        options_max_length = 25
+    else:
+        title_font_size = graph_font_size + 2  # Larger title in standard mode
+        normal_font_size = graph_font_size  # Normal content size
+        small_font_size = max(graph_font_size - 1, 8)  # Smaller for details
+
+        # Original max lengths for standard mode
+        desc_max_length = 70
+        output_max_length = 50
+        max_params = 4
+        max_options = 4
+        options_max_length = 50
 
     rows = [f'<tr><td><font point-size="{title_font_size}"><b>{title}</b></font></td></tr>']
 
     # Add node description
     description = node.get("description")
     if description:
-        truncated_desc = _truncate_text(description, MAX_DESCRIPTION_LENGTH)
-        rows.append(f'<tr><td><font color="#777777" point-size="{normal_font_size}"><i>{truncated_desc}</i></font></td></tr>')
+        truncated_desc = _truncate_text(description, desc_max_length)
+        rows.append(f'<tr><td><font color="#777777" point-size="{small_font_size if compact else normal_font_size}"><i>{truncated_desc}</i></font></td></tr>')
 
     # Process Parameters
-    actual_param_rows = []
-    raw_params = node.get("parameters") or []
+    if compact:
+        # Compact parameter display
+        significant_params = []
+        for p_data in node.get("parameters") or []:
+            if isinstance(p_data, dict) and p_data.get("name"):
+                significant_params.append(p_data)
 
-    for p_data in raw_params:
-        if isinstance(p_data, dict):
-            p_name = p_data.get("name")
-            p_desc = p_data.get("description")
-            p_options = p_data.get("options", [])  # Ensure options is a list
+        actual_param_rows = []
+        shown_params = significant_params[:max_params]
 
-            # A dict parameter is significant if it has a name, or description, or non-empty options
-            is_significant = bool(p_name or p_desc or (isinstance(p_options, list) and p_options))
+        for p_data in shown_params:
+            p_name = p_data.get("name", "")
+            p_name_html = f"<b>{html.escape(p_name.replace('_', ' '))}</b>" if p_name else ""
 
-            if is_significant:
-                p_name_html = f"<b>{html.escape(p_name.replace('_', ' ').title())}</b>" if p_name else "N/A"
+            p_options = p_data.get("options", [])
+            if isinstance(p_options, list) and len(p_options) > 0:
+                options = [str(opt) for opt in p_options[:max_options]]
+                options_str = ", ".join(options)
+                if len(options_str) > options_max_length:
+                    options_str = options_str[:options_max_length] + "..."
+                if len(p_options) > max_options:
+                    options_str += "..."
+                actual_param_rows.append(f'<tr><td><font point-size="{small_font_size}">{p_name_html}: {options_str}</font></td></tr>')
+            else:
+                actual_param_rows.append(f'<tr><td><font point-size="{small_font_size}">{p_name_html}</font></td></tr>')
 
-                if isinstance(p_options, list) and p_options:
-                    options_display = [html.escape(str(opt)) for opt in p_options[:MAX_OPTIONS]]
-                    options_str_intermediate = ", ".join(options_display)
+        # Show parameter count if there are more parameters than we're displaying
+        if len(significant_params) > len(shown_params):
+            more_count = len(significant_params) - len(shown_params)
+            actual_param_rows.append(f'<tr><td><font point-size="{small_font_size}"><i>+{more_count} more params</i></font></td></tr>')
+    else:
+        # Standard parameter display
+        actual_param_rows = []
+        for p_data in node.get("parameters") or []:
+            if isinstance(p_data, dict):
+                p_name = p_data.get("name")
+                p_desc = p_data.get("description")
+                p_options = p_data.get("options", [])
 
-                    truncated_by_count = len(p_options) > MAX_OPTIONS
-                    options_str_final = ""
+                # A parameter is significant if it has a name, or description, or non-empty options
+                is_significant = bool(p_name or p_desc or (isinstance(p_options, list) and p_options))
 
-                    if len(options_str_intermediate) > MAX_OPTIONS_STRING_LENGTH:
-                        if MAX_OPTIONS_STRING_LENGTH <= 3:
-                            options_str_final = "..."
-                        else:
-                            options_str_final = (
-                                options_str_intermediate[: MAX_OPTIONS_STRING_LENGTH - 3].rstrip().rstrip(",") + "..."
-                            )
-                    elif truncated_by_count:
-                        options_str_final = options_str_intermediate + "..."
-                    else:
-                        options_str_final = options_str_intermediate
-                    actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}: {options_str_final}</font></td></tr>')
-                elif p_desc:  # Has description (name might be N/A)
-                    truncated_p_desc = _truncate_text(p_desc, MAX_DESCRIPTION_LENGTH)
-                    actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}: {truncated_p_desc}</font></td></tr>')
-                elif p_name:  # Has name, but no options and no description
-                    actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}</font></td></tr>')
-        elif p_data is not None:  # Fallback for non-dict parameters, skip if None
-            # Considered significant if not None and added
-            actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;<b>{html.escape(str(p_data))}</b></font></td></tr>')
+                if is_significant:
+                    p_name_html = f"<b>{html.escape(p_name.replace('_', ' ').title())}</b>" if p_name else "N/A"
+
+                    if isinstance(p_options, list) and p_options:
+                        options_display = [html.escape(str(opt)) for opt in p_options[:max_options]]
+                        options_str = ", ".join(options_display)
+                        if len(options_str) > options_max_length:
+                            options_str = options_str[:options_max_length-3] + "..."
+                        if len(p_options) > max_options:
+                            options_str += "..."
+                        actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}: {options_str}</font></td></tr>')
+                    elif p_desc:  # Has description
+                        truncated_p_desc = _truncate_text(p_desc, desc_max_length)
+                        actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}: {truncated_p_desc}</font></td></tr>')
+                    elif p_name:  # Has name, but no options and no description
+                        actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}</font></td></tr>')
+            elif p_data is not None:  # Fallback for non-dict parameters
+                actual_param_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;<b>{html.escape(str(p_data))}</b></font></td></tr>')
 
     if actual_param_rows:
-        rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Minimal space before HR
-        rows.append("<HR/>")  # Horizontal rule itself
-        rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Minimal space after HR
+        if not compact:
+            rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Space before section
+            rows.append("<HR/>")  # Horizontal rule
+            rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Space after section
         rows.append(f'<tr><td><font point-size="{normal_font_size}"><u>Parameters</u></font></td></tr>')
         rows.extend(actual_param_rows)
 
     # Process Outputs
     actual_output_rows = []
-    raw_outputs = node.get("outputs") or []
+    outputs_data = node.get("outputs") or []
 
-    for o_data in raw_outputs:
-        if isinstance(o_data, dict):
-            o_category = o_data.get("category")
-            o_desc = o_data.get("description")
+    if outputs_data:
+        # Process outputs with different styling based on compact mode
+        for o_data in outputs_data:
+            if isinstance(o_data, dict):
+                o_category = o_data.get("category")
+                o_desc = o_data.get("description")
 
-            # An dict output is significant if it has a category or description
-            is_significant = bool(o_category or o_desc)
-
-            if is_significant:
-                o_category_html = f"<b>{html.escape(o_category.replace('_', ' ').title())}</b>" if o_category else "N/A"
-
-                if o_desc:
-                    truncated_o_desc = _truncate_text(o_desc, MAX_OUTPUTS_LENGTH)
-                    actual_output_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{o_category_html}: {truncated_o_desc}</font></td></tr>')
-                elif o_category:  # Has category, but no description (name might be N/A)
-                    actual_output_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{o_category_html}</font></td></tr>')
-        elif o_data is not None:  # Fallback for non-dict outputs, skip if None
-            # Considered significant if not None and added
-            actual_output_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;<b>{html.escape(str(o_data))}</b></font></td></tr>')
+                if o_category or o_desc:
+                    if compact:
+                        # More compact formatting for outputs
+                        o_category_html = f"<b>{html.escape(o_category or 'Output')}</b>" if o_category else ""
+                        if o_desc:
+                            truncated_o_desc = _truncate_text(o_desc, output_max_length)
+                            if o_category:
+                                actual_output_rows.append(f'<tr><td><font point-size="{small_font_size}">{o_category_html}: {truncated_o_desc}</font></td></tr>')
+                            else:
+                                actual_output_rows.append(f'<tr><td><font point-size="{small_font_size}">{truncated_o_desc}</font></td></tr>')
+                        elif o_category:
+                            actual_output_rows.append(f'<tr><td><font point-size="{small_font_size}">{o_category_html}</font></td></tr>')
+                    else:
+                        # Standard formatting for outputs
+                        o_category_html = f"<b>{html.escape(o_category.replace('_', ' ').title())}</b>" if o_category else "N/A"
+                        if o_desc:
+                            truncated_o_desc = _truncate_text(o_desc, output_max_length)
+                            actual_output_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{o_category_html}: {truncated_o_desc}</font></td></tr>')
+                        elif o_category:
+                            actual_output_rows.append(f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{o_category_html}</font></td></tr>')
+            elif o_data is not None:
+                # Non-dict outputs
+                font_size = small_font_size if compact else normal_font_size
+                indent = "" if compact else "&nbsp;&nbsp;"
+                actual_output_rows.append(f'<tr><td><font point-size="{font_size}">{indent}<b>{html.escape(str(o_data))}</b></font></td></tr>')
 
     if actual_output_rows:
-        rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Minimal space before HR
-        rows.append("<HR/>")  # Horizontal rule itself
-        rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')  # Minimal space after HR
-        rows.append(f'<tr><td><font point-size="{normal_font_size}"><u>Outputs</u></font></td></tr>')
+        # Limit to max 3 outputs in compact mode
+        if compact and len(actual_output_rows) > 3:
+            shown_outputs = actual_output_rows[:3]
+            remaining = len(actual_output_rows) - 3
+            shown_outputs.append(f'<tr><td><font point-size="{small_font_size}"><i>+{remaining} more outputs</i></font></td></tr>')
+            actual_output_rows = shown_outputs
+
+        if not compact:
+            # Add spacing and horizontal rule in standard mode
+            rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')
+            rows.append("<HR/>")
+            rows.append('<tr><td><font point-size="1">&nbsp;</font></td></tr>')
+
+        # Add heading and output rows
+        output_title = "Outputs"
+        if compact and len(outputs_data) > 3:
+            output_title = f"Outputs ({len(outputs_data)})"
+        rows.append(f'<tr><td><font point-size="{normal_font_size}"><u>{output_title}</u></font></td></tr>')
         rows.extend(actual_output_rows)
 
     # Return inner HTML for table (without extra brackets)
