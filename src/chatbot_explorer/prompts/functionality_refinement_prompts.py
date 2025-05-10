@@ -2,6 +2,7 @@
 
 import json
 from typing import Any
+import re
 
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 
@@ -20,13 +21,16 @@ def get_duplicate_check_prompt(node: FunctionalityNode, existing_descriptions: l
 
     A functionality is a duplicate if it represents the SAME ACTION/CAPABILITY, even if described differently.
 
-    Respond with:
-    - "UNIQUE" if the new functionality is distinct.
-    - "DUPLICATE_OF: [name_of_existing_functionality_it_matches]" if it is a semantic duplicate.
+    IMPORTANT: You MUST respond in one of these two exact formats:
+    1. If the functionality is unique:
+       UNIQUE
+       [brief explanation]
 
-    IMPORTANT: For the node name in your "DUPLICATE_OF:" response, use the EXACT name from the existing functionalities list, maintaining the exact spelling, case, and format. Do not add any additional words or variations.
+    2. If it is a duplicate, you MUST use the EXACT node name from the list provided:
+       DUPLICATE_OF: [exact_name_from_list]
+       [brief explanation]
 
-    Followed by a brief explanation.
+    DO NOT use generic terms like 'ANY' or create new names. Only use names that exactly match one from the existing functionalities list.
     """
 
 
