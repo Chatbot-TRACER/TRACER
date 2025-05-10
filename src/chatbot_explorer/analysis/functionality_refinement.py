@@ -7,6 +7,7 @@ from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.prompts.functionality_refinement_prompts import (
     get_consolidate_outputs_prompt,
+    get_consolidate_parameters_prompt,
     get_duplicate_check_prompt,
     get_merge_prompt,
     get_relationship_validation_prompt,
@@ -227,26 +228,127 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
 
             merged_node = FunctionalityNode(name=best_name, description=best_desc, parameters=[], outputs=[])
 
-            param_by_name = {}
-
-            for node in group:
-                for param in node.parameters:
-                    param_name = param.name
-
-                    if param_name not in param_by_name:
-                        param_by_name[param_name] = param
-                    else:
-                        existing_param = param_by_name[param_name]
-
-                        combined_options = list(set(existing_param.options + param.options))
-
-                        merged_param = ParameterDefinition(
-                            name=param_name, description=existing_param.description, options=combined_options
+            # --- Parameter Merging ---
+            all_params_from_group = []
+            for node_idx, node in enumerate(group):
+                for param_idx, param in enumerate(node.parameters):
+                    if param and param.name:
+                        all_params_from_group.append(
+                            {
+                                "id": f"NODE{node_idx}_PARAM{param_idx}",
+                                "name": param.name,
+                                "description": param.description or "",
+                                "options": param.options or [],
+                            }
                         )
-                        param_by_name[param_name] = merged_param
 
-            # Convert merged parameters to a list
-            merged_node.parameters = list(param_by_name.values())
+            if not all_params_from_group:
+                merged_node.parameters = []
+                logger.debug("No parameters to merge for node '%s'", best_name)
+            elif len(all_params_from_group) == 1 and all_params_from_group[0].get("id"):
+                original_node_idx, original_param_idx = map(
+                    int, all_params_from_group[0]["id"].replace("NODE", "").replace("PARAM", "").split("_")
+                )
+                merged_node.parameters = [group[original_node_idx].parameters[original_param_idx]]
+                logger.debug(
+                    "Only one parameter found across group for '%s'. Using it directly: %s",
+                    best_name,
+                    merged_node.parameters[0].name,
+                )
+            else:
+                param_consolidation_prompt = get_consolidate_parameters_prompt(all_params_from_group)
+                logger.debug(
+                    "Consolidating parameters for merged node '%s' using LLM. Input parameters count: %d",
+                    best_name,
+                    len(all_params_from_group),
+                )
+
+                raw_param_consolidation_response = llm.invoke(param_consolidation_prompt).content
+                logger.debug("LLM response for parameter consolidation (raw): %s", raw_param_consolidation_response)
+
+                extracted_json_str = None
+                code_block_match = re.search(
+                    r"```json\s*([\s\S]*?)\s*```", raw_param_consolidation_response, re.IGNORECASE
+                )
+                if code_block_match:
+                    extracted_json_str = code_block_match.group(1).strip()
+                    logger.debug("Extracted parameter JSON from markdown code block.")
+                else:
+                    first_bracket = raw_param_consolidation_response.find("[")
+                    last_bracket = raw_param_consolidation_response.rfind("]")
+                    if first_bracket != -1 and last_bracket != -1 and last_bracket > first_bracket:
+                        extracted_json_str = raw_param_consolidation_response[first_bracket : last_bracket + 1]
+                        logger.debug("Extracted parameter JSON by finding outermost list brackets.")
+
+                if not extracted_json_str:  # Fallback if no structure found yet
+                    extracted_json_str = raw_param_consolidation_response.strip()
+                    logger.debug("Using stripped raw response as parameter JSON candidate.")
+
+                final_params = []
+                if extracted_json_str:
+                    try:
+                        consolidated_params_list = json.loads(extracted_json_str)
+                        for consol_param in consolidated_params_list:
+                            if (
+                                isinstance(consol_param, dict)
+                                and consol_param.get("canonical_name")
+                                and "canonical_description" in consol_param
+                            ):  # desc can be empty string
+                                final_params.append(
+                                    ParameterDefinition(
+                                        name=consol_param["canonical_name"],
+                                        description=consol_param["canonical_description"],
+                                        options=sorted(list(set(consol_param.get("options", [])))),
+                                    )
+                                )
+                        merged_node.parameters = final_params
+                        logger.debug("Consolidated parameters for '%s': %s", best_name, [p.name for p in final_params])
+                    except (json.JSONDecodeError, TypeError) as e:
+                        logger.warning(
+                            "Failed to parse JSON for parameter consolidation for node '%s'. Error: %s. Extracted string: '%s'. Using simple union by name.",
+                            best_name,
+                            e,
+                            extracted_json_str,
+                        )
+                        # Fallback to old simple union by name
+                        param_by_name_fallback = {}
+                        for node_in_group_fb in group:
+                            for param_obj_fb in node_in_group_fb.parameters:
+                                if param_obj_fb.name not in param_by_name_fallback:
+                                    param_by_name_fallback[param_obj_fb.name] = param_obj_fb
+                                else:
+                                    existing_param_obj_fb = param_by_name_fallback[param_obj_fb.name]
+                                    combined_options_fb = sorted(
+                                        list(set(existing_param_obj_fb.options + param_obj_fb.options))
+                                    )
+                                    param_by_name_fallback[param_obj_fb.name] = ParameterDefinition(
+                                        name=param_obj_fb.name,
+                                        description=existing_param_obj_fb.description,
+                                        options=combined_options_fb,
+                                    )
+                        merged_node.parameters = list(param_by_name_fallback.values())
+                else:  # Extracted JSON string was empty
+                    logger.warning(
+                        "LLM response for parameter consolidation was empty or unextractable for node '%s'. Using simple union by name.",
+                        best_name,
+                    )
+                    # Fallback logic
+                    param_by_name_fallback = {}  # Duplicated fallback, consider refactoring if too verbose
+                    for node_in_group_fb in group:
+                        for param_obj_fb in node_in_group_fb.parameters:
+                            if param_obj_fb.name not in param_by_name_fallback:
+                                param_by_name_fallback[param_obj_fb.name] = param_obj_fb
+                            else:
+                                existing_param_obj_fb = param_by_name_fallback[param_obj_fb.name]
+                                combined_options_fb = sorted(
+                                    list(set(existing_param_obj_fb.options + param_obj_fb.options))
+                                )
+                                param_by_name_fallback[param_obj_fb.name] = ParameterDefinition(
+                                    name=param_obj_fb.name,
+                                    description=existing_param_obj_fb.description,
+                                    options=combined_options_fb,
+                                )
+                    merged_node.parameters = list(param_by_name_fallback.values())
 
             # --- Improved Output Merging ---
 
@@ -285,14 +387,14 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
                     )
                     if code_block_match:
                         extracted_json_str = code_block_match.group(1).strip()
-                        logger.debug("Extracted JSON from markdown code block.")
+                        logger.debug("Extracted output JSON from markdown code block.")
                     else:
                         # 2. If not in a code block, try to find the outermost list structure `[...]`
                         first_bracket = raw_consolidation_response.find("[")
                         last_bracket = raw_consolidation_response.rfind("]")
                         if first_bracket != -1 and last_bracket != -1 and last_bracket > first_bracket:
                             extracted_json_str = raw_consolidation_response[first_bracket : last_bracket + 1]
-                            logger.debug("Extracted JSON by finding outermost list brackets.")
+                            logger.debug("Extracted output JSON by finding outermost list brackets.")
                         else:
                             # 3. Fallback: strip the raw response
                             extracted_json_str = raw_consolidation_response.strip()
@@ -306,7 +408,7 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
                         # Fallback logic will be triggered by JSONDecodeError or if extracted_json_str is empty/None
 
                     try:
-                        consolidated_outputs_list = json.loads(extracted_json_str)
+                        consolidated_outputs_list = json.loads(extracted_json_str)  # type: ignore[arg-type]
                         final_outputs = []
                         for consol_out in consolidated_outputs_list:
                             if (

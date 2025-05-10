@@ -1,6 +1,7 @@
 """Prompts for refining functionality nodes based on existing descriptions."""
 
 import json
+from typing import Any
 
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 
@@ -169,4 +170,61 @@ Expected JSON Output:
 ]
 
 Generate ONLY the JSON list of consolidated outputs.
+"""
+
+
+def get_consolidate_parameters_prompt(parameter_details: list[dict[str, Any]]) -> str:
+    """Generates a prompt to consolidate a list of parameter specifications for a merged functionality node.
+    Each dict in parameter_details should have "id", "name", "description", "options".
+    """
+    param_list_str = json.dumps(parameter_details, indent=2)
+
+    return f"""
+You are an AI assistant tasked with consolidating a list of 'parameter' specifications that come from multiple similar chatbot functionalities that are being merged into one.
+The goal is to produce a minimal, de-duplicated list of canonical parameters for the single merged functionality. These parameters represent inputs the chatbot solicits.
+
+Here are the parameter specifications collected from the functionalities being merged:
+{param_list_str}
+
+**Instructions for Consolidation:**
+
+1.  **Identify Semantic Equivalence:** Review the 'name', 'description', and 'options' for each parameter. Determine which parameters represent the exact same piece of information the chatbot needs from the user, even if their names or descriptions are slightly different.
+    *   For example, `item_id`, `product_code`, and `selected_item_identifier` might all refer to the same required input.
+    *   Similarly, `size_choice` and `selected_size` could be the same.
+2.  **Group Equivalent Parameters:** Group the input parameters based on this semantic equivalence.
+3.  **Create Canonical Representation:** For each group of equivalent parameters:
+    *   Suggest a single, clear, canonical `canonical_name` (snake_case). This should be the most representative and understandable name for the input.
+    *   Write a single, comprehensive `canonical_description` that best describes what information this parameter solicits. If descriptions differ, synthesize them or pick the most complete one.
+    *   Combine all unique `options` from the parameters in the group. If a parameter has no predefined options, its 'options' list will be empty. The canonical parameter should also have an empty list if none of its constituents had options.
+    *   List the `original_ids` of all input parameters that belong to this canonical group.
+4.  **Handle Truly Distinct Parameters:** If some input parameters are genuinely distinct and not equivalent to any others, they should form their own group (possibly of size one) with their own canonical representation.
+
+**Output Format (Strictly JSON list of objects):**
+Return a JSON list where each object represents one consolidated, canonical parameter.
+
+Example:
+Input:
+[
+  {{ "id": "PARAM1", "name": "item_size", "description": "The size of the item", "options": ["S", "M", "L"] }},
+  {{ "id": "PARAM2", "name": "selected_size", "description": "User's chosen size", "options": ["Small", "Medium", "Large"] }},
+  {{ "id": "PARAM3", "name": "delivery_zip_code", "description": "ZIP for delivery", "options": [] }}
+]
+
+Expected JSON Output:
+[
+  {{
+    "canonical_name": "item_size",
+    "canonical_description": "The desired size of the item (e.g., Small, Medium, Large).",
+    "options": ["S", "M", "L", "Small", "Medium", "Large"], // Combined and unique
+    "original_ids": ["PARAM1", "PARAM2"]
+  }},
+  {{
+    "canonical_name": "delivery_zip_code",
+    "canonical_description": "The postal ZIP code for the delivery address.",
+    "options": [],
+    "original_ids": ["PARAM3"]
+  }}
+]
+
+Generate ONLY the JSON list of consolidated parameters.
 """
