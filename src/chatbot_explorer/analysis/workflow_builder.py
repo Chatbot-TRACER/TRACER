@@ -176,12 +176,39 @@ def build_workflow_structure(
 
         json_str = extract_json_from_response(response_content)
 
+        # Log the raw JSON string for debugging issues
+        logger.debug("Raw JSON (first 200 chars): %s...", json_str[:200] if json_str else "Empty")
+
         # Clean up potential JSON issues
         json_str = re.sub(r"//.*?(\n|$)", "\n", json_str)  # Remove comments
         json_str = re.sub(r",(\s*[\]}])", r"\1", json_str)  # Remove trailing commas
 
-        structured_nodes_info = _parse_and_validate_json_list(json_str)
-        logger.debug("Successfully parsed workflow structure JSON with %d nodes", len(structured_nodes_info))
+        # Replace problematic URL control characters
+        json_str = re.sub(r"https?://[^\s\"\']+", lambda m: re.sub(r"[^\x20-\x7E]", "", m.group(0)), json_str)
+
+        # Remove all control characters that might cause JSON parsing to fail
+        # This includes ALL non-printable ASCII chars (0-31) except allowed whitespace
+        json_str = "".join(ch for ch in json_str if ord(ch) >= 32 or ch in ["\n", "\r", "\t"])
+
+        # Try to escape unescaped backslashes in strings (common LLM error)
+        json_str = re.sub(r'(?<!\\)\\(?!["\\])', r"\\\\", json_str)
+
+        # Fix Unicode escape sequences that might be malformed
+        json_str = re.sub(r"\\u([0-9a-fA-F]{0,3}[^0-9a-fA-F])", r"\\\\u\1", json_str)
+
+        try:
+            structured_nodes_info = _parse_and_validate_json_list(json_str)
+            logger.debug("Successfully parsed workflow structure JSON with %d nodes", len(structured_nodes_info))
+        except json.JSONDecodeError as e:
+            # Provide more context about the error location
+            error_location = max(0, e.pos - 30), min(len(json_str), e.pos + 30)
+            logger.error(
+                "JSON decode error at position %d: %s\nNear text: '...%s...'",
+                e.pos,
+                e.msg,
+                json_str[error_location[0] : error_location[1]],
+            )
+            raise
 
         # Log the structured_nodes_info (LLM output before hierarchy building)
         logger.debug(
