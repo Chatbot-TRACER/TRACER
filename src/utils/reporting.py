@@ -30,7 +30,7 @@ class GraphBuildContext:
     node_clusters: dict[str, graphviz.Digraph] = field(default_factory=dict)
 
 
-def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "pdf", graph_font_size: int = 12):
+def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "pdf", graph_font_size: int = 12, dpi: int = 300):
     """Creates and renders a directed graph of chatbot functionality.
 
     Args:
@@ -38,12 +38,13 @@ def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "p
         output_path: Path to save the graph
         fmt: Format to render (pdf, png, etc)
         graph_font_size: Font size for graph text elements
+        dpi: Resolution of the output image in dots per inch
     """
     if not nodes:
         return
 
     dot = graphviz.Digraph(format=fmt)
-    _set_graph_attributes(dot, graph_font_size)
+    _set_graph_attributes(dot, graph_font_size, dpi)
 
     # Start node
     node_dim = 0.5
@@ -65,12 +66,13 @@ def export_graph(nodes: list[FunctionalityNode], output_path: str, fmt: str = "p
         )
 
 
-def _set_graph_attributes(dot: graphviz.Digraph, graph_font_size: int = 12) -> None:
+def _set_graph_attributes(dot: graphviz.Digraph, graph_font_size: int = 12, dpi: int = 300) -> None:
     """Sets default attributes for the Graphviz graph, nodes, and edges.
 
     Args:
         dot: Graphviz Digraph object
         graph_font_size: Font size for graph text elements
+        dpi: Resolution of the output image in dots per inch
     """
     # Clean modern style
     bgcolor = "#ffffff"
@@ -93,7 +95,7 @@ def _set_graph_attributes(dot: graphviz.Digraph, graph_font_size: int = 12) -> N
         ranksep="1.5",
         splines="curved",
         overlap="false",
-        dpi="300",
+        dpi=str(dpi),
         labelloc="t",
         fontcolor=fontcolor,
     )
