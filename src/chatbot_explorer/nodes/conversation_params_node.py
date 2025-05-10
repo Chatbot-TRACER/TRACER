@@ -273,6 +273,49 @@ def prepare_language_info(supported_languages: list[str] | None) -> tuple[str, s
 # --- Deterministic Conversation Parameters Generation ---
 
 
+def _count_outputs(profile: dict[str, Any]) -> int:
+    """Count the number of outputs in a profile in a robust way.
+
+    This function handles various possible structures of the output section.
+    """
+    # First, check for direct 'outputs' key at the top level of the profile
+    if "outputs" in profile and isinstance(profile["outputs"], list):
+        logger.debug(f"Found outputs list at top level with {len(profile['outputs'])} items")
+        return len(profile["outputs"])
+
+    # Standard structure check - chatbot.output key path
+    if "chatbot" in profile and "output" in profile["chatbot"]:
+        output_section = profile["chatbot"]["output"]
+
+        # Handle list structure (most common)
+        if isinstance(output_section, list):
+            logger.debug(f"Found output list in chatbot with {len(output_section)} items")
+            return len(output_section)
+
+        # Handle dictionary structure (less common)
+        if isinstance(output_section, dict):
+            logger.debug(f"Found output dict in chatbot with {len(output_section)} keys")
+            return len(output_section)
+
+    # Also check for the plural form 'outputs' inside chatbot
+    if "chatbot" in profile and "outputs" in profile["chatbot"]:
+        output_section = profile["chatbot"]["outputs"]
+
+        # Handle list structure
+        if isinstance(output_section, list):
+            logger.debug(f"Found outputs list in chatbot with {len(output_section)} items")
+            return len(output_section)
+
+        # Handle dictionary structure
+        if isinstance(output_section, dict):
+            logger.debug(f"Found outputs dict in chatbot with {len(output_section)} keys")
+            return len(output_section)
+
+    # None of the expected structures found
+    logger.debug("No outputs found in expected locations")
+    return 0
+
+
 def generate_deterministic_parameters(
     profiles: list[dict[str, Any]], supported_languages: list[str] | None = None
 ) -> list[dict[str, Any]]:
@@ -291,6 +334,26 @@ def generate_deterministic_parameters(
     for i, profile in enumerate(profiles, 1):
         profile_name = profile.get("name", f"Profile {i}")
 
+        # DIRECT STRUCTURE DEBUGGING - Print the raw dict structure
+        logger.debug("============= PROFILE STRUCTURE DEBUG =============")
+        for key, value in profile.items():
+            if key == "chatbot" and isinstance(value, dict):
+                logger.debug(f"chatbot:")
+                for chat_key, chat_value in value.items():
+                    if chat_key == "output":
+                        logger.debug(f"  output: (type: {type(chat_value)})")
+                        if isinstance(chat_value, list):
+                            for idx, item in enumerate(chat_value):
+                                logger.debug(f"    item {idx}: {item} (type: {type(item)})")
+                        elif isinstance(chat_value, dict):
+                            for out_key, out_value in chat_value.items():
+                                logger.debug(f"    {out_key}: {out_value} (type: {type(out_value)})")
+                    else:
+                        logger.debug(f"  {chat_key}: {chat_value}")
+            else:
+                logger.debug(f"{key}: {type(value)}")
+        logger.debug("=================================================")
+
         # Extract variables information
         variables, forward_vars, has_nested_forwards, _, _ = extract_profile_variables(profile)
 
@@ -299,45 +362,13 @@ def generate_deterministic_parameters(
 
         # Count goals for limit calculation
         num_goals = 0
-        num_outputs = 0
         if "goals" in profile and isinstance(profile["goals"], list):
             num_goals = len([g for g in profile["goals"] if isinstance(g, str)])
+            logger.debug(f"Found {num_goals} goals in profile")
 
-        # Fix output counting with detailed structure analysis
-        if "chatbot" in profile and "output" in profile["chatbot"]:
-            output_section = profile["chatbot"]["output"]
-
-            # Debug the structure of output_section
-            logger.debug(f"Output section type: {type(output_section)}")
-
-            if isinstance(output_section, list):
-                logger.debug(f"Output is a list with {len(output_section)} items")
-                if output_section:
-                    # Check the first item to understand the structure
-                    first_item = output_section[0]
-                    logger.debug(f"First output item type: {type(first_item)}")
-                    logger.debug(f"First output item: {first_item}")
-
-                # Count actual outputs
-                output_count = 0
-                for item in output_section:
-                    if isinstance(item, dict) and len(item) == 1:
-                        # Each item is typically a dict with a single key
-                        output_count += 1
-                    elif isinstance(item, dict):
-                        # Count all keys in the dictionary
-                        output_count += len(item)
-                    else:
-                        # Simple scalar values
-                        output_count += 1
-
-                num_outputs = output_count
-                logger.debug(f"Counted {num_outputs} outputs after detailed analysis")
-
-            elif isinstance(output_section, dict):
-                # Direct dictionary format
-                num_outputs = len(output_section)
-                logger.debug(f"Output is a dictionary with {num_outputs} keys")
+        # Use simple robust counting function
+        num_outputs = _count_outputs(profile)
+        logger.debug(f"Counted {num_outputs} outputs using robust method")
 
         logger.debug(f"Final count - Goals: {num_goals}, Outputs: {num_outputs}")
 
@@ -379,7 +410,13 @@ def generate_deterministic_parameters(
         max_cost = max(max_cost, 0.5)
 
         # Always use all_answered goal style with limit based on goals count
-        goal_limit = min(max(MIN_GOAL_LIMIT, (num_goals + num_outputs) * 2), MAX_GOAL_LIMIT)
+        base_goal_limit = (num_goals + num_outputs) * 2
+        min_limit = MIN_GOAL_LIMIT
+        max_limit = MAX_GOAL_LIMIT
+        goal_limit = min(max(min_limit, base_goal_limit), max_limit)
+
+        logger.debug(f"Goal limit calculation: min({max_limit}, max({min_limit}, ({num_goals} goals + {num_outputs} outputs) * 2)) = {goal_limit}")
+
         goal_style = {"all_answered": {"export": False, "limit": goal_limit}}
 
         # Select 1-2 random interaction styles
