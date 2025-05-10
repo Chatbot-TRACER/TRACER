@@ -2,6 +2,70 @@
 
 from typing import Any, TypedDict
 
+# Define simplified versions of functions locally to avoid circular imports
+def _simple_get_profile_variables(profile: dict[str, Any]) -> list[str]:
+    """Simple version of _get_profile_variables for the prompt template."""
+    variables = []
+
+    # Check for variables at the top level
+    variables.extend([
+        var_name
+        for var_name, var_def in profile.items()
+        if isinstance(var_def, dict) and "function" in var_def and "data" in var_def
+    ])
+
+    # Also check for variables nested within the 'goals' list
+    if "goals" in profile and isinstance(profile["goals"], list):
+        for item in profile["goals"]:
+            if isinstance(item, dict):
+                for key, value in item.items():
+                    if isinstance(value, dict) and "function" in value and "data" in value:
+                        variables.append(key)
+
+    return variables
+
+
+def _simple_get_max_variable_size(profile: dict[str, Any]) -> int:
+    """Simple version of _get_max_variable_size for the prompt template."""
+    max_size = 1
+
+    # Helper function to get variable definition
+    def get_var_def(var_name):
+        # Check top level
+        var_def = profile.get(var_name)
+        if isinstance(var_def, dict) and "function" in var_def and "data" in var_def:
+            return var_def
+
+        # Check in goals
+        if "goals" in profile and isinstance(profile["goals"], list):
+            for item in profile["goals"]:
+                if isinstance(item, dict) and var_name in item:
+                    var_def = item[var_name]
+                    if isinstance(var_def, dict) and "function" in var_def and "data" in var_def:
+                        return var_def
+        return None
+
+    # Check all variables
+    for var_name in _simple_get_profile_variables(profile):
+        var_def = get_var_def(var_name)
+        if var_def and "data" in var_def:
+            data = var_def.get("data", [])
+            if isinstance(data, list):
+                current_size = len(data)
+                if current_size > max_size:
+                    max_size = current_size
+
+    return max_size
+
+
+def _simple_calculate_combinations(profile: dict[str, Any], variables: list[str]) -> int:
+    """Simple version of _calculate_combinations for the prompt template."""
+    # Just count variables for a simplified estimate
+    if not variables:
+        return 1
+
+    return max(len(variables), 2)
+
 # --- Data Structures for Prompt Arguments ---
 
 
@@ -76,30 +140,41 @@ def get_number_prompt(
                 if current_size > max_forward_size:
                     max_forward_size = current_size
 
+    # For more detailed variable analysis - using simplified local versions
+    variables = _simple_get_profile_variables(profile)
+    max_var_size = _simple_get_max_variable_size(profile)
+    potential_combinations = _simple_calculate_combinations(profile, variables)
+
+    # Update recommendation based on actual calculations
+    if max_var_size > max_forward_size:
+        max_forward_size = max_var_size
+
+    importance_notice = ""
+    if max_forward_size > 3:
+        importance_notice = f"\nIMPORTANT: For a profile with {len(variables)} variables where the largest has {max_forward_size} options, you MUST choose at least {max_forward_size} conversations to ensure adequate coverage!"
+
     if has_nested_forwards:
         number_section = f"""
         NUMBER:
         Choose ONE option:
-        - Enter a fixed number matching the maximum variable size (current max: {max_forward_size}) to cover possible combinations.
+        - Enter a fixed number matching the maximum variable size ({max_forward_size}) to cover possible combinations.
         - "all_combinations" to try all possible combinations (ONLY if there are fewer than 5 total combinations).
         - "sample(X)" where X is a decimal between 0.1 and 1.0 to test a fraction of the combinations.
 
         RECOMMENDATION:
-        - For variables with forward dependencies, use the size of the largest variable array ({max_forward_size} in this case) to ensure adequate coverage.
-        - For nested forwards, if total combinations are low (<5), choose "all_combinations".
-        - Otherwise, consider using "sample(0.2)" or "sample(0.5)" based on your testing needs, or specify a fixed number.
+        - For variables with forward dependencies, use at least {max_forward_size} conversations to ensure full coverage.
+        - For nested forwards with {potential_combinations} potential combinations, consider "sample(0.2)" or a higher fixed number.{importance_notice}
         """
     else:
         number_section = f"""
         NUMBER:
         Choose a specific number based on the conversation complexity:
         - For simple conversations without variables: 2-3 runs
-        - For conversations with variables: Use at least the maximum size of any variable list ({max_forward_size}) to ensure all possibilities are tested
+        - For conversations with variables: Use at least {max_forward_size} to ensure all possibilities are tested
 
         RECOMMENDATION:
-        - If the profile has forward dependencies with {max_forward_size} options, use at least {max_forward_size} runs.
-        - For simple, straightforward conversations: 2-3 runs is sufficient.
-        - For more complex scenarios with multiple user goals: 4-5 runs may be needed.
+        - This profile has {len(variables)} variables with a maximum of {max_forward_size} options.
+        - To ensure adequate testing coverage, set the number to at least {max_forward_size}.{importance_notice}
         """
 
     return f"""

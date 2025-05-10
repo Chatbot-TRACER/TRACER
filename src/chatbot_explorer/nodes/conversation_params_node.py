@@ -1,6 +1,7 @@
 """Node for generating conversation parameters (number, cost, style) for user profiles."""
 
 import contextlib
+import random
 from typing import Any, TypedDict
 
 from langchain_core.language_models.base import BaseLanguageModel
@@ -20,6 +21,22 @@ from chatbot_explorer.utils.logging_utils import get_logger
 logger = get_logger()
 
 MAX_DISPLAYED_STYLES = 2
+
+# Global constants for deterministic parameter generation
+DEFAULT_RUNS_NO_VARIABLES = 3
+DEFAULT_RUNS_NON_FORWARD_VARIABLES = 3
+BASE_COST_PER_CONVERSATION = 0.15
+MIN_GOAL_LIMIT = 15
+MAX_GOAL_LIMIT = 30
+
+# Available interaction styles for randomization
+AVAILABLE_INTERACTION_STYLES = [
+    "long phrases",
+    "change your mind",
+    "make spelling mistakes",
+    "single question",
+    "all questions"
+]
 
 # --- Helper Functions for extract_profile_variables ---
 
@@ -305,7 +322,8 @@ def request_number_from_llm(context: ParamRequestContext, variables: list[str]) 
 
     # Set a smarter default based on variables and their sizes
     if context["has_nested_forwards"]:
-        if _calculate_combinations(context["profile"], variables) < 5:
+        total_combinations = _calculate_combinations(context["profile"], variables)
+        if total_combinations < 5:
             default_number = "all_combinations"
         else:
             default_number = f"sample(0.2)"
@@ -321,7 +339,17 @@ def request_number_from_llm(context: ParamRequestContext, variables: list[str]) 
     response = context["llm"].invoke(prompt)
 
     # Parse response with the more intelligent default
-    return _parse_number_response(response.content.strip(), default_number)
+    llm_suggested_number = _parse_number_response(response.content.strip(), default_number)
+
+    # For profiles with variables, ensure the number is at least the maximum variable size
+    # unless it's a special value like "all_combinations" or "sample(X)"
+    if variables and isinstance(llm_suggested_number, int) and max_var_size > 3:
+        # If the LLM chose a number smaller than the max variable size, use the max size instead
+        # This ensures adequate coverage of all variable options
+        if llm_suggested_number < max_var_size:
+            return max_var_size
+
+    return llm_suggested_number
 
 
 def request_max_cost_from_llm(context: ParamRequestContext, number_value: str | int) -> float:
@@ -561,6 +589,129 @@ def generate_conversation_parameters(
     return profiles
 
 
+# --- Deterministic Conversation Parameters Generation ---
+
+
+def generate_deterministic_parameters(
+    profiles: list[dict[str, Any]], supported_languages: list[str] | None = None
+) -> list[dict[str, Any]]:
+    """Generates conversation parameters deterministically without using LLM calls.
+
+    Args:
+        profiles: List of user profile dictionaries.
+        supported_languages: Optional list of supported languages.
+
+    Returns:
+        The list of profiles with an added 'conversation' key containing the generated parameters.
+    """
+    # Process each profile
+    total_profiles = len(profiles)
+
+    for i, profile in enumerate(profiles, 1):
+        profile_name = profile.get("name", f"Profile {i}")
+
+        # Extract variables information
+        variables, forward_vars, has_nested_forwards, _, _ = extract_profile_variables(profile)
+
+        # Get the maximum variable size
+        max_var_size = _get_max_variable_size(profile)
+
+        # Count goals for limit calculation
+        num_goals = 0
+        num_outputs = 0
+        if "goals" in profile and isinstance(profile["goals"], list):
+            num_goals = len([g for g in profile["goals"] if isinstance(g, str)])
+        if "output" in profile.get("chatbot", {}) and isinstance(profile["chatbot"]["output"], list):
+            num_outputs = len(profile["chatbot"]["output"])
+
+        # Determine number of conversations
+        if has_nested_forwards:
+            total_combinations = _calculate_combinations(profile, variables)
+            if total_combinations < 10:
+                number_value = "all_combinations"
+            else:
+                number_value = f"sample(0.3)"
+        elif max_var_size > 1:
+            # If we have variables with data, use the maximum size
+            number_value = max_var_size
+        elif forward_vars:
+            # If we have forward variables but no significant max size
+            number_value = DEFAULT_RUNS_NON_FORWARD_VARIABLES
+        else:
+            # Default for simple profiles
+            number_value = DEFAULT_RUNS_NO_VARIABLES
+
+        # Calculate max cost based on number of conversations
+        if isinstance(number_value, int):
+            max_cost = round(BASE_COST_PER_CONVERSATION * number_value, 2)
+        elif number_value == "all_combinations":
+            # For all combinations, estimate cost based on variable combinations
+            total_combinations = _calculate_combinations(profile, variables)
+            max_cost = round(BASE_COST_PER_CONVERSATION * min(total_combinations, 10), 2)
+        elif isinstance(number_value, str) and "sample" in number_value:
+            # For sample, estimate based on the sample percentage and combinations
+            sample_ratio = float(number_value.split("(")[1].split(")")[0])
+            total_combinations = _calculate_combinations(profile, variables)
+            estimated_runs = round(total_combinations * sample_ratio)
+            max_cost = round(BASE_COST_PER_CONVERSATION * min(estimated_runs, 10), 2)
+        else:
+            # Fallback
+            max_cost = 1.0
+
+        # Ensure the cost is at least a minimum amount
+        max_cost = max(max_cost, 0.5)
+
+        # Always use all_answered goal style with limit based on goals count
+        logger.debug(f"Num goals {num_goals}")
+        logger.debug(f"Num outputs {num_outputs}")
+
+        goal_limit = min(max(MIN_GOAL_LIMIT, (num_goals + num_outputs) * 2), MAX_GOAL_LIMIT)
+        goal_style = {"all_answered": {"export": False, "limit": goal_limit}}
+
+        # Select 1-2 random interaction styles
+        num_styles = random.randint(1, 2)
+        interaction_styles = random.sample(AVAILABLE_INTERACTION_STYLES, num_styles)
+
+
+        # Build the conversation parameters
+        conversation_params = {
+            "number": number_value,
+            "max_cost": max_cost,
+            "goal_style": goal_style,
+            "interaction_style": interaction_styles
+        }
+
+        # Log what we've generated
+        style_summary = f", styles: {', '.join(interaction_styles[:MAX_DISPLAYED_STYLES])}"
+        if len(interaction_styles) > MAX_DISPLAYED_STYLES:
+            style_summary += f" +{len(interaction_styles) - MAX_DISPLAYED_STYLES} more"
+
+        logger.info(" ✅ Generated conversation parameters %d/%d: '%s'", i, total_profiles, profile_name)
+
+        if variables:
+            logger.debug(
+                "Parameters: number=%s (from %d variables), cost=%.2f, goal=all_answered (limit: %d)%s",
+                number_value,
+                len(variables),
+                max_cost,
+                goal_limit,
+                style_summary,
+            )
+        else:
+            logger.debug(
+                "Parameters: number=%s (no variables), cost=%.2f, goal=all_answered (limit: %d)%s",
+                number_value,
+                max_cost,
+                goal_limit,
+                style_summary,
+            )
+
+        # Assign parameters to the profile
+        profile["conversation"] = conversation_params
+
+    return profiles
+
+
 # --- LangGraph Node ---
 
 
@@ -574,7 +725,7 @@ def conversation_params_node(state: State, llm: BaseLanguageModel) -> dict[str, 
     logger.info("\nStep 3: Conversation parameters generation")
     logger.info("--------------------------\n")
 
-    # Flatten functionalities (currently unused by generate_conversation_parameters but kept for context)
+    # Flatten functionalities (currently unused but kept for context)
     structured_root_dicts = state.get("discovered_functionalities", [])
     flat_func_info = []
     nodes_to_process = list(structured_root_dicts)
@@ -590,10 +741,9 @@ def conversation_params_node(state: State, llm: BaseLanguageModel) -> dict[str, 
         total_profiles = len(conversation_goals)
         logger.info("Generating conversation parameters for %d profiles:\n", total_profiles)
 
-        # Generate parameters
-        profiles_with_params = generate_conversation_parameters(
+        # Generate parameters deterministically instead of using LLM
+        profiles_with_params = generate_deterministic_parameters(
             conversation_goals,
-            llm,
             supported_languages=state.get("supported_languages"),
         )
 
