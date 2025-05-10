@@ -1,10 +1,12 @@
 """Module to check for duplicate functionalities, merge them and validate relationships between them."""
 
+import json
 import re
 
 from langchain_core.language_models import BaseLanguageModel
 
 from chatbot_explorer.prompts.functionality_refinement_prompts import (
+    get_consolidate_outputs_prompt,
     get_duplicate_check_prompt,
     get_merge_prompt,
     get_relationship_validation_prompt,
@@ -65,11 +67,11 @@ def is_duplicate_functionality(
 
         if match:
             existing_node_name = match.group(1)
-            logger.debug("LLM identified potential duplicate: '%s' might match '%s'",
-                        node_to_check.name, existing_node_name)
+            logger.debug(
+                "LLM identified potential duplicate: '%s' might match '%s'", node_to_check.name, existing_node_name
+            )
 
             # Find the actual existing node object by this name
-            exact_match = None
             for existing in existing_nodes:
                 # Clean up the name for comparison if there's a newline or description
                 clean_existing_name = existing.name
@@ -207,12 +209,21 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
     logger.debug("Merge response content: '%s'", content)
 
     if content.upper().startswith("MERGE"):
-        name_match = re.search(r"name:\s*(.+)", content, re.IGNORECASE | re.DOTALL)
-        desc_match = re.search(r"description:\s*(.+)", content, re.IGNORECASE | re.DOTALL)
+        # Parse name and description from the MERGE response more robustly
+        best_name = None
+        best_desc = None
+        lines = content.splitlines()
+        for line in lines:
+            line_lower = line.lower()
+            if line_lower.startswith("name:"):
+                if best_name is None:  # Take the first occurrence
+                    best_name = line.split(":", 1)[1].strip()
+            elif line_lower.startswith("description:"):
+                if best_desc is None:  # Take the first occurrence
+                    best_desc = line.split(":", 1)[1].strip()
 
-        if name_match and desc_match:
-            best_name = name_match.group(1).strip()
-            best_desc = desc_match.group(1).strip()
+        if best_name and best_desc:
+            logger.debug("Parsed merged node - Name: '%s', Description: '%s'", best_name, best_desc)
 
             merged_node = FunctionalityNode(name=best_name, description=best_desc, parameters=[], outputs=[])
 
@@ -234,31 +245,100 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
                         )
                         param_by_name[param_name] = merged_param
 
-            output_by_category = {}
-
-            for node in group:
-                for output in node.outputs:
-                    category = output.category
-
-                    if category not in output_by_category:
-                        output_by_category[category] = output
-                    else:
-                        existing_output = output_by_category[category]
-
-                        description = (
-                            output.description
-                            if len(output.description) > len(existing_output.description)
-                            else existing_output.description
-                        )
-
-                        merged_output = OutputOptions(category=category, description=description)
-                        output_by_category[category] = merged_output
-
             # Convert merged parameters to a list
             merged_node.parameters = list(param_by_name.values())
 
-            # Convert merged output options to a list
-            merged_node.outputs = list(output_by_category.values())
+            # --- Improved Output Merging ---
+
+            all_outputs_from_group = []
+            for node in group:
+                all_outputs_from_group.extend(node.outputs)
+
+            if not all_outputs_from_group:
+                merged_node.outputs = []
+            elif len(all_outputs_from_group) == 1:  # Only one output in the whole group, just use it
+                merged_node.outputs = [all_outputs_from_group[0]]
+            else:
+                # If there are multiple outputs across the nodes being merged, try to consolidate them.
+                # This requires an LLM call to group semantically similar output categories.
+                output_details_for_llm = []
+                for i, out_opt in enumerate(all_outputs_from_group):
+                    if out_opt and out_opt.category and out_opt.description:  # Ensure valid OutputOptions object
+                        output_details_for_llm.append(
+                            {"id": f"OUT{i}", "category_name": out_opt.category, "description": out_opt.description}
+                        )
+
+                if output_details_for_llm:
+                    consolidation_prompt = get_consolidate_outputs_prompt(output_details_for_llm)
+                    logger.debug(
+                        "Consolidating outputs for merged node '%s' using LLM. Input outputs: %s",
+                        best_name,
+                        output_details_for_llm,
+                    )
+                    raw_consolidation_response = llm.invoke(consolidation_prompt).content
+                    logger.debug("LLM response for output consolidation (raw): %s", raw_consolidation_response)
+
+                    extracted_json_str = None
+                    # 1. Try to find JSON within markdown code blocks
+                    code_block_match = re.search(
+                        r"```json\s*([\s\S]*?)\s*```", raw_consolidation_response, re.IGNORECASE
+                    )
+                    if code_block_match:
+                        extracted_json_str = code_block_match.group(1).strip()
+                        logger.debug("Extracted JSON from markdown code block.")
+                    else:
+                        # 2. If not in a code block, try to find the outermost list structure `[...]`
+                        first_bracket = raw_consolidation_response.find("[")
+                        last_bracket = raw_consolidation_response.rfind("]")
+                        if first_bracket != -1 and last_bracket != -1 and last_bracket > first_bracket:
+                            extracted_json_str = raw_consolidation_response[first_bracket : last_bracket + 1]
+                            logger.debug("Extracted JSON by finding outermost list brackets.")
+                        else:
+                            # 3. Fallback: strip the raw response
+                            extracted_json_str = raw_consolidation_response.strip()
+                            logger.debug("Using stripped raw response as JSON candidate.")
+
+                    if not extracted_json_str:  # Handles empty or unextractable content
+                        logger.warning(
+                            "Could not extract a valid JSON string from LLM response for output consolidation. Raw response: %s",
+                            raw_consolidation_response,
+                        )
+                        # Fallback logic will be triggered by JSONDecodeError or if extracted_json_str is empty/None
+
+                    try:
+                        consolidated_outputs_list = json.loads(extracted_json_str)
+                        final_outputs = []
+                        for consol_out in consolidated_outputs_list:
+                            if (
+                                isinstance(consol_out, dict)
+                                and consol_out.get("canonical_category")
+                                and consol_out.get("canonical_description")
+                            ):
+                                final_outputs.append(
+                                    OutputOptions(
+                                        category=consol_out["canonical_category"],
+                                        description=consol_out["canonical_description"],
+                                    )
+                                )
+                        merged_node.outputs = final_outputs
+                        logger.debug(
+                            "Consolidated outputs for '%s': %s", best_name, [o.category for o in final_outputs]
+                        )
+                    except (json.JSONDecodeError, TypeError) as e:
+                        logger.warning(
+                            "Failed to parse JSON for output consolidation for node '%s'. Error: %s. Extracted string: '%s'. Using simple union of unique categories.",
+                            best_name,
+                            e,
+                            extracted_json_str,
+                        )
+                        # Fallback to simple unique category union if LLM fails
+                        fallback_output_by_category = {}
+                        for out_opt in all_outputs_from_group:
+                            if out_opt and out_opt.category and out_opt.category not in fallback_output_by_category:
+                                fallback_output_by_category[out_opt.category] = out_opt
+                        merged_node.outputs = list(fallback_output_by_category.values())
+                else:  # No valid outputs to process
+                    merged_node.outputs = []
 
             # Merge children too
             for node in group:
@@ -269,7 +349,12 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
             logger.debug("Merged %d functionalities into '%s'", len(group), best_name)
             return [merged_node]
 
-        logger.warning("Could not parse merge suggestion for group. Keeping first node '%s'", group[0].name)
+        logger.warning(
+            "LLM suggested MERGE, but could not parse name/description for group: %s. Content: '%s'. Keeping first node '%s'",
+            [n.name for n in group],
+            content[:200],
+            group[0].name,
+        )
         return [group[0]]
 
     logger.debug("LLM suggested keeping %d nodes separate", len(group))

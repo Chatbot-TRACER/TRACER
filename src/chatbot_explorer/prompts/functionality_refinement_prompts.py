@@ -116,3 +116,57 @@ def get_merge_prompt(group: list[FunctionalityNode]) -> str:
     KEEP SEPARATE
     reason: [Briefly explain the key functional distinction(s) based on the criteria why they should NOT be merged (e.g., "Different core actions: one informs, one solicits input", "Handles distinct workflow paths with different subsequent steps")]
     """
+
+
+def get_consolidate_outputs_prompt(output_details: list[dict[str, str]]) -> str:
+    """Generates a prompt to consolidate a list of output specifications for a merged functionality node.
+    Each dict in output_details should have "id", "category_name", "description".
+    """
+    output_list_str = json.dumps(output_details, indent=2)
+
+    return f"""
+You are an AI assistant tasked with consolidating a list of 'output' specifications that come from multiple similar chatbot functionalities that are being merged into one.
+The goal is to produce a minimal, de-duplicated list of canonical outputs for the single merged functionality.
+
+Here are the output specifications collected from the functionalities being merged:
+{output_list_str}
+
+**Instructions for Consolidation:**
+
+1.  **Identify Semantic Equivalence:** Review the 'category_name' and 'description' for each output. Determine which outputs represent the exact same piece or type of information, even if their category names or descriptions are slightly different.
+    *   For example, `information_topics`, `available_information_types`, and `available_topics` might all refer to the same list of what the chatbot can talk about.
+    *   Similarly, `contact_email` and `support_email_address` likely refer to the same data point.
+2.  **Group Equivalent Outputs:** Group the input outputs based on this semantic equivalence.
+3.  **Create Canonical Representation:** For each group of equivalent outputs:
+    *   Suggest a single, clear, canonical `canonical_category` name (snake_case).
+    *   Write a single, comprehensive `canonical_description` that best represents the information provided by that group. If descriptions differ, try to synthesize them or pick the most complete one.
+    *   List the `original_ids` of all input outputs that belong to this canonical group.
+4.  **Handle Truly Distinct Outputs:** If some input outputs are genuinely distinct and not equivalent to any others, they should form their own group (possibly of size one) with their own canonical representation.
+
+**Output Format (Strictly JSON list of objects):**
+Return a JSON list where each object represents one consolidated, canonical output.
+
+Example:
+Input:
+[
+  {{ "id": "OUT1", "category_name": "info_topics", "description": "Topics A, B, C" }},
+  {{ "id": "OUT2", "category_name": "available_topics", "description": "Can discuss A, B, C, and D" }},
+  {{ "id": "OUT3", "category_name": "contact_phone_number", "description": "Main support line is 555-1234" }}
+]
+
+Expected JSON Output:
+[
+  {{
+    "canonical_category": "knowledge_topics",
+    "canonical_description": "A list of topics the chatbot can provide information about, such as A, B, C, and D.",
+    "original_ids": ["OUT1", "OUT2"]
+  }},
+  {{
+    "canonical_category": "support_phone",
+    "canonical_description": "The main phone number for contacting support (e.g., 555-1234).",
+    "original_ids": ["OUT3"]
+  }}
+]
+
+Generate ONLY the JSON list of consolidated outputs.
+"""
