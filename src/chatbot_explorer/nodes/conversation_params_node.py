@@ -6,14 +6,11 @@ from typing import Any, TypedDict
 
 from langchain_core.language_models.base import BaseLanguageModel
 
+# Note: We're not using these prompt functions anymore, but we need the type definitions
 from chatbot_explorer.prompts.conversation_params_prompts import (
     PromptLanguageSupport,
     PromptPreviousParams,
     PromptProfileContext,
-    get_goal_style_prompt,
-    get_interaction_style_prompt,
-    get_max_cost_prompt,
-    get_number_prompt,
 )
 from chatbot_explorer.schemas.graph_state_model import State
 from chatbot_explorer.utils.logging_utils import get_logger
@@ -94,6 +91,29 @@ def _get_variable_def(profile: dict[str, Any], var_name: str) -> dict | None:
                     return item[var_name]
 
     return None
+
+
+def _get_max_variable_size(profile: dict[str, Any]) -> int:
+    """Determines the maximum size of any variable list in the profile."""
+    max_size = 1  # Default minimum size
+    variables = _get_profile_variables(profile)
+
+    for var_name in variables:
+        var_def = _get_variable_def(profile, var_name)
+        if var_def and "data" in var_def:
+            data = var_def.get("data", [])
+            if isinstance(data, list):
+                current_size = len(data)
+                if current_size > max_size:
+                    max_size = current_size
+            elif isinstance(data, dict) and all(k in data for k in ["min", "max", "step"]) and data["step"] != 0:
+                # Handle range-defined variables
+                steps = (data["max"] - data["min"]) / data["step"] + 1
+                current_size = int(steps) if steps >= 1 else 1
+                if current_size > max_size:
+                    max_size = current_size
+
+    return max_size
 
 
 def _calculate_combinations(profile: dict[str, Any], variables: list[str]) -> int:
@@ -250,345 +270,6 @@ def prepare_language_info(supported_languages: list[str] | None) -> tuple[str, s
     return language_info, languages_example, supported_languages_text
 
 
-# --- Context for Parameter Requests ---
-
-
-class ParamRequestContext(TypedDict):
-    """Context dictionary for requesting conversation parameters."""
-
-    llm: BaseLanguageModel
-    profile: dict[str, Any]
-    variables_info: str
-    language_info: str
-    supported_languages_text: str
-    languages_example: str
-
-
-# --- LLM Request Functions ---
-
-
-def _parse_number_response(response_text: str, default_number: str | int) -> str | int:
-    """Parses the LLM response for the 'number' parameter."""
-    extracted_number = None
-    for line in response_text.split("\n"):
-        line_content = line.strip()
-        if not line_content or ":" not in line_content:
-            continue
-        key, value = line_content.split(":", 1)
-        if key.strip().lower() == "number":
-            value = value.strip()
-            if value == "all_combinations":
-                extracted_number = "all_combinations"
-            elif "sample" in value.lower() and "(" in value and ")" in value:
-                with contextlib.suppress(ValueError):
-                    sample_value = float(value.split("(")[1].split(")")[0])
-                    min_sample_value = 0.1
-                    max_sample_value = 1.0
-                    if min_sample_value <= sample_value <= max_sample_value:
-                        extracted_number = f"sample({sample_value})"
-            elif value.isdigit():
-                extracted_number = int(value)
-            break  # Found number, no need to check further lines
-    return extracted_number if extracted_number is not None else default_number
-
-
-def _get_max_variable_size(profile: dict[str, Any]) -> int:
-    """Determines the maximum size of any variable list in the profile."""
-    max_size = 1  # Default minimum size
-    variables = _get_profile_variables(profile)
-
-    for var_name in variables:
-        var_def = _get_variable_def(profile, var_name)
-        if var_def and "data" in var_def:
-            data = var_def.get("data", [])
-            if isinstance(data, list):
-                current_size = len(data)
-                if current_size > max_size:
-                    max_size = current_size
-            elif isinstance(data, dict) and all(k in data for k in ["min", "max", "step"]) and data["step"] != 0:
-                # Handle range-defined variables
-                steps = (data["max"] - data["min"]) / data["step"] + 1
-                current_size = int(steps) if steps >= 1 else 1
-                if current_size > max_size:
-                    max_size = current_size
-
-    return max_size
-
-
-def request_number_from_llm(context: ParamRequestContext, variables: list[str]) -> str | int:
-    """Prompts LLM to determine the NUMBER parameter."""
-    # Get the maximum variable size for better default calculation
-    max_var_size = _get_max_variable_size(context["profile"])
-
-    # Set a smarter default based on variables and their sizes
-    if context["has_nested_forwards"]:
-        total_combinations = _calculate_combinations(context["profile"], variables)
-        if total_combinations < 5:
-            default_number = "all_combinations"
-        else:
-            default_number = f"sample(0.2)"
-    else:
-        default_number = max(max_var_size, 2) if variables else 2
-
-    prompt = get_number_prompt(
-        profile=context["profile"],
-        variables_info=context["variables_info"],
-        language_info=context["language_info"],
-        has_nested_forwards=context["has_nested_forwards"],
-    )
-    response = context["llm"].invoke(prompt)
-
-    # Parse response with the more intelligent default
-    llm_suggested_number = _parse_number_response(response.content.strip(), default_number)
-
-    # For profiles with variables, ensure the number is at least the maximum variable size
-    # unless it's a special value like "all_combinations" or "sample(X)"
-    if variables and isinstance(llm_suggested_number, int) and max_var_size > 3:
-        # If the LLM chose a number smaller than the max variable size, use the max size instead
-        # This ensures adequate coverage of all variable options
-        if llm_suggested_number < max_var_size:
-            return max_var_size
-
-    return llm_suggested_number
-
-
-def request_max_cost_from_llm(context: ParamRequestContext, number_value: str | int) -> float:
-    """Prompts LLM to determine the MAX_COST parameter."""
-    prompt = get_max_cost_prompt(
-        profile=context["profile"],
-        variables_info=context["variables_info"],
-        language_info=context["language_info"],
-        number_value=number_value,
-    )
-    response = context["llm"].invoke(prompt)
-    response_text = response.content.strip()
-    default_cost = 1.0 if not context["has_nested_forwards"] else 2.0
-    max_cost = default_cost
-    for line in response_text.split("\n"):
-        line_content = line.strip()
-        if not line_content or ":" not in line_content:
-            continue
-        key, value = line_content.split(":", 1)
-        if key.strip().lower() == "max_cost":
-            with contextlib.suppress(ValueError):
-                max_cost = float(value.strip())
-            break
-    return max_cost
-
-
-def _parse_goal_style_response(response_text: str) -> dict[str, Any]:
-    """Parses the LLM response for the 'goal_style' parameter."""
-    goal_style = {"steps": 11}  # Default
-    selected_style = "steps"
-    goal_style_value = 11
-
-    for line in response_text.split("\n"):
-        line_content = line.strip()
-        if not line_content or ":" not in line_content:
-            continue
-        key, value = line_content.split(":", 1)
-        key = key.strip().lower()
-        value = value.strip()
-
-        if key == "goal_style" and value in ["steps", "all_answered", "random_steps"]:
-            selected_style = value
-        elif key == "goal_style_value":
-            with contextlib.suppress(ValueError):
-                goal_style_value = int(value)
-
-        # Update goal_style based on potentially updated selected_style and goal_style_value
-        if selected_style == "steps":
-            goal_style = {"steps": goal_style_value}
-        elif selected_style == "all_answered":
-            goal_style = {"all_answered": {"export": False, "limit": goal_style_value}}
-        elif selected_style == "random_steps":
-            goal_style = {"random_steps": goal_style_value}
-
-    return goal_style
-
-
-def request_goal_style_from_llm(
-    context: ParamRequestContext, number_value: str | int, max_cost: float
-) -> dict[str, Any]:
-    """Prompts LLM to determine the GOAL_STYLE parameter."""
-    prompt = get_goal_style_prompt(
-        profile=context["profile"],
-        variables_info=context["variables_info"],
-        language_info=context["language_info"],
-        number_value=number_value,
-        max_cost=max_cost,
-    )
-    response = context["llm"].invoke(prompt)
-    return _parse_goal_style_response(response.content.strip())
-
-
-def request_interaction_style_from_llm(
-    context: ParamRequestContext, number_value: str | int, max_cost: float, goal_style: dict[str, Any]
-) -> list[str]:
-    """Prompts LLM to determine the INTERACTION_STYLE parameter."""
-    profile_context: PromptProfileContext = {
-        "profile": context["profile"],
-        "variables_info": context["variables_info"],
-        "language_info": context["language_info"],
-    }
-    prev_params: PromptPreviousParams = {
-        "number_value": number_value,
-        "max_cost": max_cost,
-        "goal_style": goal_style,
-    }
-    lang_support: PromptLanguageSupport = {
-        "supported_languages_text": context["supported_languages_text"],
-        "languages_example": context["languages_example"],
-    }
-
-    # Call the prompt function with the structured arguments
-    prompt = get_interaction_style_prompt(
-        profile_context=profile_context,
-        prev_params=prev_params,
-        lang_support=lang_support,
-    )
-    response = context["llm"].invoke(prompt)
-    response_text = response.content.strip()
-    interaction_styles = []
-    for line in response_text.split("\n"):
-        line_content = line.strip()
-        if not line_content or ":" not in line_content:
-            continue
-        key, value = line_content.split(":", 1)
-        if key.strip().lower() == "interaction_style":
-            value = value.strip()
-            if "[" in value and "]" in value:
-                styles_part = value.replace("[", "").replace("]", "")
-                styles = [s.strip().strip("\"'") for s in styles_part.split(",")]
-                interaction_styles = [s for s in styles if s]
-            else:
-                style = value.strip().strip("\"'")
-                if style:
-                    interaction_styles.append(style)
-            break
-    return interaction_styles
-
-
-# --- Main Generation Function ---
-
-
-def generate_conversation_parameters(
-    profiles: list[dict[str, Any]],
-    llm: BaseLanguageModel,
-    supported_languages: list[str] | None = None,
-) -> list[dict[str, Any]]:
-    """Generates conversation parameters for each profile using sequential LLM prompting.
-
-    Args:
-        profiles: List of user profile dictionaries.
-        llm: The language model instance.
-        supported_languages: Optional list of supported languages.
-
-    Returns:
-        The list of profiles with an added 'conversation' key containing the generated parameters.
-    """
-    language_info, languages_example, supported_languages_text = prepare_language_info(supported_languages)
-
-    # Process each profile
-    total_profiles = len(profiles)
-    for i, profile in enumerate(profiles, 1):
-        profile_name = profile.get("name", f"Profile {i}")
-
-        # Extract variables information
-        variables, forward_vars, has_nested_forwards, _, variables_info = extract_profile_variables(profile)
-
-        # Calculate potential combinations for more informed decisions
-        max_var_size = _get_max_variable_size(profile)
-        total_combinations = _calculate_combinations(profile, variables)
-
-        if variables:
-            var_summary = ", ".join(variables)
-            logger.debug("Profile has %d variables: %s", len(variables), var_summary)
-            logger.debug(
-                "Maximum variable size: %d, potential combinations: %d",
-                max_var_size,
-                total_combinations,
-            )
-
-            if forward_vars:
-                logger.debug(
-                    "With %d dependent variables: %s",
-                    len(forward_vars),
-                    ", ".join(forward_vars),
-                )
-        else:
-            logger.debug("Profile has no variables")
-
-        # Create context for this profile's requests
-        request_context: ParamRequestContext = {
-            "llm": llm,
-            "profile": profile,
-            "variables_info": variables_info,
-            "language_info": language_info,
-            "has_nested_forwards": has_nested_forwards,
-            "supported_languages_text": supported_languages_text,
-            "languages_example": languages_example,
-        }
-
-        # Sequential prompting with minimal but sufficient logging
-        logger.debug("Determining parameters for profile '%s'", profile_name)
-
-        # Fetch parameters sequentially with minimal logging
-        number_value = request_number_from_llm(request_context, variables)
-        max_cost = request_max_cost_from_llm(request_context, number_value)
-        goal_style = request_goal_style_from_llm(request_context, number_value, max_cost)
-        interaction_styles = request_interaction_style_from_llm(request_context, number_value, max_cost, goal_style)
-
-        # Log a concise summary of the key parameters
-        goal_style_type = next(iter(goal_style.keys())) if goal_style else "unknown"
-        interaction_style_summary = ""
-        if interaction_styles:
-            interaction_style_summary = f", styles: {', '.join(interaction_styles[:MAX_DISPLAYED_STYLES])}" + (
-                f" +{len(interaction_styles) - MAX_DISPLAYED_STYLES} more"
-                if len(interaction_styles) > MAX_DISPLAYED_STYLES
-                else ""
-            )
-
-        logger.info(" ✅ Generated conversation parameters %d/%d: '%s'", i, total_profiles, profile_name)
-
-        # Log detailed information about number selection based on variables
-        if variables:
-            number_reason = ""
-            if number_value == "all_combinations":
-                number_reason = f" (testing all {total_combinations} combinations)"
-            elif isinstance(number_value, str) and "sample" in number_value:
-                sample_pct = number_value.split("(")[1].split(")")[0]
-                approx_count = round(float(sample_pct) * total_combinations)
-                number_reason = f" (sampling ~{approx_count} of {total_combinations} combinations)"
-            elif isinstance(number_value, int) and number_value >= max_var_size:
-                number_reason = f" (adequate to cover largest variable with {max_var_size} options)"
-
-            logger.debug(
-                "Parameters: number=%s%s, cost=%.2f, goal=%s%s",
-                number_value,
-                number_reason,
-                max_cost,
-                goal_style_type,
-                interaction_style_summary,
-            )
-        else:
-            logger.debug(
-                "Parameters: number=%s, cost=%.2f, goal=%s%s",
-                number_value,
-                max_cost,
-                goal_style_type,
-                interaction_style_summary,
-            )
-
-        # Build and assign parameters
-        conversation_params = {"number": number_value, "max_cost": max_cost, "goal_style": goal_style}
-        if interaction_styles:
-            conversation_params["interaction_style"] = interaction_styles
-        profile["conversation"] = conversation_params
-
-    return profiles
-
-
 # --- Deterministic Conversation Parameters Generation ---
 
 
@@ -621,8 +302,44 @@ def generate_deterministic_parameters(
         num_outputs = 0
         if "goals" in profile and isinstance(profile["goals"], list):
             num_goals = len([g for g in profile["goals"] if isinstance(g, str)])
-        if "output" in profile.get("chatbot", {}) and isinstance(profile["chatbot"]["output"], list):
-            num_outputs = len(profile["chatbot"]["output"])
+
+        # Fix output counting with detailed structure analysis
+        if "chatbot" in profile and "output" in profile["chatbot"]:
+            output_section = profile["chatbot"]["output"]
+
+            # Debug the structure of output_section
+            logger.debug(f"Output section type: {type(output_section)}")
+
+            if isinstance(output_section, list):
+                logger.debug(f"Output is a list with {len(output_section)} items")
+                if output_section:
+                    # Check the first item to understand the structure
+                    first_item = output_section[0]
+                    logger.debug(f"First output item type: {type(first_item)}")
+                    logger.debug(f"First output item: {first_item}")
+
+                # Count actual outputs
+                output_count = 0
+                for item in output_section:
+                    if isinstance(item, dict) and len(item) == 1:
+                        # Each item is typically a dict with a single key
+                        output_count += 1
+                    elif isinstance(item, dict):
+                        # Count all keys in the dictionary
+                        output_count += len(item)
+                    else:
+                        # Simple scalar values
+                        output_count += 1
+
+                num_outputs = output_count
+                logger.debug(f"Counted {num_outputs} outputs after detailed analysis")
+
+            elif isinstance(output_section, dict):
+                # Direct dictionary format
+                num_outputs = len(output_section)
+                logger.debug(f"Output is a dictionary with {num_outputs} keys")
+
+        logger.debug(f"Final count - Goals: {num_goals}, Outputs: {num_outputs}")
 
         # Determine number of conversations
         if has_nested_forwards:
@@ -662,16 +379,12 @@ def generate_deterministic_parameters(
         max_cost = max(max_cost, 0.5)
 
         # Always use all_answered goal style with limit based on goals count
-        logger.debug(f"Num goals {num_goals}")
-        logger.debug(f"Num outputs {num_outputs}")
-
         goal_limit = min(max(MIN_GOAL_LIMIT, (num_goals + num_outputs) * 2), MAX_GOAL_LIMIT)
         goal_style = {"all_answered": {"export": False, "limit": goal_limit}}
 
         # Select 1-2 random interaction styles
         num_styles = random.randint(1, 2)
         interaction_styles = random.sample(AVAILABLE_INTERACTION_STYLES, num_styles)
-
 
         # Build the conversation parameters
         conversation_params = {
