@@ -7,6 +7,22 @@ from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
 
+# Default costs per 1M tokens for different models (in USD)
+DEFAULT_COSTS = {
+    # OpenAI models costs per 1M tokens
+    "gpt-4o": {"prompt": 5.00, "completion": 20.00},
+    "gpt-4o-mini": {"prompt": 0.60, "completion": 2.40},
+    "gpt-4.1": {"prompt": 2.00, "completion": 8.00},
+    "gpt-4.1-mini": {"prompt": 0.40, "completion": 1.60},
+    "gpt-4.1-nano": {"prompt": 0.10, "completion": 0.40},
+
+    # Google/Gemini models costs per 1M tokens
+    "gemini-2.0-flash": {"prompt": 0.10, "completion": 0.40},
+
+    # Default fallback rates if model not recognized
+    "default": {"prompt": 0.10, "completion": 0.40}
+}
+
 class TokenUsageTracker(BaseCallbackHandler):
     def __init__(self):
         super().__init__()
@@ -16,12 +32,34 @@ class TokenUsageTracker(BaseCallbackHandler):
         self.call_count = 0
         self.successful_calls = 0
         self.failed_calls = 0
+        self.model_names_used = set()  # Track which models were used
+
+        # Track exploration vs. analysis phases
+        self.exploration_prompt_tokens = 0
+        self.exploration_completion_tokens = 0
+        self.exploration_total_tokens = 0
+        self.analysis_prompt_tokens = 0
+        self.analysis_completion_tokens = 0
+        self.analysis_total_tokens = 0
+        self._phase = "exploration"  # Start in exploration phase
+
+    def mark_analysis_phase(self):
+        """Mark the start of the analysis phase for token tracking"""
+        self._phase = "analysis"
+        self.exploration_prompt_tokens = self.total_prompt_tokens
+        self.exploration_completion_tokens = self.total_completion_tokens
+        self.exploration_total_tokens = self.total_tokens
+        logger.debug("Marked beginning of analysis phase for token tracking")
 
     def on_llm_start(
         self, serialized: Dict[str, Any], prompts: List[str], *, run_id: UUID, parent_run_id: Union[UUID, None] = None, **kwargs: Any
     ) -> None:
         super().on_llm_start(serialized, prompts, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
         self.call_count += 1
+
+        # Track which model is being used
+        if "model_name" in serialized:
+            self.model_names_used.add(serialized["model_name"])
 
     def on_llm_end(self, response: LLMResult, *, run_id: UUID, parent_run_id: Union[UUID, None] = None, **kwargs: Any) -> None:
         super().on_llm_end(response, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
@@ -74,6 +112,17 @@ class TokenUsageTracker(BaseCallbackHandler):
             self.total_prompt_tokens += prompt_tokens_api
             self.total_completion_tokens += completion_tokens_api
             self.total_tokens += total_tokens_api
+
+            # Track by phase
+            if self._phase == "exploration":
+                self.exploration_prompt_tokens += prompt_tokens_api
+                self.exploration_completion_tokens += completion_tokens_api
+                self.exploration_total_tokens += prompt_tokens_api + completion_tokens_api
+            else:  # analysis phase
+                self.analysis_prompt_tokens += prompt_tokens_api
+                self.analysis_completion_tokens += completion_tokens_api
+                self.analysis_total_tokens += prompt_tokens_api + completion_tokens_api
+
             logger.debug(
                 f"LLM Call {self.successful_calls} End. Tokens This Call: {total_tokens_api} (P: {prompt_tokens_api}, C: {completion_tokens_api}) from '{source_of_tokens}'. Cumulative Total: {self.total_tokens}"
             )
@@ -85,6 +134,10 @@ class TokenUsageTracker(BaseCallbackHandler):
                 f"AIMessage.response_metadata: {str(getattr(response.generations[0][0].message, 'response_metadata', None)) if response.generations and response.generations[0] else 'N/A'}"
             )
 
+        # Track model name if available
+        if hasattr(response, "model_name") and response.model_name:
+            self.model_names_used.add(response.model_name)
+
     def on_llm_error(
         self, error: Union[Exception, KeyboardInterrupt], *, run_id: UUID, parent_run_id: Union[UUID, None] = None, **kwargs: Any
     ) -> None:
@@ -92,7 +145,63 @@ class TokenUsageTracker(BaseCallbackHandler):
         self.failed_calls += 1
         logger.error(f"LLM Call Error. Total Calls: {self.call_count}, Failed: {self.failed_calls}. Error: {error}")
 
+    def calculate_cost(self) -> dict:
+        """Calculate estimated cost based on token usage and models used."""
+        # Determine which cost model to use based on models used
+        model_key = "default"
+
+        # Try to use the most specific model if we have it
+        for model_name in self.model_names_used:
+            # Check for exact matches first
+            if model_name in DEFAULT_COSTS:
+                model_key = model_name
+                break
+
+            # For partial matches (like different versions of the same model family)
+            for known_model in DEFAULT_COSTS:
+                if known_model in model_name:
+                    model_key = known_model
+                    break
+
+        # Get the cost rates (per 1M tokens)
+        cost_info = DEFAULT_COSTS[model_key]
+
+        # Calculate costs (dividing by 1M to convert from per-million pricing)
+        prompt_cost = (self.total_prompt_tokens / 1000000) * cost_info["prompt"]
+        completion_cost = (self.total_completion_tokens / 1000000) * cost_info["completion"]
+        total_cost = prompt_cost + completion_cost
+
+        # Calculate per phase costs
+        exploration_prompt_cost = (self.exploration_prompt_tokens / 1000000) * cost_info["prompt"]
+        exploration_completion_cost = (self.exploration_completion_tokens / 1000000) * cost_info["completion"]
+        exploration_total_cost = exploration_prompt_cost + exploration_completion_cost
+
+        # For analysis phase, calculate only the tokens used during analysis (subtract exploration tokens)
+        analysis_prompt_tokens = self.total_prompt_tokens - self.exploration_prompt_tokens
+        analysis_completion_tokens = self.total_completion_tokens - self.exploration_completion_tokens
+
+        analysis_prompt_cost = (analysis_prompt_tokens / 1000000) * cost_info["prompt"]
+        analysis_completion_cost = (analysis_completion_tokens / 1000000) * cost_info["completion"]
+        analysis_total_cost = analysis_prompt_cost + analysis_completion_cost
+
+        return {
+            "prompt_cost": round(prompt_cost, 4),
+            "completion_cost": round(completion_cost, 4),
+            "total_cost": round(total_cost, 4),
+            "cost_model_used": model_key,
+            "exploration_cost": round(exploration_total_cost, 4),
+            "analysis_cost": round(analysis_total_cost, 4)
+        }
+
     def get_summary(self) -> dict:
+        """Get a summary of token usage statistics and costs"""
+        cost_data = self.calculate_cost()
+
+        # Calculate analysis phase tokens (only what was used during analysis)
+        analysis_prompt_tokens = self.total_prompt_tokens - self.exploration_prompt_tokens
+        analysis_completion_tokens = self.total_completion_tokens - self.exploration_completion_tokens
+        analysis_total_tokens = analysis_prompt_tokens + analysis_completion_tokens
+
         return {
             "total_llm_calls": self.call_count,
             "successful_llm_calls": self.successful_calls,
@@ -100,15 +209,43 @@ class TokenUsageTracker(BaseCallbackHandler):
             "total_prompt_tokens": self.total_prompt_tokens,
             "total_completion_tokens": self.total_completion_tokens,
             "total_tokens_consumed": self.total_tokens,
+            "models_used": list(self.model_names_used),
+            "estimated_cost": cost_data["total_cost"],
+            "cost_details": cost_data,
+            "exploration_phase": {
+                "prompt_tokens": self.exploration_prompt_tokens,
+                "completion_tokens": self.exploration_completion_tokens,
+                "total_tokens": self.exploration_total_tokens,
+                "estimated_cost": cost_data["exploration_cost"]
+            },
+            "analysis_phase": {
+                "prompt_tokens": analysis_prompt_tokens,
+                "completion_tokens": analysis_completion_tokens,
+                "total_tokens": analysis_total_tokens,
+                "estimated_cost": cost_data["analysis_cost"]
+            }
         }
 
     def __str__(self) -> str:
+        cost_data = self.calculate_cost()
+        current_phase = "Exploration" if self._phase == "exploration" else "Analysis"
+
+        # Calculate only tokens used in this phase for the display
+        if current_phase == "Exploration":
+            phase_prompt_tokens = self.total_prompt_tokens
+            phase_completion_tokens = self.total_completion_tokens
+            phase_total_tokens = self.total_tokens
+            phase_cost = cost_data["total_cost"]
+        else:  # Analysis phase
+            phase_prompt_tokens = self.total_prompt_tokens - self.exploration_prompt_tokens
+            phase_completion_tokens = self.total_completion_tokens - self.exploration_completion_tokens
+            phase_total_tokens = phase_prompt_tokens + phase_completion_tokens
+            phase_cost = cost_data["analysis_cost"]
+
         return (
-            f"LLM Token Usage Summary from Tracker:\n"
-            f"  Total LLM Calls: {self.call_count}\n"
-            f"  Successful Calls: {self.successful_calls}\n"
-            f"  Failed Calls: {self.failed_calls}\n"
-            f"  Total Prompt Tokens: {self.total_prompt_tokens}\n"
-            f"  Total Completion Tokens: {self.total_completion_tokens}\n"
-            f"  Total Tokens Consumed: {self.total_tokens}"
+            f"Token Usage in {current_phase} Phase:\n"
+            f"  Prompt tokens:       {phase_prompt_tokens:,}\n"
+            f"  Completion tokens:   {phase_completion_tokens:,}\n"
+            f"  Total tokens:        {phase_total_tokens:,}\n"
+            f"  Estimated cost:      ${phase_cost:.4f} USD"
         )

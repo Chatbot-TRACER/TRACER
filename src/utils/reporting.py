@@ -736,18 +736,49 @@ def _write_token_usage_section(f: TextIO, token_usage: dict[str, Any]) -> None:
         f.write(f"Token usage data not in expected dictionary format.\nType: {type(token_usage)}\n")
         return
 
-    # Write token usage statistics in a table-like format
-    f.write("LLM API CALLS\n")
-    f.write(f"  Total LLM calls:     {token_usage.get('total_llm_calls', 'N/A')}\n")
-    f.write(f"  Successful calls:    {token_usage.get('successful_llm_calls', 'N/A')}\n")
-    f.write(f"  Failed calls:        {token_usage.get('failed_llm_calls', 'N/A')}\n")
-    f.write("\nTOKEN CONSUMPTION\n")
-    f.write(f"  Prompt tokens:       {token_usage.get('total_prompt_tokens', 'N/A')}\n")
-    f.write(f"  Completion tokens:   {token_usage.get('total_completion_tokens', 'N/A')}\n")
-    f.write(f"  Total tokens:        {token_usage.get('total_tokens_consumed', 'N/A')}\n")
+    # Function to format token numbers with commas
+    def format_num(num):
+        return f"{num:,}" if isinstance(num, (int, float)) else str(num)
 
-    # Add cost estimate if available in the future
-    # Cost can be calculated based on token counts and model pricing
+    # Write exploration phase token statistics
+    exploration_data = token_usage.get('exploration_phase', {})
+    f.write("EXPLORATION PHASE\n")
+    f.write(f"  Prompt tokens:       {format_num(exploration_data.get('prompt_tokens', 'N/A'))}\n")
+    f.write(f"  Completion tokens:   {format_num(exploration_data.get('completion_tokens', 'N/A'))}\n")
+    f.write(f"  Total tokens:        {format_num(exploration_data.get('total_tokens', 'N/A'))}\n")
+    if 'estimated_cost' in exploration_data:
+        f.write(f"  Estimated cost:      ${exploration_data.get('estimated_cost', 0):.4f} USD\n")
+
+    # Write analysis phase token statistics
+    analysis_data = token_usage.get('analysis_phase', {})
+    f.write("\nANALYSIS PHASE\n")
+    f.write(f"  Prompt tokens:       {format_num(analysis_data.get('prompt_tokens', 'N/A'))}\n")
+    f.write(f"  Completion tokens:   {format_num(analysis_data.get('completion_tokens', 'N/A'))}\n")
+    f.write(f"  Total tokens:        {format_num(analysis_data.get('total_tokens', 'N/A'))}\n")
+    if 'estimated_cost' in analysis_data:
+        f.write(f"  Estimated cost:      ${analysis_data.get('estimated_cost', 0):.4f} USD\n")
+
+    # Write total token usage statistics
+    f.write("\nTOTAL TOKEN CONSUMPTION\n")
+    f.write(f"  Total LLM calls:     {format_num(token_usage.get('total_llm_calls', 'N/A'))}\n")
+    f.write(f"  Successful calls:    {format_num(token_usage.get('successful_llm_calls', 'N/A'))}\n")
+    f.write(f"  Failed calls:        {format_num(token_usage.get('failed_llm_calls', 'N/A'))}\n")
+    f.write(f"  Prompt tokens:       {format_num(token_usage.get('total_prompt_tokens', 'N/A'))}\n")
+    f.write(f"  Completion tokens:   {format_num(token_usage.get('total_completion_tokens', 'N/A'))}\n")
+    f.write(f"  Total tokens:        {format_num(token_usage.get('total_tokens_consumed', 'N/A'))}\n")
+
+    # Add cost estimate if available
+    if 'estimated_cost' in token_usage:
+        f.write(f"  Estimated cost:      ${token_usage.get('estimated_cost', 0):.4f} USD\n")
+
+    # Add model information if available
+    if 'models_used' in token_usage and token_usage['models_used']:
+        models_str = ', '.join(token_usage['models_used'])
+        f.write(f"\nMODELS USED\n  {models_str}\n")
+
+    # Add cost model information if available
+    if 'cost_details' in token_usage and 'cost_model_used' in token_usage['cost_details']:
+        f.write(f"\nCOST MODEL USED\n  {token_usage['cost_details']['cost_model_used']}\n")
 
 
 def write_report(

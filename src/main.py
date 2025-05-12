@@ -135,8 +135,8 @@ def _run_exploration_phase(
             max_turns=max_turns,
         )
 
-        # Log token usage after exploration phase
-        logger.info("\n=== Token Usage After Exploration Phase ===")
+        # Log token usage for exploration phase
+        logger.info("\n=== Token Usage in Exploration Phase ===")
         logger.info(str(agent.token_tracker))
 
     except Exception:
@@ -162,11 +162,15 @@ def _run_analysis_phase(agent: ChatbotExplorationAgent, exploration_results: dic
     logger.info("\n-----------------------------------")
     logger.info("---   Starting Analysis Phase   ---")
     logger.info("-----------------------------------")
+
+    # Mark the beginning of analysis phase for token tracking
+    agent.token_tracker.mark_analysis_phase()
+
     try:
         results = agent.run_analysis(exploration_results=exploration_results)
 
-        # Log token usage after analysis phase
-        logger.info("\n=== Token Usage After Analysis Phase ===")
+        # Log token usage for analysis phase only
+        logger.info("\n=== Token Usage in Analysis Phase ===")
         logger.info(str(agent.token_tracker))
 
     except Exception:
@@ -255,18 +259,39 @@ def main() -> None:
     # Get token usage summary
     token_usage = agent.token_tracker.get_summary()
 
-
     # 7. Generate Reports
     _generate_reports(args.output, exploration_results, analysis_results, token_usage, args.graph_font_size, args.compact)
 
     # 8. Display Final Token Usage Summary
-    logger.info("\n=== Final Token Usage Summary ===")
-    logger.info("Total LLM calls: %d", token_usage["total_llm_calls"])
-    logger.info("Successful calls: %d", token_usage["successful_llm_calls"])
-    logger.info("Failed calls: %d", token_usage["failed_llm_calls"])
-    logger.info("Total prompt tokens: %d", token_usage["total_prompt_tokens"])
-    logger.info("Total completion tokens: %d", token_usage["total_completion_tokens"])
-    logger.info("Total tokens consumed: %d", token_usage["total_tokens_consumed"])
+    cost_details = token_usage.get("cost_details", {})
+    exploration_data = token_usage.get("exploration_phase", {})
+    analysis_data = token_usage.get("analysis_phase", {})
+
+    logger.info("\n=== Token Usage Summary ===")
+
+    logger.info("Exploration Phase:")
+    logger.info("  Prompt tokens:     %s", f"{exploration_data.get('prompt_tokens', 0):,}")
+    logger.info("  Completion tokens: %s", f"{exploration_data.get('completion_tokens', 0):,}")
+    logger.info("  Total tokens:      %s", f"{exploration_data.get('total_tokens', 0):,}")
+    logger.info("  Estimated cost:    $%.4f USD", exploration_data.get('estimated_cost', 0))
+
+    logger.info("\nAnalysis Phase:")
+    logger.info("  Prompt tokens:     %s", f"{analysis_data.get('prompt_tokens', 0):,}")
+    logger.info("  Completion tokens: %s", f"{analysis_data.get('completion_tokens', 0):,}")
+    logger.info("  Total tokens:      %s", f"{analysis_data.get('total_tokens', 0):,}")
+    logger.info("  Estimated cost:    $%.4f USD", analysis_data.get('estimated_cost', 0))
+
+    logger.info("\nTotal Consumption:")
+    logger.info("  Total LLM calls:   %d", token_usage["total_llm_calls"])
+    logger.info("  Successful calls:  %d", token_usage["successful_llm_calls"])
+    logger.info("  Failed calls:      %d", token_usage["failed_llm_calls"])
+    logger.info("  Prompt tokens:     %s", f"{token_usage['total_prompt_tokens']:,}")
+    logger.info("  Completion tokens: %s", f"{token_usage['total_completion_tokens']:,}")
+    logger.info("  Total tokens:      %s", f"{token_usage['total_tokens_consumed']:,}")
+    logger.info("  Estimated cost:    $%.4f USD", token_usage.get("estimated_cost", 0))
+
+    if "models_used" in token_usage and token_usage["models_used"]:
+        logger.info("\nModels used: %s", ", ".join(token_usage["models_used"]))
 
     # 9. Finish
     logger.info("\n---------------------------------")
