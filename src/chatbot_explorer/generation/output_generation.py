@@ -1,6 +1,7 @@
 """Generates structured output definitions based on user profiles and functionalities."""
 
 import re
+import logging
 from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
@@ -63,7 +64,6 @@ def _parse_llm_outputs(llm_content: str) -> list[dict[str, Any]]:
 
 def generate_outputs(
     profiles: list[dict[str, Any]],
-    functionalities: list[str],
     llm: BaseLanguageModel,
     supported_languages: list[str] | None = None,
 ) -> list[dict[str, Any]]:
@@ -80,7 +80,6 @@ def generate_outputs(
     Args:
         profiles: A list of dictionaries, where each dictionary represents a user profile.
                   Expected to have a 'goals' key (list of strings).
-        functionalities: A list of strings describing the known functionalities of the chatbot.
         llm: An instance of a LangChain BaseLanguageModel used for generation.
         supported_languages: An optional list of languages. If provided, the first
                              language is used to instruct the LLM.
@@ -96,28 +95,44 @@ def generate_outputs(
         language_instruction = f"Write the descriptions in {primary_language}."
 
     for profile in profiles:
-        # Sanitize goals for LLM prompt
-        sanitized_goals = []
-        for goal in profile.get("goals", []):
-            if isinstance(goal, str):
-                sanitized_goal = re.sub(VARIABLE_PATTERN, "[specific details]", goal)
-                sanitized_goals.append(sanitized_goal)
+        profile_name = profile.get("name", "Unnamed Profile")
+        logger.debug("--- Generating outputs for profile: '%s' ---", profile_name)
 
-        # Generate prompt and invoke LLM
+        # Get functionality details assigned to this profile
+        assigned_functionality_rich_strings = profile.get("functionalities", [])
+
+        if not assigned_functionality_rich_strings:
+            logger.warning("Profile '%s' has no assigned functionalities. Skipping output generation.", profile_name)
+            profile["outputs"] = []
+            continue
+
         outputs_prompt = get_outputs_prompt(
             profile=profile,
-            sanitized_goals=sanitized_goals,
-            functionalities=functionalities,
+            profile_functionality_details=assigned_functionality_rich_strings,
             language_instruction=language_instruction,
         )
+
+        logger.debug("Output Generation Prompt for Profile '%s':\n%s", profile_name, outputs_prompt)
+
         outputs_response = llm.invoke(outputs_prompt)
+        response_content = ""
+        if hasattr(outputs_response, 'content'):
+            response_content = outputs_response.content.strip()
+        else:
+            response_content = str(outputs_response).strip()
+
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("Raw LLM Response for Outputs for Profile '%s':\n%s", profile_name, response_content)
 
         # Parse the LLM response using the helper function
-        parsed_outputs = _parse_llm_outputs(outputs_response.content)
+        parsed_outputs = _parse_llm_outputs(response_content)
 
         # Store outputs in the profile
         profile["outputs"] = parsed_outputs
 
-        logger.verbose("    Generated %d outputs", len(parsed_outputs))
+        logger.verbose("    Generated %d outputs for profile '%s'", len(parsed_outputs), profile_name)
+        if logger.isEnabledFor(logging.DEBUG):
+            for i, out_def in enumerate(parsed_outputs):
+                logger.debug("      Output %d: %s", i, out_def)
 
     return profiles

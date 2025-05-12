@@ -275,8 +275,11 @@ def generate_profile_content(config: ProfileGenerationConfig) -> list[dict[str, 
             profile.update(temp_profiles[0])
 
         # 6. Generate output fields
+        logger.debug("Generating outputs for profile '%s'...", profile.get("name", "Unnamed profile"))
         temp_profiles = generate_outputs(
-            [profile], config["functionalities"], config["llm"], config["supported_languages"]
+            [profile],
+            config["llm"],
+            config["supported_languages"]
         )
         if temp_profiles:
             profile.update(temp_profiles[0])
