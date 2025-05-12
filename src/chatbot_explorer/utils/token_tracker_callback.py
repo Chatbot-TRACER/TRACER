@@ -16,14 +16,12 @@ class TokenUsageTracker(BaseCallbackHandler):
         self.call_count = 0
         self.successful_calls = 0
         self.failed_calls = 0
-        # self.call_details = [] # Optional for detailed per-call logging
 
     def on_llm_start(
         self, serialized: Dict[str, Any], prompts: List[str], *, run_id: UUID, parent_run_id: Union[UUID, None] = None, **kwargs: Any
     ) -> None:
         super().on_llm_start(serialized, prompts, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
         self.call_count += 1
-        # logger.debug(f"LLM Call {self.call_count} Start...")
 
     def on_llm_end(self, response: LLMResult, *, run_id: UUID, parent_run_id: Union[UUID, None] = None, **kwargs: Any) -> None:
         super().on_llm_end(response, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
@@ -32,47 +30,54 @@ class TokenUsageTracker(BaseCallbackHandler):
         prompt_tokens_api = 0
         completion_tokens_api = 0
         total_tokens_api = 0
+        source_of_tokens = "unknown"
 
-        if response.llm_output:
-            # OpenAI-style
+        if response.generations and response.generations[0] and response.generations[0][0]:
+            first_generation_message = response.generations[0][0].message
+
+            if hasattr(first_generation_message, 'usage_metadata') and first_generation_message.usage_metadata:
+                usage_data = first_generation_message.usage_metadata
+                if isinstance(usage_data, dict):
+                    prompt_tokens_api = usage_data.get('input_tokens', 0)
+                    completion_tokens_api = usage_data.get('output_tokens', 0)
+                    total_tokens_api = usage_data.get('total_tokens', 0)
+                    if prompt_tokens_api or completion_tokens_api or total_tokens_api:
+                        source_of_tokens = "AIMessage.usage_metadata (Google invoke style)"
+                        logger.debug(f"Found tokens directly in AIMessage.usage_metadata: {usage_data}")
+
+        if not total_tokens_api and response.llm_output:
             token_usage_openai = response.llm_output.get('token_usage', {})
-            if isinstance(token_usage_openai, dict) and token_usage_openai:
+            if isinstance(token_usage_openai, dict) and token_usage_openai.get('total_tokens', 0) > 0 :
                 prompt_tokens_api = token_usage_openai.get('prompt_tokens', 0)
                 completion_tokens_api = token_usage_openai.get('completion_tokens', 0)
                 total_tokens_api = token_usage_openai.get('total_tokens', 0)
-                # logger.debug("OpenAI-style token usage found.")
-            else:
-                # Gemini/Vertex-style (and other potential structures)
-                usage_metadata = response.llm_output.get('usage_metadata', {}) # Common for Google
-                if isinstance(usage_metadata, dict) and usage_metadata:
-                    prompt_tokens_api = usage_metadata.get('prompt_token_count', usage_metadata.get('prompt_tokens', 0))
-                    completion_tokens_api = usage_metadata.get('candidates_token_count',
-                                                              usage_metadata.get('candidate_token_count', # some models use singular
-                                                              usage_metadata.get('completion_tokens',
-                                                              usage_metadata.get('completion_token_count', 0))))
-                    total_tokens_api = usage_metadata.get('total_token_count', 0)
-                    # logger.debug("Google/Vertex-style token usage found in 'usage_metadata'.")
+                source_of_tokens = "llm_output.token_usage (OpenAI-style)"
 
-                # Fallback for other direct keys if specific structures not found
-                if not (prompt_tokens_api or completion_tokens_api or total_tokens_api):
-                    # logger.debug("Checking for direct token keys in llm_output.")
-                    prompt_tokens_api = response.llm_output.get('prompt_tokens', response.llm_output.get('input_tokens', 0))
-                    completion_tokens_api = response.llm_output.get('completion_tokens', response.llm_output.get('output_tokens', 0))
-                    total_tokens_api = response.llm_output.get('total_tokens', 0)
+            if not total_tokens_api:
+                usage_metadata_from_llm_output = response.llm_output.get('usage_metadata', {})
+                if isinstance(usage_metadata_from_llm_output, dict) and usage_metadata_from_llm_output.get('total_token_count', 0) > 0:
+                    prompt_tokens_api = usage_metadata_from_llm_output.get('prompt_token_count', 0)
+                    completion_tokens_api = usage_metadata_from_llm_output.get('candidates_token_count',
+                                                              usage_metadata_from_llm_output.get('candidate_token_count', 0))
+                    total_tokens_api = usage_metadata_from_llm_output.get('total_token_count', 0)
+                    source_of_tokens = "llm_output.usage_metadata (Google-style in llm_output)"
 
-            if total_tokens_api == 0 and (prompt_tokens_api > 0 or completion_tokens_api > 0):
-                total_tokens_api = prompt_tokens_api + completion_tokens_api
+        if total_tokens_api == 0 and (prompt_tokens_api > 0 or completion_tokens_api > 0):
+            total_tokens_api = prompt_tokens_api + completion_tokens_api
 
         if not (prompt_tokens_api or completion_tokens_api or total_tokens_api):
             logger.warning(
-                f"LLM Call {self.successful_calls} End: Token usage information not found or all zeros in llm_output: {str(response.llm_output)[:200]}"
+                f"LLM Call {self.successful_calls} End: Token usage information not found or all zeros. "
+                f"llm_output: {str(response.llm_output)[:200]}. "
+                f"AIMessage.usage_metadata: {str(getattr(response.generations[0][0].message, 'usage_metadata', None)) if response.generations and response.generations[0] else 'N/A'}. "
+                f"AIMessage.response_metadata: {str(getattr(response.generations[0][0].message, 'response_metadata', None)) if response.generations and response.generations[0] else 'N/A'}"
             )
         else:
             self.total_prompt_tokens += prompt_tokens_api
             self.total_completion_tokens += completion_tokens_api
             self.total_tokens += total_tokens_api
             logger.debug(
-                f"LLM Call {self.successful_calls} End. Tokens This Call: {total_tokens_api} (P: {prompt_tokens_api}, C: {completion_tokens_api}). Cumulative Total: {self.total_tokens}"
+                f"LLM Call {self.successful_calls} End. Tokens This Call: {total_tokens_api} (P: {prompt_tokens_api}, C: {completion_tokens_api}) from '{source_of_tokens}'. Cumulative Total: {self.total_tokens}"
             )
 
     def on_llm_error(

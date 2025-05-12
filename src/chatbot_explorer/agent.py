@@ -145,9 +145,7 @@ class ChatbotExplorationAgent:
         for i, node_dict in enumerate(functionality_dicts):
             logger.debug("  root_nodes_dict[%d]:\n%s", i, pprint.pformat(node_dict, indent=2, width=120))
 
-        # Log token usage summary after exploration
-        logger.info("\n=== Token Usage After Exploration ===")
-        logger.info(str(self.token_tracker))
+
 
         return {
             "conversation_sessions": conversation_sessions,

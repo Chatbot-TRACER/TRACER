@@ -250,13 +250,10 @@ def _add_nodes(
     ctx.processed_nodes.add(name)
 
     if (parent, name) not in ctx.processed_edges:
-        # If the current node (name) is being added to a cluster (target_graph != ctx.graph)
-        # AND its parent is "start", then the edge (start, name) must be on the main graph (ctx.graph)
-        # to connect *to* the cluster.
+
         if parent == "start" and target_graph != ctx.graph:
             ctx.graph.edge(parent, name)
         else:
-            # Otherwise, the edge is within the target_graph (either main graph or a cluster graph)
             target_graph.edge(parent, name)
         ctx.processed_edges.add((parent, name))
 
@@ -733,7 +730,7 @@ def _write_token_usage_section(f: TextIO, token_usage: dict[str, Any]) -> None:
         f: File object to write to
         token_usage: Dictionary containing token usage statistics
     """
-    _write_section_header(f, "TOKEN USAGE STATISTICS")
+    _write_section_header(f, "\nTOKEN USAGE STATISTICS")
 
     if not isinstance(token_usage, dict):
         f.write(f"Token usage data not in expected dictionary format.\nType: {type(token_usage)}\n")
