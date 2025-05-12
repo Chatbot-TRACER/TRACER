@@ -135,6 +135,10 @@ def _run_exploration_phase(
             max_turns=max_turns,
         )
 
+        # Log token usage after exploration phase
+        logger.info("\n=== Token Usage After Exploration Phase ===")
+        logger.info(str(agent.token_tracker))
+
     except Exception:
         logger.exception("--- Fatal Error during Exploration Phase ---")
         sys.exit(1)
@@ -160,6 +164,11 @@ def _run_analysis_phase(agent: ChatbotExplorationAgent, exploration_results: dic
     logger.info("-----------------------------------")
     try:
         results = agent.run_analysis(exploration_results=exploration_results)
+
+        # Log token usage after analysis phase
+        logger.info("\n=== Token Usage After Analysis Phase ===")
+        logger.info(str(agent.token_tracker))
+
     except Exception:
         logger.exception("--- Fatal Error during Analysis Phase ---")
         sys.exit(1)
@@ -171,6 +180,7 @@ def _generate_reports(
     output_dir: str,
     exploration_results: dict[str, Any],
     analysis_results: dict[str, Any],
+    token_usage: dict[str, Any],
     graph_font_size: int = 12,
     compact: bool = False,
 ) -> None:
@@ -180,6 +190,7 @@ def _generate_reports(
         output_dir (str): The directory to save output files.
         exploration_results (Dict[str, Any]): Results from the exploration phase.
         analysis_results (Dict[str, Any]): Results from the analysis phase.
+        token_usage (Dict[str, Any]): Token usage statistics.
         graph_font_size (int): Font size to use for graph text elements.
         compact (bool): Whether to generate a more compact graph layout.
     """
@@ -201,6 +212,7 @@ def _generate_reports(
         limitations=limitations,
         supported_languages=supported_languages,
         fallback_message=fallback_message,
+        token_usage=token_usage,
     )
 
     if functionality_dicts:
@@ -240,10 +252,23 @@ def main() -> None:
     # 6. Run Analysis
     analysis_results = _run_analysis_phase(agent, exploration_results)
 
-    # 7. Generate Reports
-    _generate_reports(args.output, exploration_results, analysis_results, args.graph_font_size, args.compact)
+    # Get token usage summary
+    token_usage = agent.token_tracker.get_summary()
 
-    # 8. Finish
+
+    # 7. Generate Reports
+    _generate_reports(args.output, exploration_results, analysis_results, token_usage, args.graph_font_size, args.compact)
+
+    # 8. Display Final Token Usage Summary
+    logger.info("\n=== Final Token Usage Summary ===")
+    logger.info("Total LLM calls: %d", token_usage["total_llm_calls"])
+    logger.info("Successful calls: %d", token_usage["successful_llm_calls"])
+    logger.info("Failed calls: %d", token_usage["failed_llm_calls"])
+    logger.info("Total prompt tokens: %d", token_usage["total_prompt_tokens"])
+    logger.info("Total completion tokens: %d", token_usage["total_completion_tokens"])
+    logger.info("Total tokens consumed: %d", token_usage["total_tokens_consumed"])
+
+    # 9. Finish
     logger.info("\n---------------------------------")
     logger.info("--- Chatbot Explorer Finished ---")
     logger.info("---------------------------------")

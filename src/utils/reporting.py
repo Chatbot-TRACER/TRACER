@@ -6,7 +6,7 @@ import os
 from contextlib import redirect_stderr
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TextIO
+from typing import TextIO, Any
 
 import graphviz
 import yaml
@@ -726,12 +726,40 @@ def _write_fallback_section(f: TextIO, fallback_message: str | None) -> None:
         f.write(f"Raw data: {fallback_message!r}\n")
 
 
+def _write_token_usage_section(f: TextIO, token_usage: dict[str, Any]) -> None:
+    """Write the token usage section to the report file.
+
+    Args:
+        f: File object to write to
+        token_usage: Dictionary containing token usage statistics
+    """
+    _write_section_header(f, "TOKEN USAGE STATISTICS")
+
+    if not isinstance(token_usage, dict):
+        f.write(f"Token usage data not in expected dictionary format.\nType: {type(token_usage)}\n")
+        return
+
+    # Write token usage statistics in a table-like format
+    f.write("LLM API CALLS\n")
+    f.write(f"  Total LLM calls:     {token_usage.get('total_llm_calls', 'N/A')}\n")
+    f.write(f"  Successful calls:    {token_usage.get('successful_llm_calls', 'N/A')}\n")
+    f.write(f"  Failed calls:        {token_usage.get('failed_llm_calls', 'N/A')}\n")
+    f.write("\nTOKEN CONSUMPTION\n")
+    f.write(f"  Prompt tokens:       {token_usage.get('total_prompt_tokens', 'N/A')}\n")
+    f.write(f"  Completion tokens:   {token_usage.get('total_completion_tokens', 'N/A')}\n")
+    f.write(f"  Total tokens:        {token_usage.get('total_tokens_consumed', 'N/A')}\n")
+
+    # Add cost estimate if available in the future
+    # Cost can be calculated based on token counts and model pricing
+
+
 def write_report(
     output_dir: str,
     structured_functionalities: list[FunctionalityNode],
     limitations: list[str],
     supported_languages: list[str],
     fallback_message: str | None,
+    token_usage: dict[str, Any] = None,
 ) -> None:
     """Write analysis results to a report file.
 
@@ -741,6 +769,7 @@ def write_report(
         limitations: List of discovered limitations
         supported_languages: List of detected supported languages
         fallback_message: Detected fallback message, or None if not found
+        token_usage: Token usage statistics from LLM calls
     """
     report_path = Path(output_dir) / "report.txt"
 
@@ -754,6 +783,10 @@ def write_report(
             _write_limitations_section(f, limitations)
             _write_languages_section(f, supported_languages)
             _write_fallback_section(f, fallback_message)
+
+            # Add token usage section if available
+            if token_usage:
+                _write_token_usage_section(f, token_usage)
 
         logger.info("Report successfully written to: %s", report_path)
     except OSError:

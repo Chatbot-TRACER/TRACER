@@ -28,6 +28,7 @@ from chatbot_explorer.conversation.session import (
 )
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 from chatbot_explorer.utils.logging_utils import get_logger
+from chatbot_explorer.utils.token_tracker_callback import TokenUsageTracker
 from connectors.chatbot_connectors import Chatbot
 
 from .graphs.profile_graph import build_profile_generation_graph
@@ -63,6 +64,7 @@ class ChatbotExplorationAgent:
         Args:
             model_name (str): The name of the model to use (OpenAI or Gemini).
         """
+        self.token_tracker = TokenUsageTracker()  # Initialize token tracker
         self.llm = self._initialize_llm(model_name)
         self.memory = MemorySaver()
 
@@ -92,10 +94,10 @@ class ChatbotExplorationAgent:
                 )
 
             logger.info("Initializing Gemini model: %s", model_name)
-            return ChatGoogleGenerativeAI(model=model_name)
+            return ChatGoogleGenerativeAI(model=model_name, callbacks=[self.token_tracker])
         # Default to OpenAI
         logger.info("Initializing OpenAI model: %s", model_name)
-        return ChatOpenAI(model=model_name)
+        return ChatOpenAI(model=model_name, callbacks=[self.token_tracker])
 
     def run_exploration(self, chatbot_connector: Chatbot, max_sessions: int, max_turns: int) -> dict[str, Any]:
         """Runs the initial probing and the main exploration loop.
@@ -143,11 +145,16 @@ class ChatbotExplorationAgent:
         for i, node_dict in enumerate(functionality_dicts):
             logger.debug("  root_nodes_dict[%d]:\n%s", i, pprint.pformat(node_dict, indent=2, width=120))
 
+        # Log token usage summary after exploration
+        logger.info("\n=== Token Usage After Exploration ===")
+        logger.info(str(self.token_tracker))
+
         return {
             "conversation_sessions": conversation_sessions,
             "root_nodes_dict": functionality_dicts,
             "supported_languages": supported_languages,
             "fallback_message": fallback_message,
+            "token_usage": self.token_tracker.get_summary(),  # Add token usage to results
         }
 
     def _initialize_graph_state(self) -> ExplorationGraphState:
@@ -553,7 +560,9 @@ class ChatbotExplorationAgent:
 
         generated_profiles = profile_result.get("built_profiles", [])
 
+
         return {
             "discovered_functionalities": workflow_structure,
             "built_profiles": generated_profiles,
+            "token_usage": self.token_tracker.get_summary(),  # Add token usage to results
         }
