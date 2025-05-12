@@ -157,11 +157,12 @@ AVAILABLE DATA SOURCES (Parameters or List-like Outputs):
 **MATCHING INSTRUCTIONS:**
 1.  For each 'GOAL VARIABLE', find the BEST 'DATA SOURCE' from the list above.
 2.  A match is good if the variable's intended meaning aligns with the data source's name, description, and example options.
-3.  **Prioritize sources of type 'direct_parameter' if the variable name closely matches the source_name of a direct parameter.**
-4.  Consider 'output_as_parameter_options' when a goal variable seems to represent a *choice to be made from a list that the chatbot would provide*. The variable name might be more generic (e.g., `{{chosen_item}}`) while the data source name is more specific (e.g., `item_type_options`).
-5.  If a variable clearly relates to a specific "Origin Functionality" mentioned in a data source, that increases match likelihood.
-6.  If multiple data sources seem plausible, choose the one whose `source_name` or `source_description` is most semantically similar to the GOAL VARIABLE.
-7.  **Crucially, the `options` from the matched DATA SOURCE will be used as the data for the GOAL VARIABLE.**
+3.  **TYPE COMPATIBILITY: Crucially, the *nature* of the GOAL VARIABLE must align with the *nature* of the options in the DATA SOURCE. For example, if a GOAL VARIABLE clearly implies a numeric input (e.g., '{{number_of_items}}', '{{age}}'), DO NOT match it to a DATA SOURCE that provides a list of textual names or categories (e.g., item types, colors) unless the variable name *explicitly* suggests choosing from those named categories.**
+4.  **Prioritize sources of type 'direct_parameter' if the variable name closely matches the source_name of a direct parameter.**
+5.  Consider 'output_as_parameter_options' when a goal variable seems to represent a *choice to be made from a list that the chatbot would provide*. The variable name might be more generic (e.g., `{{chosen_item}}`) while the data source name is more specific (e.g., `item_type_options`).
+6.  If a variable clearly relates to a specific "Origin Functionality" mentioned in a data source, that increases match likelihood.
+7.  If multiple data sources seem plausible, choose the one whose `source_name` or `source_description` is most semantically similar to the GOAL VARIABLE.
+8.  **Crucially, the `options` from the matched DATA SOURCE will be used as the data for the GOAL VARIABLE.**
 
 Output your matches as a JSON object where keys are the **exact** 'GOAL VARIABLE' names and values are objects containing:
 - "matched_data_source_id": "The ID of the matched Data Source (e.g., DS1, DS2)".
