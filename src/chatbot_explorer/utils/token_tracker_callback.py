@@ -32,28 +32,31 @@ class TokenUsageTracker(BaseCallbackHandler):
         total_tokens_api = 0
         source_of_tokens = "unknown"
 
+        # Attempt 1: Check AIMessage.usage_metadata directly (primary for Gemini invoke results)
         if response.generations and response.generations[0] and response.generations[0][0]:
             first_generation_message = response.generations[0][0].message
-
             if hasattr(first_generation_message, 'usage_metadata') and first_generation_message.usage_metadata:
                 usage_data = first_generation_message.usage_metadata
                 if isinstance(usage_data, dict):
                     prompt_tokens_api = usage_data.get('input_tokens', 0)
                     completion_tokens_api = usage_data.get('output_tokens', 0)
                     total_tokens_api = usage_data.get('total_tokens', 0)
-                    if prompt_tokens_api or completion_tokens_api or total_tokens_api:
+                    if prompt_tokens_api or completion_tokens_api or total_tokens_api: # Check if any token info was actually found
                         source_of_tokens = "AIMessage.usage_metadata (Google invoke style)"
                         logger.debug(f"Found tokens directly in AIMessage.usage_metadata: {usage_data}")
 
-        if not total_tokens_api and response.llm_output:
+        # Attempt 2: Fallback to response.llm_output if no tokens found yet
+        if source_of_tokens == "unknown" and response.llm_output:
+            # OpenAI-style 'token_usage'
             token_usage_openai = response.llm_output.get('token_usage', {})
-            if isinstance(token_usage_openai, dict) and token_usage_openai.get('total_tokens', 0) > 0 :
+            if isinstance(token_usage_openai, dict) and token_usage_openai.get('total_tokens', 0) > 0:
                 prompt_tokens_api = token_usage_openai.get('prompt_tokens', 0)
                 completion_tokens_api = token_usage_openai.get('completion_tokens', 0)
                 total_tokens_api = token_usage_openai.get('total_tokens', 0)
                 source_of_tokens = "llm_output.token_usage (OpenAI-style)"
 
-            if not total_tokens_api:
+            # Google-style 'usage_metadata' if nested in llm_output (and not found by OpenAI style)
+            if source_of_tokens == "unknown": # Check if still not found
                 usage_metadata_from_llm_output = response.llm_output.get('usage_metadata', {})
                 if isinstance(usage_metadata_from_llm_output, dict) and usage_metadata_from_llm_output.get('total_token_count', 0) > 0:
                     prompt_tokens_api = usage_metadata_from_llm_output.get('prompt_token_count', 0)
@@ -62,22 +65,24 @@ class TokenUsageTracker(BaseCallbackHandler):
                     total_tokens_api = usage_metadata_from_llm_output.get('total_token_count', 0)
                     source_of_tokens = "llm_output.usage_metadata (Google-style in llm_output)"
 
+        # Final calculation for total_tokens if not provided directly but components are
         if total_tokens_api == 0 and (prompt_tokens_api > 0 or completion_tokens_api > 0):
             total_tokens_api = prompt_tokens_api + completion_tokens_api
 
-        if not (prompt_tokens_api or completion_tokens_api or total_tokens_api):
-            logger.warning(
-                f"LLM Call {self.successful_calls} End: Token usage information not found or all zeros. "
-                f"llm_output: {str(response.llm_output)[:200]}. "
-                f"AIMessage.usage_metadata: {str(getattr(response.generations[0][0].message, 'usage_metadata', None)) if response.generations and response.generations[0] else 'N/A'}. "
-                f"AIMessage.response_metadata: {str(getattr(response.generations[0][0].message, 'response_metadata', None)) if response.generations and response.generations[0] else 'N/A'}"
-            )
-        else:
+        # Logging and accumulation
+        if source_of_tokens != "unknown" or prompt_tokens_api or completion_tokens_api or total_tokens_api :
             self.total_prompt_tokens += prompt_tokens_api
             self.total_completion_tokens += completion_tokens_api
             self.total_tokens += total_tokens_api
             logger.debug(
                 f"LLM Call {self.successful_calls} End. Tokens This Call: {total_tokens_api} (P: {prompt_tokens_api}, C: {completion_tokens_api}) from '{source_of_tokens}'. Cumulative Total: {self.total_tokens}"
+            )
+        else: # No tokens found from any source
+            logger.warning(
+                f"LLM Call {self.successful_calls} End: Token usage information not found or all zeros. "
+                f"llm_output: {str(response.llm_output)[:200]}. "
+                f"AIMessage.usage_metadata: {str(getattr(response.generations[0][0].message, 'usage_metadata', None)) if response.generations and response.generations[0] else 'N/A'}. "
+                f"AIMessage.response_metadata: {str(getattr(response.generations[0][0].message, 'response_metadata', None)) if response.generations and response.generations[0] else 'N/A'}"
             )
 
     def on_llm_error(
