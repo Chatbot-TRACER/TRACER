@@ -2,65 +2,68 @@
 
 
 ## FUNCTIONALITIES (Workflow Structure)
-- provide_welcome_message: Welcomes the user to Fast Pizza and states its ability to help order pizzas and drinks. | Category: Chatbot Meta | Outputs: [welcome_message: Welcoming message and statement of capabilities.]
-- provide_information_capabilities: Informs the user about the types of questions it can answer. | Category: Chatbot Meta | Outputs: [information_capabilities: List of topics about which the chatbot can provide information, including opening hours, types of pizza, prices, order pickup, and estimated time for orders.]
-- provide_opening_hours: Provides the opening hours of the establishment. | Category: Information Providing | Outputs: [opening_hours: The daily opening and closing times.]
-- list_pizza_options: Lists the available pizza options and types, including custom options. | Category: Information Providing | Outputs: [pizza_types: A list of available pizza types, including standard options like Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian, and the option to create a custom pizza.]
-- confirm_order_placement_and_prompt_for_pizza_type: Confirms the user can place an order and prompts them to choose a pizza type from the menu. | Category: Order Placement | Outputs: [pizza_types: margarita, carbonara, marinera, hawaiian, four cheese, and vegetarian]
-  - prompt_for_pizza_size_and_type: Prompts the user to specify the desired size and type of pizza they want to order, providing options for both. | Category: Order Placement | Params: [pizza_size: The desired size of the pizza. [options: large, medium, small]] | Outputs: [pizza_options: margarita, carbonara, marinera, hawaiian, four cheese, and vegetarian]
-    - confirm_pizza_order: Confirms the pizza order based on size and type provided by the user. | Category: Order Placement
-      - prompt_for_drink_order: Prompts the user to specify the number and type of drinks they would like to order, providing options for drink types and confirming order details as needed. | Category: Order Placement | Params: [number_of_drinks: The number of drinks the user wants to order.; drink_type: The type of drink the user wants (e.g., coke, sprite, water). [options: coke, sprite, water]]
-        - provide_order_summary_and_total_cost: Provides a summary of the order and states the total cost. | Category: Order Confirmation | Outputs: [order_summary: Summary of the items included in the order.; total_cost: The total cost of the order.]
-- inform_contact_information_unavailable: Informs the user that the requested contact information is unavailable and suggests alternative sources to find it, such as the restaurant's website or online search. | Category: Information Providing
-- inform_delivery_options_unavailable: Informs the user that delivery options for the restaurant are unavailable and suggests checking their website or contacting them directly. | Category: Information Providing
-- inform_pizza_pricing_unavailable: Informs the user that pricing information for pizzas is unavailable and suggests contacting the restaurant directly. | Category: Information Providing | Outputs: [price_unavailable: Indicates that the chatbot is unable to provide pricing details and advises contacting the restaurant for pricing information.]
+- provide_welcome_message_and_list_capabilities: Welcomes the user to Fast Pizza and indicates it can help order pizzas and drinks. | Category: Chatbot Meta | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- state_available_information_domains: States the types of questions the chatbot can answer. | Category: Chatbot Meta | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [information_domains: opening hours, types of pizza we serve, prices of pizzas and beverages, how to get the order, and how much time it takes to get an order.]
+- provide_opening_hours: Provides the opening hours of the pizza shop. | Category: Information Retrieval | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [opening_hours: Every day from 1pm to 11:30pm]
+- provide_pickup_information: States that the shop does not do delivery, provides the location, and tells the customer they need to pick up their order. | Category: Information Retrieval | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [delivery_status: We do not do delivery; pickup_requirement: customers need to get the shop for their orders; shop_location: 23 Main Street, New York.]
+- estimate_order_delivery_time: Provides the estimated time for the order preparation and delivery, taking into account factors like the number of items and current workload. | Category: Order Confirmation | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [estimated_delivery_time: The estimated time for preparation and delivery of the order, taking into account factors like the number of items and restaurant workload.]
+- list_available_pizza_sizes: Lists the available sizes for pizzas. | Category: Information Retrieval | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [pizza_sizes: small, medium, and large]
+- list_pizza_types: Lists the available pizza types. | Category: Information Retrieval | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [pizza_types: A list of available pizza types, including Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian, and Custom (where the user chooses the ingredients).]
+- request_rephrasing: Indicates that the chatbot did not understand the user's request and asks the user to rephrase. | Category: Chatbot Meta | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- provide_drink_information: Provides a list of available drink options and their prices. | Category: Information Retrieval | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [drink_menu: A list of available drinks and their prices. For example, Sprite and Coke are $1.50 each, and Water is $1.00.]
+- prompt_for_pizza_type: Asks the user to specify the type of pizza they want from a list of options. | Category: Order Placement | Params: [pizza_type: The type of pizza the user wants to order. [options: margarita, carbonara, marinera, hawaiian, four cheese, vegetarian]] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+  - confirm_order_and_prompt_for_drinks: Confirms the pizza order and prompts the user to specify the number and type of drinks they would like to order, including presenting available drink options. | Category: Order Placement | Params: [number_of_drinks: The number of drinks desired; drink_type (coke/sprite/water): The type of drink] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+    - calculate_order_total: Calculates and provides the total cost of the order. | Category: Order Confirmation | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [order_total_cost: The total cost of the order, expressed in dollars.]
+    - prompt_for_order_confirmation_or_additions: Prompts the user to confirm the current order and asks if they want to proceed with the order or add more items. Summarizes the order if applicable. | Category: Order Confirmation | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [order_summary: Summarizes the current order, including pizza type and drink quantity.]
 
 ## FUNCTIONALITIES (By Category)
 
-### CATEGORY: Chatbot Meta (2 functions)
-- provide_welcome_message: Welcomes the user to Fast Pizza and states its ability to help order pizzas and drinks.
-- provide_information_capabilities: Informs the user about the types of questions it can answer.
+### CATEGORY: Chatbot Meta (3 functions)
+- provide_welcome_message_and_list_capabilities: Welcomes the user to Fast Pizza and indicates it can help order pizzas and drinks.
+- state_available_information_domains: States the types of questions the chatbot can answer.
+- request_rephrasing: Indicates that the chatbot did not understand the user's request and asks the user to rephrase.
 
-### CATEGORY: Information Providing (5 functions)
-- provide_opening_hours: Provides the opening hours of the establishment.
-- list_pizza_options: Lists the available pizza options and types, including custom options.
-- inform_contact_information_unavailable: Informs the user that the requested contact information is unavailable and suggests alternative sources to find it, such as the restaurant's website or online search.
-- inform_delivery_options_unavailable: Informs the user that delivery options for the restaurant are unavailable and suggests checking their website or contacting them directly.
-- inform_pizza_pricing_unavailable: Informs the user that pricing information for pizzas is unavailable and suggests contacting the restaurant directly.
+### CATEGORY: Information Retrieval (5 functions)
+- provide_opening_hours: Provides the opening hours of the pizza shop.
+- provide_pickup_information: States that the shop does not do delivery, provides the location, and tells the customer they need to pick up their order.
+- list_available_pizza_sizes: Lists the available sizes for pizzas.
+- list_pizza_types: Lists the available pizza types.
+- provide_drink_information: Provides a list of available drink options and their prices.
 
-### CATEGORY: Order Confirmation (1 functions)
-- provide_order_summary_and_total_cost: Provides a summary of the order and states the total cost.
+### CATEGORY: Order Confirmation (3 functions)
+- estimate_order_delivery_time: Provides the estimated time for the order preparation and delivery, taking into account factors like the number of items and current workload.
+- calculate_order_total: Calculates and provides the total cost of the order.
+- prompt_for_order_confirmation_or_additions: Prompts the user to confirm the current order and asks if they want to proceed with the order or add more items. Summarizes the order if applicable.
 
-### CATEGORY: Order Placement (4 functions)
-- confirm_order_placement_and_prompt_for_pizza_type: Confirms the user can place an order and prompts them to choose a pizza type from the menu.
-- prompt_for_pizza_size_and_type: Prompts the user to specify the desired size and type of pizza they want to order, providing options for both.
-- confirm_pizza_order: Confirms the pizza order based on size and type provided by the user.
-- prompt_for_drink_order: Prompts the user to specify the number and type of drinks they would like to order, providing options for drink types and confirming order details as needed.
+### CATEGORY: Order Placement (2 functions)
+- prompt_for_pizza_type: Asks the user to specify the type of pizza they want from a list of options.
+- confirm_order_and_prompt_for_drinks: Confirms the pizza order and prompts the user to specify the number and type of drinks they would like to order, including presenting available drink options.
 
 ## FUNCTIONALITIES (Raw JSON Structure)
 [
   {
-    "name": "provide_welcome_message",
-    "description": "Welcomes the user to Fast Pizza and states its ability to help order pizzas and drinks.",
-    "parameters": [],
+    "name": "provide_welcome_message_and_list_capabilities",
+    "description": "Welcomes the user to Fast Pizza and indicates it can help order pizzas and drinks.",
+    "parameters": [
+      null
+    ],
     "outputs": [
-      {
-        "category": "welcome_message",
-        "description": "Welcoming message and statement of capabilities."
-      }
+      null
     ],
     "parent_names": [],
     "suggested_category": "Chatbot Meta",
     "children": []
   },
   {
-    "name": "provide_information_capabilities",
-    "description": "Informs the user about the types of questions it can answer.",
-    "parameters": [],
+    "name": "state_available_information_domains",
+    "description": "States the types of questions the chatbot can answer.",
+    "parameters": [
+      null
+    ],
     "outputs": [
       {
-        "category": "information_capabilities",
-        "description": "List of topics about which the chatbot can provide information, including opening hours, types of pizza, prices, order pickup, and estimated time for orders."
+        "category": "information_domains",
+        "description": "opening hours, types of pizza we serve, prices of pizzas and beverages, how to get the order, and how much time it takes to get an order."
       }
     ],
     "parent_names": [],
@@ -69,171 +72,232 @@
   },
   {
     "name": "provide_opening_hours",
-    "description": "Provides the opening hours of the establishment.",
-    "parameters": [],
+    "description": "Provides the opening hours of the pizza shop.",
+    "parameters": [
+      null
+    ],
     "outputs": [
       {
         "category": "opening_hours",
-        "description": "The daily opening and closing times."
+        "description": "Every day from 1pm to 11:30pm"
       }
     ],
     "parent_names": [],
-    "suggested_category": "Information Providing",
+    "suggested_category": "Information Retrieval",
     "children": []
   },
   {
-    "name": "list_pizza_options",
-    "description": "Lists the available pizza options and types, including custom options.",
-    "parameters": [],
+    "name": "provide_pickup_information",
+    "description": "States that the shop does not do delivery, provides the location, and tells the customer they need to pick up their order.",
+    "parameters": [
+      null
+    ],
     "outputs": [
       {
-        "category": "pizza_types",
-        "description": "A list of available pizza types, including standard options like Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian, and the option to create a custom pizza."
+        "category": "delivery_status",
+        "description": "We do not do delivery"
+      },
+      {
+        "category": "pickup_requirement",
+        "description": "customers need to get the shop for their orders"
+      },
+      {
+        "category": "shop_location",
+        "description": "23 Main Street, New York."
       }
     ],
     "parent_names": [],
-    "suggested_category": "Information Providing",
+    "suggested_category": "Information Retrieval",
     "children": []
   },
   {
-    "name": "confirm_order_placement_and_prompt_for_pizza_type",
-    "description": "Confirms the user can place an order and prompts them to choose a pizza type from the menu.",
-    "parameters": [],
+    "name": "estimate_order_delivery_time",
+    "description": "Provides the estimated time for the order preparation and delivery, taking into account factors like the number of items and current workload.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "estimated_delivery_time",
+        "description": "The estimated time for preparation and delivery of the order, taking into account factors like the number of items and restaurant workload."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Order Confirmation",
+    "children": []
+  },
+  {
+    "name": "list_available_pizza_sizes",
+    "description": "Lists the available sizes for pizzas.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "pizza_sizes",
+        "description": "small, medium, and large"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Information Retrieval",
+    "children": []
+  },
+  {
+    "name": "list_pizza_types",
+    "description": "Lists the available pizza types.",
+    "parameters": [
+      null
+    ],
     "outputs": [
       {
         "category": "pizza_types",
-        "description": "margarita, carbonara, marinera, hawaiian, four cheese, and vegetarian"
+        "description": "A list of available pizza types, including Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian, and Custom (where the user chooses the ingredients)."
       }
+    ],
+    "parent_names": [],
+    "suggested_category": "Information Retrieval",
+    "children": []
+  },
+  {
+    "name": "request_rephrasing",
+    "description": "Indicates that the chatbot did not understand the user's request and asks the user to rephrase.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "provide_drink_information",
+    "description": "Provides a list of available drink options and their prices.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "drink_menu",
+        "description": "A list of available drinks and their prices. For example, Sprite and Coke are $1.50 each, and Water is $1.00."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Information Retrieval",
+    "children": []
+  },
+  {
+    "name": "prompt_for_pizza_type",
+    "description": "Asks the user to specify the type of pizza they want from a list of options.",
+    "parameters": [
+      {
+        "name": "pizza_type",
+        "description": "The type of pizza the user wants to order.",
+        "options": [
+          "margarita",
+          "carbonara",
+          "marinera",
+          "hawaiian",
+          "four cheese",
+          "vegetarian"
+        ]
+      }
+    ],
+    "outputs": [
+      null
     ],
     "parent_names": [],
     "suggested_category": "Order Placement",
     "children": [
       {
-        "name": "prompt_for_pizza_size_and_type",
-        "description": "Prompts the user to specify the desired size and type of pizza they want to order, providing options for both.",
+        "name": "confirm_order_and_prompt_for_drinks",
+        "description": "Confirms the pizza order and prompts the user to specify the number and type of drinks they would like to order, including presenting available drink options.",
         "parameters": [
           {
-            "name": "pizza_size",
-            "description": "The desired size of the pizza.",
-            "options": [
-              "large",
-              "medium",
-              "small"
-            ]
+            "name": "number_of_drinks",
+            "description": "The number of drinks desired; drink_type (coke/sprite/water): The type of drink",
+            "options": []
           }
         ],
         "outputs": [
-          {
-            "category": "pizza_options",
-            "description": "margarita, carbonara, marinera, hawaiian, four cheese, and vegetarian"
-          }
+          null
         ],
         "parent_names": [
-          "confirm_order_placement_and_prompt_for_pizza_type"
+          "prompt_for_pizza_type"
         ],
         "suggested_category": "Order Placement",
         "children": [
           {
-            "name": "confirm_pizza_order",
-            "description": "Confirms the pizza order based on size and type provided by the user.",
-            "parameters": [],
-            "outputs": [],
-            "parent_names": [
-              "prompt_for_pizza_size_and_type"
+            "name": "calculate_order_total",
+            "description": "Calculates and provides the total cost of the order.",
+            "parameters": [
+              null
             ],
-            "suggested_category": "Order Placement",
-            "children": [
+            "outputs": [
               {
-                "name": "prompt_for_drink_order",
-                "description": "Prompts the user to specify the number and type of drinks they would like to order, providing options for drink types and confirming order details as needed.",
-                "parameters": [
-                  {
-                    "name": "number_of_drinks",
-                    "description": "The number of drinks the user wants to order.",
-                    "options": []
-                  },
-                  {
-                    "name": "drink_type",
-                    "description": "The type of drink the user wants (e.g., coke, sprite, water).",
-                    "options": [
-                      "coke",
-                      "sprite",
-                      "water"
-                    ]
-                  }
-                ],
-                "outputs": [],
-                "parent_names": [
-                  "confirm_pizza_order"
-                ],
-                "suggested_category": "Order Placement",
-                "children": [
-                  {
-                    "name": "provide_order_summary_and_total_cost",
-                    "description": "Provides a summary of the order and states the total cost.",
-                    "parameters": [],
-                    "outputs": [
-                      {
-                        "category": "order_summary",
-                        "description": "Summary of the items included in the order."
-                      },
-                      {
-                        "category": "total_cost",
-                        "description": "The total cost of the order."
-                      }
-                    ],
-                    "parent_names": [
-                      "prompt_for_drink_order"
-                    ],
-                    "suggested_category": "Order Confirmation",
-                    "children": []
-                  }
-                ]
+                "category": "order_total_cost",
+                "description": "The total cost of the order, expressed in dollars."
               }
-            ]
+            ],
+            "parent_names": [
+              "confirm_order_and_prompt_for_drinks"
+            ],
+            "suggested_category": "Order Confirmation",
+            "children": []
+          },
+          {
+            "name": "prompt_for_order_confirmation_or_additions",
+            "description": "Prompts the user to confirm the current order and asks if they want to proceed with the order or add more items. Summarizes the order if applicable.",
+            "parameters": [
+              null
+            ],
+            "outputs": [
+              {
+                "category": "order_summary",
+                "description": "Summarizes the current order, including pizza type and drink quantity."
+              }
+            ],
+            "parent_names": [
+              "confirm_order_and_prompt_for_drinks"
+            ],
+            "suggested_category": "Order Confirmation",
+            "children": []
           }
         ]
       }
     ]
-  },
-  {
-    "name": "inform_contact_information_unavailable",
-    "description": "Informs the user that the requested contact information is unavailable and suggests alternative sources to find it, such as the restaurant's website or online search.",
-    "parameters": [],
-    "outputs": [],
-    "parent_names": [],
-    "suggested_category": "Information Providing",
-    "children": []
-  },
-  {
-    "name": "inform_delivery_options_unavailable",
-    "description": "Informs the user that delivery options for the restaurant are unavailable and suggests checking their website or contacting them directly.",
-    "parameters": [],
-    "outputs": [],
-    "parent_names": [],
-    "suggested_category": "Information Providing",
-    "children": []
-  },
-  {
-    "name": "inform_pizza_pricing_unavailable",
-    "description": "Informs the user that pricing information for pizzas is unavailable and suggests contacting the restaurant directly.",
-    "parameters": [],
-    "outputs": [
-      {
-        "category": "price_unavailable",
-        "description": "Indicates that the chatbot is unable to provide pricing details and advises contacting the restaurant for pricing information."
-      }
-    ],
-    "parent_names": [],
-    "suggested_category": "Information Providing",
-    "children": []
   }
 ]
-## LIMITATIONS
-No limitations discovered (empty list).
+
 
 ## SUPPORTED LANGUAGES
 1. English
 
 ## FALLBACK MESSAGE
 I'm sorry, I did not get what you said. Can you rephrase?`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE
+##
+TOKEN USAGE STATISTICS
+EXPLORATION PHASE
+  Prompt tokens:       285,778
+  Completion tokens:   8,231
+  Total tokens:        294,009
+  Estimated cost:      $0.0319 USD
+
+ANALYSIS PHASE
+  Prompt tokens:       58,184
+  Completion tokens:   8,075
+  Total tokens:        66,259
+  Estimated cost:      $0.0090 USD
+
+TOTAL TOKEN CONSUMPTION
+  Total LLM calls:     487
+  Successful calls:    487
+  Failed calls:        0
+  Prompt tokens:       343,962
+  Completion tokens:   16,306
+  Total tokens:        360,268
+  Estimated cost:      $0.0409 USD
+
+COST MODEL USED
+  default

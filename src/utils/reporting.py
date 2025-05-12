@@ -808,7 +808,7 @@ def write_report(
             _write_functionalities_section(f, structured_functionalities)
             _write_functionality_categories_section(f, structured_functionalities)
             _write_json_section(f, structured_functionalities)
-            _write_limitations_section(f, limitations)
+            # Removed limitations section because we eneded up not using it
             _write_languages_section(f, supported_languages)
             _write_fallback_section(f, fallback_message)
 
