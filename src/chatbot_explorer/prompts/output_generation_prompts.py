@@ -51,7 +51,7 @@ def get_outputs_prompt(
 
     return f"""
 You are an AI assistant designing test verification outputs for a chatbot user profile.
-For the given user profile, identify specific pieces of information that the CHATBOT IS EXPECTED TO PROVIDE in its responses. These 'outputs' will be extracted to validate its correctness during test execution.
+Your task is to identify a MINIMAL and SUFFICIENT set of 'outputs' to extract from the chatbot's responses. These outputs verify that the chatbot correctly addressed the user's overall intent and specific goal-driven interactions, including those involving `{{variables}}`.
 
 USER PROFILE:
 Name: {profile_name}
@@ -66,43 +66,34 @@ FUNCTIONALITIES ASSIGNED TO THIS PROFILE (these define what the chatbot can do):
 
 {language_instruction}
 
-**Your Task: Define VERIFIABLE OUTPUTS Based on Goals and Variables**
+**Your Task: Define FEW, HIGH-IMPACT VERIFIABLE OUTPUTS**
 
-1.  **Identify Key Verifiable Information:** For each goal, what specific data should the chatbot provide that confirms the goal was addressed?
-2.  **Output Definitions for Iterated Variables (CRITICAL):**
-    *   If a goal uses a variable that iterates through a list (e.g., `Request details for `{{service_id}}`), define **one single, generic output field**.
-    *   **Naming Convention:** Name the output generically (e.g., `service_id_response_details`).
-    *   **Description for Variables:** The description should define *what piece of information the chatbot provides* in response to the goal using the variable. It should be understandable that this information will correspond to the specific value of the variable used in that test instance. **Avoid meta-descriptions about the testing process itself (e.g., do not say 'This output captures data for each iteration').** Focus on describing the *chatbot's output content*.
-        *   GOOD Example for a goal like "Get configuration guide for `{{device_os}}`" (where `{{device_os}}` iterates through 'Android', 'iOS', 'Windows'):
-            `OUTPUT: device_configuration_guide`
-            `TYPE: str`
-            `DESCRIPTION: The configuration guide (e.g., a URL or specific instructions) provided by the chatbot for the specified device operating system.` (Implies it's for the current iterated `{{device_os}}`)
-        *   GOOD Example for a goal like "Order one `{{item_choice}}`":
-            `OUTPUT: item_order_confirmation_message`
-            `TYPE: str`
-            `DESCRIPTION: The chatbot's confirmation message received after ordering the selected item, including details of that item.` (Implies the item details will match `{{item_choice}}`)
-3.  **Specific Outputs for Non-Variable Goals:** Define outputs capturing specific info (e.g., if goal is "Ask for general support hours", output could be `general_support_hours_info`).
-4.  **Data Types:** Assign ONE appropriate data type from: `int`, `float`, `money`, `str`, `string`, `time`, `date`.
-5.  **Focus:** Outputs MUST be information THE CHATBOT PROVIDES.
-6.  **Number of Outputs:** Generate outputs as needed to verify key information from goals. One well-described generic output can cover many variable iterations. Prioritize consolidation.
+1.  Review ALL user goals for this profile. Identify the **major pieces of information the chatbot is expected to provide** or the **key states it should confirm** as a result of the entire goal sequence. A single chatbot response (and thus a single output definition) might validate aspects of multiple user goals.
+2.  **Focus on Critical Information & Confirmations:**
+    *   What are the most important things the chatbot says that indicate success or provide crucial data? (e.g., a final order summary, a booking confirmation number, a list of requested options, an answer to a direct question).
+    *   Define outputs for these critical points.
+3.  **AGGRESSIVELY CONSOLIDATE:**
+    *   If the chatbot provides a **summary or comprehensive confirmation** (e.g., an order summary detailing item type, size, quantity, and accessories after several interaction steps), define **ONE primary output** for that entire summary.
+    *   **AVOID separate outputs for intermediate confirmations if they are encapsulated in a final, more complete confirmation.** For example, if the user selects an item, then a size, then a color, and the chatbot provides a final summary "You selected a large blue Gizmo", prioritize an output for the "final_gizmo_summary" rather than separate outputs for "item_confirmed", "size_confirmed", "color_confirmed".
+    *   If one output field can capture the verification for multiple related goal aspects or variable iterations, PREFER THAT.
+4.  **Output Definitions for Iterated Variables:**
+    *   If a goal uses an iterated variable (e.g., `Request details for `{{service_id}}`), the single generic output field defined should capture the relevant chatbot response for the current iteration.
+    *   **Naming Convention:** Generic (e.g., `service_id_response_details`).
+    *   **Description for Extraction:** Clearly state WHAT to extract. Indicate it corresponds to the *specific value of the `{{variable_name}}`* used in that test instance. Provide extraction hints. DO NOT include `{{variable_name}}` in the DESCRIPTION field itself.
+        *   GOOD Example: `output_name: item_specific_attribute_value`
+            `DESCRIPTION: The chatbot's stated value for a specific attribute (e.g., color, material) of the item that corresponds to the current '{{item_id}}' variable used in the goal. Look for phrases like 'Attribute for [item_id_value]: [attribute_value]'.`
+5.  **Data Types:** Assign ONE appropriate data type from: `int`, `float`, `money`, `str`, `string`, `time`, `date`.
+6.  **Focus:** Outputs are information THE CHATBOT PROVIDES.
+7.  **Minimize Outputs:** Generate the **absolute minimum number of output fields** required to comprehensively verify that the chatbot has successfully processed the user's goals and provided the necessary information, especially considering the final state or summary after a series of interactions.
 
 **Output Format (Strictly follow this for EACH output):**
 OUTPUT: output_name_1
 TYPE: output_type_1
-DESCRIPTION: A concise description of the information the chatbot is expected to provide in relation to the user's goal.
+DESCRIPTION: A concise, static description of the information the chatbot is expected to provide.
 
 OUTPUT: output_name_2
 TYPE: output_type_2
 DESCRIPTION: ...
 
-**Example for a variable-driven goal:**
-Goal: "Retrieve status for `{{order_reference}}`."
-Variable `{{order_reference}}` data might iterate through ["REF001", "REF002", "REF003"].
-
-Potential Output:
-OUTPUT: order_status_update
-TYPE: str
-DESCRIPTION: The status update message provided by the chatbot for the specified order reference.
-
-Generate the necessary output definitions. Aim for a concise yet comprehensive set. Do NOT include any explanatory text before the first "OUTPUT:" line or after the last description.
+Generate the necessary output definitions. Aim for the MOST CONSOLIDATED yet comprehensive set. Do NOT include any explanatory text before the first "OUTPUT:" line or after the last description.
 """
