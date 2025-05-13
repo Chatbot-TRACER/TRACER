@@ -81,23 +81,35 @@ class ChatbotExplorationAgent:
             BaseChatModel: An instance of the appropriate LLM.
 
         Raises:
-            ImportError: If trying to use Gemini models but the package is not installed.
+            ImportError: If trying to use Gemini/OpenAI models but the required package is not installed.
             ValueError: If the model name format is not recognized.
         """
         # Check if this is a Gemini model
         if model_name.lower().startswith("gemini"):
             if not GEMINI_AVAILABLE:
-                logger.error("Gemini support not available. Please install langchain_google_genai package.")
-                raise ImportError(
-                    "To use Gemini models, please install the required package: "
-                    "pip install langchain-google-genai google-generativeai"
-                )
+                gemini_error_msg = "To use Gemini models, please install the required package: pip install langchain-google-genai google-generativeai"
+                logger.exception("Gemini support not available")
+                raise ImportError(gemini_error_msg)
 
             logger.info("Initializing Gemini model: %s", model_name)
             return ChatGoogleGenerativeAI(model=model_name, callbacks=[self.token_tracker])
-        # Default to OpenAI
-        logger.info("Initializing OpenAI model: %s", model_name)
-        return ChatOpenAI(model=model_name, callbacks=[self.token_tracker])
+
+        # Handle OpenAI models
+        try:
+            logger.info("Initializing OpenAI model: %s", model_name)
+            return ChatOpenAI(model=model_name, callbacks=[self.token_tracker])
+        except ImportError as e:
+            openai_error_msg = (
+                "To use OpenAI models, please install the required package: pip install langchain-openai openai"
+            )
+            logger.exception("OpenAI support not available")
+            raise ImportError(openai_error_msg) from e
+        except Exception as e:
+            error_msg = (
+                f"Error initializing OpenAI model '{model_name}'. Please check your OpenAI API key and model name."
+            )
+            logger.exception("OpenAI initialization failed")
+            raise RuntimeError(error_msg) from e
 
     def run_exploration(self, chatbot_connector: Chatbot, max_sessions: int, max_turns: int) -> dict[str, Any]:
         """Runs the initial probing and the main exploration loop.
@@ -144,8 +156,6 @@ class ChatbotExplorationAgent:
         )
         for i, node_dict in enumerate(functionality_dicts):
             logger.debug("  root_nodes_dict[%d]:\n%s", i, pprint.pformat(node_dict, indent=2, width=120))
-
-
 
         return {
             "conversation_sessions": conversation_sessions,
@@ -557,7 +567,6 @@ class ChatbotExplorationAgent:
         )
 
         generated_profiles = profile_result.get("built_profiles", [])
-
 
         return {
             "discovered_functionalities": workflow_structure,
