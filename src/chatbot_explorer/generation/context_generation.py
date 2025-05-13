@@ -5,14 +5,12 @@ from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
-from chatbot_explorer.constants import VARIABLE_PATTERN
 from chatbot_explorer.prompts.context_generation_prompts import get_context_prompt
 from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
 
-MAX_LENGTH = 50
-
+MAX_CONTEXT_PREVIEW_LENGTH = 70
 
 def generate_context(
     profiles: list[dict[str, Any]],
@@ -20,7 +18,6 @@ def generate_context(
     supported_languages: list[str] | None = None,
 ) -> list[dict[str, Any]]:
     """Generate additional context for the user simulator as multiple short entries."""
-    # Work in the detected primary language
     primary_language = ""
     language_instruction = ""
 
@@ -29,24 +26,23 @@ def generate_context(
         language_instruction = f"Write the context in {primary_language}."
 
     for profile in profiles:
-        # Replace variables in goals with general terms for context generation
-        sanitized_goals = []
-        for goal in profile.get("goals", []):
-            # Replace {{variable}} with general terms
-            if isinstance(goal, str):
-                sanitized_goal = re.sub(VARIABLE_PATTERN, "[specific details]", goal)
-                sanitized_goals.append(sanitized_goal)
+        profile_name = profile.get("name", "Unnamed Profile")
+        logger.debug(f"Generating context for profile: '{profile_name}'")
 
-        context_prompt = get_context_prompt(
+        context_prompt_str = get_context_prompt(
             profile=profile,
-            sanitized_goals=sanitized_goals,
             language_instruction=language_instruction,
         )
 
-        context_response = llm.invoke(context_prompt)
-        context_content = context_response.content.strip()
 
-        # Process context into separate entries
+        llm_response_obj = llm.invoke(context_prompt_str)
+        context_content = ""
+        if hasattr(llm_response_obj, 'content'):
+            context_content = llm_response_obj.content.strip()
+        else:
+            context_content = str(llm_response_obj).strip()
+
+
         context_entries = []
         for line in context_content.split("\n"):
             line_content = line.strip()
@@ -55,16 +51,27 @@ def generate_context(
                 if entry:
                     context_entries.append(entry)
 
-        if len(context_entries) == 0:
-            # Fallback if no context entries generated
-            context_entries = ["No specific context available."]
-        else:
-            logger.verbose(
-                "    Generated %d context entries: %s",
-                len(context_entries),
-                context_entries[0][:MAX_LENGTH] + ("..." if len(context_entries[0]) > MAX_LENGTH else ""),
-            )
+        if not context_entries:
+            logger.warning(f"LLM did not generate valid context points for '{profile_name}'. Using a default.")
+            context_entries = ["The user has some general inquiries or tasks to perform."]
 
-        profile["context"] = context_entries
+        final_context_list = []
+        existing_context = profile.get("context", [])
+
+        if isinstance(existing_context, list):
+            for item in existing_context:
+                if isinstance(item, str) and item.startswith("personality:"):
+                    final_context_list.append(item)
+
+        final_context_list.extend(context_entries)
+
+        profile["context"] = final_context_list
+
+        logger.verbose(
+            "    Generated/updated context for profile '%s'. Total context entries: %d. First entry preview: %s",
+            profile_name,
+            len(context_entries),
+            (context_entries[0][:MAX_CONTEXT_PREVIEW_LENGTH] + ("..." if len(context_entries[0]) > MAX_CONTEXT_PREVIEW_LENGTH else "")) if context_entries else "N/A",
+        )
 
     return profiles
