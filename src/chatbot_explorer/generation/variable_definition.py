@@ -209,6 +209,7 @@ def generate_variable_definitions(
     supported_languages: list[str] | None = None,
     functionality_structure: list[dict[str, Any]] = None,
     max_retries: int = 3,
+    nested_forward: bool = False,
 ) -> list[dict[str, Any]]:
     """Generates and adds variable definitions to user profile goals using an LLM.
 
@@ -224,6 +225,7 @@ def generate_variable_definitions(
         supported_languages: Optional list of languages; the first is used for examples.
         functionality_structure: Optional list of functionality nodes with parameter options.
         max_retries: Maximum attempts to get a valid definition for each variable in case of failure.
+        nested_forward: Whether to create nested forward() chains among variables.
 
     Returns:
         The input list of profiles, modified in-place, where the 'goals' list
@@ -277,12 +279,13 @@ def generate_variable_definitions(
             "max_retries": max_retries,
         }
 
+        # First define all variables with standard forward()
+        variable_definitions = {}
         for variable_name in sorted(all_variables):
             # Check if we have pre-extracted options for this variable
             if variable_name in profile_parameter_options:
                 # Use the extracted options directly
                 dirty_options = profile_parameter_options[variable_name]
-
                 final_options = dirty_options
 
                 logger.debug(
@@ -356,7 +359,35 @@ def generate_variable_definitions(
                 logger.debug(f"LLM-Generated definition for '{variable_name}': {parsed_def}")
 
             if parsed_def:
+                variable_definitions[variable_name] = parsed_def
                 _update_goals_with_definition(goals_list, variable_name, parsed_def)
+
+        # Apply nested forward() chain if requested
+        if nested_forward and len(variable_definitions) > 1:
+            logger.info(f"Creating nested forward() chain for {len(variable_definitions)} variables in profile '{profile_name}'")
+
+            # Sort variable names to ensure deterministic chaining
+            sorted_var_names = sorted(variable_definitions.keys())
+
+            # Set up the forward chain
+            for i in range(len(sorted_var_names) - 1):
+                current_var = sorted_var_names[i]
+                next_var = sorted_var_names[i + 1]
+
+                # Update current variable to forward() the next variable
+                current_def = variable_definitions[current_var]
+                current_def["function"] = f"forward({next_var})"
+
+                # Update the definition in the goals list
+                for i, goal_item in enumerate(goals_list):
+                    if isinstance(goal_item, dict) and current_var in goal_item:
+                        goals_list[i] = {current_var: current_def}
+                        break
+
+                logger.debug(f"  Chained variable '{current_var}' to forward('{next_var}')")
+
+            # The last variable keeps its basic forward() function
+            logger.debug(f"  Last variable '{sorted_var_names[-1]}' remains with simple forward()")
 
         logger.verbose(
             "    Generated variables: %d/%d: %s",

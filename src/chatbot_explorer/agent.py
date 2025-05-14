@@ -460,8 +460,16 @@ class ChatbotExplorationAgent:
         )
         return remaining_nodes
 
-    def run_analysis(self, exploration_results: dict[str, Any]) -> dict[str, list[Any]]:
-        """Runs the LangGraph analysis pipeline using pre-compiled graphs."""
+    def run_analysis(self, exploration_results: dict[str, Any], nested_forward: bool = False) -> dict[str, list[Any]]:
+        """Runs the LangGraph analysis pipeline using pre-compiled graphs.
+
+        Args:
+            exploration_results: Results from the exploration phase
+            nested_forward: Whether to use nested forward() chaining in variable definitions
+
+        Returns:
+            Results from the analysis phase
+        """
         conversation_count = len(exploration_results.get("conversation_sessions", []))
         functionality_count = len(exploration_results.get("root_nodes_dict", {}))
         logger.debug(
@@ -527,6 +535,7 @@ class ChatbotExplorationAgent:
             supported_languages=exploration_results.get("supported_languages", []),
             fallback_message=exploration_results.get("fallback_message", ""),
             workflow_structure=None,
+            nested_forward=nested_forward,
         )
 
         # Run Structure Inference

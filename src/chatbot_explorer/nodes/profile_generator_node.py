@@ -145,6 +145,11 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
         logger.debug(f"  RICH_FUNC_STRING[{i}]: {rich_string}")
     logger.debug("<<< End of Rich Functionality Strings")
 
+    # Get nested_forward parameter from state
+    nested_forward = state.get("nested_forward", False)
+    if nested_forward:
+        logger.info("Nested forward chaining is enabled for variable definitions")
+
     try:
         # Create the config dictionary
         config: ProfileGenerationConfig = {
@@ -158,7 +163,7 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
         }
 
         # Call the main generation function with the config dictionary
-        profiles_with_goals = generate_profile_content(config)
+        profiles_with_goals = generate_profile_content(config, nested_forward=nested_forward)
 
     except (KeyError, TypeError, ValueError):
         logger.exception("Error during profile generation")

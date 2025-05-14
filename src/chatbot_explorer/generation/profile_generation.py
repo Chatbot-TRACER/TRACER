@@ -223,9 +223,20 @@ def _generate_profile_goals(
     return goals
 
 
-def generate_profile_content(config: ProfileGenerationConfig) -> list[dict[str, Any]]:
-    """Generates the complete content for user profiles based on chatbot analysis."""
+def generate_profile_content(config: ProfileGenerationConfig, nested_forward: bool = False) -> list[dict[str, Any]]:
+    """Generates the complete content for user profiles based on chatbot analysis.
+
+    Args:
+        config: Configuration for profile generation
+        nested_forward: Whether to use nested forward() chaining in variable definitions
+
+    Returns:
+        List of generated profiles with all content
+    """
     logger.debug("Starting profile content generation")
+
+    if nested_forward:
+        logger.info("Nested forward chaining is enabled for variable definitions")
 
     # 1. Prepare context strings
     lang_instr_group, lang_instr_goal = _prepare_language_instructions(config["supported_languages"])
@@ -265,6 +276,8 @@ def generate_profile_content(config: ProfileGenerationConfig) -> list[dict[str, 
             config["llm"],
             config["supported_languages"],
             config["workflow_structure"],
+            max_retries=3,
+            nested_forward=nested_forward,
         )
         if temp_profiles:
             profile.update(temp_profiles[0])

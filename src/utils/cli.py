@@ -95,4 +95,11 @@ def parse_arguments() -> Namespace:
         help="Generate a top-down graph (instead of left-to-right) to better fit in papers",
     )
 
+    parser.add_argument(
+        "-nf",
+        "--nested-forward",
+        action="store_true",
+        help="Make forward() functions nested in a chain to create more exhaustive profiles",
+    )
+
     return parser.parse_args()

@@ -146,12 +146,13 @@ def _run_exploration_phase(
         return results
 
 
-def _run_analysis_phase(agent: ChatbotExplorationAgent, exploration_results: dict[str, Any]) -> dict[str, Any]:
+def _run_analysis_phase(agent: ChatbotExplorationAgent, exploration_results: dict[str, Any], nested_forward: bool = False) -> dict[str, Any]:
     """Runs the analysis phase using the agent and exploration results.
 
     Args:
         agent (ChatbotExplorationAgent): The initialized agent.
         exploration_results (Dict[str, Any]): The results from the exploration phase.
+        nested_forward (bool): Whether to use nested forward() chaining in variable definitions.
 
     Returns:
         Dict[str, Any]: The results generated during the analysis phase.
@@ -167,7 +168,7 @@ def _run_analysis_phase(agent: ChatbotExplorationAgent, exploration_results: dic
     agent.token_tracker.mark_analysis_phase()
 
     try:
-        results = agent.run_analysis(exploration_results=exploration_results)
+        results = agent.run_analysis(exploration_results=exploration_results, nested_forward=nested_forward)
 
         # Log token usage for analysis phase only
         logger.info("\n=== Token Usage in Analysis Phase ===")
@@ -247,6 +248,7 @@ def main() -> None:
     logger.verbose("Graph font size:\t\t%d", args.graph_font_size)
     logger.verbose("Compact graph:\t\t%s", "Yes" if args.compact else "No")
     logger.verbose("Graph orientation:\t%s", "Top-Down" if args.top_down else "Left-Right")
+    logger.verbose("Nested forward chains:\t%s", "Yes" if args.nested_forward else "No")
     logger.verbose("======================================\n")
 
     # 4. Initialization
@@ -257,7 +259,7 @@ def main() -> None:
     exploration_results = _run_exploration_phase(agent, the_chatbot, args.sessions, args.turns)
 
     # 6. Run Analysis
-    analysis_results = _run_analysis_phase(agent, exploration_results)
+    analysis_results = _run_analysis_phase(agent, exploration_results, args.nested_forward)
 
     # Get token usage summary
     token_usage = agent.token_tracker.get_summary()

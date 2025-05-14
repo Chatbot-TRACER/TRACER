@@ -28,6 +28,7 @@ class State(TypedDict):
         fallback_message (str): The chatbot's fallback message.
         chatbot_type (str): The type of chatbot, which can be "transactional", "informational", or "unknown".
         workflow_structure (List[Dict[str, Any]]): A list of dictionaries representing the workflow structure for profile generation.
+        nested_forward (bool): Whether to use nested forward() chaining in variable definitions.
     """
 
     messages: Annotated[list, add_messages]
@@ -42,3 +43,4 @@ class State(TypedDict):
     fallback_message: str
     chatbot_type: str
     workflow_structure: list[dict[str, Any]]
+    nested_forward: bool
