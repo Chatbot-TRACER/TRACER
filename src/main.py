@@ -187,6 +187,7 @@ def _generate_reports(
     token_usage: dict[str, Any],
     graph_font_size: int = 12,
     compact: bool = False,
+    top_down: bool = False,
 ) -> None:
     """Saves generated profiles, writes the final report, and generates the workflow graph image.
 
@@ -197,6 +198,7 @@ def _generate_reports(
         token_usage (Dict[str, Any]): Token usage statistics.
         graph_font_size (int): Font size to use for graph text elements.
         compact (bool): Whether to generate a more compact graph layout.
+        top_down (bool): Whether to generate a top-down graph instead of left-to-right.
     """
     built_profiles = analysis_results.get("built_profiles", [])
     functionality_dicts = analysis_results.get("discovered_functionalities", {})
@@ -222,7 +224,7 @@ def _generate_reports(
     if functionality_dicts:
         graph_output_base = Path(output_dir) / "workflow_graph"
         try:
-            export_graph(functionality_dicts, str(graph_output_base), "pdf", graph_font_size=graph_font_size, dpi=300, compact=compact)
+            export_graph(functionality_dicts, str(graph_output_base), "pdf", graph_font_size=graph_font_size, dpi=300, compact=compact, top_down=top_down)
         except Exception:
             logger.exception("Failed to generate workflow graph image")
     else:
@@ -244,6 +246,7 @@ def main() -> None:
     logger.verbose("Output directory:\t%s", args.output)
     logger.verbose("Graph font size:\t\t%d", args.graph_font_size)
     logger.verbose("Compact graph:\t\t%s", "Yes" if args.compact else "No")
+    logger.verbose("Graph orientation:\t%s", "Top-Down" if args.top_down else "Left-Right")
     logger.verbose("======================================\n")
 
     # 4. Initialization
@@ -260,7 +263,7 @@ def main() -> None:
     token_usage = agent.token_tracker.get_summary()
 
     # 7. Generate Reports
-    _generate_reports(args.output, exploration_results, analysis_results, token_usage, args.graph_font_size, args.compact)
+    _generate_reports(args.output, exploration_results, analysis_results, token_usage, args.graph_font_size, args.compact, args.top_down)
 
     # 8. Display Final Token Usage Summary
     cost_details = token_usage.get("cost_details", {})

@@ -32,6 +32,7 @@ def export_graph(
     graph_font_size: int = 12,
     dpi: int = 300,
     compact: bool = False,
+    top_down: bool = False,
 ):
     """Creates and renders a directed graph of chatbot functionality.
 
@@ -42,12 +43,13 @@ def export_graph(
         graph_font_size: Font size for graph text elements
         dpi: Resolution of the output image in dots per inch
         compact: Whether to generate a more compact graph layout
+        top_down: Whether to generate a top-down graph instead of left-to-right
     """
     if not nodes:
         return
 
     dot = graphviz.Digraph(format=fmt)
-    _set_graph_attributes(dot, graph_font_size, dpi, compact)
+    _set_graph_attributes(dot, graph_font_size, dpi, compact, top_down)
 
     # Start node
     node_dim = 0.5
@@ -130,7 +132,7 @@ def export_graph(
 
 
 def _set_graph_attributes(
-    dot: graphviz.Digraph, graph_font_size: int = 12, dpi: int = 300, compact: bool = False
+    dot: graphviz.Digraph, graph_font_size: int = 12, dpi: int = 300, compact: bool = False, top_down: bool = False
 ) -> None:
     """Sets default attributes for the Graphviz graph, nodes, and edges.
 
@@ -139,6 +141,7 @@ def _set_graph_attributes(
         graph_font_size: Font size for graph text elements
         dpi: Resolution of the output image in dots per inch
         compact: Whether to generate a more compact graph layout
+        top_down: Whether to generate a top-down graph instead of left-to-right
     """
     # Clean modern style
     bgcolor = "#ffffff"
@@ -167,8 +170,11 @@ def _set_graph_attributes(
         splines = "curved"
         overlap = "false"
 
+    # Set graph orientation based on top_down parameter
+    rankdir = "TB" if top_down else "LR"  # TB = Top to Bottom, LR = Left to Right
+
     dot.attr(
-        rankdir="LR",
+        rankdir=rankdir,
         bgcolor=bgcolor,
         fontname=font,
         fontsize=graph_fontsize,

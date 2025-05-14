@@ -15,6 +15,7 @@ def parse_arguments() -> Namespace:
     default_output_dir = "output"
     default_technology = "taskyto"
     default_graph_font_size = 12
+    default_graph_direction = "LR"
 
     parser.add_argument(
         "-v",
@@ -85,6 +86,13 @@ def parse_arguments() -> Namespace:
         "--compact",
         action="store_true",
         help="Generate a more compact graph with simplified nodes and tighter spacing",
+    )
+
+    parser.add_argument(
+        "-td",
+        "--top-down",
+        action="store_true",
+        help="Generate a top-down graph (instead of left-to-right) to better fit in papers",
     )
 
     return parser.parse_args()
