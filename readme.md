@@ -1,23 +1,17 @@
-# Chatbot Explorer
+# TRACER
 
-Project for my Master's Thesis.
+> Task Recognition and Chatbot ExploreR
 
-A framework for automated exploration, analysis, and workflow modeling of conversational agents.
+A tool for automatically exploring and analyzing chatbots, generating a model of the functionalities and user profiles for testing.
 
 ## 1. Overview & Goals
 
-Chatbot Explorer is a tool designed to automatically interact with and analyze target chatbots. It uses Large Language Models (LLMs) to conduct multiple conversational sessions, identify the chatbot's core functionalities, limitations, and interaction flows, and generate structured outputs for testing and analysis.
+TRACER is a tool designed to automatically interact with and analyze target chatbots. It uses Large Language Models (LLMs) to conduct multiple conversational sessions, identify the chatbot's core functionalities, limitations, and interaction flows, and generate structured outputs for testing and analysis.
 
-The primary goal is to understand _how_ a user interacts with the chatbot sequentially, not just _what_ the chatbot can do in isolation.
+The main goals of TRACER are:
 
-**Key Goals:**
-
-- **Automated Discovery:** Automatically interact with a chatbot to discover its features, capabilities, and limitations.
-- **Functionality Extraction:** Identify and structure the distinct actions or tasks the chatbot can perform.
 - **Workflow Modeling:** Model the user's journey through the chatbot as a directed graph, capturing sequential dependencies, branching logic, and optional steps, adapt the modeling approach based on whether the chatbot is primarily transactional or informational.
-- **Workflow-Aware Profile Generation:** Generate realistic user profiles that follow natural conversation flows discovered during exploration, tailored to whether the chatbot is transactional or informational.
 - **Profile Generation:** Generate standardized YAML user profiles based on discovered functionalities and workflows, suitable for [Sensei](https://github.com/satori-chatbots/user-simulator).
-- **Reporting:** Produce comprehensive reports detailing discovered functionalities (in structured and graphical formats), limitations, supported languages, and fallback behavior.
 
 ## 2. Core Functionality
 
@@ -44,62 +38,7 @@ The system follows a multi-phase approach implemented via a LangGraph structure:
 - Generate a text report (`report.txt`).
 - Generate a visual workflow graph (`workflow_graph.png`) using Graphviz.
 
-## 3. Architecture: LangGraph Flow
-
-The system operates in two main phases: Exploration (managed by `main.py`) followed by Analysis & Profile Generation (LangGraph).
-
-### Phase 1: Exploration (in `main.py`)
-
-- The `main.py` script controls the overall exploration process.
-- It starts by detecting the chatbot's language and fallback message.
-- It calls `run_exploration_session` repeatedly to conduct multiple sessions.
-- **`run_exploration_session`:**
-  - Conducts a conversation session with the target chatbot.
-  - Can explore general capabilities or focus on a specific functionality.
-  - Handles fallbacks by rephrasing queries and changing topics if needed.
-  - Extracts new functionalities from each conversation.
-  - Updates the discovery state (pending_nodes, root_nodes, explored_nodes).
-- After all sessions, `main.py` collects all conversation history and discovered functionalities for analysis.
-
-### Phase 2: Analysis & Profile Generation (Multiple LangGraphs)
-
-The system uses specialized graphs for different stages of analysis:
-
-#### 1. Structure Analysis Graph
-
-```mermaid
-flowchart LR
-    A[Exploration data] --> B[workflow_builder_node]
-    B --> C{Classify chatbot}
-    C -->|Transactional Prompt| D[Build functionalities]
-    C -->|Informational Prompt| D[Build functionalities]
-    D --> E[Output structured functionalities]
-```
-
-- Determines if the chatbot is transaction or information
-- Uses different structuring strategies based on chatbot classification:
-  - **Transactional:** Actively seeks dependencies, branches, and joins
-  - **Informational:** Defaults to independent topics, requires strong evidence for relationships
-- Builds functionality structure with clear parent/child hierarchies
-- Outputs a hierarchical representation of the chatbot's functionality workflow
-
-#### 2. Profile Generation Graph
-
-```mermaid
-flowchart LR
-    A[Structured functionalities] --> B[goal_generator]
-    B --> C[conversation_params]
-    C --> D[profile_yaml_builder]
-    D --> E[profile_yaml_validator]
-    E --> F[Validated profiles]
-```
-
-- Creates user profile goals based on discovered functionality structure
-- Generates conversation parameters for each profile
-- Builds YAML profiles for the Sensei simulator
-- Validates profiles against schema and attempts to fix any validation errors
-
-## 4. Workflow Graph Generation
+## 3. Workflow Graph Generation
 
 One of the main outputs of this tool is a visual graph (`workflow_graph.png`) showing how users interact with the chatbot. Although, the primary focus of this tool is to make the profiles, this was added to help visualize the discovered functionalities and their relationships.
 
@@ -153,10 +92,35 @@ graph LR
 
 > Note: The Mermaid diagrams above are illustrative of the desired logical flow. The actual implementation uses Graphviz.
 
-## 5. Usage
+## 4. Usage
+
+### Installation
+
+1. Ensure Python 3.11+ and Graphviz are installed.
+2. Clone the repository:
+
+    ```bash
+    git clone https://github.com/Chatbot-TRACER/TRACER.git
+    cd TRACER
+    ```
+
+3. Install the project:
+
+    ```bash
+    pip install .
+    ```
+
+4. Make sure to have the required environment variables set for OpenAI or Google Gemini models.
+
+    ```bash
+    export OPENAI_API_KEY=your_openai_api_key
+    export GOOGLE_API_KEY=your_google_api_key
+    ```
+
+Execution:
 
 ```bash
-python src/main.py [-h] [-s SESSIONS] [-n TURNS] [-t TECHNOLOGY] [-u URL] [-m MODEL] [-o OUTPUT]
+TRACER --help
 ```
 
 ### Arguments
@@ -167,8 +131,14 @@ All arguments are optional.
 - `-n, --turns`: Maximum turns per session (default: 8).
 - `-t, --technology`: Chatbot technology connector to use (default: `taskyto`). See available technologies below.
 - `-u, --url`: Chatbot URL (default: `http://localhost:5000`). Only necessary for technologies like `taskyto` that require an explicit endpoint. Others may have the URL embedded in their connector.
-- `-m, --model`: Model for analysis and generation (default: `gpt-4o-mini`). Supports both OpenAI models (e.g., `gpt-4o`) and Google Gemini models (e.g., `gemini-1.5-pro`, `gemini-1.5-flash`).
+- `-m, --model`: Model for analysis and generation (default: `gpt-4o-mini`). Supports both OpenAI models (e.g., `gpt-4o`) and Google Gemini models (e.g., `gemini-2.0-flash`).
 - `-o, --output`: Output directory for generated files (default: `output`).
+- `-v` or `-vv`: Verbosity level, none will show key information, `-v` will show the conversation and `-vv` will show be debug information.
+- `-gfs`, `--graph-font-size`: Font size for the graph.
+- `c`, `--compact`: Compact mode for the graph.
+- `-td`, `--top-down`: Top-down layout for the graph.
+- `-nf`, `--nested-forward`: All the variables will be nested, creates more exhaustive profiles but also the number of conversations grows exponentially.
+- `-h, --help`: Show help message and exit.
 
 ### Supported Chatbot Technologies
 
@@ -180,7 +150,7 @@ All arguments are optional.
 - For OpenAI models: Set the `OPENAI_API_KEY` environment variable with your API key.
 - For Gemini models: Set the `GOOGLE_API_KEY` environment variable with your API key from Google.
 
-## 6. Input/Output
+## 5. Input/Output
 
 - **Input:**
   - Command-line arguments (see Usage).
@@ -194,18 +164,8 @@ All arguments are optional.
 
 ```bash
 # Using OpenAI models
-python src/main.py -t ada-uam -n 8 -s 12 -o generated_profiles/ada-uam -m gpt-4o
+TRACER -t ada-uam -n 8 -s 12 -o generated_profiles/ada-uam -m gpt-4o-mini
 
 # Using Gemini models
-python src/main.py -t taskyto -n 10 -s 5 -o generated_profiles/taskyto -m gemini-2.0-flash
+TRACER -t taskyto -n 10 -s 5 -o generated_profiles/taskyto -m gemini-2.0-flash
 ```
-
-## 7. Technology Stack
-
-- Python 3.11+
-- LangChain / LangGraph (Core framework for LLM interaction and workflow orchestration)
-- OpenAI API (LLM provider)
-- Google Gemini API (Alternative LLM provider)
-- Graphviz (Python library and system tool for graph visualization)
-- PyYAML (YAML parsing and generation)
-- Requests (HTTP requests, used in some connectors)
