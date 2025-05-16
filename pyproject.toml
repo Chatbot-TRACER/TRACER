@@ -1,6 +1,15 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name= "TRACER"
 version = "0.1.0"
+description = "A tool to model chatbots and create profiles to test them."
+authors = [
+	{ name = "Iván Sotillo", email = "ivan.delhorno@uam.es" }
+]
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "bs4>=0.0.2",
@@ -12,6 +21,19 @@ dependencies = [
     "langchain-openai>=0.3.17",
     "langgraph>=0.4.5",
 ]
+
+[project.scripts]
+TRACER = "main:main"
+
+
+[tool.setuptools]
+
+package-dir = {"" = "src"}
+py-modules = ["main"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
 
 [tool.ruff]
 
