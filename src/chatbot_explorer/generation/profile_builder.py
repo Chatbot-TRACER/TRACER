@@ -30,17 +30,39 @@ def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_l
     used_variables = set()
     original_goals_list = profile.get("goals", [])
 
-    for goal_item in original_goals_list:
-        if isinstance(goal_item, str):
-            variables_in_string_goal = VARIABLE_PATTERN.findall(goal_item)
-            used_variables.update(variables_in_string_goal)
+    # First, extract the profile name and any existing name variable definition
+    profile_name = profile.get("name", "Unnamed")
+    existing_name_var_def = None
 
-    # Create the goals list for YAML (mix of strings and variable dicts)
-    yaml_goals = list(profile.get("goals", []))
-    yaml_goals.extend({var_name: profile[var_name]} for var_name in used_variables if var_name in profile)
+    # Clean up goals list - remove any name variable definition if it exists
+    cleaned_goals = []
+    for goal_item in original_goals_list:
+        if isinstance(goal_item, dict) and "name" in goal_item:
+            # Save the existing name variable definition
+            existing_name_var_def = goal_item["name"]
+        else:
+            cleaned_goals.append(goal_item)
+            # If it's a string goal, collect variables
+            if isinstance(goal_item, str):
+                variables_in_string_goal = VARIABLE_PATTERN.findall(goal_item)
+                used_variables.update(variables_in_string_goal)
+
+    # Create the goals list for YAML starting with cleaned goals
+    yaml_goals = cleaned_goals
+
+    # Clean up the profile by removing any variable definition that might have the profile name
+    profile_for_variables = {k: v for k, v in profile.items() if k != "name" or k not in used_variables}
+
+    # Add all variable definitions except "name"
+    yaml_goals.extend({var_name: profile_for_variables[var_name]} for var_name in used_variables
+                      if var_name in profile_for_variables)
+
+    # Add the name variable definition if it exists in the original goals
+    if existing_name_var_def:
+        yaml_goals.append({"name": existing_name_var_def})
 
     if logger.isEnabledFor(10):
-        logger.debug("Building YAML for profile: %s", profile.get("name", "Unnamed"))
+        logger.debug("Building YAML for profile: %s", profile_name)
         logger.debug("Used variables: %s", used_variables)
         for var_name in used_variables:
             if var_name in profile:
@@ -80,7 +102,7 @@ def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_l
 
     # Assemble the final profile dictionary
     return {
-        "test_name": profile["name"],
+        "test_name": profile_name,
         "llm": {
             "temperature": temperature,
             "model": "gpt-4o-mini",
