@@ -2,6 +2,8 @@
 
 from typing import Any, TypedDict
 
+from chatbot_explorer.constants import VARIABLE_PATTERNS
+
 
 class ProfileContext(TypedDict):
     """Context information about a profile for variable definition.
@@ -91,7 +93,6 @@ def get_variable_definition_prompt(
             linspace: 5
 
     FORMAT YOUR RESPONSE FOR STRING VARIABLES AS:
-        VARIABLE: variable_name
         FUNCTION: function_name()
         TYPE: string
         DATA:
@@ -100,7 +101,6 @@ def get_variable_definition_prompt(
         - value3
 
         FORMAT YOUR RESPONSE FOR NUMERIC VARIABLES AS:
-        VARIABLE: variable_name
         FUNCTION: function_name()
         TYPE: int/float
         DATA:
@@ -158,26 +158,24 @@ AVAILABLE DATA SOURCES (Parameters or List-like Outputs):
 
 **MATCHING INSTRUCTIONS:**
 
-1. **STRICT SEMANTIC MATCHING**: The variable name explicitly indicates what kind of data it should contain. The data source's options MUST contain EXACTLY that kind of data. For example:
-   - For "bike_type", ONLY match to a data source containing actual TYPES OF BIKES (mountain bike, road bike, etc.)
-   - For "appointment_date", ONLY match to a data source containing DATE FORMATS
-   - For "payment_method", ONLY match to a data source containing PAYMENT METHODS (credit card, PayPal, etc.)
+1. **STRICT SEMANTIC MATCHING**: The variable name indicates what kind of data it should contain. The data source's options MUST contain EXACTLY that kind of data. For example:
+   - For "item_type", ONLY match to sources containing actual TYPES OF THE GIVEN ITEM (e.g., "Economy", "Premium", "Deluxe")
+   - For "appointment_date", ONLY match to sources containing ACTUAL DATES
+   - For "payment_method", ONLY match to sources containing PAYMENT METHODS
+   - For "number_of_items", ONLY match to sources containing NUMERIC VALUES or QUANTITIES
 
-2. **CRITICALLY EXAMINE OPTIONS**: Look carefully at the actual option values in "Example Options Preview" - do they truly represent what the variable name suggests? If not, DO NOT match.
+2. **CRITICALLY EXAMINE OPTIONS**: Look carefully at the actual option values in "Example Options Preview" - do they truly represent what the variable name suggests?
 
 3. **REJECT INAPPROPRIATE MATCHES**: It is better to NOT match a variable than to match it to semantically inappropriate options.
 
-4. **TYPE COMPATIBILITY**: The *nature* of the GOAL VARIABLE must align with the *nature* of the options. For example:
-   - If a variable is named "{{number_of_items}}", DO NOT match to a data source listing item types or categories
-   - If a variable ends with "_type", it should ONLY match to a data source with specific types/categories of that concept
+4. **VARIABLE NAME PATTERNS**:
+   - Variables with "_type" or "tipo" → match only to sources containing specific types/categories of that concept
+   - Variables with "date" or "fecha" → match only to sources containing actual dates
+   - Variables with "time" or "hora" → match only to sources containing actual times
+   - Variables with "number_of", "cantidad", or "numero" → match only to sources containing numeric values
+   - Variables with "price", "cost", "precio", or "costo" → match only to sources containing monetary values
 
-5. **VARIABLE NAME PATTERNS**:
-   - If variable ends with "_type" → match only to sources containing specific types/categories of that item
-   - If variable contains "date" → match only to sources containing date formats
-   - If variable contains "time" → match only to sources containing time formats
-   - If variable contains "number_of" → match only to sources containing numeric values
-
-6. **QUALITY CHECK**: After finding a potential match, ask yourself: "If I use these options for this variable, would it make logical sense in a conversation?"
+5. **QUALITY CHECK**: After finding a potential match, ask yourself: "If I use these options for this variable, would they make logical sense as options a user could select in a conversation?"
 
 Output your matches as a JSON object where keys are the **exact** 'GOAL VARIABLE' names and values are objects containing:
 - "matched_data_source_id": "The ID of the matched Data Source (e.g., DS1, DS2)".
@@ -287,36 +285,57 @@ def get_variable_semantic_validation_prompt(
         The prompt for semantic validation
     """
     options_str = "\n".join([f"- {opt}" for opt in options])
+    variable_name_lower = variable_name.lower()
+
+    # Look for common patterns in variable name using centralized patterns
+    is_date_var = any(date_term in variable_name_lower for date_term in VARIABLE_PATTERNS["date"])
+    is_time_var = any(time_term in variable_name_lower for time_term in VARIABLE_PATTERNS["time"])
+    is_type_var = any(type_term in variable_name_lower for type_term in VARIABLE_PATTERNS["type"])
+    is_number_of_var = any(number_of_term in variable_name_lower for number_of_term in VARIABLE_PATTERNS["number_of"])
+
+    # Create guidance based on variable name patterns - language agnostic approach
+    specific_guidance = ""
+    if is_date_var:
+        specific_guidance = "This variable represents a DATE. Options should be actual dates a user would select, not descriptions of dates."
+    elif is_time_var:
+        specific_guidance = "This variable represents a TIME. Options should be actual times a user would select, not descriptions of times."
+    elif is_type_var:
+        base_term = variable_name_lower
+        for type_marker in VARIABLE_PATTERNS["type"]:
+            if type_marker in base_term:
+                base_term = base_term.replace(type_marker, "").strip("_")
+                break
+
+        if base_term:
+            specific_guidance = f"This variable represents TYPES or CATEGORIES of {base_term}. Options should be names of specific {base_term} types."
+    elif is_number_of_var:
+        specific_guidance = "This variable represents a COUNT or QUANTITY of something. Options should be actual counts a user would select, not descriptions of counts."
 
     return f"""
-You are a domain expert helping validate data for chatbot testing.
+You are evaluating data quality for a chatbot test variable.
 
-Variable Name: {variable_name}
+VARIABLE NAME: {variable_name}
 
-Proposed Options for this variable:
+CANDIDATE OPTIONS:
 {options_str}
 
-TASK: Determine if these options are SEMANTICALLY APPROPRIATE values for a variable named '{variable_name}'.
+{specific_guidance}
 
-Consider the following:
-1. The variable name should give strong clues about what kind of values it should contain
-2. The options should be legitimate, specific instances or examples of the concept in the variable name
-3. For example:
-   - For "drink_type", appropriate options would be "Coke", "Water", "Coffee", etc.
-   - For "shipping_method", appropriate options would be "Standard", "Express", "Overnight", etc.
-   - For "color", appropriate options would be "Red", "Blue", "Green", etc.
-   - For "bike_type", appropriate options would be "Mountain Bike", "Road Bike", "Hybrid", etc.
+YOUR TASK: Determine if these options are semantically appropriate for this variable name.
 
-Rules for specific variable patterns:
-- If the variable ends with "_type", options should be specific types or categories
-- If the variable contains "date", options should be date formats
-- If the variable contains "time", options should be time formats
-- If the variable contains "number_of", options should be numeric values or ranges
-- If the variable contains "price" or "cost", options should be monetary values
+WHAT MAKES OPTIONS APPROPRIATE:
+1. They are ACTUAL VALUES a user would select or enter, not descriptions or meta-information
+2. They represent specific instances of what the variable name suggests
+3. They are concise, not explanatory sentences
 
-Answer ONLY with "Yes" or "No".
-- Answer "Yes" if the options are semantically appropriate for the variable name.
-- Answer "No" if the options are NOT semantically appropriate for the variable name.
+CONCRETE EXAMPLES:
+- For drink variables → "Coffee", "Tea", "Water" (NOT "Information about our drinks")
+- For date variables → "Tomorrow", "Next Monday", "July 15" (NOT "Confirmation details including the date")
+- For category/type variables → "Economy", "Premium", "Deluxe" (NOT "Different types available")
 
-DO NOT explain your reasoning or add any other text to your response.
+CHECK: Would these values make sense in a form or chatbot menu for users to select?
+
+Answer with ONLY "Yes" or "No".
+- Yes means ALL options are appropriate values for this variable
+- No means SOME or ALL options are inappropriate (too descriptive, wrong concept, etc.)
 """

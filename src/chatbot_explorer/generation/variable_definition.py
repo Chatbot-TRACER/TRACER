@@ -8,7 +8,7 @@ from typing import Any, TypedDict
 
 from langchain_core.language_models import BaseLanguageModel
 
-from chatbot_explorer.constants import VARIABLE_PATTERN
+from chatbot_explorer.constants import VARIABLE_PATTERN, VARIABLE_PATTERNS
 from chatbot_explorer.prompts.variable_definition_prompts import (
     ProfileContext,
     get_clean_and_suggest_negative_option_prompt,
@@ -329,7 +329,8 @@ def generate_variable_definitions(
                     parsed_def = _generate_smart_default_options(
                         variable_name=variable_name,
                         profile_goals_context=goals_text,
-                        llm=llm
+                        llm=llm,
+                        language=primary_language
                     )
                     if not parsed_def:
                         # Fall back to general LLM definition
@@ -368,7 +369,8 @@ def generate_variable_definitions(
                 parsed_def = _generate_smart_default_options(
                     variable_name=variable_name,
                     profile_goals_context=goals_text,
-                    llm=llm
+                    llm=llm,
+                    language=primary_language
                 )
 
                 if not parsed_def:
@@ -605,7 +607,12 @@ def _match_single_variable_to_data_sources(
     variable_name: str, potential_data_sources: list[dict[str, Any]], llm: BaseLanguageModel
 ) -> dict[str, dict]:
     """Match a single variable to data sources for better focused matching."""
-    profile_context_for_llm = f"User is trying to interact with the chatbot to find information about {variable_name}."
+    # The context should be language-agnostic guidance
+    profile_context_for_llm = (
+        f"User is interacting with a chatbot regarding '{variable_name}'. "
+        f"This variable should contain actual concrete values a user would use, "
+        f"not descriptions or explanations about such values."
+    )
 
     prompt = get_variable_to_datasource_matching_prompt(
         [variable_name], potential_data_sources, profile_context_for_llm
@@ -643,8 +650,28 @@ def _match_single_variable_to_data_sources(
                         matched_source_detail = potential_data_sources[source_index]
                         matched_options = matched_source_detail.get("options", [])
 
+                        # Basic filtering for obviously inappropriate options - language agnostic
+                        # Filter out long sentences and phrases that are likely descriptions
+                        matched_options = [
+                            opt for opt in matched_options
+                            if len(opt.split()) <= 5  # Skip very long phrases
+                            and "including" not in opt.lower()  # Common in descriptions
+                            and "details" not in opt.lower()
+                            and "confirm" not in opt.lower()
+                            and "information" not in opt.lower()
+                        ]
+
                         # Validate that the matched options are semantically appropriate for the variable
-                        if matched_options and not _validate_semantic_match(cleaned_var_name, matched_options, llm):
+                        if not matched_options:
+                            logger.warning(
+                                f"Variable '{cleaned_var_name}' matched to source '{matched_source_detail.get('source_name')}' "
+                                f"but all options were filtered out as inappropriate. Skipping this match."
+                            )
+                            continue
+                        logger.debug(f"Validating semantic match for var '{cleaned_var_name}' with options: {matched_options}")
+                        is_semantically_valid = _validate_semantic_match(cleaned_var_name, matched_options, llm)
+                        logger.debug(f"Semantic validation for var '{cleaned_var_name}' returned: {is_semantically_valid}")
+                        if not is_semantically_valid:
                             logger.warning(
                                 f"Variable '{cleaned_var_name}' matched to source '{matched_source_detail.get('source_name')}' "
                                 f"but options don't appear to be semantically appropriate. Skipping this match."
@@ -680,28 +707,41 @@ def _match_single_variable_to_data_sources(
 def _validate_semantic_match(
     variable_name: str, matched_options: list[str], llm: BaseLanguageModel
 ) -> bool:
-    """Validate that the matched options are semantically appropriate for the variable name.
-
-    Args:
-        variable_name: The name of the variable without {{ }}
-        matched_options: List of options from the matched data source
-        llm: The language model to use for validation
-
-    Returns:
-        bool: True if the options are semantically appropriate, False otherwise
-    """
+    """Validate that the matched options are semantically appropriate for the variable name."""
     # Skip validation for very small sets of options or if there are no options
     if not matched_options or len(matched_options) < 2:
         return True
 
-    # Take a sample of options for validation (up to 5)
+    # Basic structure validation regardless of language
+    # This checks if the options look structurally appropriate based on variable name patterns
+
+    # Filter options that are clearly descriptive sentences rather than values
+    long_options = [opt for opt in matched_options if len(opt.split()) > 5]
+    sentence_options = [opt for opt in matched_options if opt.count('.') > 0 or opt.count('?') > 0 or opt.count('!') > 0]
+
+    # If more than 40% are long sentences, likely not appropriate values
+    if len(long_options) > len(matched_options) * 0.4:
+        logger.warning(f"Structure validation failed for '{variable_name}': {len(long_options)}/{len(matched_options)} options are too long")
+        return False
+
+    # If more than 30% contain sentence punctuation, likely descriptions not values
+    if len(sentence_options) > len(matched_options) * 0.3:
+        logger.warning(f"Structure validation failed for '{variable_name}': {len(sentence_options)}/{len(matched_options)} options contain sentence punctuation")
+        return False
+
+    # Use LLM for semantic validation - this works across languages
     sample_options = matched_options[:5] if len(matched_options) > 5 else matched_options
 
     prompt = get_variable_semantic_validation_prompt(variable_name, sample_options)
     response = llm.invoke(prompt).content.strip().lower()
 
-    # Look for clear "yes" or "no" in the response
-    is_valid = "yes" in response and "no" not in response
+    # Look for clear "yes" or "no" in the response (English or Spanish)
+    has_yes = any(word in response.lower() for word in ["yes", "sí", "si"])
+    has_no = any(word in response.lower() for word in ["no"])
+
+    # Default to valid if unclear response
+    is_valid = has_yes and not has_no
+
     logger.debug(f"Semantic validation for '{variable_name}' options: {is_valid}. Response: '{response}'")
     return is_valid
 
@@ -709,80 +749,114 @@ def _validate_semantic_match(
 def _generate_smart_default_options(
     variable_name: str,
     profile_goals_context: str,
-    llm: BaseLanguageModel
+    llm: BaseLanguageModel,
+    language: str = "English"
 ) -> dict[str, Any] | None:
     """Generate smart default options for common variable types when no match is found.
+    Supports English and Spanish.
 
     Args:
         variable_name: The variable name without {{ }}
         profile_goals_context: Text containing profile goals for context
         llm: The language model to use
+        language: The language to generate options in (defaults to English)
 
     Returns:
         A dictionary with the variable definition or None if generation fails
     """
-    # Define patterns and default generators for common variable types
-    common_patterns = {
-        "_type$": {
-            "prompt": f"""
-                Generate a list of 4-6 realistic options for a variable named '{variable_name}'
-                in the context of the following goals:
+    variable_name_lower = variable_name.lower()
 
-                {profile_goals_context[:300]}...
-
-                The variable represents a TYPE or CATEGORY.
-                For example, if the variable is 'bike_type', generate actual types of bikes.
-
-                Output ONLY a JSON list of strings:
-                ["Option 1", "Option 2", "Option 3", ...]
-                """
-        },
-        "date$": {
-            "prompt": """
-                Generate a list of 4-6 realistic date options for a scheduling context.
-                Include a mix of specific dates and relative dates.
-
-                Output ONLY a JSON list of strings:
-                ["tomorrow", "next Monday", "November 15th", ...]
-                """
-        },
-        "time$": {
-            "prompt": """
-                Generate a list of 4-6 realistic time options for an appointment context.
-                Use standard time formats.
-
-                Output ONLY a JSON list of strings:
-                ["9:00 AM", "2:30 PM", "noon", ...]
-                """
-        }
-    }
-
-    # Find matching pattern for this variable name
-    matched_pattern = None
-    for pattern, config in common_patterns.items():
-        if re.search(pattern, variable_name):
-            matched_pattern = pattern
-            prompt = config["prompt"]
+    # Determine variable category based on its name using the centralized patterns
+    variable_category = None
+    for category, patterns in VARIABLE_PATTERNS.items():
+        if any(pattern in variable_name_lower for pattern in patterns):
+            variable_category = category
             break
 
-    if not matched_pattern:
-        logger.debug(f"No default pattern matches variable '{variable_name}'")
-        return None
+    # For _type variables, detect the base concept (bike_type → bike)
+    base_concept = None
+    if variable_category == "type":
+        for type_marker in VARIABLE_PATTERNS["type"]:
+            if type_marker in variable_name_lower:
+                parts = variable_name_lower.split(type_marker)
+                if parts[0]:
+                    base_concept = parts[0].strip('_')
+                break
+
+    # Create a language-aware prompt based on the variable category
+    prompt = None
+
+    if variable_category == "date":
+        prompt = f"""
+            Generate a list of 4-6 realistic date options in {language}.
+            Include a mix of specific dates and relative dates that a user might select.
+
+            The variable is named '{variable_name}' and appears in this context:
+            {profile_goals_context[:300]}...
+
+            Output ONLY a JSON list of strings representing real dates:
+            ["option1", "option2", "option3", ...]
+            """
+    elif variable_category == "time":
+        prompt = f"""
+            Generate a list of 4-6 realistic time options in {language}.
+            Use standard time formats appropriate for {language}.
+
+            The variable is named '{variable_name}' and appears in this context:
+            {profile_goals_context[:300]}...
+
+            Output ONLY a JSON list of strings representing real times:
+            ["option1", "option2", "option3", ...]
+            """
+    elif variable_category == "type" and base_concept:
+        prompt = f"""
+            Generate a list of 4-6 realistic types/categories of {base_concept} in {language}.
+            These should be specific types that a user might select.
+
+            The variable is named '{variable_name}' and appears in this context:
+            {profile_goals_context[:300]}...
+
+            Output ONLY a JSON list of strings representing actual types:
+            ["option1", "option2", "option3", ...]
+            """
+    elif variable_category == "number_of":
+        prompt = f"""
+            Generate a list of 4-6 realistic numeric quantities in {language}.
+            These should be specific quantities a user might select.
+
+            The variable is named '{variable_name}' and appears in this context:
+            {profile_goals_context[:300]}...
+
+            Output ONLY a JSON list of strings representing quantities:
+            ["option1", "option2", "option3", ...]
+            """
+    else:
+        # General prompt for any other variable
+        prompt = f"""
+            Generate a list of 4-6 realistic options for a variable named '{variable_name}' in {language}.
+            These should be actual values a user might select or input.
+
+            The variable appears in this context:
+            {profile_goals_context[:300]}...
+
+            Output ONLY a JSON list of strings:
+            ["option1", "option2", "option3", ...]
+            """
 
     try:
-        logger.info(f"Generating smart default options for '{variable_name}' based on pattern '{matched_pattern}'")
+        logger.info(f"Generating smart default options for '{variable_name}' in {language}")
         response = llm.invoke(prompt)
         response_text = response.content
 
-        # Extract JSON from the response
-        json_match = re.search(r'\[.*\]', response_text, re.DOTALL)
+        # Extract JSON from the response using a non-greedy approach
+        json_match = re.search(r'\[[\s\S]*?\]', response_text)
         if not json_match:
             logger.warning(f"Failed to extract JSON list from smart default response for '{variable_name}'")
             return None
 
         options_list = json.loads(json_match.group(0))
-        if not options_list or not isinstance(options_list, list):
-            logger.warning(f"Invalid options list generated for '{variable_name}'")
+        if not options_list or not isinstance(options_list, list) or len(options_list) < 2:
+            logger.warning(f"Invalid options list generated for '{variable_name}': {options_list}")
             return None
 
         # Create the definition
