@@ -1,0 +1,529 @@
+=== CHATBOT FUNCTIONALITY ANALYSIS ===
+
+
+## FUNCTIONALITIES (Workflow Structure)
+- greet_user_and_introduce_self: Greets the user, introduces itself as a chatbot assistant for Fast Pizza, and states its ability to help with pizza and drink orders. | Category: Chatbot Meta
+  - list_pizza_options: Lists the available pizza options or requests a description of available pizza types. | Category: Order Placement | Outputs: [available_pizzas: A list of available pizza options, including Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian, and Custom (where the customer chooses the ingredients).]
+    - confirm_pizza_choice_and_inquire_menu_preference: Acknowledges the user's Hawaiian pizza selection and asks if they want to order it or see the menu options first. | Category: Order Placement
+      - confirm_pizza_order_and_offer_additions: Confirms the user's pizza order and prompts them to order additional items like drinks or offer further assistance. | Category: Order Placement
+        - prompt_for_drink_order: Prompts the user to specify the number of drinks they want to order and their preferred drink type (coke, sprite, or water). | Category: Order Placement | Params: [number_of_drinks: The number of drinks the user wants to order.; drink_preference: The type of drink the user wants to order. [options: coke, sprite, water]]
+          - provide_order_confirmation: Provides order confirmation details, including a summary of items, total cost, order ID, pickup location, and estimated readiness time. | Category: Order Confirmation | Outputs: [order_summary: A detailed list of the items included in the confirmed order.; confirmation_message: A message informing the user that their order will be ready shortly.; total_cost: The final price of the order.; order_id: A unique identifier assigned to the order.; pickup_location: The physical address of the shop where the order can be picked up.; estimated_readiness_time: The expected time when the order will be prepared and ready for pickup.]
+      - prompt_for_pizza_details: Prompts the user to specify details about the pizza they want to order, including size, type, and any additional items or drinks. | Category: Order Placement | Params: [pizza_size: The desired size of the pizza. [options: large, medium, small]; pizza_type: The type of pizza the user wants to order.; additional_items_or_drinks: Any additional items or drinks the user would like to order.] | Outputs: [pizza_size_options: Pizzas are offered in small, medium, and large sizes.]
+        - prompt_for_drink_order: Prompts the user to specify the number of drinks they want to order and their preferred drink type (coke, sprite, or water). | Category: Order Placement | Params: [number_of_drinks: The number of drinks the user wants to order.; drink_preference: The type of drink the user wants to order. [options: coke, sprite, water]]
+          - provide_order_confirmation: Provides order confirmation details, including a summary of items, total cost, order ID, pickup location, and estimated readiness time. | Category: Order Confirmation | Outputs: [order_summary: A detailed list of the items included in the confirmed order.; confirmation_message: A message informing the user that their order will be ready shortly.; total_cost: The final price of the order.; order_id: A unique identifier assigned to the order.; pickup_location: The physical address of the shop where the order can be picked up.; estimated_readiness_time: The expected time when the order will be prepared and ready for pickup.]
+- inform_no_delivery_and_provide_location: Informs the user that the shop does not offer delivery services and reiterates the shop's location. | Category: Customer Support | Outputs: [delivery_status: No delivery service available; shop_address: The physical address of the pizza shop.]
+- provide_opening_hours: Provides the opening hours of the shop. | Category: Customer Support | Outputs: [opening_hours: Every day from 1pm to 11:30pm]
+- inform_no_real_time_tracking_and_suggest_alternative_contact: Informs the user that real-time tracking is not available and suggests contacting the store or checking order notifications for the current status. | Category: Customer Support
+- inform_lack_of_store_number_and_suggest_alternatives: Informs the user that the store's phone number is unavailable and suggests checking the store's website or order confirmation. | Category: Customer Support
+- decline_to_show_full_menu_and_offer_assistance: Declines to show the full menu but offers to help the user order a drink or answer questions about available drinks. | Category: Order Placement
+- list_drink_options_and_solicit_next_action: Lists available drink options and prompts the user to either order a specific drink, see the full menu, or request further assistance. | Category: Order Placement | Outputs: [drink_options: A list of available drink options, including soft drinks, water, and juices such as orange, apple, and pineapple.]
+- confirm_juice_order: Confirms the juice order. | Category: Order Placement | Outputs: [juice_order_confirmation: Confirmation of the juice ordered.]
+- decline_to_provide_total_cost_and_offer_assistance: Declines to provide the total cost of the order and suggests checking the receipt or contacting the store directly. Offers further assistance. | Category: Payment
+- apologize_or_acknowledge_and_offer_ordering_assistance: Acknowledges a lack of understanding or missing order details and offers assistance with placing an order, including options for predefined or custom items. | Category: Chatbot Meta | Outputs: [available_ordering_options: Ordering predefined pizzas, ordering custom pizzas, ordering drinks]
+- apologize_for_lack_of_topping_details: Apologizes for not having specific information about the toppings on the Pepperoni pizza. | Category: Customer Support
+- acknowledge_negative_and_offer_assistance: Acknowledges a negative response (e.g., declining an order or item addition) and offers further assistance. | Category: Chatbot Meta
+- acknowledge_receiving_price_information: Acknowledges receiving the price information. | Category: Chatbot Meta
+- confirm_order_status_and_request_order_details: Confirms the ability to provide an estimated delivery time and requests confirmation about whether an order has already been placed. | Category: Order Tracking
+  - prompt_for_order_tracking_information: Inquires about order number or name to assist with order tracking. | Category: Customer Support | Params: [order_identification: Order number or name under which the order was placed.]
+    - confirm_order_preparation_and_notify_delivery: Confirms that the order is being prepared and informs the user they will receive a notification when it is out for delivery. | Category: Order Tracking | Outputs: [order_status: Confirmation of order preparation and notification of delivery.]
+- provide_vegetarian_pizza_information: Provides information about the ingredients and toppings typically included in a vegetarian pizza. | Category: Order Placement | Outputs: [vegetarian_pizza_toppings: A list of common vegetarian pizza toppings, including mushrooms, bell peppers, onions, olives, and tomatoes.]
+- provide_estimated_delivery_time: Provides an estimated delivery time range for the pizza and may offer further assistance. | Category: Order Tracking | Outputs: [estimated_delivery_time: The estimated time range for pizza delivery, typically around 15 minutes per pizza, with 30-45 minutes as a reasonable estimate.]
+
+## FUNCTIONALITIES (By Category)
+
+### CATEGORY: Chatbot Meta (4 functions)
+- greet_user_and_introduce_self: Greets the user, introduces itself as a chatbot assistant for Fast Pizza, and states its ability to help with pizza and drink orders.
+- apologize_or_acknowledge_and_offer_ordering_assistance: Acknowledges a lack of understanding or missing order details and offers assistance with placing an order, including options for predefined or custom items.
+- acknowledge_negative_and_offer_assistance: Acknowledges a negative response (e.g., declining an order or item addition) and offers further assistance.
+- acknowledge_receiving_price_information: Acknowledges receiving the price information.
+
+### CATEGORY: Customer Support (6 functions)
+- inform_no_delivery_and_provide_location: Informs the user that the shop does not offer delivery services and reiterates the shop's location.
+- provide_opening_hours: Provides the opening hours of the shop.
+- inform_no_real_time_tracking_and_suggest_alternative_contact: Informs the user that real-time tracking is not available and suggests contacting the store or checking order notifications for the current status.
+- inform_lack_of_store_number_and_suggest_alternatives: Informs the user that the store's phone number is unavailable and suggests checking the store's website or order confirmation.
+- apologize_for_lack_of_topping_details: Apologizes for not having specific information about the toppings on the Pepperoni pizza.
+- prompt_for_order_tracking_information: Inquires about order number or name to assist with order tracking.
+
+### CATEGORY: Order Confirmation (2 functions)
+- provide_order_confirmation: Provides order confirmation details, including a summary of items, total cost, order ID, pickup location, and estimated readiness time.
+- provide_order_confirmation: Provides order confirmation details, including a summary of items, total cost, order ID, pickup location, and estimated readiness time.
+
+### CATEGORY: Order Placement (10 functions)
+- list_pizza_options: Lists the available pizza options or requests a description of available pizza types.
+- confirm_pizza_choice_and_inquire_menu_preference: Acknowledges the user's Hawaiian pizza selection and asks if they want to order it or see the menu options first.
+- confirm_pizza_order_and_offer_additions: Confirms the user's pizza order and prompts them to order additional items like drinks or offer further assistance.
+- prompt_for_drink_order: Prompts the user to specify the number of drinks they want to order and their preferred drink type (coke, sprite, or water).
+- prompt_for_pizza_details: Prompts the user to specify details about the pizza they want to order, including size, type, and any additional items or drinks.
+- prompt_for_drink_order: Prompts the user to specify the number of drinks they want to order and their preferred drink type (coke, sprite, or water).
+- decline_to_show_full_menu_and_offer_assistance: Declines to show the full menu but offers to help the user order a drink or answer questions about available drinks.
+- list_drink_options_and_solicit_next_action: Lists available drink options and prompts the user to either order a specific drink, see the full menu, or request further assistance.
+- confirm_juice_order: Confirms the juice order.
+- provide_vegetarian_pizza_information: Provides information about the ingredients and toppings typically included in a vegetarian pizza.
+
+### CATEGORY: Order Tracking (3 functions)
+- confirm_order_status_and_request_order_details: Confirms the ability to provide an estimated delivery time and requests confirmation about whether an order has already been placed.
+- confirm_order_preparation_and_notify_delivery: Confirms that the order is being prepared and informs the user they will receive a notification when it is out for delivery.
+- provide_estimated_delivery_time: Provides an estimated delivery time range for the pizza and may offer further assistance.
+
+### CATEGORY: Payment (1 functions)
+- decline_to_provide_total_cost_and_offer_assistance: Declines to provide the total cost of the order and suggests checking the receipt or contacting the store directly. Offers further assistance.
+
+## FUNCTIONALITIES (Raw JSON Structure)
+[
+  {
+    "name": "greet_user_and_introduce_self",
+    "description": "Greets the user, introduces itself as a chatbot assistant for Fast Pizza, and states its ability to help with pizza and drink orders.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": [
+      {
+        "name": "list_pizza_options",
+        "description": "Lists the available pizza options or requests a description of available pizza types.",
+        "parameters": [],
+        "outputs": [
+          {
+            "category": "available_pizzas",
+            "description": "A list of available pizza options, including Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian, and Custom (where the customer chooses the ingredients)."
+          }
+        ],
+        "parent_names": [
+          "greet_user_and_introduce_self"
+        ],
+        "suggested_category": "Order Placement",
+        "children": [
+          {
+            "name": "confirm_pizza_choice_and_inquire_menu_preference",
+            "description": "Acknowledges the user's Hawaiian pizza selection and asks if they want to order it or see the menu options first.",
+            "parameters": [],
+            "outputs": [],
+            "parent_names": [
+              "list_pizza_options"
+            ],
+            "suggested_category": "Order Placement",
+            "children": [
+              {
+                "name": "confirm_pizza_order_and_offer_additions",
+                "description": "Confirms the user's pizza order and prompts them to order additional items like drinks or offer further assistance.",
+                "parameters": [],
+                "outputs": [],
+                "parent_names": [
+                  "confirm_pizza_choice_and_inquire_menu_preference"
+                ],
+                "suggested_category": "Order Placement",
+                "children": [
+                  {
+                    "name": "prompt_for_drink_order",
+                    "description": "Prompts the user to specify the number of drinks they want to order and their preferred drink type (coke, sprite, or water).",
+                    "parameters": [
+                      {
+                        "name": "number_of_drinks",
+                        "description": "The number of drinks the user wants to order.",
+                        "options": []
+                      },
+                      {
+                        "name": "drink_preference",
+                        "description": "The type of drink the user wants to order.",
+                        "options": [
+                          "coke",
+                          "sprite",
+                          "water"
+                        ]
+                      }
+                    ],
+                    "outputs": [],
+                    "parent_names": [
+                      "confirm_pizza_order_and_offer_additions",
+                      "prompt_for_pizza_details"
+                    ],
+                    "suggested_category": "Order Placement",
+                    "children": [
+                      {
+                        "name": "provide_order_confirmation",
+                        "description": "Provides order confirmation details, including a summary of items, total cost, order ID, pickup location, and estimated readiness time.",
+                        "parameters": [],
+                        "outputs": [
+                          {
+                            "category": "order_summary",
+                            "description": "A detailed list of the items included in the confirmed order."
+                          },
+                          {
+                            "category": "confirmation_message",
+                            "description": "A message informing the user that their order will be ready shortly."
+                          },
+                          {
+                            "category": "total_cost",
+                            "description": "The final price of the order."
+                          },
+                          {
+                            "category": "order_id",
+                            "description": "A unique identifier assigned to the order."
+                          },
+                          {
+                            "category": "pickup_location",
+                            "description": "The physical address of the shop where the order can be picked up."
+                          },
+                          {
+                            "category": "estimated_readiness_time",
+                            "description": "The expected time when the order will be prepared and ready for pickup."
+                          }
+                        ],
+                        "parent_names": [
+                          "prompt_for_drink_order"
+                        ],
+                        "suggested_category": "Order Confirmation",
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "prompt_for_pizza_details",
+                "description": "Prompts the user to specify details about the pizza they want to order, including size, type, and any additional items or drinks.",
+                "parameters": [
+                  {
+                    "name": "pizza_size",
+                    "description": "The desired size of the pizza.",
+                    "options": [
+                      "large",
+                      "medium",
+                      "small"
+                    ]
+                  },
+                  {
+                    "name": "pizza_type",
+                    "description": "The type of pizza the user wants to order.",
+                    "options": []
+                  },
+                  {
+                    "name": "additional_items_or_drinks",
+                    "description": "Any additional items or drinks the user would like to order.",
+                    "options": []
+                  }
+                ],
+                "outputs": [
+                  {
+                    "category": "pizza_size_options",
+                    "description": "Pizzas are offered in small, medium, and large sizes."
+                  }
+                ],
+                "parent_names": [
+                  "confirm_pizza_choice_and_inquire_menu_preference"
+                ],
+                "suggested_category": "Order Placement",
+                "children": [
+                  {
+                    "name": "prompt_for_drink_order",
+                    "description": "Prompts the user to specify the number of drinks they want to order and their preferred drink type (coke, sprite, or water).",
+                    "parameters": [
+                      {
+                        "name": "number_of_drinks",
+                        "description": "The number of drinks the user wants to order.",
+                        "options": []
+                      },
+                      {
+                        "name": "drink_preference",
+                        "description": "The type of drink the user wants to order.",
+                        "options": [
+                          "coke",
+                          "sprite",
+                          "water"
+                        ]
+                      }
+                    ],
+                    "outputs": [],
+                    "parent_names": [
+                      "confirm_pizza_order_and_offer_additions",
+                      "prompt_for_pizza_details"
+                    ],
+                    "suggested_category": "Order Placement",
+                    "children": [
+                      {
+                        "name": "provide_order_confirmation",
+                        "description": "Provides order confirmation details, including a summary of items, total cost, order ID, pickup location, and estimated readiness time.",
+                        "parameters": [],
+                        "outputs": [
+                          {
+                            "category": "order_summary",
+                            "description": "A detailed list of the items included in the confirmed order."
+                          },
+                          {
+                            "category": "confirmation_message",
+                            "description": "A message informing the user that their order will be ready shortly."
+                          },
+                          {
+                            "category": "total_cost",
+                            "description": "The final price of the order."
+                          },
+                          {
+                            "category": "order_id",
+                            "description": "A unique identifier assigned to the order."
+                          },
+                          {
+                            "category": "pickup_location",
+                            "description": "The physical address of the shop where the order can be picked up."
+                          },
+                          {
+                            "category": "estimated_readiness_time",
+                            "description": "The expected time when the order will be prepared and ready for pickup."
+                          }
+                        ],
+                        "parent_names": [
+                          "prompt_for_drink_order"
+                        ],
+                        "suggested_category": "Order Confirmation",
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "inform_no_delivery_and_provide_location",
+    "description": "Informs the user that the shop does not offer delivery services and reiterates the shop's location.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "delivery_status",
+        "description": "No delivery service available"
+      },
+      {
+        "category": "shop_address",
+        "description": "The physical address of the pizza shop."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Customer Support",
+    "children": []
+  },
+  {
+    "name": "provide_opening_hours",
+    "description": "Provides the opening hours of the shop.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "opening_hours",
+        "description": "Every day from 1pm to 11:30pm"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Customer Support",
+    "children": []
+  },
+  {
+    "name": "inform_no_real_time_tracking_and_suggest_alternative_contact",
+    "description": "Informs the user that real-time tracking is not available and suggests contacting the store or checking order notifications for the current status.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Customer Support",
+    "children": []
+  },
+  {
+    "name": "inform_lack_of_store_number_and_suggest_alternatives",
+    "description": "Informs the user that the store's phone number is unavailable and suggests checking the store's website or order confirmation.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Customer Support",
+    "children": []
+  },
+  {
+    "name": "decline_to_show_full_menu_and_offer_assistance",
+    "description": "Declines to show the full menu but offers to help the user order a drink or answer questions about available drinks.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Order Placement",
+    "children": []
+  },
+  {
+    "name": "list_drink_options_and_solicit_next_action",
+    "description": "Lists available drink options and prompts the user to either order a specific drink, see the full menu, or request further assistance.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "drink_options",
+        "description": "A list of available drink options, including soft drinks, water, and juices such as orange, apple, and pineapple."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Order Placement",
+    "children": []
+  },
+  {
+    "name": "confirm_juice_order",
+    "description": "Confirms the juice order.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "juice_order_confirmation",
+        "description": "Confirmation of the juice ordered."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Order Placement",
+    "children": []
+  },
+  {
+    "name": "decline_to_provide_total_cost_and_offer_assistance",
+    "description": "Declines to provide the total cost of the order and suggests checking the receipt or contacting the store directly. Offers further assistance.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Payment",
+    "children": []
+  },
+  {
+    "name": "apologize_or_acknowledge_and_offer_ordering_assistance",
+    "description": "Acknowledges a lack of understanding or missing order details and offers assistance with placing an order, including options for predefined or custom items.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "available_ordering_options",
+        "description": "Ordering predefined pizzas, ordering custom pizzas, ordering drinks"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "apologize_for_lack_of_topping_details",
+    "description": "Apologizes for not having specific information about the toppings on the Pepperoni pizza.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Customer Support",
+    "children": []
+  },
+  {
+    "name": "acknowledge_negative_and_offer_assistance",
+    "description": "Acknowledges a negative response (e.g., declining an order or item addition) and offers further assistance.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "acknowledge_receiving_price_information",
+    "description": "Acknowledges receiving the price information.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "confirm_order_status_and_request_order_details",
+    "description": "Confirms the ability to provide an estimated delivery time and requests confirmation about whether an order has already been placed.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Order Tracking",
+    "children": [
+      {
+        "name": "prompt_for_order_tracking_information",
+        "description": "Inquires about order number or name to assist with order tracking.",
+        "parameters": [
+          {
+            "name": "order_identification",
+            "description": "Order number or name under which the order was placed.",
+            "options": []
+          }
+        ],
+        "outputs": [],
+        "parent_names": [
+          "confirm_order_status_and_request_order_details"
+        ],
+        "suggested_category": "Customer Support",
+        "children": [
+          {
+            "name": "confirm_order_preparation_and_notify_delivery",
+            "description": "Confirms that the order is being prepared and informs the user they will receive a notification when it is out for delivery.",
+            "parameters": [],
+            "outputs": [
+              {
+                "category": "order_status",
+                "description": "Confirmation of order preparation and notification of delivery."
+              }
+            ],
+            "parent_names": [
+              "prompt_for_order_tracking_information"
+            ],
+            "suggested_category": "Order Tracking",
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "provide_vegetarian_pizza_information",
+    "description": "Provides information about the ingredients and toppings typically included in a vegetarian pizza.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "vegetarian_pizza_toppings",
+        "description": "A list of common vegetarian pizza toppings, including mushrooms, bell peppers, onions, olives, and tomatoes."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Order Placement",
+    "children": []
+  },
+  {
+    "name": "provide_estimated_delivery_time",
+    "description": "Provides an estimated delivery time range for the pizza and may offer further assistance.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "estimated_delivery_time",
+        "description": "The estimated time range for pizza delivery, typically around 15 minutes per pizza, with 30-45 minutes as a reasonable estimate."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Order Tracking",
+    "children": []
+  }
+]
+## SUPPORTED LANGUAGES
+1. English
+
+## FALLBACK MESSAGE
+I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.
+## 
+TOKEN USAGE STATISTICS
+EXPLORATION PHASE
+  Prompt tokens:       417,097
+  Completion tokens:   13,781
+  Total tokens:        430,878
+  Estimated cost:      $0.0472 USD
+
+ANALYSIS PHASE
+  Prompt tokens:       210,633
+  Completion tokens:   27,644
+  Total tokens:        238,277
+  Estimated cost:      $0.0321 USD
+
+TOTAL TOKEN CONSUMPTION
+  Total LLM calls:     1,073
+  Successful calls:    1,073
+  Failed calls:        0
+  Prompt tokens:       627,730
+  Completion tokens:   41,425
+  Total tokens:        669,155
+  Estimated cost:      $0.0793 USD
+
+COST MODEL USED
+  default
