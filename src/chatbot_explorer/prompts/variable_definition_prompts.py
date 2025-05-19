@@ -125,8 +125,10 @@ def get_variable_to_datasource_matching_prompt(
         full_options = source.get("options", [])
         options_preview_str = "N/A"
         if isinstance(full_options, list) and full_options:
+            # Show more option examples to help with semantic matching
+            preview_count = min(5, len(full_options))
             options_preview_str = (
-                f"{full_options[:3]}{'...' if len(full_options) > 3 else ''} (Total: {len(full_options)} options)"
+                f"{full_options[:preview_count]}{'...' if len(full_options) > preview_count else ''} (Total: {len(full_options)} options)"
             )
 
         sources_str_list.append(
@@ -155,14 +157,27 @@ AVAILABLE DATA SOURCES (Parameters or List-like Outputs):
 {sources_formatted_str}
 
 **MATCHING INSTRUCTIONS:**
-1.  For each 'GOAL VARIABLE', find the BEST 'DATA SOURCE' from the list above.
-2.  A match is good if the variable's intended meaning aligns with the data source's name, description, and example options.
-3.  **TYPE COMPATIBILITY: Crucially, the *nature* of the GOAL VARIABLE must align with the *nature* of the options in the DATA SOURCE. For example, if a GOAL VARIABLE clearly implies a numeric input (e.g., '{{number_of_items}}', '{{age}}'), DO NOT match it to a DATA SOURCE that provides a list of textual names or categories (e.g., item types, colors) unless the variable name *explicitly* suggests choosing from those named categories.**
-4.  **Prioritize sources of type 'direct_parameter' if the variable name closely matches the source_name of a direct parameter.**
-5.  Consider 'output_as_parameter_options' when a goal variable seems to represent a *choice to be made from a list that the chatbot would provide*. The variable name might be more generic (e.g., `{{chosen_item}}`) while the data source name is more specific (e.g., `item_type_options`).
-6.  If a variable clearly relates to a specific "Origin Functionality" mentioned in a data source, that increases match likelihood.
-7.  If multiple data sources seem plausible, choose the one whose `source_name` or `source_description` is most semantically similar to the GOAL VARIABLE.
-8.  **Crucially, the `options` from the matched DATA SOURCE will be used as the data for the GOAL VARIABLE.**
+
+1. **STRICT SEMANTIC MATCHING**: The variable name explicitly indicates what kind of data it should contain. The data source's options MUST contain EXACTLY that kind of data. For example:
+   - For "bike_type", ONLY match to a data source containing actual TYPES OF BIKES (mountain bike, road bike, etc.)
+   - For "appointment_date", ONLY match to a data source containing DATE FORMATS
+   - For "payment_method", ONLY match to a data source containing PAYMENT METHODS (credit card, PayPal, etc.)
+
+2. **CRITICALLY EXAMINE OPTIONS**: Look carefully at the actual option values in "Example Options Preview" - do they truly represent what the variable name suggests? If not, DO NOT match.
+
+3. **REJECT INAPPROPRIATE MATCHES**: It is better to NOT match a variable than to match it to semantically inappropriate options.
+
+4. **TYPE COMPATIBILITY**: The *nature* of the GOAL VARIABLE must align with the *nature* of the options. For example:
+   - If a variable is named "{{number_of_items}}", DO NOT match to a data source listing item types or categories
+   - If a variable ends with "_type", it should ONLY match to a data source with specific types/categories of that concept
+
+5. **VARIABLE NAME PATTERNS**:
+   - If variable ends with "_type" → match only to sources containing specific types/categories of that item
+   - If variable contains "date" → match only to sources containing date formats
+   - If variable contains "time" → match only to sources containing time formats
+   - If variable contains "number_of" → match only to sources containing numeric values
+
+6. **QUALITY CHECK**: After finding a potential match, ask yourself: "If I use these options for this variable, would it make logical sense in a conversation?"
 
 Output your matches as a JSON object where keys are the **exact** 'GOAL VARIABLE' names and values are objects containing:
 - "matched_data_source_id": "The ID of the matched Data Source (e.g., DS1, DS2)".
@@ -177,9 +192,10 @@ Example JSON Output:
   }}
 }}
 
-If a GOAL VARIABLE has no good match in the AVAILABLE DATA SOURCES, **DO NOT include it in your JSON output.**
-**It is critical that you only provide a match if the options from the data source are semantically appropriate for the variable. For example, do not match a variable like 'number_of_items' to a data source that lists item types.**
-Return ONLY the JSON object, which might be empty if no good matches are found.
+**IMPORTANT**: If a GOAL VARIABLE has no good semantic match in the AVAILABLE DATA SOURCES, **DO NOT include it in your JSON output.**
+It is far better to omit a variable than to match it incorrectly.
+
+Return ONLY the JSON object (which might be empty if no good matches are found).
 """
 
 
@@ -254,4 +270,53 @@ CLEANED_OPTIONS:
 
 INVALID_OPTION_SUGGESTION:
 Extra Large
+"""
+
+
+def get_variable_semantic_validation_prompt(
+    variable_name: str,
+    options: list[str],
+) -> str:
+    """Creates a prompt to validate if options are semantically appropriate for a variable.
+
+    Args:
+        variable_name: The variable name without {{ }}
+        options: List of options to validate
+
+    Returns:
+        The prompt for semantic validation
+    """
+    options_str = "\n".join([f"- {opt}" for opt in options])
+
+    return f"""
+You are a domain expert helping validate data for chatbot testing.
+
+Variable Name: {variable_name}
+
+Proposed Options for this variable:
+{options_str}
+
+TASK: Determine if these options are SEMANTICALLY APPROPRIATE values for a variable named '{variable_name}'.
+
+Consider the following:
+1. The variable name should give strong clues about what kind of values it should contain
+2. The options should be legitimate, specific instances or examples of the concept in the variable name
+3. For example:
+   - For "drink_type", appropriate options would be "Coke", "Water", "Coffee", etc.
+   - For "shipping_method", appropriate options would be "Standard", "Express", "Overnight", etc.
+   - For "color", appropriate options would be "Red", "Blue", "Green", etc.
+   - For "bike_type", appropriate options would be "Mountain Bike", "Road Bike", "Hybrid", etc.
+
+Rules for specific variable patterns:
+- If the variable ends with "_type", options should be specific types or categories
+- If the variable contains "date", options should be date formats
+- If the variable contains "time", options should be time formats
+- If the variable contains "number_of", options should be numeric values or ranges
+- If the variable contains "price" or "cost", options should be monetary values
+
+Answer ONLY with "Yes" or "No".
+- Answer "Yes" if the options are semantically appropriate for the variable name.
+- Answer "No" if the options are NOT semantically appropriate for the variable name.
+
+DO NOT explain your reasoning or add any other text to your response.
 """

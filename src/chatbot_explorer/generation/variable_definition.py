@@ -13,6 +13,7 @@ from chatbot_explorer.prompts.variable_definition_prompts import (
     ProfileContext,
     get_clean_and_suggest_negative_option_prompt,
     get_variable_definition_prompt,
+    get_variable_semantic_validation_prompt,
     get_variable_to_datasource_matching_prompt,
 )
 from chatbot_explorer.utils.logging_utils import get_logger
@@ -322,41 +323,63 @@ def generate_variable_definitions(
 
                 if not cleaned_options:
                     logger.warning(
-                        f"LLM cleaning resulted in no valid options for '{variable_name}'. Original dirty: {dirty_options}. Will try LLM fallback for definition."
+                        f"LLM cleaning resulted in no valid options for '{variable_name}'. Original dirty: {dirty_options}. Will try smart defaults or LLM fallback."
                     )
+                    # Try smart defaults before general LLM definition
+                    parsed_def = _generate_smart_default_options(
+                        variable_name=variable_name,
+                        profile_goals_context=goals_text,
+                        llm=llm
+                    )
+                    if not parsed_def:
+                        # Fall back to general LLM definition
+                        parsed_def = _define_single_variable_with_retry(
+                            variable_name,
+                            var_def_context,
+                        )
                 else:
                     # Use cleaned options as final options
                     final_options = cleaned_options
 
-                # Parse INVALID_OPTION_SUGGESTION
-                if "INVALID_OPTION_SUGGESTION:" in response_content:
-                    invalid_section = response_content.split("INVALID_OPTION_SUGGESTION:")[1].strip()
-                    if invalid_section and invalid_section.lower() != "none":
-                        invalid_option = invalid_section.split("\n")[0].strip()
+                    # Parse INVALID_OPTION_SUGGESTION
+                    if "INVALID_OPTION_SUGGESTION:" in response_content:
+                        invalid_section = response_content.split("INVALID_OPTION_SUGGESTION:")[1].strip()
+                        if invalid_section and invalid_section.lower() != "none":
+                            invalid_option = invalid_section.split("\n")[0].strip()
 
-                if not invalid_option:
-                    logger.warning(
-                        f"LLM did not suggest an invalid option for '{variable_name}'. Original dirty: {dirty_options}"
+                    if not invalid_option:
+                        logger.warning(
+                            f"LLM did not suggest an invalid option for '{variable_name}'. Original dirty: {dirty_options}"
+                        )
+                    else:
+                        final_options.append(invalid_option)
+
+                    parsed_def = {
+                        "function": "forward()",
+                        "type": "string",
+                        "data": final_options,
+                    }
+                    logger.debug(
+                        f"Using pre-matched options for variable '{variable_name}'. Options count: {len(final_options)}. Preview: {final_options[:3]}{'...' if len(final_options) > 3 else ''}"
                     )
-                else:
-                    final_options.append(invalid_option)
-
-                parsed_def = {
-                    "function": "forward()",
-                    "type": "string",
-                    "data": final_options,
-                }
-                logger.debug(
-                    f"Using pre-matched options for variable '{variable_name}'. Options count: {len(final_options)}. Preview: {final_options[:3]}{'...' if len(final_options) > 3 else ''}"
-                )
             else:
-                # No pre-matched options, generate definition (function, type, data) with LLM
-                logger.debug(f"No pre-matched options for '{variable_name}'. Generating definition with LLM.")
-                parsed_def = _define_single_variable_with_retry(
-                    variable_name,
-                    var_def_context,
+                # No pre-matched options, try smart defaults first for common patterns
+                logger.debug(f"No pre-matched options for '{variable_name}'. Trying smart defaults first.")
+                parsed_def = _generate_smart_default_options(
+                    variable_name=variable_name,
+                    profile_goals_context=goals_text,
+                    llm=llm
                 )
-                logger.debug(f"LLM-Generated definition for '{variable_name}': {parsed_def}")
+
+                if not parsed_def:
+                    # Fall back to general LLM definition
+                    logger.debug(f"No smart defaults for '{variable_name}'. Generating definition with LLM.")
+                    parsed_def = _define_single_variable_with_retry(
+                        variable_name,
+                        var_def_context,
+                    )
+
+                logger.debug(f"Definition for '{variable_name}': {parsed_def}")
 
             if parsed_def:
                 variable_definitions[variable_name] = parsed_def
@@ -566,29 +589,39 @@ def _extract_parameter_options_for_profile(
 def _match_variables_to_data_sources_with_llm(
     goal_variable_names: list[str], potential_data_sources: list[dict[str, Any]], llm: BaseLanguageModel
 ) -> dict[str, dict]:
+    """Match variables to data sources using the LLM to find semantic matches."""
     if not goal_variable_names or not potential_data_sources:
         return {}
 
-    profile_context_for_llm = "User is trying to interact with the chatbot to achieve general tasks."
+    # Match each variable individually for better focus and context
+    final_matches = {}
+    for variable_name in goal_variable_names:
+        final_matches.update(_match_single_variable_to_data_sources(variable_name, potential_data_sources, llm))
+
+    return final_matches
+
+
+def _match_single_variable_to_data_sources(
+    variable_name: str, potential_data_sources: list[dict[str, Any]], llm: BaseLanguageModel
+) -> dict[str, dict]:
+    """Match a single variable to data sources for better focused matching."""
+    profile_context_for_llm = f"User is trying to interact with the chatbot to find information about {variable_name}."
 
     prompt = get_variable_to_datasource_matching_prompt(
-        goal_variable_names, potential_data_sources, profile_context_for_llm
+        [variable_name], potential_data_sources, profile_context_for_llm
     )
 
-    logger.debug(
-        f"Attempting LLM matching for variables: {goal_variable_names} against {len(potential_data_sources)} sources."
-    )
-    logger.debug(f"LLM Matching Prompt:\n{prompt}")
+    logger.debug(f"Attempting LLM matching for variable: {variable_name} against {len(potential_data_sources)} sources.")
+    logger.debug(f"LLM Matching Prompt for {variable_name}:\n{prompt}")
 
     response_content = llm.invoke(prompt).content.strip()
-
-    logger.debug(f"LLM Matching Response Content:\n{response_content}")
+    logger.debug(f"LLM Matching Response Content for {variable_name}:\n{response_content}")
 
     try:
         # Attempt to parse the JSON from the response
         match_object_str = response_content
         if "{" not in match_object_str:
-            logger.debug("LLM response for variable matching did not contain JSON. Assuming no matches.")
+            logger.debug(f"LLM response for variable {variable_name} matching did not contain JSON. No match found.")
             return {}
 
         # Extract JSON part if surrounded by backticks or other text
@@ -598,7 +631,7 @@ def _match_variables_to_data_sources_with_llm(
 
         parsed_matches = json.loads(match_object_str)
 
-        # Validate and structure the final matches
+        # Process the match for this variable
         final_matches = {}
         for var_name, match_info in parsed_matches.items():
             cleaned_var_name = var_name.replace("{{", "").replace("}}", "")
@@ -608,11 +641,25 @@ def _match_variables_to_data_sources_with_llm(
                     source_index = int(source_id_str.replace("DS", "")) - 1  # Convert DS3 to index 2
                     if 0 <= source_index < len(potential_data_sources):
                         matched_source_detail = potential_data_sources[source_index]
+                        matched_options = matched_source_detail.get("options", [])
+
+                        # Validate that the matched options are semantically appropriate for the variable
+                        if matched_options and not _validate_semantic_match(cleaned_var_name, matched_options, llm):
+                            logger.warning(
+                                f"Variable '{cleaned_var_name}' matched to source '{matched_source_detail.get('source_name')}' "
+                                f"but options don't appear to be semantically appropriate. Skipping this match."
+                            )
+                            continue
+
                         final_matches[cleaned_var_name] = {
                             "source_name": matched_source_detail.get("source_name"),
                             "type": matched_source_detail.get("type"),
-                            "options": matched_source_detail.get("options", []),  # Use FULL options
+                            "options": matched_options,
                         }
+                        logger.info(
+                            f"Variable '{cleaned_var_name}' successfully matched to '{matched_source_detail.get('source_name')}' "
+                            f"with {len(matched_options)} semantically appropriate options"
+                        )
                     else:
                         logger.warning(f"LLM returned invalid source ID '{source_id_str}' for var '{var_name}'.")
                 except ValueError:
@@ -620,12 +667,133 @@ def _match_variables_to_data_sources_with_llm(
             else:
                 logger.warning(f"LLM match for variable '{var_name}' was malformed or missing ID: {match_info}")
 
-        logger.debug(f"LLM successfully matched {len(final_matches)} variables to data sources.")
         return final_matches
 
     except json.JSONDecodeError:
-        logger.warning(f"Failed to parse JSON from LLM variable matching response: {response_content}")
+        logger.warning(f"Failed to parse JSON from LLM variable matching response for {variable_name}: {response_content}")
         return {}
     except Exception as e:
-        logger.error(f"Error during LLM variable matching or parsing: {e}")
+        logger.error(f"Error during LLM variable matching or parsing for {variable_name}: {e}")
         return {}
+
+
+def _validate_semantic_match(
+    variable_name: str, matched_options: list[str], llm: BaseLanguageModel
+) -> bool:
+    """Validate that the matched options are semantically appropriate for the variable name.
+
+    Args:
+        variable_name: The name of the variable without {{ }}
+        matched_options: List of options from the matched data source
+        llm: The language model to use for validation
+
+    Returns:
+        bool: True if the options are semantically appropriate, False otherwise
+    """
+    # Skip validation for very small sets of options or if there are no options
+    if not matched_options or len(matched_options) < 2:
+        return True
+
+    # Take a sample of options for validation (up to 5)
+    sample_options = matched_options[:5] if len(matched_options) > 5 else matched_options
+
+    prompt = get_variable_semantic_validation_prompt(variable_name, sample_options)
+    response = llm.invoke(prompt).content.strip().lower()
+
+    # Look for clear "yes" or "no" in the response
+    is_valid = "yes" in response and "no" not in response
+    logger.debug(f"Semantic validation for '{variable_name}' options: {is_valid}. Response: '{response}'")
+    return is_valid
+
+
+def _generate_smart_default_options(
+    variable_name: str,
+    profile_goals_context: str,
+    llm: BaseLanguageModel
+) -> dict[str, Any] | None:
+    """Generate smart default options for common variable types when no match is found.
+
+    Args:
+        variable_name: The variable name without {{ }}
+        profile_goals_context: Text containing profile goals for context
+        llm: The language model to use
+
+    Returns:
+        A dictionary with the variable definition or None if generation fails
+    """
+    # Define patterns and default generators for common variable types
+    common_patterns = {
+        "_type$": {
+            "prompt": f"""
+                Generate a list of 4-6 realistic options for a variable named '{variable_name}'
+                in the context of the following goals:
+
+                {profile_goals_context[:300]}...
+
+                The variable represents a TYPE or CATEGORY.
+                For example, if the variable is 'bike_type', generate actual types of bikes.
+
+                Output ONLY a JSON list of strings:
+                ["Option 1", "Option 2", "Option 3", ...]
+                """
+        },
+        "date$": {
+            "prompt": """
+                Generate a list of 4-6 realistic date options for a scheduling context.
+                Include a mix of specific dates and relative dates.
+
+                Output ONLY a JSON list of strings:
+                ["tomorrow", "next Monday", "November 15th", ...]
+                """
+        },
+        "time$": {
+            "prompt": """
+                Generate a list of 4-6 realistic time options for an appointment context.
+                Use standard time formats.
+
+                Output ONLY a JSON list of strings:
+                ["9:00 AM", "2:30 PM", "noon", ...]
+                """
+        }
+    }
+
+    # Find matching pattern for this variable name
+    matched_pattern = None
+    for pattern, config in common_patterns.items():
+        if re.search(pattern, variable_name):
+            matched_pattern = pattern
+            prompt = config["prompt"]
+            break
+
+    if not matched_pattern:
+        logger.debug(f"No default pattern matches variable '{variable_name}'")
+        return None
+
+    try:
+        logger.info(f"Generating smart default options for '{variable_name}' based on pattern '{matched_pattern}'")
+        response = llm.invoke(prompt)
+        response_text = response.content
+
+        # Extract JSON from the response
+        json_match = re.search(r'\[.*\]', response_text, re.DOTALL)
+        if not json_match:
+            logger.warning(f"Failed to extract JSON list from smart default response for '{variable_name}'")
+            return None
+
+        options_list = json.loads(json_match.group(0))
+        if not options_list or not isinstance(options_list, list):
+            logger.warning(f"Invalid options list generated for '{variable_name}'")
+            return None
+
+        # Create the definition
+        definition = {
+            "function": "forward()",
+            "type": "string",
+            "data": options_list
+        }
+        logger.info(f"Created smart default definition for '{variable_name}' with {len(options_list)} options")
+        return definition
+
+    except Exception as e:
+        logger.error(f"Error generating smart default options for '{variable_name}': {e}")
+        return None
