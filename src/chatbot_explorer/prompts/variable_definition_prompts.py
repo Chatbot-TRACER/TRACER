@@ -150,7 +150,7 @@ A data source can be a direct input parameter of a chatbot function OR an output
 PROFILE CONTEXT (Role and Goals):
 {profile_role_and_goals}
 
-GOAL VARIABLES TO MATCH:
+GOAL VARIABLE TO MATCH:
 {variables_formatted_str}
 
 AVAILABLE DATA SOURCES (Parameters or List-like Outputs):
@@ -182,11 +182,8 @@ Output your matches as a JSON object where keys are the **exact** 'GOAL VARIABLE
 
 Example JSON Output:
 {{
-  "{{variable_name_from_goal1}}": {{
-    "matched_data_source_id": "DS3"
-  }},
-  "{{variable_name_from_goal2}}": {{
-    "matched_data_source_id": "DS1"
+  "{{variable_name}}": {{
+    "matched_data_source_id": "DSX"
   }}
 }}
 
