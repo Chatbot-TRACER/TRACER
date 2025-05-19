@@ -1,0 +1,45 @@
+test_name: Tune-Up Package Inquirer
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A user interested in detailed information about tune-up packages and their contents.
+  context:
+  - You're considering getting a tune-up for your car to ensure it's running smoothly.
+  - You want to understand the various options available and what each package includes before making a decision.
+  - You're also keen on understanding the price differences between the different tune-up options.
+  goals:
+  - Ask about the price of a tune-up.
+  - Ask what a tune-up includes.
+  - Inquire about what the tune-up for the stated price includes.
+  - Ask if there are different tiers or packages of tune-ups available.
+  - Ask for more detailed information about specific tune-up packages.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry it's a little loud in my shop, can you say that again?
+  output:
+  - tune_up_price:
+      type: money
+      description: The price of a standard tune-up as stated by the chatbot. Look for currency symbols or phrases like "costs", "price is".
+  - tune_up_includes_description:
+      type: str
+      description: A list or description of the items and services included in a standard tune-up.
+  - tune_up_tier_availability:
+      type: string
+      description: Confirmation from the chatbot as to whether different tiers or packages of tune-ups are available. Extract "yes", "no", or a similar affirmative or negative response.
+  - tune_up_package_details:
+      type: str
+      description: Detailed information about a specific tune-up package requested by the user. This output should capture the details provided about a specific package *corresponding to the package name variable used in the goal*. Look for phrases like "includes", "features", or a summary of the package's benefits.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 18
+  interaction_style:
+  - change your mind
+  - single question

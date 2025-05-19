@@ -1,0 +1,44 @@
+test_name: Appointment Scheduler
+llm:
+  temperature: 0.6
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A user looking to schedule or manage a bike service appointment.
+  context:
+  - 'personality: personalities/impatient-user'
+  - Your bike hasn't been running smoothly lately, and you want to get it checked out before your next long ride.
+  - You're not sure if it needs a full repair or if a tune-up will be sufficient to address the issue.
+  goals:
+  - Inquire about the difference between a repair service and a tune-up.
+  - Schedule a tune-up appointment for tomorrow at 10 am.
+  - Confirm the details of the scheduled tune-up appointment.
+  - Attempt to reschedule the appointment for next week.
+  - Ask about the types of bikes the shop services.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry it's a little loud in my shop, can you say that again?
+  output:
+  - service_definition:
+      type: string
+      description: The chatbot's explanation of the difference between a repair service and a tune-up. Look for a comparative description, detailing aspects of each service.
+  - appointment_confirmation:
+      type: string
+      description: Confirmation message including the date and time of the scheduled tune-up appointment. This should include both the date and time in a single, coherent confirmation.
+  - inability_to_reschedule:
+      type: string
+      description: Message from the chatbot stating that rescheduling is not possible and offering alternative options, such as scheduling a new appointment or seeking other assistance.
+  - bike_service_types:
+      type: string
+      description: The chatbot's response listing the types of bikes the shop services. Look for a list or description of bike types.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 18
+  interaction_style:
+  - all questions
