@@ -709,6 +709,13 @@ def run_exploration_session(
     else:
         logger.info("\n=== Starting Exploration Session %d/%d: General Exploration ===", session_num + 1, max_sessions)
 
+    # Create a new conversation for this session
+    new_conversation_success = the_chatbot.create_new_conversation()
+    if new_conversation_success:
+        logger.debug("Created new conversation for session %d", session_num + 1)
+    else:
+        logger.warning("Failed to create new conversation for session %d, continuing with existing conversation", session_num + 1)
+
     # --- Setup Session ---
     session_focus = get_session_focus(current_node)
     primary_language = supported_languages[0] if supported_languages else "English"

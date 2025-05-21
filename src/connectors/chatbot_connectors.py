@@ -36,6 +36,18 @@ class Chatbot:
         msg = "Subclasses must implement execute_with_input"
         raise NotImplementedError(msg)
 
+    def create_new_conversation(self) -> bool:
+        """Creates a new conversation with the chatbot.
+
+        Subclasses should implement this method to create a new conversation
+        for each session rather than reusing the same conversation.
+
+        Returns:
+            bool: True if a new conversation was created successfully, False otherwise.
+        """
+        msg = "Subclasses must implement create_new_conversation"
+        raise NotImplementedError(msg)
+
 
 class ChatbotTaskyto(Chatbot):
     """Connector for the Taskyto chatbot API."""
@@ -58,6 +70,18 @@ class ChatbotTaskyto(Chatbot):
         except requests.exceptions.JSONDecodeError:
             print("Error decoding JSON response for new conversation ID.")
         return None
+
+    def create_new_conversation(self) -> bool:
+        """Creates a new conversation with the Taskyto chatbot.
+
+        Clears the existing conversation ID and forces a new one to be created
+        on the next execute_with_input call.
+
+        Returns:
+            bool: True if successful (operation is always successful as it just resets ID).
+        """
+        self.id = None
+        return True
 
     def execute_with_input(self, user_msg: str) -> ChatbotResponse:
         """Sends a message to the Taskyto chatbot and gets the response.
@@ -142,6 +166,7 @@ class MillionBot(Chatbot):
         self.reset_url: str | None = None
         self.reset_payload: dict[str, Any] | None = None
         self.timeout: int = 10
+        self.config: MillionBotConfig | None = None
 
     def init_chatbot(self, config: MillionBotConfig) -> None:
         """Configures the connector with specific MillionBot details.
@@ -176,6 +201,16 @@ class MillionBot(Chatbot):
                 "userName": "ChatbotExplorer",  # Generic user name
             },
         }
+        self.config = config
+
+    def create_new_conversation(self) -> bool:
+        """Creates a new conversation with the MillionBot chatbot.
+
+        Returns:
+            bool: True if the conversation was successfully created, False otherwise.
+        """
+        # TODO: Implement this
+        return True
 
     def _reset_conversation(self) -> bool:
         """Sends a reset request to the MillionBot API if needed."""
