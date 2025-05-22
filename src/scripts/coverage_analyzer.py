@@ -174,31 +174,90 @@ class CoverageAnalyzer:
         # Calculate overall parameter coverage as average of all module parameter coverages
         # Only include modules that have specifications (not empty ones)
         coverage_percentages = []
+        modules_with_params = []
         for module_name, module_data in parameter_coverage.items():
-            if module_data["type"] != "empty":  # Skip empty modules for overall calculation
+            if module_data["type"] != "empty":
                 coverage_percentages.append(module_data["overall"])
+                modules_with_params.append(module_name)
 
         overall_parameter_coverage = (
             sum(coverage_percentages) / len(coverage_percentages) if coverage_percentages else 0.0
         )
 
-        # Calculate module usage percentage (binary: used or not)
-        used_modules = sum(1 for usage in module_usage.values() if usage == 100.0)
+        # Calculate module usage stats
+        used_modules = [name for name, usage in module_usage.items() if usage == 100.0]
+        unused_modules = [name for name, usage in module_usage.items() if usage == 0.0]
         total_modules = len(module_usage)
-        module_usage_overall = (used_modules / total_modules * 100) if total_modules > 0 else 0.0
+        module_usage_percentage = (len(used_modules) / total_modules * 100) if total_modules > 0 else 0.0
+
+        # Calculate parameter stats
+        total_parameters = 0
+        covered_parameters = 0
+        missing_parameters = 0
+
+        for module_data in parameter_coverage.values():
+            if module_data["type"] != "empty":
+                for field_name, field_coverage in module_data["fields"].items():
+                    total_parameters += 1
+                    if field_coverage == 100.0:
+                        covered_parameters += 1
+                missing_parameters += len(module_data["missing"])
+
+        # Calculate used items for each module
+        parameters_with_used_items = {}
+        for name, data in parameter_coverage.items():
+            if data["type"] != "empty":
+                used_items = []
+
+                # Get the original specification to compare against
+                module_spec = self.data.get("specification", {}).get(name, {})
+                module_footprint = self.data.get("footprint", {}).get(name, {})
+
+                if data["type"] == "qa":
+                    # For QA modules, used items are questions that appear in their own response lists
+                    for question in module_spec.keys():
+                        if question != "unknown":
+                            question_responses = module_footprint.get(question, [])
+                            if question in question_responses:
+                                used_items.append(question)
+                else:
+                    # For regular modules, find which specific values were used
+                    for field, spec_value in module_spec.items():
+                        field_values = module_footprint.get(field, [])
+                        if isinstance(spec_value, list) and spec_value:
+                            # List of expected values - find which ones were covered
+                            expected_values_set = set(spec_value)
+                            field_values_set = set(field_values)
+                            covered_values = field_values_set.intersection(expected_values_set)
+                            for value in covered_values:
+                                used_items.append(f"{field}: {value}")
+                        elif field_values:
+                            # Field has values (constraint type)
+                            used_items.append(field)
+
+                parameters_with_used_items[name] = {
+                    "overall_coverage": round(data["overall"], 2),
+                    "total_fields": len(data["fields"]),
+                    "covered_fields": sum(1 for cov in data["fields"].values() if cov == 100.0),
+                    "missing_count": len(data["missing"]),
+                    "used_count": len(used_items),
+                    "field_details": {field: round(coverage, 2) for field, coverage in data["fields"].items()},
+                    "used_items": sorted(used_items),
+                    "missing_items": data["missing"],
+                    "module_type": data["type"],
+                }
 
         return {
-            "overall_parameter_coverage": round(overall_parameter_coverage, 2),
-            "module_usage": {
-                "overall": round(module_usage_overall, 2),
-                "modules": module_usage,
-            },
-            "parameter_coverage": parameter_coverage,
             "summary": {
+                "overall_parameter_coverage": round(overall_parameter_coverage, 2),
+                "overall_module_usage": round(module_usage_percentage, 2),
                 "total_modules": total_modules,
-                "used_modules": used_modules,
-                "modules_with_parameters": len([m for m in parameter_coverage.values() if m["type"] != "empty"]),
+                "total_parameters": total_parameters,
+                "covered_parameters": covered_parameters,
+                "missing_parameters": missing_parameters,
             },
+            "modules": {"used": sorted(used_modules), "unused": sorted(unused_modules)},
+            "parameters": {"coverage_by_module": parameters_with_used_items},
         }
 
     def _get_output_path(self, output_file: str | None, extension: str) -> Path:
@@ -235,30 +294,27 @@ class CoverageAnalyzer:
 
         # High-level metrics
         print("\n📊 OVERALL METRICS")
-        print(f"   Parameter Coverage: {report['overall_parameter_coverage']:.1f}%")
+        print(f"   Parameter Coverage: {summary['overall_parameter_coverage']:.1f}%")
         print(
-            f"   Module Usage:       {report['module_usage']['overall']:.1f}% ({summary['used_modules']}/{summary['total_modules']} modules)"
+            f"   Module Usage:       {summary['overall_module_usage']:.1f}% ({len(report['modules']['used'])}/{summary['total_modules']} modules)"
+        )
+        print(
+            f"   Parameters:         {summary['covered_parameters']}/{summary['total_parameters']} covered ({summary['missing_parameters']} missing)"
         )
 
         # Module usage breakdown
-        print("\n🏗️  MODULE USAGE STATUS")
-        unused_modules = []
-        used_modules = []
-
-        for module, usage in report["module_usage"]["modules"].items():
-            if usage == 100.0:
-                used_modules.append(module)
-            else:
-                unused_modules.append(module)
+        print("\n🏗️ MODULE USAGE STATUS")
+        used_modules = report["modules"]["used"]
+        unused_modules = report["modules"]["unused"]
 
         if used_modules:
             print(f"   ✅ USED ({len(used_modules)}):")
-            for module in sorted(used_modules):
+            for module in used_modules:
                 print(f"      • {module}")
 
         if unused_modules:
             print(f"   ❌ UNUSED ({len(unused_modules)}):")
-            for module in sorted(unused_modules):
+            for module in unused_modules:
                 print(f"      • {module}")
 
         # Parameter coverage details
@@ -270,16 +326,13 @@ class CoverageAnalyzer:
         poor = []  # 20-49%
         missing = []  # 0-19%
 
-        for module, coverage_data in report["parameter_coverage"].items():
-            if coverage_data["type"] == "empty":
-                continue
-
-            coverage = coverage_data["overall"]
+        for module_name, module_data in report["parameters"]["coverage_by_module"].items():
+            coverage = module_data["overall_coverage"]
             module_info = {
-                "name": module,
+                "name": module_name,
                 "coverage": coverage,
-                "type": coverage_data["type"],
-                "missing_count": len(coverage_data["missing"]),
+                "type": module_data["module_type"],
+                "missing_count": module_data["missing_count"],
             }
 
             if coverage >= 80:
@@ -309,12 +362,12 @@ class CoverageAnalyzer:
         if critical_modules:
             print("\n🚨 MISSING PARAMETERS DETAILS:")
             for mod_info in critical_modules:
-                module = mod_info["name"]
-                coverage_data = report["parameter_coverage"][module]
-                if coverage_data["missing"]:
-                    print(f"   📌 {module}:")
+                module_name = mod_info["name"]
+                module_data = report["parameters"]["coverage_by_module"][module_name]
+                if module_data["missing_items"]:
+                    print(f"   📌 {module_name}:")
                     # Show all missing items, no limit
-                    for item in coverage_data["missing"]:
+                    for item in module_data["missing_items"]:
                         print(f"      • {item}")
 
     def save_readable_report(self, output_file: str | None = None) -> str:
