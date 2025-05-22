@@ -252,6 +252,7 @@ class CoverageAnalyzer:
                 "overall_parameter_coverage": round(overall_parameter_coverage, 2),
                 "overall_module_usage": round(module_usage_percentage, 2),
                 "total_modules": total_modules,
+                "modules_used": len(used_modules),
                 "total_parameters": total_parameters,
                 "covered_parameters": covered_parameters,
                 "missing_parameters": missing_parameters,
