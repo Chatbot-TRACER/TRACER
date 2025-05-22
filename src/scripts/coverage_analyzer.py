@@ -190,18 +190,48 @@ class CoverageAnalyzer:
         total_modules = len(module_usage)
         module_usage_percentage = (len(used_modules) / total_modules * 100) if total_modules > 0 else 0.0
 
-        # Calculate parameter stats
+        # Calculate parameter stats at item level for consistency
         total_parameters = 0
         covered_parameters = 0
         missing_parameters = 0
 
-        for module_data in parameter_coverage.values():
-            if module_data["type"] != "empty":
-                for field_name, field_coverage in module_data["fields"].items():
-                    total_parameters += 1
-                    if field_coverage == 100.0:
-                        covered_parameters += 1
-                missing_parameters += len(module_data["missing"])
+        for name, data in parameter_coverage.items():
+            if data["type"] != "empty":
+                # Count individual items/values, not just fields
+                module_spec = self.data.get("specification", {}).get(name, {})
+                module_footprint = self.data.get("footprint", {}).get(name, {})
+
+                if data["type"] == "qa":
+                    # For QA modules, count questions
+                    for question in module_spec.keys():
+                        if question != "unknown":
+                            total_parameters += 1
+                            question_responses = module_footprint.get(question, [])
+                            if question in question_responses:
+                                covered_parameters += 1
+                            else:
+                                missing_parameters += 1
+                else:
+                    # For regular modules, count individual values
+                    for field, spec_value in module_spec.items():
+                        if isinstance(spec_value, list) and spec_value:
+                            # Count each expected value
+                            expected_values_set = set(spec_value)
+                            field_values_set = set(module_footprint.get(field, []))
+                            covered_values = field_values_set.intersection(expected_values_set)
+                            missing_values = expected_values_set - covered_values
+
+                            total_parameters += len(expected_values_set)
+                            covered_parameters += len(covered_values)
+                            missing_parameters += len(missing_values)
+                        else:
+                            # Constraint field - count as 1 item
+                            total_parameters += 1
+                            field_values = module_footprint.get(field, [])
+                            if field_values:
+                                covered_parameters += 1
+                            else:
+                                missing_parameters += 1
 
         # Calculate used items for each module
         parameters_with_used_items = {}
