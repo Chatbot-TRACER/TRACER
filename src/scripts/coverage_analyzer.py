@@ -455,12 +455,10 @@ class CoverageAnalyzer:
                 oc_details_per_field = mod_oc["details_per_option_field"]
                 for field, info in oc_details_per_field.items():
                     print(f"\n    🔹 {field}: {info['percentage']:.2f}%")
-                    print("       ✅ Used:")
                     if info["used_values"]:
+                        print("       ✅ Used:")
                         for v in info["used_values"]:
                             print(f"            • {v}")
-                    else:
-                        print("            • None")
                     print("       ❌ Missing:")
                     if info["missing_values"]:
                         for v in info["missing_values"]:
