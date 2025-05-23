@@ -117,9 +117,7 @@ def get_variable_to_datasource_matching_prompt(
     potential_data_sources: list[dict[str, Any]],
     profile_role_and_goals: str,
 ) -> str:
-    """Generates a prompt for the LLM to match goal variables to potential data sources
-    (which can be direct parameters or list-like outputs from functionalities).
-    """
+    """Generates a prompt for the LLM to match ONE goal variable to potential data sources."""
     sources_str_list = []
     for i, source in enumerate(potential_data_sources):
         full_options = source.get("options", [])
@@ -138,58 +136,50 @@ def get_variable_to_datasource_matching_prompt(
         )
     sources_formatted_str = "\n".join(sources_str_list)
 
-    variables_formatted_str = "\n".join([f"- '{var}'" for var in goal_variable_names])
+    # Since we're matching one variable at a time, simplify
+    variable_name = goal_variable_names[0] if goal_variable_names else "unknown"
 
     return f"""
-You are an AI assistant helping to define test data for chatbot user profile goals.
-Your task is to match variables found in user goals with the most appropriate data source from a provided list.
-A data source can be a direct input parameter of a chatbot function OR an output of a chatbot function that provides a list of choices.
+You are an AI assistant helping to match a chatbot variable to appropriate data sources.
 
-PROFILE CONTEXT (Role and Goals):
-{profile_role_and_goals}
+VARIABLE TO MATCH: '{variable_name}'
 
-GOAL VARIABLE TO MATCH:
-{variables_formatted_str}
+PROFILE CONTEXT: {profile_role_and_goals}
 
-AVAILABLE DATA SOURCES (Parameters or List-like Outputs):
+AVAILABLE DATA SOURCES:
 {sources_formatted_str}
 
 **MATCHING INSTRUCTIONS:**
 
-1. **STRICT SEMANTIC MATCHING**: The variable name indicates what kind of data it should contain. The data source's options MUST contain EXACTLY that kind of data. For example:
-   - For "item_type", ONLY match to sources containing actual TYPES OF THE GIVEN ITEM (e.g., "Economy", "Premium", "Deluxe")
-   - For "appointment_date", ONLY match to sources containing ACTUAL DATES
-   - For "payment_method", ONLY match to sources containing PAYMENT METHODS
-   - For "number_of_items", ONLY match to sources containing NUMERIC VALUES or QUANTITIES
+1. **UNDERSTAND THE VARIABLE**: '{variable_name}' represents what type of content/value a user would provide.
 
-2. **CRITICALLY EXAMINE OPTIONS**: Look carefully at the actual option values in "Example Options Preview" - do they truly represent what the variable name suggests?
+2. **EXAMINE DATA SOURCES**: Look at the "Example Options Preview" - do these contain realistic values that users would actually input for '{variable_name}'?
 
-3. **REJECT INAPPROPRIATE MATCHES**: It is better to NOT match a variable than to match it to semantically inappropriate options.
+3. **SEMANTIC MATCHING PRINCIPLES**:
+   - Match based on what USERS would realistically provide, not system descriptions
+   - Focus on actual content/values, not meta-information about the variable
+   - Consider the user's perspective: "What would I say/select for '{variable_name}'?"
 
-4. **VARIABLE NAME PATTERNS**:
-   - Variables with "_type" or "tipo" → match only to sources containing specific types/categories of that concept
-   - Variables with "date" or "fecha" → match only to sources containing actual dates
-   - Variables with "time" or "hora" → match only to sources containing actual times
-   - Variables with "number_of", "cantidad", or "numero" → match only to sources containing numeric values
-   - Variables with "price", "cost", "precio", or "costo" → match only to sources containing monetary values
+4. **MATCHING EXAMPLES**:
+   - "question" variable → sources with actual questions users ask ("How much does it cost?", "What are your hours?")
+   - "service_type" variable → sources with actual service names ("Basic cleaning", "Deep repair")
+   - "date" variable → sources with actual dates ("Tomorrow", "Monday", "January 15")
+   - "problem_description" variable → sources with actual problem descriptions users give
 
-5. **QUALITY CHECK**: After finding a potential match, ask yourself: "If I use these options for this variable, would they make logical sense as options a user could select in a conversation?"
+5. **AVOID MATCHING TO**:
+   - Meta-descriptions: "The question", "Date selection", "Service information"
+   - System references: "Variable options", "Data fields", "Category selection"
+   - Incomplete fragments: "including", "such as", partial sentences
 
-Output your matches as a JSON object where keys are the **exact** 'GOAL VARIABLE' names and values are objects containing:
-- "matched_data_source_id": "The ID of the matched Data Source (e.g., DS1, DS2)".
+**CRITICAL QUESTION**: "Would the options in this data source contain realistic values that users would actually provide for '{variable_name}'?"
 
-Example JSON Output:
-{{
-  "{{variable_name}}": {{
-    "matched_data_source_id": "DSX"
-  }}
-}}
+**YOUR TASK**:
+- If you find a data source whose options contain realistic user values for '{variable_name}', respond with ONLY the ID (e.g., "DS3")
+- If NO data source contains appropriate user values for '{variable_name}', respond with ONLY "NO_MATCH"
 
-**IMPORTANT**: If a GOAL VARIABLE has no good semantic match in the AVAILABLE DATA SOURCES, **DO NOT include it in your JSON output.**
-It is far better to omit a variable than to match it incorrectly.
+**IMPORTANT**: Prioritize user-realistic content over system descriptions. It's better to respond "NO_MATCH" than match to inappropriate options.
 
-Return ONLY the JSON object (which might be empty if no good matches are found).
-"""
+Your response (ID or NO_MATCH):"""
 
 
 def get_clean_and_suggest_negative_option_prompt(
@@ -291,9 +281,9 @@ def get_variable_semantic_validation_prompt(
     # Create guidance based on variable name patterns - language agnostic approach
     specific_guidance = ""
     if is_date_var:
-        specific_guidance = "This variable represents a DATE. Options should be actual dates a user would select (like 'Tomorrow', 'Monday', '2024-01-15'), NOT descriptions like 'The date' or 'Your preferred date'."
+        specific_guidance = "This variable represents a DATE. Options should be actual dates a user would select (like 'Tomorrow', 'Monday', '2024-01-15'), NOT meta-descriptions like 'The date' or 'Date selection'."
     elif is_time_var:
-        specific_guidance = "This variable represents a TIME. Options should be actual times a user would select (like '9:00 AM', '14:30', 'Morning'), NOT descriptions like 'The time' or 'Available times'."
+        specific_guidance = "This variable represents a TIME. Options should be actual times a user would select (like '9:00 AM', '14:30', 'Morning'), NOT meta-descriptions like 'The time' or 'Time selection'."
     elif is_type_var:
         base_term = variable_name_lower
         for type_marker in VARIABLE_PATTERNS["type"]:
@@ -302,9 +292,9 @@ def get_variable_semantic_validation_prompt(
                 break
 
         if base_term:
-            specific_guidance = f"This variable represents TYPES or CATEGORIES of {base_term}. Options should be names of specific {base_term} types (like 'Basic', 'Premium', 'Standard'), NOT descriptions like 'The {base_term} type' or 'Available {base_term}s'."
+            specific_guidance = f"This variable represents TYPES or CATEGORIES of {base_term}. Options should be names of specific {base_term} types, NOT meta-descriptions about the variable itself."
     elif is_number_of_var:
-        specific_guidance = "This variable represents a COUNT or QUANTITY of something. Options should be actual counts a user would select (like '1', '2', '5', 'One'), NOT descriptions like 'The quantity' or 'Number of items'."
+        specific_guidance = "This variable represents a COUNT or QUANTITY. Options should be actual counts a user would select (like '1', '2', '5', 'One'), NOT meta-descriptions like 'The quantity'."
 
     return f"""
 You are evaluating data quality for a chatbot test variable.
@@ -319,19 +309,24 @@ CANDIDATE OPTIONS:
 YOUR TASK: Determine if these options are semantically appropriate for this variable name.
 
 WHAT MAKES OPTIONS APPROPRIATE:
-1. They are ACTUAL VALUES a user would select or enter, not descriptions or meta-information
-2. They represent specific instances of what the variable name suggests
-3. They are concise, not explanatory sentences
-4. They do NOT contain phrases like "The [variable_name]", "Your [variable_name]", "Available [variable_name]s"
+1. They are ACTUAL VALUES or CONTENT a user would select, enter, or express
+2. They represent realistic user input for what the variable name suggests
+3. They are complete, meaningful options (not fragments or meta-descriptions)
 
-CONCRETE EXAMPLES:
-- For drink variables → "Coffee", "Tea", "Water" (NOT "The drink type", "Available beverages")
-- For date variables → "Tomorrow", "Next Monday", "July 15" (NOT "The date", "Your preferred date")
-- For service variables → "Basic maintenance", "Repair", "Tune-up" (NOT "The service type", "Available services")
+EXAMPLES OF APPROPRIATE OPTIONS:
+- For "question" variable → "details for a haircut", "information about pricing", "how to schedule an appointment"
+- For "service_type" variable → "Basic maintenance", "Premium repair", "Emergency service"
+- For "date" variable → "Tomorrow", "Next Monday", "July 15"
+- For "drink_type" variable → "Coffee", "Tea", "Fresh orange juice"
 
-CRITICAL: If ANY option looks like a description or label rather than an actual selectable value, answer "No".
+EXAMPLES OF INAPPROPRIATE OPTIONS:
+- Meta-descriptions: "The question", "Your service type", "Available dates"
+- Incomplete fragments: "including", "such as", "and time"
+- System references: "Variable selection", "Option list", "Data field"
+
+CRITICAL EVALUATION: Ask yourself "Could a real user realistically provide this as input for '{variable_name}'?"
 
 Answer with ONLY "Yes" or "No".
-- Yes means ALL options are appropriate actual values for this variable
-- No means SOME or ALL options are inappropriate (descriptions, labels, meta-information, etc.)
+- Yes means ALL options are appropriate actual values/content for this variable
+- No means SOME or ALL options are inappropriate (meta-descriptions, fragments, system references, etc.)
 """
