@@ -440,9 +440,14 @@ class CoverageAnalyzer:
             elif mod_type == "regular":
                 emoji = "📦"
             print(f"\n  {emoji} {mod_type.upper()} MODULE: {name}")
+
             if mod_type == "regular":
-                oc = details["option_coverage"]["details_per_option_field"]
-                for field, info in oc.items():
+                mod_oc = details["option_coverage"]
+                print(
+                    f"    Overall Option Coverage: {mod_oc['overall_percentage_for_module']:.2f}% ({mod_oc['covered_options_in_module_count']}/{mod_oc['total_defined_options_in_module']} options)"
+                )
+                oc_details_per_field = mod_oc["details_per_option_field"]
+                for field, info in oc_details_per_field.items():
                     print(f"\n    🔹 {field}: {info['percentage']:.2f}%")
                     print("       ✅ Used:")
                     if info["used_values"]:
@@ -458,7 +463,9 @@ class CoverageAnalyzer:
                         print("            • None")
             elif mod_type == "qa":
                 fc = details["field_coverage"]
-                print(f"\n    🔹 Questions answered: {fc['used_count_in_module']}/{fc['total_defined_in_module']}")
+                print(
+                    f"    Overall Question Coverage: {fc['percentage']:.2f}% ({fc['used_count_in_module']}/{fc['total_defined_in_module']} questions)"
+                )
                 print("       ✅ Answered:")
                 if fc.get("used_questions_list"):
                     for q in fc["used_questions_list"]:
