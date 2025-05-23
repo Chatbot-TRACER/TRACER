@@ -1,0 +1,622 @@
+=== CHATBOT FUNCTIONALITY ANALYSIS ===
+
+
+## FUNCTIONALITIES (Workflow Structure)
+- request_rephrasing_due_to_noise: States that it is too loud in the shop and asks the user to repeat their request. | Category: Chatbot Meta | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- list_available_services: Lists the available bike shop services, including repairs, tune-ups, and potentially other offerings, and optionally asks how the chatbot can assist the user. | Category: Services | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [available_services: A list of services offered, including bike repairs, tune-ups, maintenance, and bike sales.]
+- offer_alternative_assistance_on_failure: Acknowledges the inability to fulfill the user's initial request and offers alternative assistance or information, such as repair or tune-up services and pricing, or a list of available services. | Category: General Information | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [alternative_services: A list of alternative services for which pricing information is available.]
+- offer_electric_bike_assistance: Offers the user information about electric bikes, answers their questions, and assists them in choosing the right model, including apologizing for any previous incorrect information. | Category: Products | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- confirm_helmets_in_stock_and_offer_options: Confirms that helmets are in stock and asks if the user wants to see the selection or needs further assistance. | Category: Products | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- offer_price_information: Offers to provide information about the price of a helmet, potentially after acknowledging limitations in showing the selection. | Category: Pricing | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- provide_tire_price: Provides the price of a new tire. | Category: Pricing | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [tire_price: The price or cost of a new tire (e.g., $20).]
+- decline_tire_installation_and_suggest_repair_appointment: Declines assistance with tire installation and suggests scheduling a repair appointment. | Category: Services | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- prompt_for_appointment_datetime: Prompts the user to provide the desired date and time for an appointment, potentially including the type of service needed, for either scheduling or rescheduling purposes. | Category: Appointments | Params: [appointment_datetime: The date and time for the appointment.; date: The date to reschedule the appointment to; time: The time to reschedule the appointment to] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- greet_and_offer_assistance: Greets the user and offers assistance, identifying the chatbot as the bike shop owner. | Category: Chatbot Meta | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [chatbot_introduction: Introduces the chatbot, identifying it as the bike shop owner.; assistance_offer: Offers assistance to the user, inquiring about their needs.]
+- describe_tune_up: Describes the services typically included in a bicycle tune-up, such as adjusting brakes, gears, and tire pressure, lubricating the chain, and inspecting overall condition. | Category: Services | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [tune_up_details: Comprehensive information about what a typical bicycle tune-up includes, such as checking and adjusting brakes, gears, and tire pressure, lubricating moving parts, and ensuring the bike is in optimal condition.]
+- request_and_schedule_bike_service: Prompts the user to inquire about bike services (tune-up or repair) and offers to schedule an appointment or provide details about those services. | Category: Services | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [bike_repair_availability: Confirms the availability of bike repair services and prompts the user to schedule an appointment for bike repair or other services.; repair_types: Lists the types of bike repairs offered, such as tune-ups, brake adjustments, gear repairs, and tire replacements.]
+- express_lack_of_specific_pricing_details: Expresses that the chatbot does not have specific pricing details for all bikes. | Category: Pricing | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- request_bike_details: Requests details about the user's bike, including type and any specific issues or services needed, to provide accurate information or pricing. | Category: Services | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- suggest_repair_service_for_slipping_gears: Suggests a repair service for a mountain bike with slipping gears. | Category: Services | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- prompt_for_service_type: Asks the user to clarify if they are looking to schedule a repair, a tune-up, or have another question. | Category: Services | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- inform_inability_to_manage_appointment: Informs the user that the chatbot cannot manage appointment changes (cancel, reschedule, or change time) and to contact the shop directly for assistance. | Category: Appointments | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [reschedule_denial: Indicates that the chatbot is unable to reschedule appointments.; contact_shop: Instructs the user to directly contact the shop for assistance.]
+- confirm_sells_electric_bikes_and_inquire_interest: Confirms that the bike shop sells electric bikes and inquires about the user's interest in learning more or exploring options. | Category: Products | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- confirm_bike_type: Confirms that the user is asking about bike models. | Category: Products | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- inquire_about_bike_specifications: Asks the user to clarify if they are interested in specific bike models, types, brands, or features. | Category: Products | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- ask_preferred_language: Asks the user if they prefer English or Spanish. | Category: Chatbot Meta | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- express_lack_of_size_chart: Informs the user that a size chart is not available. | Category: Products | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- list_available_bike_types: Lists the types of bikes the chatbot can provide information about. | Category: Products | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [bike_types: road bikes, mountain bikes, and city bikes]
+- get_bike_tune_up_price: Provides the price of a bike tune-up service. | Category: Pricing | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [tune_up_price: The cost associated with a bicycle tune-up service, e.g., $150.]
+- provide_bike_maintenance_advice: Provides general advice and tips on bike maintenance, including cleaning, monitoring tire pressure, and lubricating the chain. | Category: Maintenance | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [maintenance_advice: cleaning the bike, monitoring tire pressure, and lubricating the chain]
+- inquire_about_lubricant_type_and_application_preference: Asks if the user wants more detailed advice about the type of lubricant to use, or information on where to apply it. | Category: Maintenance | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [InvalidOutputFormat(<class 'NoneType'>)]
+- provide_bike_lubrication_instructions: Provides instructions on how to properly lubricate a bike, including where and how to apply lubricant, cleaning, drying, letting it sit, wiping off excess, and testing. | Category: Maintenance | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [lubrication_steps: The recommended steps for lubricating bicycle parts, including cleaning, drying, applying lubricant, letting it sit, wiping off excess, and testing.; lubrication_locations: The specific locations on a bicycle that should be lubricated, such as the chain, derailleurs, brake and gear levers, and other moving parts.]
+- provide_weekday_hours: Provides the shop's weekday operating hours. | Category: General Information | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [weekday_hours: 9am to 5:30pm]
+- state_closed_on_saturday: Confirms it is not open on Saturdays. | Category: General Information | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [saturday_availability: not open]
+- list_capabilities: Lists the chatbot's capabilities, including answering questions about services, scheduling repairs, and providing information about bike maintenance. | Category: Chatbot Meta | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [capabilities_list: Answers questions about services, helps schedule repairs, or provides information about bike maintenance.]
+- confirm_appointment: Confirms appointment details with the user, including the date, time, and service type, for both newly scheduled and rescheduled appointments. | Category: Appointments | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [appointment_details: Complete details of an appointment, including the confirmed date, time, and service type.; rescheduled_appointment_datetime: The date and time to which the appointment was rescheduled.]
+- inform_unable_to_provide_shop_phone_number: Informs the user that the chatbot cannot provide the shop's phone number and suggests alternative sources for the information, such as contacting the shop directly or visiting the website. | Category: General Information | Params: [InvalidParamFormat(<class 'NoneType'>)] | Outputs: [phone_number_unavailable: Indicates that the chatbot is unable to provide the shop's phone number and instructs the user to contact the shop directly.]
+
+## FUNCTIONALITIES (By Category)
+
+### CATEGORY: Appointments (3 functions)
+- prompt_for_appointment_datetime: Prompts the user to provide the desired date and time for an appointment, potentially including the type of service needed, for either scheduling or rescheduling purposes.
+- inform_inability_to_manage_appointment: Informs the user that the chatbot cannot manage appointment changes (cancel, reschedule, or change time) and to contact the shop directly for assistance.
+- confirm_appointment: Confirms appointment details with the user, including the date, time, and service type, for both newly scheduled and rescheduled appointments.
+
+### CATEGORY: Chatbot Meta (4 functions)
+- request_rephrasing_due_to_noise: States that it is too loud in the shop and asks the user to repeat their request.
+- greet_and_offer_assistance: Greets the user and offers assistance, identifying the chatbot as the bike shop owner.
+- ask_preferred_language: Asks the user if they prefer English or Spanish.
+- list_capabilities: Lists the chatbot's capabilities, including answering questions about services, scheduling repairs, and providing information about bike maintenance.
+
+### CATEGORY: General Information (4 functions)
+- offer_alternative_assistance_on_failure: Acknowledges the inability to fulfill the user's initial request and offers alternative assistance or information, such as repair or tune-up services and pricing, or a list of available services.
+- provide_weekday_hours: Provides the shop's weekday operating hours.
+- state_closed_on_saturday: Confirms it is not open on Saturdays.
+- inform_unable_to_provide_shop_phone_number: Informs the user that the chatbot cannot provide the shop's phone number and suggests alternative sources for the information, such as contacting the shop directly or visiting the website.
+
+### CATEGORY: Maintenance (3 functions)
+- provide_bike_maintenance_advice: Provides general advice and tips on bike maintenance, including cleaning, monitoring tire pressure, and lubricating the chain.
+- inquire_about_lubricant_type_and_application_preference: Asks if the user wants more detailed advice about the type of lubricant to use, or information on where to apply it.
+- provide_bike_lubrication_instructions: Provides instructions on how to properly lubricate a bike, including where and how to apply lubricant, cleaning, drying, letting it sit, wiping off excess, and testing.
+
+### CATEGORY: Pricing (4 functions)
+- offer_price_information: Offers to provide information about the price of a helmet, potentially after acknowledging limitations in showing the selection.
+- provide_tire_price: Provides the price of a new tire.
+- express_lack_of_specific_pricing_details: Expresses that the chatbot does not have specific pricing details for all bikes.
+- get_bike_tune_up_price: Provides the price of a bike tune-up service.
+
+### CATEGORY: Products (7 functions)
+- offer_electric_bike_assistance: Offers the user information about electric bikes, answers their questions, and assists them in choosing the right model, including apologizing for any previous incorrect information.
+- confirm_helmets_in_stock_and_offer_options: Confirms that helmets are in stock and asks if the user wants to see the selection or needs further assistance.
+- confirm_sells_electric_bikes_and_inquire_interest: Confirms that the bike shop sells electric bikes and inquires about the user's interest in learning more or exploring options.
+- confirm_bike_type: Confirms that the user is asking about bike models.
+- inquire_about_bike_specifications: Asks the user to clarify if they are interested in specific bike models, types, brands, or features.
+- express_lack_of_size_chart: Informs the user that a size chart is not available.
+- list_available_bike_types: Lists the types of bikes the chatbot can provide information about.
+
+### CATEGORY: Services (7 functions)
+- list_available_services: Lists the available bike shop services, including repairs, tune-ups, and potentially other offerings, and optionally asks how the chatbot can assist the user.
+- decline_tire_installation_and_suggest_repair_appointment: Declines assistance with tire installation and suggests scheduling a repair appointment.
+- describe_tune_up: Describes the services typically included in a bicycle tune-up, such as adjusting brakes, gears, and tire pressure, lubricating the chain, and inspecting overall condition.
+- request_and_schedule_bike_service: Prompts the user to inquire about bike services (tune-up or repair) and offers to schedule an appointment or provide details about those services.
+- request_bike_details: Requests details about the user's bike, including type and any specific issues or services needed, to provide accurate information or pricing.
+- suggest_repair_service_for_slipping_gears: Suggests a repair service for a mountain bike with slipping gears.
+- prompt_for_service_type: Asks the user to clarify if they are looking to schedule a repair, a tune-up, or have another question.
+
+## FUNCTIONALITIES (Raw JSON Structure)
+[
+  {
+    "name": "request_rephrasing_due_to_noise",
+    "description": "States that it is too loud in the shop and asks the user to repeat their request.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "list_available_services",
+    "description": "Lists the available bike shop services, including repairs, tune-ups, and potentially other offerings, and optionally asks how the chatbot can assist the user.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "available_services",
+        "description": "A list of services offered, including bike repairs, tune-ups, maintenance, and bike sales."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Services",
+    "children": []
+  },
+  {
+    "name": "offer_alternative_assistance_on_failure",
+    "description": "Acknowledges the inability to fulfill the user's initial request and offers alternative assistance or information, such as repair or tune-up services and pricing, or a list of available services.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "alternative_services",
+        "description": "A list of alternative services for which pricing information is available."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "offer_electric_bike_assistance",
+    "description": "Offers the user information about electric bikes, answers their questions, and assists them in choosing the right model, including apologizing for any previous incorrect information.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Products",
+    "children": []
+  },
+  {
+    "name": "confirm_helmets_in_stock_and_offer_options",
+    "description": "Confirms that helmets are in stock and asks if the user wants to see the selection or needs further assistance.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Products",
+    "children": []
+  },
+  {
+    "name": "offer_price_information",
+    "description": "Offers to provide information about the price of a helmet, potentially after acknowledging limitations in showing the selection.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Pricing",
+    "children": []
+  },
+  {
+    "name": "provide_tire_price",
+    "description": "Provides the price of a new tire.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "tire_price",
+        "description": "The price or cost of a new tire (e.g., $20)."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Pricing",
+    "children": []
+  },
+  {
+    "name": "decline_tire_installation_and_suggest_repair_appointment",
+    "description": "Declines assistance with tire installation and suggests scheduling a repair appointment.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Services",
+    "children": []
+  },
+  {
+    "name": "prompt_for_appointment_datetime",
+    "description": "Prompts the user to provide the desired date and time for an appointment, potentially including the type of service needed, for either scheduling or rescheduling purposes.",
+    "parameters": [
+      {
+        "name": "appointment_datetime",
+        "description": "The date and time for the appointment.",
+        "options": []
+      },
+      {
+        "name": "date",
+        "description": "The date to reschedule the appointment to",
+        "options": []
+      },
+      {
+        "name": "time",
+        "description": "The time to reschedule the appointment to",
+        "options": []
+      }
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Appointments",
+    "children": []
+  },
+  {
+    "name": "greet_and_offer_assistance",
+    "description": "Greets the user and offers assistance, identifying the chatbot as the bike shop owner.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "chatbot_introduction",
+        "description": "Introduces the chatbot, identifying it as the bike shop owner."
+      },
+      {
+        "category": "assistance_offer",
+        "description": "Offers assistance to the user, inquiring about their needs."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "describe_tune_up",
+    "description": "Describes the services typically included in a bicycle tune-up, such as adjusting brakes, gears, and tire pressure, lubricating the chain, and inspecting overall condition.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "tune_up_details",
+        "description": "Comprehensive information about what a typical bicycle tune-up includes, such as checking and adjusting brakes, gears, and tire pressure, lubricating moving parts, and ensuring the bike is in optimal condition."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Services",
+    "children": []
+  },
+  {
+    "name": "request_and_schedule_bike_service",
+    "description": "Prompts the user to inquire about bike services (tune-up or repair) and offers to schedule an appointment or provide details about those services.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "bike_repair_availability",
+        "description": "Confirms the availability of bike repair services and prompts the user to schedule an appointment for bike repair or other services."
+      },
+      {
+        "category": "repair_types",
+        "description": "Lists the types of bike repairs offered, such as tune-ups, brake adjustments, gear repairs, and tire replacements."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Services",
+    "children": []
+  },
+  {
+    "name": "express_lack_of_specific_pricing_details",
+    "description": "Expresses that the chatbot does not have specific pricing details for all bikes.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Pricing",
+    "children": []
+  },
+  {
+    "name": "request_bike_details",
+    "description": "Requests details about the user's bike, including type and any specific issues or services needed, to provide accurate information or pricing.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Services",
+    "children": []
+  },
+  {
+    "name": "suggest_repair_service_for_slipping_gears",
+    "description": "Suggests a repair service for a mountain bike with slipping gears.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Services",
+    "children": []
+  },
+  {
+    "name": "prompt_for_service_type",
+    "description": "Asks the user to clarify if they are looking to schedule a repair, a tune-up, or have another question.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Services",
+    "children": []
+  },
+  {
+    "name": "inform_inability_to_manage_appointment",
+    "description": "Informs the user that the chatbot cannot manage appointment changes (cancel, reschedule, or change time) and to contact the shop directly for assistance.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "reschedule_denial",
+        "description": "Indicates that the chatbot is unable to reschedule appointments."
+      },
+      {
+        "category": "contact_shop",
+        "description": "Instructs the user to directly contact the shop for assistance."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Appointments",
+    "children": []
+  },
+  {
+    "name": "confirm_sells_electric_bikes_and_inquire_interest",
+    "description": "Confirms that the bike shop sells electric bikes and inquires about the user's interest in learning more or exploring options.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Products",
+    "children": []
+  },
+  {
+    "name": "confirm_bike_type",
+    "description": "Confirms that the user is asking about bike models.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Products",
+    "children": []
+  },
+  {
+    "name": "inquire_about_bike_specifications",
+    "description": "Asks the user to clarify if they are interested in specific bike models, types, brands, or features.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Products",
+    "children": []
+  },
+  {
+    "name": "ask_preferred_language",
+    "description": "Asks the user if they prefer English or Spanish.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "express_lack_of_size_chart",
+    "description": "Informs the user that a size chart is not available.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Products",
+    "children": []
+  },
+  {
+    "name": "list_available_bike_types",
+    "description": "Lists the types of bikes the chatbot can provide information about.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "bike_types",
+        "description": "road bikes, mountain bikes, and city bikes"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Products",
+    "children": []
+  },
+  {
+    "name": "get_bike_tune_up_price",
+    "description": "Provides the price of a bike tune-up service.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "tune_up_price",
+        "description": "The cost associated with a bicycle tune-up service, e.g., $150."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Pricing",
+    "children": []
+  },
+  {
+    "name": "provide_bike_maintenance_advice",
+    "description": "Provides general advice and tips on bike maintenance, including cleaning, monitoring tire pressure, and lubricating the chain.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "maintenance_advice",
+        "description": "cleaning the bike, monitoring tire pressure, and lubricating the chain"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Maintenance",
+    "children": []
+  },
+  {
+    "name": "inquire_about_lubricant_type_and_application_preference",
+    "description": "Asks if the user wants more detailed advice about the type of lubricant to use, or information on where to apply it.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      null
+    ],
+    "parent_names": [],
+    "suggested_category": "Maintenance",
+    "children": []
+  },
+  {
+    "name": "provide_bike_lubrication_instructions",
+    "description": "Provides instructions on how to properly lubricate a bike, including where and how to apply lubricant, cleaning, drying, letting it sit, wiping off excess, and testing.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "lubrication_steps",
+        "description": "The recommended steps for lubricating bicycle parts, including cleaning, drying, applying lubricant, letting it sit, wiping off excess, and testing."
+      },
+      {
+        "category": "lubrication_locations",
+        "description": "The specific locations on a bicycle that should be lubricated, such as the chain, derailleurs, brake and gear levers, and other moving parts."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Maintenance",
+    "children": []
+  },
+  {
+    "name": "provide_weekday_hours",
+    "description": "Provides the shop's weekday operating hours.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "weekday_hours",
+        "description": "9am to 5:30pm"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "state_closed_on_saturday",
+    "description": "Confirms it is not open on Saturdays.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "saturday_availability",
+        "description": "not open"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "list_capabilities",
+    "description": "Lists the chatbot's capabilities, including answering questions about services, scheduling repairs, and providing information about bike maintenance.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "capabilities_list",
+        "description": "Answers questions about services, helps schedule repairs, or provides information about bike maintenance."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "confirm_appointment",
+    "description": "Confirms appointment details with the user, including the date, time, and service type, for both newly scheduled and rescheduled appointments.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "appointment_details",
+        "description": "Complete details of an appointment, including the confirmed date, time, and service type."
+      },
+      {
+        "category": "rescheduled_appointment_datetime",
+        "description": "The date and time to which the appointment was rescheduled."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Appointments",
+    "children": []
+  },
+  {
+    "name": "inform_unable_to_provide_shop_phone_number",
+    "description": "Informs the user that the chatbot cannot provide the shop's phone number and suggests alternative sources for the information, such as contacting the shop directly or visiting the website.",
+    "parameters": [
+      null
+    ],
+    "outputs": [
+      {
+        "category": "phone_number_unavailable",
+        "description": "Indicates that the chatbot is unable to provide the shop's phone number and instructs the user to contact the shop directly."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  }
+]
+## SUPPORTED LANGUAGES
+1. English
+
+## FALLBACK MESSAGE
+I'm sorry it's a little loud in my shop, can you say that again?
+## 
+TOKEN USAGE STATISTICS
+EXPLORATION PHASE
+  Prompt tokens:       806,509
+  Completion tokens:   26,470
+  Total tokens:        832,979
+  Estimated cost:      $0.0912 USD
+
+ANALYSIS PHASE
+  Prompt tokens:       465,182
+  Completion tokens:   61,855
+  Total tokens:        527,037
+  Estimated cost:      $0.0713 USD
+
+TOTAL TOKEN CONSUMPTION
+  Total LLM calls:     2,468
+  Successful calls:    2,468
+  Failed calls:        0
+  Prompt tokens:       1,271,691
+  Completion tokens:   88,325
+  Total tokens:        1,360,016
+  Estimated cost:      $0.1625 USD
+
+MODELS USED
+  models/gemini-2.0-flash
+
+COST MODEL USED (for pricing calculation)
+  models/gemini-2.0-flash
+
+TOTAL APPLICATION EXECUTION TIME
+  00:27:25 (HH:MM:SS)

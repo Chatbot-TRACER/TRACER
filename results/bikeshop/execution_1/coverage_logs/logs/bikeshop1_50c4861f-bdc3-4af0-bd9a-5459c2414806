@@ -1,0 +1,49 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "bike_qa",
+            "make_appointment"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "repair",
+                "tune-up"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a tune-up?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "make_appointment",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": [
+                "25/10/2023"
+            ],
+            "time": [
+                "14:00:00"
+            ],
+            "service": [
+                "repair"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a tune-up?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": [],
+            "unknown": []
+        },
+        "top-level": {}
+    }
+}
