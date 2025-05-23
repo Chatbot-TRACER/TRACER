@@ -390,7 +390,8 @@ class CoverageAnalyzer:
         # 3. Module Coverage Overview Grouped by Percentage
         print("\n🔍 MODULE COVERAGE OVERVIEW")
         grouped = {"EXCELLENT (80%+)": [], "GOOD (50-79%)": [], "POOR (20-49%)": [], "MISSING/LOW (0-19%)": []}
-        for name in ml["used_modules"]:
+        # Iterate over all modules for the overview
+        for name in sorted(md.keys()):
             details = md[name]
             mod_type = details.get("module_type")
             if mod_type == "regular":
@@ -430,15 +431,20 @@ class CoverageAnalyzer:
 
         # 4. Detailed Breakdown per Module
         print("\n📝 DETAILED BREAKDOWN PER MODULE")
-        for name in ml["used_modules"]:
+        # Iterate over all modules for the detailed breakdown
+        for name in sorted(md.keys()):
             details = md[name]
             mod_type = details.get("module_type")
+            emoji = "❔"
             if mod_type == "empty":
                 emoji = "🧩"
             elif mod_type == "qa":
                 emoji = "❓"
             elif mod_type == "regular":
                 emoji = "📦"
+            elif mod_type == "undefined_spec":
+                emoji = "📄"
+
             print(f"\n  {emoji} {mod_type.upper()} MODULE: {name}")
 
             if mod_type == "regular":
