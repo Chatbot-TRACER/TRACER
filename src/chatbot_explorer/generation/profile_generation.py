@@ -119,6 +119,8 @@ def _parse_profile_groupings(llm_content: str) -> list[dict[str, Any]]:
         if not lines:
             continue
         profile_name = lines[0].strip()
+        # Remove brackets and quotes from profile name
+        profile_name = profile_name.strip("[]'\"")
         role = ""
         functionalities_list = []
         role_started = False
@@ -289,11 +291,7 @@ def generate_profile_content(config: ProfileGenerationConfig, nested_forward: bo
 
         # 6. Generate output fields
         logger.debug("Generating outputs for profile '%s'...", profile.get("name", "Unnamed profile"))
-        temp_profiles = generate_outputs(
-            [profile],
-            config["llm"],
-            config["supported_languages"]
-        )
+        temp_profiles = generate_outputs([profile], config["llm"], config["supported_languages"])
         if temp_profiles:
             profile.update(temp_profiles[0])
 
