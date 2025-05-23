@@ -1,0 +1,40 @@
+test_name: Bike Purchase Information Seeker
+llm:
+  temperature: 0.4
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: User seeking information about different types of bikes, models, and their characteristics to inform a potential purchase.
+  context:
+  - 'personality: personalities/conversational-user'
+  - You're planning to get back into cycling for fitness and recreation after a long break.
+  - You're unsure about the best type of bike for your needs and want to learn more about the options available at the local bike shop.
+  - You also need to replace a worn-out tire on an older road bike you already own.
+  goals:
+  - Inquire about the types of mountain bikes available and their characteristics.
+  - Confirm if the shop sells cross-country bikes.
+  - Ask for the price range for a standard road bike tire.
+  - Ask about the types of bikes the shop sells.
+  - Prompt for information about enduro bikes.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, I can't understand that question. Could you please ask something related to bikes or our services?
+  output:
+  - bike_information:
+      type: string
+      description: A comprehensive summary of the chatbot's response, including the types of mountain bikes available and their characteristics, confirmation of selling cross-country bikes, the price range for a standard road bike tire, the types of bikes the shop sells, and information about enduro bikes or lack thereof. This output should capture all relevant information provided throughout the conversation relating to bike types, characteristics, availability, and pricing.
+  - detail_options:
+      type: string
+      description: The options presented by the chatbot for obtaining more specific information about bike models or prices. This should capture the chatbot's prompt offering further details on selected items or topics, such as models, prices, features, or availability.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - make spelling mistakes
+  - change your mind

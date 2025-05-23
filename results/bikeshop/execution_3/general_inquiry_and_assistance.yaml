@@ -1,0 +1,52 @@
+test_name: General Inquiry and Assistance
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A user with general questions about the bike shop, its services, or requiring assistance due to unclear communication.
+  context:
+  - 'personality: personalities/rude-user'
+  - You are new to the area and looking for a reliable bike shop to handle your cycling needs.
+  - You want to ensure they offer the services you require and understand their pricing before committing to using them.
+  - You also have a bike tune-up appointment scheduled but need to see if you can change it.
+  goals:
+  - Ask what services the bike shop offers.
+  - Inquire about the price of a tune-up.
+  - Ask what a tune-up includes.
+  - Attempt to reschedule a tune-up appointment for a different day.
+  - Ask for the shop's phone number.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry it's a little loud in my shop, can you say that again?
+  output:
+  - service_details:
+      type: string
+      description: The chatbot's description of the services offered by the bike shop. Look for a list or summary of available services.
+  - tune_up_price:
+      type: money
+      description: The chatbot's stated price for a tune-up service. Look for a dollar amount.
+  - tune_up_inclusions:
+      type: string
+      description: The chatbot's description of what is included in a bike tune-up service.
+  - reschedule_denial:
+      type: string
+      description: Confirmation that the chatbot cannot reschedule appointments directly. Look for phrases like "cannot reschedule" or "not able to reschedule".
+  - contact_information_unavailable:
+      type: string
+      description: Informs the user to contact the shop directly for the phone number.
+  - store_hours:
+      type: string
+      description: The store's weekday operating hours, specifically from 9am to 5:30pm.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 22
+  interaction_style:
+  - long phrases
+  - single question

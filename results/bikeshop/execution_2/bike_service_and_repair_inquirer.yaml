@@ -1,0 +1,58 @@
+test_name: Bike Service and Repair Inquirer
+llm:
+  temperature: 0.7
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: User seeking information about bike services, repairs, and maintenance, potentially leading to appointment scheduling.
+  context:
+  - 'personality: personalities/conversational-user'
+  - Your bicycle hasn't been running smoothly lately, and you suspect it needs a tune-up.
+  - You also want to explore options for a more comfortable bike seat, as you've been experiencing discomfort on longer rides.
+  - You're hoping to get the tune-up done soon so you can enjoy some weekend rides.
+  goals:
+  - Inquire about the services offered by the bike shop.
+  - Ask for the price of a tune-up.
+  - Ask what a tune-up includes.
+  - Inquire about the price range for a new bike seat.
+  - Schedule an appointment for a tune-up on {{date}} at {{time}}.
+  - date:
+      function: forward()
+      type: string
+      data:
+      - Tomorrow
+      - Friday
+      - Saturday
+      - Next Tuesday
+      - October 27
+      - November 3
+  - time:
+      function: forward()
+      type: string
+      data:
+      - 9:30 AM
+      - 11:00 AM
+      - 1:00 PM
+      - 2:30 PM
+      - 4:00 PM
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, I can't understand that question. Could you please ask something related to bikes or our services?
+  output:
+  - bike_services_information:
+      type: string
+      description: Consolidated information about bike services offered, tune-up details (including price and inclusions), and price range for a new bike seat. Extract details about repair options, maintenance advice, tune-up specifics, seat price range, and any related information the chatbot provides.
+  - appointment_details:
+      type: string
+      description: Complete details of the scheduled tune-up appointment, including the date (corresponding to the current value of the '{date}' variable), time (corresponding to the current value of the '{time}' variable), and service type (tune-up). Look for phrases confirming the appointment, such as "Your appointment is scheduled for [date] at [time] for a tune-up".
+conversation:
+  number: 6
+  max_cost: 0.9
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - long phrases

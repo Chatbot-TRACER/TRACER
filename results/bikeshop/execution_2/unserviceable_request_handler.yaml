@@ -1,0 +1,57 @@
+test_name: Unserviceable Request Handler
+llm:
+  temperature: 0.6
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: User asking questions that the chatbot cannot answer or that fall outside its scope.
+  context:
+  - You're a relatively new cyclist and are trying to learn more about bike maintenance.
+  - You've heard that regular tune-ups are important, but you're unsure what they entail and what options exist.
+  - You also want to learn some basic maintenance tips you can perform yourself at home.
+  goals:
+  - What kinds of tune-ups do you offer?
+  - What is included in the {{tune_up_type}} tune-up?
+  - What are the prices for different types of tune-ups?
+  - What's the best way to maintain my bike chain?
+  - What should I do if my bike chain is rusty?
+  - tune_up_type:
+      function: forward()
+      type: string
+      data:
+      - bike fitting
+      - brake adjustments
+      - custom bike builds
+      - flat tire repairs
+      - gear tuning
+      - general upkeep
+      - seat repair
+      - tire replacement
+      - tune-ups
+      - wheel truing
+      - frame repair
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, I can't understand that question. Could you please ask something related to bikes or our services?
+  output:
+  - tune_up_availability:
+      type: string
+      description: Confirmation from the chatbot that it does not have specific details about tune-up inclusions, types, or prices. Look for phrases indicating lack of information or inability to provide details on tune-ups.
+  - maintenance_advice_unavailable:
+      type: string
+      description: Confirmation from the chatbot that it cannot answer specific bike maintenance questions and recommends consulting a bike specialist. Look for phrases indicating inability to provide maintenance advice and a recommendation to consult a specialist.
+  - alternative_assistance_offered:
+      type: string
+      description: Confirmation from the chatbot that it offered alternative assistance when information was unavailable. Look for phrases indicating other ways the chatbot can help.
+conversation:
+  number: 11
+  max_cost: 1.65
+  goal_style:
+    all_answered:
+      export: false
+      limit: 16
+  interaction_style:
+  - change your mind
+  - long phrases
