@@ -939,3 +939,45 @@ def _generate_smart_default_options(
     except Exception as e:
         logger.error(f"Error generating smart default options for '{variable_name}': {e}")
         return None
+
+
+def _validate_generated_options(variable_name: str, options_list: list[str], llm: BaseLanguageModel) -> bool:
+    """Validate that generated options are actual values, not descriptions."""
+    if not options_list:
+        return False
+
+    # Language-agnostic structural checks
+    descriptive_patterns = [
+        "the ",
+        "your ",
+        "available ",
+        "selection",
+        "option",
+        "choice",
+        " type",
+        " category",
+        " list",
+    ]
+
+    # Check for obviously descriptive options
+    descriptive_count = 0
+    for option in options_list:
+        option_lower = option.lower()
+        if any(pattern in option_lower for pattern in descriptive_patterns):
+            descriptive_count += 1
+        # Also check if option is just the variable name or contains it prominently
+        var_words = variable_name.lower().split("_")
+        if len(var_words) > 0 and any(word in option_lower for word in var_words if len(word) > 2):
+            # If the option contains the variable name, it might be descriptive
+            if len(option.split()) <= 2:  # Short options containing var name are likely descriptive
+                descriptive_count += 1
+
+    # If more than 30% of options look descriptive, fail validation
+    if descriptive_count > len(options_list) * 0.3:
+        logger.warning(
+            f"Options validation failed for '{variable_name}': {descriptive_count}/{len(options_list)} options appear descriptive"
+        )
+        return False
+
+    # Use existing semantic validation
+    return _validate_semantic_match(variable_name, options_list, llm)

@@ -127,9 +127,7 @@ def get_variable_to_datasource_matching_prompt(
         if isinstance(full_options, list) and full_options:
             # Show more option examples to help with semantic matching
             preview_count = min(5, len(full_options))
-            options_preview_str = (
-                f"{full_options[:preview_count]}{'...' if len(full_options) > preview_count else ''} (Total: {len(full_options)} options)"
-            )
+            options_preview_str = f"{full_options[:preview_count]}{'...' if len(full_options) > preview_count else ''} (Total: {len(full_options)} options)"
 
         sources_str_list.append(
             f"  {i + 1}. ID: DS{i + 1} ## Source Name: '{source.get('source_name')}'\n"
@@ -293,9 +291,9 @@ def get_variable_semantic_validation_prompt(
     # Create guidance based on variable name patterns - language agnostic approach
     specific_guidance = ""
     if is_date_var:
-        specific_guidance = "This variable represents a DATE. Options should be actual dates a user would select, not descriptions of dates."
+        specific_guidance = "This variable represents a DATE. Options should be actual dates a user would select (like 'Tomorrow', 'Monday', '2024-01-15'), NOT descriptions like 'The date' or 'Your preferred date'."
     elif is_time_var:
-        specific_guidance = "This variable represents a TIME. Options should be actual times a user would select, not descriptions of times."
+        specific_guidance = "This variable represents a TIME. Options should be actual times a user would select (like '9:00 AM', '14:30', 'Morning'), NOT descriptions like 'The time' or 'Available times'."
     elif is_type_var:
         base_term = variable_name_lower
         for type_marker in VARIABLE_PATTERNS["type"]:
@@ -304,9 +302,9 @@ def get_variable_semantic_validation_prompt(
                 break
 
         if base_term:
-            specific_guidance = f"This variable represents TYPES or CATEGORIES of {base_term}. Options should be names of specific {base_term} types."
+            specific_guidance = f"This variable represents TYPES or CATEGORIES of {base_term}. Options should be names of specific {base_term} types (like 'Basic', 'Premium', 'Standard'), NOT descriptions like 'The {base_term} type' or 'Available {base_term}s'."
     elif is_number_of_var:
-        specific_guidance = "This variable represents a COUNT or QUANTITY of something. Options should be actual counts a user would select, not descriptions of counts."
+        specific_guidance = "This variable represents a COUNT or QUANTITY of something. Options should be actual counts a user would select (like '1', '2', '5', 'One'), NOT descriptions like 'The quantity' or 'Number of items'."
 
     return f"""
 You are evaluating data quality for a chatbot test variable.
@@ -324,15 +322,16 @@ WHAT MAKES OPTIONS APPROPRIATE:
 1. They are ACTUAL VALUES a user would select or enter, not descriptions or meta-information
 2. They represent specific instances of what the variable name suggests
 3. They are concise, not explanatory sentences
+4. They do NOT contain phrases like "The [variable_name]", "Your [variable_name]", "Available [variable_name]s"
 
 CONCRETE EXAMPLES:
-- For drink variables → "Coffee", "Tea", "Water" (NOT "Information about our drinks")
-- For date variables → "Tomorrow", "Next Monday", "July 15" (NOT "Confirmation details including the date")
-- For category/type variables → "Economy", "Premium", "Deluxe" (NOT "Different types available")
+- For drink variables → "Coffee", "Tea", "Water" (NOT "The drink type", "Available beverages")
+- For date variables → "Tomorrow", "Next Monday", "July 15" (NOT "The date", "Your preferred date")
+- For service variables → "Basic maintenance", "Repair", "Tune-up" (NOT "The service type", "Available services")
 
-CHECK: Would these values make sense in a form or chatbot menu for users to select?
+CRITICAL: If ANY option looks like a description or label rather than an actual selectable value, answer "No".
 
 Answer with ONLY "Yes" or "No".
-- Yes means ALL options are appropriate values for this variable
-- No means SOME or ALL options are inappropriate (too descriptive, wrong concept, etc.)
+- Yes means ALL options are appropriate actual values for this variable
+- No means SOME or ALL options are inappropriate (descriptions, labels, meta-information, etc.)
 """
