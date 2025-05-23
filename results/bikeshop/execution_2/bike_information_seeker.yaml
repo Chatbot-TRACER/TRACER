@@ -1,0 +1,49 @@
+test_name: Bike Information Seeker
+llm:
+  temperature: 0.5
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A user looking for general information about the types of bikes sold, brands, maintenance, and related services offered by the bike shop.
+  context:
+  - You are a relatively new cyclist looking to expand your knowledge about different types of bikes and related topics.
+  - You plan to visit a local bike shop to get some expert advice and explore your options for potentially upgrading your current bicycle or buying a new one.
+  - You want to be well-informed before going to the shop so you can ask the right questions and make the best decision.
+  goals:
+  - Ask what types of bikes are sold.
+  - Inquire about road bikes.
+  - Ask what brands of road bikes are available.
+  - Ask for recommendations of road bike brands.
+  - Ask about the Trek Domane road bike.
+  - Ask about what services the shop offers.
+  - Inquire about bike maintenance and repair services.
+  - Ask how often to lubricate the bike chain.
+  - Ask what kind of lubricant should be used.
+  - Ask how often to get a bike tune-up.
+  - Ask what a bike tune-up includes.
+  - Ask if the shop carries Cannondale bikes.
+  - Ask for general information about Michelin tires.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry it's a little loud in my shop, can you say that again?
+  output:
+  - bike_information:
+      type: string
+      description: A summary of the types of bikes sold (including road bikes, mountain bikes, hybrid bikes, and city bikes), brands of road bikes available (including Trek, Specialized, Giant, Cannondale, and Scott), and information about Michelin tires, which should include a general description of their durability and performance. Also includes the availability of Cannondale bikes.
+  - service_information:
+      type: string
+      description: Information about bike maintenance and repair services offered, including the recommended frequency for chain lubrication (e.g., every 100-200 miles) and the type of lubricant to use (wet or dry, bike-specific), and the recommended frequency for bike tune-ups. Includes tune-up details, such as adjustments, lubrication, inspections, and safety checks.
+  - trek_domane_information:
+      type: string
+      description: Detailed information about the Trek Domane bike, including its features, specifications, and a general summary highlighting its key characteristics and intended use (comfort and performance for long rides). This should be the chatbot's response to the specific question about the Trek Domane.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 30
+  interaction_style:
+  - long phrases
