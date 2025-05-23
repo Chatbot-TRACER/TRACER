@@ -1,0 +1,52 @@
+test_name: Unclear Intent and Assistance Seeking
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A user whose intent is unclear and needs help to navigate the chatbot functionalities, or who is seeking information that the chatbot cannot directly provide.
+  context:
+  - 'personality: personalities/conversational-user'
+  - You're feeling unwell but aren't sure what kind of medical attention you need.
+  - You're exploring the services offered by this clinic to determine the best course of action.
+  - You're also concerned about the potential costs associated with different types of examinations.
+  goals:
+  - I'm not sure what I need, can you tell me what services you offer?
+  - What kind of appointments are available?
+  - What does a physical examination include?
+  - How much does a physical examination cost?
+  - If you don't know, can you find out the cost of a physical examination for me?
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, but I did not understand the last sentence, can you say that again?
+  output:
+  - service_options:
+      type: string
+      description: A description of the services the chatbot offers, if provided.
+  - appointment_types:
+      type: string
+      description: A description of the available appointment types, if provided.
+  - physical_examination_description:
+      type: string
+      description: Details of what is included in a typical physical examination.
+  - cost_inquiry_response:
+      type: string
+      description: The chatbot's response to the cost inquiry. This should include whether the chatbot can provide the cost and if it offers to find out.
+  - recommendation:
+      type: string
+      description: Recommendation provided by the chatbot, if applicable (e.g., consult a veterinarian).
+  - assistance_options:
+      type: string
+      description: Options offered for further assistance, such as scheduling an appointment or asking another question.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 22
+  interaction_style:
+  - long phrases
+  - make spelling mistakes

@@ -1,0 +1,506 @@
+=== CHATBOT FUNCTIONALITY ANALYSIS ===
+
+
+## FUNCTIONALITIES (Workflow Structure)
+- offer_appointment_scheduling: Offers to schedule an appointment for a service. | Category: Appointment Scheduling | Outputs: [cat_grooming_availability: Confirmation that grooming services are offered specifically for cats.; appointment_scheduling_offer: Offers the user the option to schedule an appointment.]
+  - prompt_for_appointment_details: Prompts the user to provide the date, time, and service type for scheduling an appointment. | Category: Appointment Scheduling | Params: [appointment_datetime: The date and time the user wants to schedule the appointment.]
+    - schedule_appointment: Schedules an appointment based on user-provided or confirmed details, including date, time, and service type. | Category: Appointment Scheduling | Outputs: [appointment_confirmation: Confirmation of the scheduled appointment details, including the date, time, service type, confirmation status, and comprehensive details.]
+- acknowledge_animal_specializations_and_request_inquiry: Acknowledges the veterinary center's specialization in dogs, cats, and birds, and instructs the user to inquire about other animal types before proceeding. | Category: General Information | Outputs: [supported_animal_types: Specifies the animal types currently supported by the veterinary center: dogs, cats, and birds.; animal_inquiry_instructions: Provides instructions on how to proceed when inquiring about animals other than the standard supported types (dogs, cats, and birds), such as advising the user to inquire beforehand.]
+- reiterate_incorrect_appointment_details: Re-states incorrect appointment details | Category: Appointment Scheduling | Outputs: [appointment_details: Re-states the incorrect appointment details.]
+- prompt_for_reschedule_date_and_time: Prompts the user to provide the new date and time for rescheduling the appointment. | Category: Appointment Scheduling
+- prompt_for_pet_care_advice_topic: Prompts the user to choose a specific topic for pet care advice. | Category: Pet Care Advice
+- list_available_actions: Lists the available actions the user can take, including asking about opening hours, making an appointment, or inquiring about the veterinary center. | Category: Chatbot Meta | Outputs: [available_actions: You can ask about our opening hours, make an appointment, or inquire about our veterinary center.]
+- prompt_for_vaccination_type: Prompts the user to specify the type of cat vaccination they are interested in, offering options for common vaccinations or scheduling an appointment. | Category: Appointment Scheduling
+- direct_user_to_contact_center_for_pricing: Directs the user to contact the veterinary center directly for specific pricing information on vaccinations. | Category: General Information
+- provide_cat_vaccination_information: Provides information on common vaccinations for cats, including vaccines for rabies, feline calicivirus, feline herpesvirus type I (rhinotracheitis), and panleukopenia (distemper). | Category: Pet Care Advice | Outputs: [cat_vaccination_information: Information about common vaccinations for cats, typically including vaccines for rabies, feline calicivirus, feline herpesvirus type I (rhinotracheitis), and panleukopenia (distemper).]
+- provide_veterinary_visit_pricing_information: Provides information about the typical price range for a veterinary visit, and may offer related information. | Category: General Information | Outputs: [veterinary_visit_cost: The typical cost range for a veterinary visit (e.g., $50 to $60).; veterinary_information_availability: Offers to provide information about opening hours, types of animals accepted, and pet care advice.]
+- state_veterinary_assistance_scope: States that the chatbot is there to assist with questions or appointments related to the veterinary center. | Category: Chatbot Meta
+- list_appointment_types: Lists the types of appointments that can be booked. | Category: Appointment Scheduling | Outputs: [appointment_types: A list of available appointment types, including physical examination, vaccination, dental health and cleaning, and lab or diagnostic testing.]
+  - prompt_for_appointment_details: Prompts the user to provide the date, time, and service type for scheduling an appointment. | Category: Appointment Scheduling | Params: [appointment_datetime: The date and time the user wants to schedule the appointment.]
+    - schedule_appointment: Schedules an appointment based on user-provided or confirmed details, including date, time, and service type. | Category: Appointment Scheduling | Outputs: [appointment_confirmation: Confirmation of the scheduled appointment details, including the date, time, service type, confirmation status, and comprehensive details.]
+- provide_general_dog_nutrition_advice: Recommends feeding a dog a balanced diet of high-quality commercial dog food appropriate for their age, size, and health needs. | Category: Pet Care Advice | Outputs: [general_dietary_recommendation: balanced diet including high-quality commercial dog food]
+- provide_general_cat_grooming_tips: Provides general tips for grooming cats, including regular brushing, gentle handling, infrequent bathing, and regular checking of ears, teeth, and nails. | Category: Pet Care Advice | Outputs: [grooming_tips: brushing, bathing, dental care, nail care, ear care]
+- provide_general_pet_health_check_advice: Provides general advice on checking a pet's health, including signs of a shiny coat, clear eyes, normal appetite, regular activity levels, and no signs of pain or discomfort. | Category: Pet Care Advice | Outputs: [health_check_indicators: shiny coat, clear eyes, normal appetite, regular activity levels, absence of pain or discomfort]
+- provide_pet_care_and_parasite_prevention_information: Provides information and recommendations on general pet care, including preventative measures, with a focus on common parasites in dogs (fleas, ticks, heartworms, and intestinal worms) and their prevention. | Category: Pet Care Advice | Outputs: [common_dog_parasites: A list of common parasites that affect dogs, including fleas, ticks, heartworms, and intestinal worms.; parasite_prevention_methods: Methods for preventing parasite infestations in dogs, such as preventive medications, good hygiene practices, maintaining a clean environment, and scheduling regular veterinary check-ups.; pet_care_recommendations: Recommendations for comprehensive pet care, encompassing veterinary check-ups, vaccinations, dental health, parasite control, proper nutrition and a balanced diet, maintaining a healthy weight, regular exercise, and providing plenty of love and attention.]
+- confirm_acceptance_of_animal: Confirms whether the veterinary center accepts or treats a specific animal type. | Category: General Information | Outputs: [animal_acceptance_confirmation: Confirmation of whether the center treats a specified animal type. Includes the accepted animal type in the response (e.g., 'Yes, we do accept [animal type].')]
+- rephrase_user_query: Prompts the user to rephrase their previous query due to a lack of understanding. It may or may not include an apology. | Category: Chatbot Meta
+- inform_no_specific_information: Informs the user that it does not have specific information about a topic and recommends consulting a veterinarian. | Category: General Information | Outputs: [recommendation: recommends consulting with a veterinarian; information_unavailable: I did not have specific information about [topic].]
+- offer_further_assistance: Offers the user options for further assistance, such as scheduling an appointment or answering another question. | Category: Chatbot Meta | Outputs: [assistance_options: Would you like to schedule an appointment or ask another question?]
+- provide_greeting: Welcomes the user and indicates availability to assist, implying the availability of actions. | Category: Chatbot Meta
+- list_available_services_and_information: Lists the available services offered at the veterinary center and the types of information the chatbot can provide. | Category: General Information | Outputs: [available_services: A list of services offered, including physical examinations, vaccinations, dental health and cleaning, and lab or diagnostic testing.; available_information: Information available from the chatbot includes opening hours, weekend hours, veterinary visit fees, the types of animals accepted, and pet care advice.]
+- describe_physical_examination: Provides a description of what a physical examination includes. | Category: General Information | Outputs: [physical_examination_description: Details of what is included in a typical physical examination.]
+- request_to_find_out_cost: Expresses inability to provide the cost of a physical examination and asks the user if they would like the chatbot to find out. | Category: General Information
+
+## FUNCTIONALITIES (By Category)
+
+### CATEGORY: Appointment Scheduling (9 functions)
+- offer_appointment_scheduling: Offers to schedule an appointment for a service.
+- prompt_for_appointment_details: Prompts the user to provide the date, time, and service type for scheduling an appointment.
+- schedule_appointment: Schedules an appointment based on user-provided or confirmed details, including date, time, and service type.
+- reiterate_incorrect_appointment_details: Re-states incorrect appointment details
+- prompt_for_reschedule_date_and_time: Prompts the user to provide the new date and time for rescheduling the appointment.
+- prompt_for_vaccination_type: Prompts the user to specify the type of cat vaccination they are interested in, offering options for common vaccinations or scheduling an appointment.
+- list_appointment_types: Lists the types of appointments that can be booked.
+- prompt_for_appointment_details: Prompts the user to provide the date, time, and service type for scheduling an appointment.
+- schedule_appointment: Schedules an appointment based on user-provided or confirmed details, including date, time, and service type.
+
+### CATEGORY: Chatbot Meta (5 functions)
+- list_available_actions: Lists the available actions the user can take, including asking about opening hours, making an appointment, or inquiring about the veterinary center.
+- state_veterinary_assistance_scope: States that the chatbot is there to assist with questions or appointments related to the veterinary center.
+- rephrase_user_query: Prompts the user to rephrase their previous query due to a lack of understanding. It may or may not include an apology.
+- offer_further_assistance: Offers the user options for further assistance, such as scheduling an appointment or answering another question.
+- provide_greeting: Welcomes the user and indicates availability to assist, implying the availability of actions.
+
+### CATEGORY: General Information (8 functions)
+- acknowledge_animal_specializations_and_request_inquiry: Acknowledges the veterinary center's specialization in dogs, cats, and birds, and instructs the user to inquire about other animal types before proceeding.
+- direct_user_to_contact_center_for_pricing: Directs the user to contact the veterinary center directly for specific pricing information on vaccinations.
+- provide_veterinary_visit_pricing_information: Provides information about the typical price range for a veterinary visit, and may offer related information.
+- confirm_acceptance_of_animal: Confirms whether the veterinary center accepts or treats a specific animal type.
+- inform_no_specific_information: Informs the user that it does not have specific information about a topic and recommends consulting a veterinarian.
+- list_available_services_and_information: Lists the available services offered at the veterinary center and the types of information the chatbot can provide.
+- describe_physical_examination: Provides a description of what a physical examination includes.
+- request_to_find_out_cost: Expresses inability to provide the cost of a physical examination and asks the user if they would like the chatbot to find out.
+
+### CATEGORY: Pet Care Advice (6 functions)
+- prompt_for_pet_care_advice_topic: Prompts the user to choose a specific topic for pet care advice.
+- provide_cat_vaccination_information: Provides information on common vaccinations for cats, including vaccines for rabies, feline calicivirus, feline herpesvirus type I (rhinotracheitis), and panleukopenia (distemper).
+- provide_general_dog_nutrition_advice: Recommends feeding a dog a balanced diet of high-quality commercial dog food appropriate for their age, size, and health needs.
+- provide_general_cat_grooming_tips: Provides general tips for grooming cats, including regular brushing, gentle handling, infrequent bathing, and regular checking of ears, teeth, and nails.
+- provide_general_pet_health_check_advice: Provides general advice on checking a pet's health, including signs of a shiny coat, clear eyes, normal appetite, regular activity levels, and no signs of pain or discomfort.
+- provide_pet_care_and_parasite_prevention_information: Provides information and recommendations on general pet care, including preventative measures, with a focus on common parasites in dogs (fleas, ticks, heartworms, and intestinal worms) and their prevention.
+
+## FUNCTIONALITIES (Raw JSON Structure)
+[
+  {
+    "name": "offer_appointment_scheduling",
+    "description": "Offers to schedule an appointment for a service.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "cat_grooming_availability",
+        "description": "Confirmation that grooming services are offered specifically for cats."
+      },
+      {
+        "category": "appointment_scheduling_offer",
+        "description": "Offers the user the option to schedule an appointment."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Appointment Scheduling",
+    "children": [
+      {
+        "name": "prompt_for_appointment_details",
+        "description": "Prompts the user to provide the date, time, and service type for scheduling an appointment.",
+        "parameters": [
+          {
+            "name": "appointment_datetime",
+            "description": "The date and time the user wants to schedule the appointment.",
+            "options": []
+          }
+        ],
+        "outputs": [],
+        "parent_names": [
+          "list_appointment_types",
+          "offer_appointment_scheduling"
+        ],
+        "suggested_category": "Appointment Scheduling",
+        "children": [
+          {
+            "name": "schedule_appointment",
+            "description": "Schedules an appointment based on user-provided or confirmed details, including date, time, and service type.",
+            "parameters": [],
+            "outputs": [
+              {
+                "category": "appointment_confirmation",
+                "description": "Confirmation of the scheduled appointment details, including the date, time, service type, confirmation status, and comprehensive details."
+              }
+            ],
+            "parent_names": [
+              "prompt_for_appointment_details"
+            ],
+            "suggested_category": "Appointment Scheduling",
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "acknowledge_animal_specializations_and_request_inquiry",
+    "description": "Acknowledges the veterinary center's specialization in dogs, cats, and birds, and instructs the user to inquire about other animal types before proceeding.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "supported_animal_types",
+        "description": "Specifies the animal types currently supported by the veterinary center: dogs, cats, and birds."
+      },
+      {
+        "category": "animal_inquiry_instructions",
+        "description": "Provides instructions on how to proceed when inquiring about animals other than the standard supported types (dogs, cats, and birds), such as advising the user to inquire beforehand."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "reiterate_incorrect_appointment_details",
+    "description": "Re-states incorrect appointment details",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "appointment_details",
+        "description": "Re-states the incorrect appointment details."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Appointment Scheduling",
+    "children": []
+  },
+  {
+    "name": "prompt_for_reschedule_date_and_time",
+    "description": "Prompts the user to provide the new date and time for rescheduling the appointment.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Appointment Scheduling",
+    "children": []
+  },
+  {
+    "name": "prompt_for_pet_care_advice_topic",
+    "description": "Prompts the user to choose a specific topic for pet care advice.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Pet Care Advice",
+    "children": []
+  },
+  {
+    "name": "list_available_actions",
+    "description": "Lists the available actions the user can take, including asking about opening hours, making an appointment, or inquiring about the veterinary center.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "available_actions",
+        "description": "You can ask about our opening hours, make an appointment, or inquire about our veterinary center."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "prompt_for_vaccination_type",
+    "description": "Prompts the user to specify the type of cat vaccination they are interested in, offering options for common vaccinations or scheduling an appointment.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Appointment Scheduling",
+    "children": []
+  },
+  {
+    "name": "direct_user_to_contact_center_for_pricing",
+    "description": "Directs the user to contact the veterinary center directly for specific pricing information on vaccinations.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "provide_cat_vaccination_information",
+    "description": "Provides information on common vaccinations for cats, including vaccines for rabies, feline calicivirus, feline herpesvirus type I (rhinotracheitis), and panleukopenia (distemper).",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "cat_vaccination_information",
+        "description": "Information about common vaccinations for cats, typically including vaccines for rabies, feline calicivirus, feline herpesvirus type I (rhinotracheitis), and panleukopenia (distemper)."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Pet Care Advice",
+    "children": []
+  },
+  {
+    "name": "provide_veterinary_visit_pricing_information",
+    "description": "Provides information about the typical price range for a veterinary visit, and may offer related information.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "veterinary_visit_cost",
+        "description": "The typical cost range for a veterinary visit (e.g., $50 to $60)."
+      },
+      {
+        "category": "veterinary_information_availability",
+        "description": "Offers to provide information about opening hours, types of animals accepted, and pet care advice."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "state_veterinary_assistance_scope",
+    "description": "States that the chatbot is there to assist with questions or appointments related to the veterinary center.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "list_appointment_types",
+    "description": "Lists the types of appointments that can be booked.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "appointment_types",
+        "description": "A list of available appointment types, including physical examination, vaccination, dental health and cleaning, and lab or diagnostic testing."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Appointment Scheduling",
+    "children": [
+      {
+        "name": "prompt_for_appointment_details",
+        "description": "Prompts the user to provide the date, time, and service type for scheduling an appointment.",
+        "parameters": [
+          {
+            "name": "appointment_datetime",
+            "description": "The date and time the user wants to schedule the appointment.",
+            "options": []
+          }
+        ],
+        "outputs": [],
+        "parent_names": [
+          "list_appointment_types",
+          "offer_appointment_scheduling"
+        ],
+        "suggested_category": "Appointment Scheduling",
+        "children": [
+          {
+            "name": "schedule_appointment",
+            "description": "Schedules an appointment based on user-provided or confirmed details, including date, time, and service type.",
+            "parameters": [],
+            "outputs": [
+              {
+                "category": "appointment_confirmation",
+                "description": "Confirmation of the scheduled appointment details, including the date, time, service type, confirmation status, and comprehensive details."
+              }
+            ],
+            "parent_names": [
+              "prompt_for_appointment_details"
+            ],
+            "suggested_category": "Appointment Scheduling",
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "provide_general_dog_nutrition_advice",
+    "description": "Recommends feeding a dog a balanced diet of high-quality commercial dog food appropriate for their age, size, and health needs.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "general_dietary_recommendation",
+        "description": "balanced diet including high-quality commercial dog food"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Pet Care Advice",
+    "children": []
+  },
+  {
+    "name": "provide_general_cat_grooming_tips",
+    "description": "Provides general tips for grooming cats, including regular brushing, gentle handling, infrequent bathing, and regular checking of ears, teeth, and nails.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "grooming_tips",
+        "description": "brushing, bathing, dental care, nail care, ear care"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Pet Care Advice",
+    "children": []
+  },
+  {
+    "name": "provide_general_pet_health_check_advice",
+    "description": "Provides general advice on checking a pet's health, including signs of a shiny coat, clear eyes, normal appetite, regular activity levels, and no signs of pain or discomfort.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "health_check_indicators",
+        "description": "shiny coat, clear eyes, normal appetite, regular activity levels, absence of pain or discomfort"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Pet Care Advice",
+    "children": []
+  },
+  {
+    "name": "provide_pet_care_and_parasite_prevention_information",
+    "description": "Provides information and recommendations on general pet care, including preventative measures, with a focus on common parasites in dogs (fleas, ticks, heartworms, and intestinal worms) and their prevention.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "common_dog_parasites",
+        "description": "A list of common parasites that affect dogs, including fleas, ticks, heartworms, and intestinal worms."
+      },
+      {
+        "category": "parasite_prevention_methods",
+        "description": "Methods for preventing parasite infestations in dogs, such as preventive medications, good hygiene practices, maintaining a clean environment, and scheduling regular veterinary check-ups."
+      },
+      {
+        "category": "pet_care_recommendations",
+        "description": "Recommendations for comprehensive pet care, encompassing veterinary check-ups, vaccinations, dental health, parasite control, proper nutrition and a balanced diet, maintaining a healthy weight, regular exercise, and providing plenty of love and attention."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Pet Care Advice",
+    "children": []
+  },
+  {
+    "name": "confirm_acceptance_of_animal",
+    "description": "Confirms whether the veterinary center accepts or treats a specific animal type.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "animal_acceptance_confirmation",
+        "description": "Confirmation of whether the center treats a specified animal type. Includes the accepted animal type in the response (e.g., 'Yes, we do accept [animal type].')"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "rephrase_user_query",
+    "description": "Prompts the user to rephrase their previous query due to a lack of understanding. It may or may not include an apology.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "inform_no_specific_information",
+    "description": "Informs the user that it does not have specific information about a topic and recommends consulting a veterinarian.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "recommendation",
+        "description": "recommends consulting with a veterinarian"
+      },
+      {
+        "category": "information_unavailable",
+        "description": "I did not have specific information about [topic]."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "offer_further_assistance",
+    "description": "Offers the user options for further assistance, such as scheduling an appointment or answering another question.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "assistance_options",
+        "description": "Would you like to schedule an appointment or ask another question?"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "provide_greeting",
+    "description": "Welcomes the user and indicates availability to assist, implying the availability of actions.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "list_available_services_and_information",
+    "description": "Lists the available services offered at the veterinary center and the types of information the chatbot can provide.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "available_services",
+        "description": "A list of services offered, including physical examinations, vaccinations, dental health and cleaning, and lab or diagnostic testing."
+      },
+      {
+        "category": "available_information",
+        "description": "Information available from the chatbot includes opening hours, weekend hours, veterinary visit fees, the types of animals accepted, and pet care advice."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "describe_physical_examination",
+    "description": "Provides a description of what a physical examination includes.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "physical_examination_description",
+        "description": "Details of what is included in a typical physical examination."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  },
+  {
+    "name": "request_to_find_out_cost",
+    "description": "Expresses inability to provide the cost of a physical examination and asks the user if they would like the chatbot to find out.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "General Information",
+    "children": []
+  }
+]
+## SUPPORTED LANGUAGES
+1. English
+
+## FALLBACK MESSAGE
+I'm sorry, but I did not understand the last sentence, can you say that again?
+## 
+TOKEN USAGE STATISTICS
+EXPLORATION PHASE
+  Prompt tokens:       622,810
+  Completion tokens:   18,280
+  Total tokens:        641,090
+  Estimated cost:      $0.0696 USD
+
+ANALYSIS PHASE
+  Prompt tokens:       254,882
+  Completion tokens:   29,094
+  Total tokens:        283,976
+  Estimated cost:      $0.0371 USD
+
+TOTAL TOKEN CONSUMPTION
+  Total LLM calls:     1,450
+  Successful calls:    1,450
+  Failed calls:        0
+  Prompt tokens:       877,692
+  Completion tokens:   47,374
+  Total tokens:        925,066
+  Estimated cost:      $0.1067 USD
+
+MODELS USED
+  models/gemini-2.0-flash
+
+COST MODEL USED (for pricing calculation)
+  models/gemini-2.0-flash
+
+TOTAL APPLICATION EXECUTION TIME
+  00:18:17 (HH:MM:SS)

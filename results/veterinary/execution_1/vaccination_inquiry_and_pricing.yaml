@@ -1,0 +1,37 @@
+test_name: Vaccination Inquiry and Pricing
+llm:
+  temperature: 0.5
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A pet owner seeking information about cat vaccinations and their associated costs.
+  context:
+  - You recently adopted a kitten and want to ensure it receives all the necessary vaccinations to stay healthy.
+  - You are new to the area and are looking for a reputable veterinary clinic that provides comprehensive vaccination services for cats.
+  goals:
+  - Inquire about cat vaccinations.
+  - Ask for information on common cat vaccinations.
+  - Inquire about the cost of vaccinations for cats.
+  - Ask to be directed to the veterinary center for specific pricing information.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, but I did not understand the last sentence, can you say that again?
+  output:
+  - cat_vaccination_information:
+      type: string
+      description: Information provided by the chatbot regarding common cat vaccinations, including but not limited to rabies, feline calicivirus, feline herpesvirus type I (rhinotracheitis), and panleukopenia (distemper).
+  - pricing_information_direction:
+      type: string
+      description: The chatbot's instruction or direction for the user to contact the veterinary center directly for specific pricing information on cat vaccinations.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - long phrases
+  - change your mind
