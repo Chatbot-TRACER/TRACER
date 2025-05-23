@@ -1,0 +1,416 @@
+=== CHATBOT FUNCTIONALITY ANALYSIS ===
+
+
+## FUNCTIONALITIES (Workflow Structure)
+- prompt_to_discuss_project_or_schedule_session: Prompts the user to choose between discussing their project or scheduling a session. | Category: Session Management
+- provide_artclicks_introduction: Introduces ArtClicks and offers assistance. | Category: Onboarding | Outputs: [company_specialization: Specializes in photographs for art galleries.]
+- prompt_to_schedule_photo_session: Asks if the user wants to schedule a photo session for product photos. | Category: Session Scheduling
+- offer_scheduling_or_price_estimate: Offers the user the option to schedule an appointment or receive a price estimate, potentially after providing details about the service. | Category: Service Selection | Params: [user_choice: User's choice between scheduling an appointment or getting a price estimate. [options: schedule an appointment, get a price estimate]] | Outputs: [art_photography_details: Details on art gallery photography, including capturing artworks, exhibitions, and installations.; art_related_media_info: Information about video and 3D rendering projects related to art.]
+  - prompt_for_estimate_inquiry: Asks the user if they would like to proceed with getting an estimate for their project. | Category: Price Estimation
+    - prompt_for_media_details: Prompts the user to provide details about the desired media (e.g., type, subtype, number of artworks) to obtain a more accurate estimate for photography, video, or 3D rendering services. | Category: Data Collection | Params: [media_type: The type of media the user is interested in (e.g., 3D rendering, photography, video). [options: 3D rendering, 3d rendering, 3d_rendering, photography, video]; photography_type: The type of photography the user is interested in (wedding, portrait, or commercial, art gallery photographs, video, or 3D rendering).; number_of_artworks: The number of artworks the user wants photographed.; artwork_type: The type of artwork the user is interested in (e.g., ceramic, picture, sculpture). [options: ceramic, picture, sculpture]]
+      - acknowledge_information_and_prepare_estimate: Acknowledges the information provided by the user and indicates that a price estimate is being prepared. | Category: Price Estimation
+        - provide_price_estimate: Provides an estimated price based on user-provided details, acknowledging potential variations. The estimate can be for various services such as photography or video. | Category: Price Estimation | Outputs: [estimated_price: The estimated or approximate cost for the requested service, such as photography or video services.; price_caveat: A statement indicating that the stated price is an estimate and may vary based on various factors.]
+- provide_art_photography_services_information: Provides information about art photography services, including its focus, purpose, and benefits for art galleries, exhibitions, catalogues, video production, and 3D rendering specialization. | Category: Service Information | Outputs: [photography_services_details: Detailed information about photography services, video production, and 3D rendering offered, including specializations for art galleries. This includes high-resolution art photography, with a focus on high-quality images, lighting, textures, colors, benefits, and use cases.]
+- list_photography_session_types: Lists the different types of photography sessions offered. | Category: Service Information | Outputs: [session_types: Types of photography sessions offered, including high-resolution art photography, installation shots, detailed close-ups, photography for art galleries, video production, and 3D rendering.]
+- collect_appointment_information: Collects the user's name, phone number, desired appointment date/time, and optionally their email address, to schedule an appointment. | Category: Appointment Scheduling | Params: [name: The user's name.; phone_number: The user's phone number.; appointment_date_time: The desired date and time for the appointment or session.; email: The user's email address (optional).]
+  - confirm_appointment: Confirms the appointment details with the user and informs them that they will be contacted soon. | Category: Appointment Scheduling | Outputs: [appointment_date: The date on which the appointment is scheduled.; confirmation_message: A message confirming the details of the session.]
+- provide_location_and_operating_hours: Provides the location and operating hours of the shop or studio. | Category: Shop Information | Outputs: [opening_hours: The hours of operation, Monday through Friday, from 9:00 AM to 5:00 PM.; studio_location: The location of the studio (e.g., SoHo).]
+  - prompt_for_exact_address_request: Prompts the user to confirm if they want the exact address of the shop. | Category: Shop Information
+- offer_available_services: Informs the user of the chatbot's available services and capabilities, including scheduling appointments, providing price estimates, and answering shop-related questions, and presents available options for interaction. | Category: Chatbot Meta | Outputs: [service_information: Information and actions related to available services, including scheduling appointments, providing price estimates, answering general questions about the shop, and listing possible actions the chatbot can perform.]
+- describe_available_shop_information: Describes the types of information the chatbot can provide about the shop, such as location, opening hours, media types, and portfolio details. | Category: Shop Information | Outputs: [shop_information: Information about the shop, including its location, opening hours, the types of media it works with, and details about its portfolio and projects.]
+- explain_photography_pricing_factors: Explains the factors that influence the price of photography services, including elements such as media type, project complexity, duration/number of images, location, special equipment, post-processing, lighting, background, and specific requirements. | Category: Price Estimation | Outputs: [service_pricing_factors: The elements that influence the service cost, including factors such as the complexity of the artwork/sculpture, the shoot location, the level of detail required, the number of photos needed, the level of post-processing required, the equipment used, and any special equipment, setup, lighting, or background requirements.]
+- inquire_about_video_service_interest: Inquires with the user about their interest in video services, including confirming availability and prompting for further information or a price estimate. | Category: Service Inquiry | Outputs: [media_types_supported: Confirms support for video media, in addition to photography and 3D rendering.]
+
+## FUNCTIONALITIES (By Category)
+
+### CATEGORY: Appointment Scheduling (2 functions)
+- collect_appointment_information: Collects the user's name, phone number, desired appointment date/time, and optionally their email address, to schedule an appointment.
+- confirm_appointment: Confirms the appointment details with the user and informs them that they will be contacted soon.
+
+### CATEGORY: Chatbot Meta (1 functions)
+- offer_available_services: Informs the user of the chatbot's available services and capabilities, including scheduling appointments, providing price estimates, and answering shop-related questions, and presents available options for interaction.
+
+### CATEGORY: Data Collection (1 functions)
+- prompt_for_media_details: Prompts the user to provide details about the desired media (e.g., type, subtype, number of artworks) to obtain a more accurate estimate for photography, video, or 3D rendering services.
+
+### CATEGORY: Onboarding (1 functions)
+- provide_artclicks_introduction: Introduces ArtClicks and offers assistance.
+
+### CATEGORY: Price Estimation (4 functions)
+- prompt_for_estimate_inquiry: Asks the user if they would like to proceed with getting an estimate for their project.
+- acknowledge_information_and_prepare_estimate: Acknowledges the information provided by the user and indicates that a price estimate is being prepared.
+- provide_price_estimate: Provides an estimated price based on user-provided details, acknowledging potential variations. The estimate can be for various services such as photography or video.
+- explain_photography_pricing_factors: Explains the factors that influence the price of photography services, including elements such as media type, project complexity, duration/number of images, location, special equipment, post-processing, lighting, background, and specific requirements.
+
+### CATEGORY: Service Information (2 functions)
+- provide_art_photography_services_information: Provides information about art photography services, including its focus, purpose, and benefits for art galleries, exhibitions, catalogues, video production, and 3D rendering specialization.
+- list_photography_session_types: Lists the different types of photography sessions offered.
+
+### CATEGORY: Service Inquiry (1 functions)
+- inquire_about_video_service_interest: Inquires with the user about their interest in video services, including confirming availability and prompting for further information or a price estimate.
+
+### CATEGORY: Service Selection (1 functions)
+- offer_scheduling_or_price_estimate: Offers the user the option to schedule an appointment or receive a price estimate, potentially after providing details about the service.
+
+### CATEGORY: Session Management (1 functions)
+- prompt_to_discuss_project_or_schedule_session: Prompts the user to choose between discussing their project or scheduling a session.
+
+### CATEGORY: Session Scheduling (1 functions)
+- prompt_to_schedule_photo_session: Asks if the user wants to schedule a photo session for product photos.
+
+### CATEGORY: Shop Information (3 functions)
+- provide_location_and_operating_hours: Provides the location and operating hours of the shop or studio.
+- prompt_for_exact_address_request: Prompts the user to confirm if they want the exact address of the shop.
+- describe_available_shop_information: Describes the types of information the chatbot can provide about the shop, such as location, opening hours, media types, and portfolio details.
+
+## FUNCTIONALITIES (Raw JSON Structure)
+[
+  {
+    "name": "prompt_to_discuss_project_or_schedule_session",
+    "description": "Prompts the user to choose between discussing their project or scheduling a session.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Session Management",
+    "children": []
+  },
+  {
+    "name": "provide_artclicks_introduction",
+    "description": "Introduces ArtClicks and offers assistance.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "company_specialization",
+        "description": "Specializes in photographs for art galleries."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Onboarding",
+    "children": []
+  },
+  {
+    "name": "prompt_to_schedule_photo_session",
+    "description": "Asks if the user wants to schedule a photo session for product photos.",
+    "parameters": [],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Session Scheduling",
+    "children": []
+  },
+  {
+    "name": "offer_scheduling_or_price_estimate",
+    "description": "Offers the user the option to schedule an appointment or receive a price estimate, potentially after providing details about the service.",
+    "parameters": [
+      {
+        "name": "user_choice",
+        "description": "User's choice between scheduling an appointment or getting a price estimate.",
+        "options": [
+          "schedule an appointment",
+          "get a price estimate"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "category": "art_photography_details",
+        "description": "Details on art gallery photography, including capturing artworks, exhibitions, and installations."
+      },
+      {
+        "category": "art_related_media_info",
+        "description": "Information about video and 3D rendering projects related to art."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Service Selection",
+    "children": [
+      {
+        "name": "prompt_for_estimate_inquiry",
+        "description": "Asks the user if they would like to proceed with getting an estimate for their project.",
+        "parameters": [],
+        "outputs": [],
+        "parent_names": [
+          "offer_scheduling_or_price_estimate"
+        ],
+        "suggested_category": "Price Estimation",
+        "children": [
+          {
+            "name": "prompt_for_media_details",
+            "description": "Prompts the user to provide details about the desired media (e.g., type, subtype, number of artworks) to obtain a more accurate estimate for photography, video, or 3D rendering services.",
+            "parameters": [
+              {
+                "name": "media_type",
+                "description": "The type of media the user is interested in (e.g., 3D rendering, photography, video).",
+                "options": [
+                  "3D rendering",
+                  "3d rendering",
+                  "3d_rendering",
+                  "photography",
+                  "video"
+                ]
+              },
+              {
+                "name": "photography_type",
+                "description": "The type of photography the user is interested in (wedding, portrait, or commercial, art gallery photographs, video, or 3D rendering).",
+                "options": []
+              },
+              {
+                "name": "number_of_artworks",
+                "description": "The number of artworks the user wants photographed.",
+                "options": []
+              },
+              {
+                "name": "artwork_type",
+                "description": "The type of artwork the user is interested in (e.g., ceramic, picture, sculpture).",
+                "options": [
+                  "ceramic",
+                  "picture",
+                  "sculpture"
+                ]
+              }
+            ],
+            "outputs": [],
+            "parent_names": [
+              "prompt_for_estimate_inquiry"
+            ],
+            "suggested_category": "Data Collection",
+            "children": [
+              {
+                "name": "acknowledge_information_and_prepare_estimate",
+                "description": "Acknowledges the information provided by the user and indicates that a price estimate is being prepared.",
+                "parameters": [],
+                "outputs": [],
+                "parent_names": [
+                  "prompt_for_media_details"
+                ],
+                "suggested_category": "Price Estimation",
+                "children": [
+                  {
+                    "name": "provide_price_estimate",
+                    "description": "Provides an estimated price based on user-provided details, acknowledging potential variations. The estimate can be for various services such as photography or video.",
+                    "parameters": [],
+                    "outputs": [
+                      {
+                        "category": "estimated_price",
+                        "description": "The estimated or approximate cost for the requested service, such as photography or video services."
+                      },
+                      {
+                        "category": "price_caveat",
+                        "description": "A statement indicating that the stated price is an estimate and may vary based on various factors."
+                      }
+                    ],
+                    "parent_names": [
+                      "acknowledge_information_and_prepare_estimate"
+                    ],
+                    "suggested_category": "Price Estimation",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "provide_art_photography_services_information",
+    "description": "Provides information about art photography services, including its focus, purpose, and benefits for art galleries, exhibitions, catalogues, video production, and 3D rendering specialization.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "photography_services_details",
+        "description": "Detailed information about photography services, video production, and 3D rendering offered, including specializations for art galleries. This includes high-resolution art photography, with a focus on high-quality images, lighting, textures, colors, benefits, and use cases."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Service Information",
+    "children": []
+  },
+  {
+    "name": "list_photography_session_types",
+    "description": "Lists the different types of photography sessions offered.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "session_types",
+        "description": "Types of photography sessions offered, including high-resolution art photography, installation shots, detailed close-ups, photography for art galleries, video production, and 3D rendering."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Service Information",
+    "children": []
+  },
+  {
+    "name": "collect_appointment_information",
+    "description": "Collects the user's name, phone number, desired appointment date/time, and optionally their email address, to schedule an appointment.",
+    "parameters": [
+      {
+        "name": "name",
+        "description": "The user's name.",
+        "options": []
+      },
+      {
+        "name": "phone_number",
+        "description": "The user's phone number.",
+        "options": []
+      },
+      {
+        "name": "appointment_date_time",
+        "description": "The desired date and time for the appointment or session.",
+        "options": []
+      },
+      {
+        "name": "email",
+        "description": "The user's email address (optional).",
+        "options": []
+      }
+    ],
+    "outputs": [],
+    "parent_names": [],
+    "suggested_category": "Appointment Scheduling",
+    "children": [
+      {
+        "name": "confirm_appointment",
+        "description": "Confirms the appointment details with the user and informs them that they will be contacted soon.",
+        "parameters": [],
+        "outputs": [
+          {
+            "category": "appointment_date",
+            "description": "The date on which the appointment is scheduled."
+          },
+          {
+            "category": "confirmation_message",
+            "description": "A message confirming the details of the session."
+          }
+        ],
+        "parent_names": [
+          "collect_appointment_information"
+        ],
+        "suggested_category": "Appointment Scheduling",
+        "children": []
+      }
+    ]
+  },
+  {
+    "name": "provide_location_and_operating_hours",
+    "description": "Provides the location and operating hours of the shop or studio.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "opening_hours",
+        "description": "The hours of operation, Monday through Friday, from 9:00 AM to 5:00 PM."
+      },
+      {
+        "category": "studio_location",
+        "description": "The location of the studio (e.g., SoHo)."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Shop Information",
+    "children": [
+      {
+        "name": "prompt_for_exact_address_request",
+        "description": "Prompts the user to confirm if they want the exact address of the shop.",
+        "parameters": [],
+        "outputs": [],
+        "parent_names": [
+          "provide_location_and_operating_hours"
+        ],
+        "suggested_category": "Shop Information",
+        "children": []
+      }
+    ]
+  },
+  {
+    "name": "offer_available_services",
+    "description": "Informs the user of the chatbot's available services and capabilities, including scheduling appointments, providing price estimates, and answering shop-related questions, and presents available options for interaction.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "service_information",
+        "description": "Information and actions related to available services, including scheduling appointments, providing price estimates, answering general questions about the shop, and listing possible actions the chatbot can perform."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Chatbot Meta",
+    "children": []
+  },
+  {
+    "name": "describe_available_shop_information",
+    "description": "Describes the types of information the chatbot can provide about the shop, such as location, opening hours, media types, and portfolio details.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "shop_information",
+        "description": "Information about the shop, including its location, opening hours, the types of media it works with, and details about its portfolio and projects."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Shop Information",
+    "children": []
+  },
+  {
+    "name": "explain_photography_pricing_factors",
+    "description": "Explains the factors that influence the price of photography services, including elements such as media type, project complexity, duration/number of images, location, special equipment, post-processing, lighting, background, and specific requirements.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "service_pricing_factors",
+        "description": "The elements that influence the service cost, including factors such as the complexity of the artwork/sculpture, the shoot location, the level of detail required, the number of photos needed, the level of post-processing required, the equipment used, and any special equipment, setup, lighting, or background requirements."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Price Estimation",
+    "children": []
+  },
+  {
+    "name": "inquire_about_video_service_interest",
+    "description": "Inquires with the user about their interest in video services, including confirming availability and prompting for further information or a price estimate.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "media_types_supported",
+        "description": "Confirms support for video media, in addition to photography and 3D rendering."
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Service Inquiry",
+    "children": []
+  }
+]
+## SUPPORTED LANGUAGES
+1. English
+
+## FALLBACK MESSAGE
+I'm sorry, I can help you to set an appointment for a session, provide price estimates, and answer on issues related to our shop.
+## 
+TOKEN USAGE STATISTICS
+EXPLORATION PHASE
+  Prompt tokens:       881,508
+  Completion tokens:   35,945
+  Total tokens:        917,453
+  Estimated cost:      $0.1025 USD
+
+ANALYSIS PHASE
+  Prompt tokens:       167,461
+  Completion tokens:   19,482
+  Total tokens:        186,943
+  Estimated cost:      $0.0245 USD
+
+TOTAL TOKEN CONSUMPTION
+  Total LLM calls:     1,333
+  Successful calls:    1,333
+  Failed calls:        0
+  Prompt tokens:       1,048,969
+  Completion tokens:   55,427
+  Total tokens:        1,104,396
+  Estimated cost:      $0.1271 USD
+
+MODELS USED
+  models/gemini-2.0-flash
+
+COST MODEL USED (for pricing calculation)
+  models/gemini-2.0-flash
+
+TOTAL APPLICATION EXECUTION TIME
+  00:18:23 (HH:MM:SS)
