@@ -361,6 +361,13 @@ class CoverageAnalyzer:
         ml = self.report_data["module_lists"]
         md = self.report_data["module_details"]
 
+        class Colors:
+            GREEN = "\033[92m"
+            YELLOW = "\033[93m"
+            ORANGE = "\033[38;5;208m"
+            RED = "\033[91m"
+            RESET = "\033[0m"
+
         print("🤖 CHATBOT COVERAGE ANALYSIS")
         print("=" * 60)
 
@@ -435,6 +442,28 @@ class CoverageAnalyzer:
         for name in sorted(md.keys()):
             details = md[name]
             mod_type = details.get("module_type")
+            is_activated = details.get("activated", False)
+
+            pct_for_color = 0.0
+            # Determine percentage for coloring based on module type
+            if mod_type == "regular" and "option_coverage" in details:
+                pct_for_color = details["option_coverage"]["overall_percentage_for_module"]
+            elif mod_type == "qa" and "field_coverage" in details:
+                pct_for_color = details["field_coverage"]["percentage"]
+            elif mod_type in ["empty", "undefined_spec"]:
+                # For these types, 100% if activated (as their spec is met/non-existent), 0% if not.
+                pct_for_color = 100.0 if is_activated else 0.0
+
+            # Select color based on percentage
+            color_code = Colors.RED  # Default to Red for 0% or undefined
+            if pct_for_color >= 80:
+                color_code = Colors.GREEN
+            elif pct_for_color >= 50:
+                color_code = Colors.YELLOW
+            elif pct_for_color >= 20:
+                color_code = Colors.ORANGE
+
+            # Determine emoji (existing logic)
             emoji = "❔"
             if mod_type == "empty":
                 emoji = "🧩"
@@ -445,7 +474,8 @@ class CoverageAnalyzer:
             elif mod_type == "undefined_spec":
                 emoji = "📄"
 
-            print(f"\n  {emoji} {mod_type.upper()} MODULE: {name}")
+            module_header_text = f"{mod_type.upper()} MODULE: {name}"
+            print(f"\n  {emoji} {color_code}{module_header_text}{Colors.RESET}")
 
             if mod_type == "regular":
                 mod_oc = details["option_coverage"]
@@ -486,20 +516,26 @@ class CoverageAnalyzer:
                 print("\n    🔹 No detailed spec available.")
 
     def save_readable_report(self, output_file: str | None = None) -> str:
-        """Save a human-readable text report."""
+        """Save a human-readable text report, stripping ANSI color codes."""
         out_path = self._get_output_path(output_file, "txt")
         import io
+        import re
         import sys
+
+        # Remove the color codes from the txt
+        ansi_escape_pattern = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
 
         old_stdout = sys.stdout
         sys.stdout = buffer = io.StringIO()
         try:
-            self.print_summary()
-            content = buffer.getvalue()
+            self.print_summary()  # This will print with colors to the buffer
+            content_with_colors = buffer.getvalue()
         finally:
             sys.stdout = old_stdout
+        # Strip ANSI codes from the captured content
+        content_without_colors = ansi_escape_pattern.sub("", content_with_colors)
         with open(out_path, "w", encoding="utf-8") as f:
-            f.write(content)
+            f.write(content_without_colors)
         return str(out_path)
 
 
