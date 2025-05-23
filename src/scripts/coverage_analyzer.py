@@ -537,38 +537,39 @@ def main():
     parser.add_argument(
         "-o",
         "--output",
-        help="Output file path. Extension determines format (.json or .txt). If not given, both are saved with default names.",
+        help="Base name for the output report files. Saves both .json and .txt reports (e.g., 'my_report' creates 'my_report.json' and 'my_report.txt'). If an extension is provided, it will be used to determine the base name.",
     )
     args = parser.parse_args()
 
     try:
         analyzer = CoverageAnalyzer(args.coverage_file)
 
+        # Always print the summary to the console first
+        analyzer.print_summary()
+
+        json_output_filename_arg = None
+        txt_output_filename_arg = None
+        save_message = "\nReports saved:"
+
         if args.output:
-            if args.output.endswith(".json"):
-                output_path = analyzer.save_report(args.output)
-                print(f"\nJSON report saved to: {output_path}")
-                print("\n--- CONSOLE SUMMARY ---")
-                analyzer.print_summary()
-            elif args.output.endswith(".txt"):
-                output_path = analyzer.save_readable_report(args.output)
-                print(f"\nReadable report saved to: {output_path}")
-            else:
-                print("Unsupported output file extension. Use .json or .txt.", file=sys.stderr)
-                json_path = analyzer.save_report()
-                readable_path = analyzer.save_readable_report()
-                print("\nReports saved with default names due to unrecognized extension:")
-                print(f"  📊 JSON: {json_path}")
-                print(f"  📝 Text: {readable_path}")
-                print("\n--- CONSOLE SUMMARY ---")
-                analyzer.print_summary()
-        else:
-            analyzer.print_summary()
-            json_path = analyzer.save_report()
-            readable_path = analyzer.save_readable_report()
-            print("\nReports saved:")
-            print(f"  📊 JSON: {json_path}")
-            print(f"  📝 Text: {readable_path}")
+            user_provided_path = Path(args.output)
+            output_dir = user_provided_path.parent
+            base_name_stem = user_provided_path.stem
+
+            # Ensure output directory exists
+            if output_dir != Path():  # Avoid trying to create "." if no path is specified
+                output_dir.mkdir(parents=True, exist_ok=True)
+
+            json_output_filename_arg = str(output_dir / f"{base_name_stem}.json")
+            txt_output_filename_arg = str(output_dir / f"{base_name_stem}.txt")
+            save_message = f"\nReports saved based on name '{args.output}':"
+
+        json_path = analyzer.save_report(json_output_filename_arg)
+        readable_path = analyzer.save_readable_report(txt_output_filename_arg)
+
+        print(save_message)
+        print(f"  📊 JSON: {json_path}")
+        print(f"  📝 Text: {readable_path}")
 
     except FileNotFoundError as e:
         print(f"Error: {e}", file=sys.stderr)
