@@ -133,28 +133,10 @@ class CoverageAnalyzer:
                         footprint_values = set(module_footprint.get(field_name, []))
                         covered_options = set(spec_value).intersection(footprint_values)
                         total_covered_options_count += len(covered_options)
-                elif module_name in self.qa_modules and isinstance(
-                    spec_value, list
-                ):  # QA "options" are the expected answers
-                    # The "fields" are questions. The "options" are the expected answers within the spec_value list.
-                    # This part of global option counting for QA might need refinement based on desired definition.
-                    # Current model: QA fields are questions, their coverage is field coverage.
-                    # If QA spec_value is a list of expected answers, they could be counted as options.
-                    # For simplicity and alignment with current detailed report, let's assume QA "options" are not globally counted here,
-                    # as their primary coverage is handled as "answered questions" (field coverage for QA).
-                    # However, if the old report's "Option Coverage" for QA modules (e.g., 4/6 options) meant
-                    # that 4 out of 6 questions were answered, then this needs adjustment.
-                    # The previous structure had "Option Coverage: 66.7% (4/6 options)" for pizza_qa.
-                    # This implies that for QA, "options" were synonymous with "questions".
-                    total_defined_options_count += 1  # Each QA question is an "option item" in this global sense
+                elif module_name in self.qa_modules and isinstance(spec_value, list):
+                    total_defined_options_count += 1
                     if is_module_activated and field_name in module_footprint and module_footprint.get(field_name):
-                        # If the question (field_name) was "used" (i.e., answered, present in footprint)
-                        # For QA, the old model seemed to count a question as "covered" if it was present.
-                        # The spec_value for QA is usually a list of example answers, not what's matched.
-                        # Let's use the field_coverage logic for QA here for consistency.
-                        if field_name in module_footprint.get(
-                            field_name, []
-                        ):  # Check if question itself is in its response list
+                        if field_name in module_footprint.get(field_name, []):
                             total_covered_options_count += 1
 
         field_usage_percentage = (
@@ -344,12 +326,19 @@ class CoverageAnalyzer:
         if output_file:
             return Path(output_file)
         stem = self.coverage_file.stem
-        new_stem = stem.replace("_coverage", "") + "_report" if "_coverage" in stem else stem + "_report"
+
+        last_underscore_index = stem.rfind("_")
+
+        if last_underscore_index != -1:
+            base_name = stem[:last_underscore_index]
+            new_stem = base_name + "_report"
+        else:
+            new_stem = stem + "_report"
+
         return self.coverage_file.parent / f"{new_stem}.{extension}"
 
     def save_report(self, output_file: str | None = None) -> str:
         """Save JSON report to file."""
-        # report = self.generate_report() # Report is now generated in __init__
         out_path = self._get_output_path(output_file, "json")
         with open(out_path, "w") as f:
             json.dump(self.report_data, f, indent=2, ensure_ascii=False)
