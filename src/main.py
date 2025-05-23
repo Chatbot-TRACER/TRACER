@@ -1,6 +1,7 @@
 """Main program entry point for the Chatbot Explorer."""
 
 import sys
+import time
 from argparse import Namespace
 from pathlib import Path
 from typing import Any
@@ -146,7 +147,9 @@ def _run_exploration_phase(
         return results
 
 
-def _run_analysis_phase(agent: ChatbotExplorationAgent, exploration_results: dict[str, Any], nested_forward: bool = False) -> dict[str, Any]:
+def _run_analysis_phase(
+    agent: ChatbotExplorationAgent, exploration_results: dict[str, Any], nested_forward: bool = False
+) -> dict[str, Any]:
     """Runs the analysis phase using the agent and exploration results.
 
     Args:
@@ -225,15 +228,33 @@ def _generate_reports(
     if functionality_dicts:
         graph_output_base = Path(output_dir) / "workflow_graph"
         try:
-            export_graph(functionality_dicts, str(graph_output_base), "pdf", graph_font_size=graph_font_size, dpi=300, compact=compact, top_down=top_down)
+            export_graph(
+                functionality_dicts,
+                str(graph_output_base),
+                "pdf",
+                graph_font_size=graph_font_size,
+                dpi=300,
+                compact=compact,
+                top_down=top_down,
+            )
         except Exception:
             logger.exception("Failed to generate workflow graph image")
     else:
         logger.info("--- Skipping workflow graph image (no functionalities discovered) ---")
 
 
+def _format_duration(seconds: float) -> str:
+    """Formats a duration in seconds into HH:MM:SS string."""
+    seconds = int(seconds)
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    secs = seconds % 60
+    return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+
+
 def main() -> None:
     """Coordinates the setup, execution, and reporting for the Chatbot Explorer."""
+    app_start_time = time.monotonic()
     # 1. Parse arguments, validate inputs, create output dir
     args = _setup_configuration()
 
@@ -264,8 +285,25 @@ def main() -> None:
     # Get token usage summary
     token_usage = agent.token_tracker.get_summary()
 
+    # Calculate total application execution time and add to token_usage
+    app_end_time = time.monotonic()
+    total_app_duration_seconds = app_end_time - app_start_time
+    formatted_app_duration = _format_duration(total_app_duration_seconds)
+    token_usage["total_application_execution_time"] = {
+        "seconds": total_app_duration_seconds,
+        "formatted": formatted_app_duration,
+    }
+
     # 7. Generate Reports
-    _generate_reports(args.output, exploration_results, analysis_results, token_usage, args.graph_font_size, args.compact, args.top_down)
+    _generate_reports(
+        args.output,
+        exploration_results,
+        analysis_results,
+        token_usage,  # Now includes execution time
+        args.graph_font_size,
+        args.compact,
+        args.top_down,
+    )
 
     # 8. Display Final Token Usage Summary
     cost_details = token_usage.get("cost_details", {})
@@ -278,13 +316,13 @@ def main() -> None:
     logger.info("  Prompt tokens:     %s", f"{exploration_data.get('prompt_tokens', 0):,}")
     logger.info("  Completion tokens: %s", f"{exploration_data.get('completion_tokens', 0):,}")
     logger.info("  Total tokens:      %s", f"{exploration_data.get('total_tokens', 0):,}")
-    logger.info("  Estimated cost:    $%.4f USD", exploration_data.get('estimated_cost', 0))
+    logger.info("  Estimated cost:    $%.4f USD", exploration_data.get("estimated_cost", 0))
 
     logger.info("\nAnalysis Phase:")
     logger.info("  Prompt tokens:     %s", f"{analysis_data.get('prompt_tokens', 0):,}")
     logger.info("  Completion tokens: %s", f"{analysis_data.get('completion_tokens', 0):,}")
     logger.info("  Total tokens:      %s", f"{analysis_data.get('total_tokens', 0):,}")
-    logger.info("  Estimated cost:    $%.4f USD", analysis_data.get('estimated_cost', 0))
+    logger.info("  Estimated cost:    $%.4f USD", analysis_data.get("estimated_cost", 0))
 
     logger.info("\nTotal Consumption:")
     logger.info("  Total LLM calls:   %d", token_usage["total_llm_calls"])
@@ -295,8 +333,15 @@ def main() -> None:
     logger.info("  Total tokens:      %s", f"{token_usage['total_tokens_consumed']:,}")
     logger.info("  Estimated cost:    $%.4f USD", token_usage.get("estimated_cost", 0))
 
-    if "models_used" in token_usage and token_usage["models_used"]:
+    if token_usage.get("models_used"):
         logger.info("\nModels used: %s", ", ".join(token_usage["models_used"]))
+
+    if (
+        "total_application_execution_time" in token_usage
+        and isinstance(token_usage["total_application_execution_time"], dict)
+        and "formatted" in token_usage["total_application_execution_time"]
+    ):
+        logger.info("Total execution time: %s (HH:MM:SS)", token_usage["total_application_execution_time"]["formatted"])
 
     # 9. Finish
     logger.info("\n---------------------------------")

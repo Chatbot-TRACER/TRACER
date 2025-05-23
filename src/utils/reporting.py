@@ -6,7 +6,7 @@ import os
 from contextlib import redirect_stderr
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TextIO, Any
+from typing import Any, TextIO
 
 import graphviz
 import yaml
@@ -256,7 +256,6 @@ def _add_nodes(
     ctx.processed_nodes.add(name)
 
     if (parent, name) not in ctx.processed_edges:
-
         if parent == "start" and target_graph != ctx.graph:
             ctx.graph.edge(parent, name)
         else:
@@ -747,21 +746,21 @@ def _write_token_usage_section(f: TextIO, token_usage: dict[str, Any]) -> None:
         return f"{num:,}" if isinstance(num, (int, float)) else str(num)
 
     # Write exploration phase token statistics
-    exploration_data = token_usage.get('exploration_phase', {})
+    exploration_data = token_usage.get("exploration_phase", {})
     f.write("EXPLORATION PHASE\n")
     f.write(f"  Prompt tokens:       {format_num(exploration_data.get('prompt_tokens', 'N/A'))}\n")
     f.write(f"  Completion tokens:   {format_num(exploration_data.get('completion_tokens', 'N/A'))}\n")
     f.write(f"  Total tokens:        {format_num(exploration_data.get('total_tokens', 'N/A'))}\n")
-    if 'estimated_cost' in exploration_data:
+    if "estimated_cost" in exploration_data:
         f.write(f"  Estimated cost:      ${exploration_data.get('estimated_cost', 0):.4f} USD\n")
 
     # Write analysis phase token statistics
-    analysis_data = token_usage.get('analysis_phase', {})
+    analysis_data = token_usage.get("analysis_phase", {})
     f.write("\nANALYSIS PHASE\n")
     f.write(f"  Prompt tokens:       {format_num(analysis_data.get('prompt_tokens', 'N/A'))}\n")
     f.write(f"  Completion tokens:   {format_num(analysis_data.get('completion_tokens', 'N/A'))}\n")
     f.write(f"  Total tokens:        {format_num(analysis_data.get('total_tokens', 'N/A'))}\n")
-    if 'estimated_cost' in analysis_data:
+    if "estimated_cost" in analysis_data:
         f.write(f"  Estimated cost:      ${analysis_data.get('estimated_cost', 0):.4f} USD\n")
 
     # Write total token usage statistics
@@ -774,17 +773,27 @@ def _write_token_usage_section(f: TextIO, token_usage: dict[str, Any]) -> None:
     f.write(f"  Total tokens:        {format_num(token_usage.get('total_tokens_consumed', 'N/A'))}\n")
 
     # Add cost estimate if available
-    if 'estimated_cost' in token_usage:
+    if "estimated_cost" in token_usage:
         f.write(f"  Estimated cost:      ${token_usage.get('estimated_cost', 0):.4f} USD\n")
 
     # Add model information if available
-    if 'models_used' in token_usage and token_usage['models_used']:
-        models_str = ', '.join(token_usage['models_used'])
+    if token_usage.get("models_used"):
+        models_str = ", ".join(token_usage["models_used"])
         f.write(f"\nMODELS USED\n  {models_str}\n")
 
     # Add cost model information if available
-    if 'cost_details' in token_usage and 'cost_model_used' in token_usage['cost_details']:
-        f.write(f"\nCOST MODEL USED\n  {token_usage['cost_details']['cost_model_used']}\n")
+    if "cost_details" in token_usage and "cost_model_used" in token_usage["cost_details"]:
+        f.write(f"\nCOST MODEL USED (for pricing calculation)\n  {token_usage['cost_details']['cost_model_used']}\n")
+
+    # Add total application execution time if available
+    if (
+        "total_application_execution_time" in token_usage
+        and isinstance(token_usage["total_application_execution_time"], dict)
+        and "formatted" in token_usage["total_application_execution_time"]
+    ):
+        f.write(
+            f"\nTOTAL APPLICATION EXECUTION TIME\n  {token_usage['total_application_execution_time']['formatted']} (HH:MM:SS)\n"
+        )
 
 
 def write_report(

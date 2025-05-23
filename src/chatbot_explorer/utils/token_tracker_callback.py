@@ -61,12 +61,23 @@ class TokenUsageTracker(BaseCallbackHandler):
         parent_run_id: UUID | None = None,
         **kwargs: Any,
     ) -> None:
-        super().on_llm_start(serialized, prompts, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
         self.call_count += 1
 
         # Track which model is being used
-        if "model_name" in serialized:
+        # Model name can be in 'model' or 'model_name' in kwargs for many Langchain integrations
+        model_name_from_serialized_kwargs = None
+        if "kwargs" in serialized and isinstance(serialized["kwargs"], dict):
+            model_name_from_serialized_kwargs = serialized["kwargs"].get("model") or serialized["kwargs"].get(
+                "model_name"
+            )
+
+        if model_name_from_serialized_kwargs:
+            self.model_names_used.add(model_name_from_serialized_kwargs)
+        elif "model_name" in serialized:  # General fallback from top-level of serialized
             self.model_names_used.add(serialized["model_name"])
+        # else:
+        # logger.debug(f"Model name not found in on_llm_start serialization: {serialized}")
+        super().on_llm_start(serialized, prompts, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
 
     def on_llm_end(
         self, response: LLMResult, *, run_id: UUID, parent_run_id: UUID | None = None, **kwargs: Any
@@ -162,30 +173,32 @@ class TokenUsageTracker(BaseCallbackHandler):
 
     def calculate_cost(self) -> dict:
         """Calculate estimated cost based on token usage and models used."""
-        # Determine which cost model to use based on models used
-        model_key = "default"
+        cost_model_reported = "default"  # This is what will be shown as "cost_model_used" in the report
+        pricing_key_for_lookup = "default"  # This is the key used to get rates from DEFAULT_COSTS
 
-        # Try to use the most specific model if we have it
-        for model_name in self.model_names_used:
-            # Check for exact matches first
-            if model_name in DEFAULT_COSTS:
-                model_key = model_name
-                break
-
-            # For partial matches (like different versions of the same model family)
-            for known_model in DEFAULT_COSTS:
-                if known_model in model_name:
-                    model_key = known_model
+        if self.model_names_used:
+            # Attempt to find an exact match in DEFAULT_COSTS from the models that were actually used.
+            # If multiple models were used, this prioritizes the first one found with a cost entry.
+            found_match_for_pricing = False
+            for model_name_actually_used in self.model_names_used:
+                if model_name_actually_used in DEFAULT_COSTS:
+                    pricing_key_for_lookup = model_name_actually_used
+                    cost_model_reported = model_name_actually_used  # Report this specific model
+                    found_match_for_pricing = True
                     break
 
-        # Get the cost rates (per 1M tokens)
-        cost_info = DEFAULT_COSTS[model_key]
+            if not found_match_for_pricing and self.model_names_used:
+                # No specific pricing found for any of the used models.
+                # Report the first model from the set of used models. Pricing will use 'default' rates.
+                cost_model_reported = list(self.model_names_used)[0]
+                # pricing_key_for_lookup remains "default"
+
+        cost_info = DEFAULT_COSTS.get(pricing_key_for_lookup, DEFAULT_COSTS["default"])
 
         # Calculate costs (dividing by 1M to convert from per-million pricing)
         prompt_cost = (self.total_prompt_tokens / 1000000) * cost_info["prompt"]
         completion_cost = (self.total_completion_tokens / 1000000) * cost_info["completion"]
         total_cost = prompt_cost + completion_cost
-
         # Calculate per phase costs
         exploration_prompt_cost = (self.exploration_prompt_tokens / 1000000) * cost_info["prompt"]
         exploration_completion_cost = (self.exploration_completion_tokens / 1000000) * cost_info["completion"]
@@ -203,7 +216,7 @@ class TokenUsageTracker(BaseCallbackHandler):
             "prompt_cost": round(prompt_cost, 4),
             "completion_cost": round(completion_cost, 4),
             "total_cost": round(total_cost, 4),
-            "cost_model_used": model_key,
+            "cost_model_used": cost_model_reported,
             "exploration_cost": round(exploration_total_cost, 4),
             "analysis_cost": round(analysis_total_cost, 4),
         }
