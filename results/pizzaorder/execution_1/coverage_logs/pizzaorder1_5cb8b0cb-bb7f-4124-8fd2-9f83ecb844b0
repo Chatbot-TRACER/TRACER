@@ -1,18 +1,18 @@
 {
     "specification": {
         "modules": [
-            "calculate_ticket_custom",
-            "sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom",
-            "pizza_qa",
+            "order_drinks",
             "order_custom_pizza",
-            "sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined",
-            "calculate_price_custom",
-            "top-level",
-            "order_predefined_pizza",
+            "sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom",
+            "calculate_ticket_predefined",
             "calculate_price_predefined",
             "pizza_type",
-            "order_drinks",
-            "calculate_ticket_predefined"
+            "pizza_qa",
+            "top-level",
+            "sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined",
+            "calculate_price_custom",
+            "order_predefined_pizza",
+            "calculate_ticket_custom"
         ],
         "pizza_qa": {
             "What are the opening hours?": [],
@@ -160,117 +160,55 @@
     },
     "footprint": {
         "modules": [
-            "calculate_ticket_custom",
             "pizza_qa",
-            "order_custom_pizza",
-            "calculate_price_custom",
-            "top-level",
-            "order_predefined_pizza",
-            "calculate_price_predefined",
-            "pizza_type",
-            "order_drinks",
-            "calculate_ticket_predefined"
+            "top-level"
         ],
         "pizza_qa": {
-            "What are the opening hours?": [
-                "What are the opening hours?"
-            ],
+            "What are the opening hours?": [],
             "What types of pizza do you serve?": [
                 "What types of pizza do you serve?"
             ],
-            "What are the prices of the pizzas? How much do they cost?": [
-                "What are the prices of the pizzas? How much do they cost?"
-            ],
+            "What are the prices of the pizzas? How much do they cost?": [],
             "What are the prices of the beverages?": [],
             "How do I get the order? Do you deliver orders?": [],
-            "How much time does it take to get an order?": [],
-            "unknown": [
-                "Do you deliver orders?"
-            ]
+            "How much time does it take to get an order?": []
         },
         "order_predefined_pizza": {
-            "pizza_size": [
-                "large"
-            ],
-            "pizza_type": [
-                "margherita"
-            ]
+            "pizza_size": [],
+            "pizza_type": []
         },
         "order_drinks": {
-            "num_drinks": [
-                1,
-                2
-            ],
-            "drinks": [
-                "coke"
-            ]
+            "num_drinks": [],
+            "drinks": []
         },
         "calculate_price_predefined": {
-            "pizza_size": [
-                "large"
-            ],
-            "pizza_type": [
-                "margherita"
-            ],
-            "num_drinks": [
-                2
-            ],
-            "drinks": [
-                "coke"
-            ]
+            "pizza_size": [],
+            "pizza_type": [],
+            "num_drinks": [],
+            "drinks": []
         },
         "calculate_ticket_predefined": {
-            "pizza_size": [
-                "large"
-            ],
-            "pizza_type": [
-                "margherita"
-            ],
-            "num_drinks": [
-                2
-            ],
-            "drinks": [
-                "coke"
-            ]
+            "pizza_size": [],
+            "pizza_type": [],
+            "num_drinks": [],
+            "drinks": []
         },
         "sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined": {},
         "order_custom_pizza": {
-            "pizza_size": [
-                "large"
-            ],
-            "toppings": [
-                "pepperoni"
-            ]
+            "pizza_size": [],
+            "toppings": []
         },
         "calculate_price_custom": {
-            "pizza_size": [
-                "large"
-            ],
-            "toppings": [
-                "pepperoni"
-            ],
-            "num_drinks": [
-                1,
-                2
-            ],
-            "drinks": [
-                "coke"
-            ]
+            "pizza_size": [],
+            "toppings": [],
+            "num_drinks": [],
+            "drinks": []
         },
         "calculate_ticket_custom": {
-            "pizza_size": [
-                "large"
-            ],
-            "toppings": [
-                "pepperoni"
-            ],
-            "num_drinks": [
-                1,
-                2
-            ],
-            "drinks": [
-                "coke"
-            ]
+            "pizza_size": [],
+            "toppings": [],
+            "num_drinks": [],
+            "drinks": []
         },
         "sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom": {},
         "pizza_type": {},
