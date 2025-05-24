@@ -1,0 +1,36 @@
+test_name: Unrecognized Request - Error Handling
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: Any user whose query is not understood by the chatbot.
+  context:
+  - 'personality: personalities/skeptical-user'
+  - You are trying to gather information about a local pet care service but are in a rush and using shorthand.
+  - You are intentionally using incomplete or ambiguous phrasing to test the chatbot's understanding and error handling capabilities.
+  goals:
+  - Ask about the walk-in policy using an ambiguous phrase.
+  - Ask about the grooming services using an ambiguous phrase.
+  - Ask about the 24-hour emergency services using an ambiguous phrase.
+  - Ask about the holiday schedule using an ambiguous phrase.
+  - Inquire about what the cost would be for a checkup using an ambiguous phrase.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, but I did not understand the last sentence, can you say that again?
+  output:
+  - rephrase_request:
+      type: string
+      description: The chatbot's response indicating that it did not understand the user's request and is asking for a rephrasing. Look for phrases like "I'm sorry, I didn't understand" or "Could you please rephrase?".
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - long phrases
+  - single question
