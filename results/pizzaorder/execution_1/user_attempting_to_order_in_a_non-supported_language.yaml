@@ -1,0 +1,54 @@
+test_name: User Attempting to Order in a Non-Supported Language
+llm:
+  temperature: 1.0
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A user who attempts to place an order in a language other than English.
+  context:
+  - 'personality: personalities/curious-user'
+  - You are visiting from Spain and want to order a pizza for delivery to your hotel room.
+  - You are more comfortable speaking Spanish than English, so you attempt to order in Spanish first.
+  goals:
+  - 'Ask if I can order in Spanish: ¿Puedo ordenar en español?'
+  - 'Ask again in Spanish if Spanish is supported: ¿Se puede pedir en español?'
+  - After being told the chatbot only communicates in English, ask what toppings are available.
+  - Confirm that I want a pizza with {{topping}}.
+  - topping:
+      function: forward()
+      type: string
+      data:
+      - bacon
+      - cheese
+      - chicken
+      - corn
+      - ham
+      - mushrooms
+      - olives
+      - pepper
+      - pepperoni
+      - pineapple
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.
+  output:
+  - language_support_response:
+      type: str
+      description: The chatbot's response to the user's inquiries about ordering in Spanish, including the clarification that it only communicates in English. Look for phrases indicating language support limitations and prompts to switch to English.
+  - available_toppings_list:
+      type: string
+      description: The list of available pizza toppings offered by the chatbot. Extract the full list of toppings, for example, "cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken".
+  - topping_confirmation:
+      type: str
+      description: The chatbot's confirmation that the pizza order includes the topping specified by the '{topping}' variable in the goal. Look for phrases like "You want a pizza with [topping_value]" or similar confirmations.
+conversation:
+  number: 10
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - all questions

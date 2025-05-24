@@ -1,0 +1,72 @@
+test_name: User Experiencing Input Issues
+llm:
+  temperature: 0.6
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A user who is having trouble getting the chatbot to understand their requests.
+  context:
+  - 'personality: personalities/sarcastic-user'
+  - You're trying to order a pizza from this chatbot, but you're having some technical difficulties with your microphone.
+  - As a result, the chatbot isn't always picking up your full requests, so you're trying to be as concise as possible.
+  - You're also curious about any deals or specials they might be offering today.
+  goals:
+  - Ask what kinds of pizza are available.
+  - Attempt to order a pizza by just saying '{{pizza_type}}'.
+  - Ask what pizza toppings are available.
+  - Attempt to order a pizza by just saying '{{pizza_topping}}'.
+  - Ask if there are any specials today.
+  - pizza_topping:
+      function: forward()
+      type: string
+      data:
+      - bacon
+      - cheese
+      - chicken
+      - corn
+      - ham
+      - mushrooms
+      - olives
+      - pepper
+      - pepperoni
+      - anchovies
+  - pizza_type:
+      function: forward()
+      type: string
+      data:
+      - Carbonara
+      - Four cheese
+      - Hawaiian
+      - Marinera
+      - Vegetarian
+      - Pepperoni
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.
+  output:
+  - pizza_options:
+      type: string
+      description: The list of available pizza types provided by the chatbot in response to the question about pizza options. Look for a phrase like "Our available pizzas are..." or a bulleted list of pizza names.
+  - pizza_toppings:
+      type: string
+      description: The list of available pizza toppings provided by the chatbot in response to the question about pizza toppings. Look for a phrase like "Our available toppings are..." or a bulleted list of topping names.
+  - pizza_order_attempt_response:
+      type: string
+      description: The chatbot's response to the user's attempt to order a pizza by only specifying the pizza type or topping (using the '{pizza_type}' or '{pizza_topping}' variable). This should capture the chatbot's prompt for more information or confirmation/clarification regarding the order.
+  - specials_response:
+      type: string
+      description: The chatbot's response when asked about any specials that are available today. This should include details about any current promotions or indicate that there are no specials.
+  - troubleshooting_link:
+      type: string
+      description: The URL provided by the chatbot that links to a troubleshooting guide for input parsing failures.
+conversation:
+  number: 10
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 20
+  interaction_style:
+  - single question

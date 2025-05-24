@@ -1,0 +1,41 @@
+test_name: User Seeking General Information
+llm:
+  temperature: 0.6
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A user who primarily wants information about ordering options and store details.
+  context:
+  - 'personality: personalities/impatient-user'
+  - You're planning a casual pizza night with friends and need to figure out the best way to order.
+  - You want to pick up the pizza, but need to know the store hours to plan accordingly.
+  - You also want to get an idea of the pizza options available before placing your order.
+  goals:
+  - Ask what ordering options are available.
+  - Ask what the store's operating hours are.
+  - Ask what kind of pizzas are available.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.
+  output:
+  - ordering_options:
+      type: string
+      description: A description of the available ordering options, including predefined or custom pizzas and drinks.
+  - store_hours:
+      type: string
+      description: The store's operating hours.
+  - pizza_availability:
+      type: string
+      description: The types of pizzas available at the store.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question
+  - make spelling mistakes
