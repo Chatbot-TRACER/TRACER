@@ -306,27 +306,35 @@ CANDIDATE OPTIONS:
 
 {specific_guidance}
 
-YOUR TASK: Determine if these options are semantically appropriate for this variable name.
+**YOUR TASK:**
+Determine if these options are semantically appropriate for the variable '{variable_name}'.
 
-WHAT MAKES OPTIONS APPROPRIATE:
-1. They are ACTUAL VALUES or CONTENT a user would select, enter, or express
-2. They represent realistic user input for what the variable name suggests
-3. They are complete, meaningful options (not fragments or meta-descriptions)
+**EVALUATION CRITERIA:**
 
-EXAMPLES OF APPROPRIATE OPTIONS:
-- For "question" variable → "details for a haircut", "information about pricing", "how to schedule an appointment"
-- For "service_type" variable → "Basic maintenance", "Premium repair", "Emergency service"
-- For "date" variable → "Tomorrow", "Next Monday", "July 15"
-- For "drink_type" variable → "Coffee", "Tea", "Fresh orange juice"
+✓ GOOD Options:
+- Actual values/names a user would realistically select or mention
+- Specific instances of what the variable represents
+- Real-world options that make sense in context
 
-EXAMPLES OF INAPPROPRIATE OPTIONS:
-- Meta-descriptions: "The question", "Your service type", "Available dates"
-- Incomplete fragments: "including", "such as", "and time"
-- System references: "Variable selection", "Option list", "Data field"
+Examples: For "contact_method" → "Email", "Phone", "Chat" ✓
+Examples: For "movie_type" → "Action", "Comedy", "Drama" ✓
 
-CRITICAL EVALUATION: Ask yourself "Could a real user realistically provide this as input for '{variable_name}'?"
+✗ BAD Options:
+- Meta-descriptions about the variable itself
+- System references or administrative text
+- Incomplete sentence fragments
+- Category descriptions instead of actual values
 
-Answer with ONLY "Yes" or "No".
-- Yes means ALL options are appropriate actual values/content for this variable
-- No means SOME or ALL options are inappropriate (meta-descriptions, fragments, system references, etc.)
+Examples: For any variable → "The [variable]", "Available [options]" ✗
+Examples: For any variable → "Selection menu", "including", "such as" ✗
+
+**KEY QUESTION:** Are these realistic options that a real user would actually choose or mention when providing a '{variable_name}'?
+
+**IMPORTANT:** Be permissive with real-world content. Focus on rejecting only obvious meta-descriptions, not legitimate option names.
+
+Let's think step by step.
+
+After your reasoning, answer with ONLY "Yes" or "No":
+- "Yes" if ALL options are realistic user-selectable values for '{variable_name}'
+- "No" if ANY options are meta-descriptions or inappropriate content
 """

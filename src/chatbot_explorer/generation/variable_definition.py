@@ -892,19 +892,51 @@ def _validate_semantic_match(variable_name: str, matched_options: list[str], llm
         logger.debug(f"All options for '{variable_name}' were filtered out during basic cleaning")
         return False
 
-    # Use LLM for semantic validation - let it make the judgment call
+    # Use LLM for semantic validation with chain of thought
     sample_options = clean_options[:5] if len(clean_options) > 5 else clean_options
     prompt = get_variable_semantic_validation_prompt(variable_name, sample_options)
-    response = llm.invoke(prompt).content.strip().lower()
 
-    # Look for clear "yes" or "no" in the response
-    has_yes = any(word in response for word in ["yes", "sí", "si"])
-    has_no = any(word in response for word in ["no"])
+    try:
+        response = llm.invoke(prompt).content.strip()
 
-    # Be strict - require clear "yes" without "no"
-    is_valid = has_yes and not has_no
+        # Parse the final answer from the chain of thought response
+        # Look for the last "Yes" or "No" in the response
+        lines = response.split("\n")
+        final_answer = None
 
-    logger.debug(
-        f"Semantic validation for '{variable_name}' options {sample_options}: {is_valid}. Response: '{response}'"
-    )
-    return is_valid
+        # Check the last few lines for a clear Yes/No answer
+        for line in reversed(lines[-3:]):  # Check last 3 lines
+            line_clean = line.strip().lower()
+            if line_clean == "yes" or line_clean == "no":
+                final_answer = line_clean
+                break
+            # Also check for lines that end with yes/no
+            if line_clean.endswith(" yes") or line_clean.endswith(" no"):
+                final_answer = line_clean.split()[-1]
+                break
+
+        if final_answer is None:
+            # Fallback: look for yes/no anywhere in the response
+            response_lower = response.lower()
+            has_yes = "yes" in response_lower
+            has_no = "no" in response_lower
+
+            # If we have both or neither, log a warning
+            if (has_yes and has_no) or (not has_yes and not has_no):
+                logger.warning(f"Ambiguous validation response for '{variable_name}': {response[:100]}...")
+                return False  # Conservative approach
+
+            final_answer = "yes" if has_yes else "no"
+
+        is_valid = final_answer == "yes"
+
+        logger.debug(
+            f"Semantic validation for '{variable_name}' options {sample_options}: {is_valid}. "
+            f"Final answer: '{final_answer}'. Full response: '{response[:100]}...'"
+        )
+        return is_valid
+
+    except Exception as e:
+        logger.warning(f"Error in semantic validation for '{variable_name}': {e}")
+        # Fall back to being permissive if LLM fails
+        return len(clean_options) >= 2
