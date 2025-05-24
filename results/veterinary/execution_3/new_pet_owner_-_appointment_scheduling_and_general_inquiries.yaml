@@ -1,0 +1,69 @@
+test_name: New Pet Owner - Appointment Scheduling and General Inquiries
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A new pet owner seeking to schedule an initial appointment for their pet and gather basic information about the veterinary center.
+  context:
+  - 'personality: personalities/skeptical-user'
+  - You recently adopted a new pet and want to establish care with a local veterinary center.
+  - You are looking for a vet that can provide comprehensive care and are available during convenient hours.
+  - As a first-time pet owner, you also want to understand the typical costs associated with vet visits.
+  goals:
+  - Inquire about the available services offered by the veterinary center.
+  - Schedule an appointment for a physical examination.
+  - Provide the date {{date}} and time {{time}} for the physical examination appointment.
+  - Ask for the veterinary center's operating hours.
+  - Ask what types of animals the veterinary center treats.
+  - Confirm that the veterinary center treats cats.
+  - Ask about the approximate range for veterinary visit fees.
+  - date:
+      function: forward()
+      type: string
+      data:
+      - October 27th, 2023
+      - Tomorrow
+      - Next Tuesday
+      - November 3rd, 2023
+      - In two weeks
+      - This Saturday
+  - time:
+      function: forward()
+      type: string
+      data:
+      - 9:00 AM
+      - 11:30 AM
+      - 2:00 PM
+      - 4:15 PM
+      - 5:30 PM
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, but I did not understand the last sentence, can you say that again?
+  output:
+  - available_services:
+      type: string
+      description: A list of services offered by the veterinary center (e.g., physical examinations, vaccinations, dental health and cleaning, and lab or diagnostic testing).
+  - appointment_confirmation_details:
+      type: string
+      description: Confirmation that an appointment has been scheduled, including the date ({{date}}), time ({{time}}), and type of appointment (physical examination). Should include a clear confirmation statement.
+  - business_hours:
+      type: string
+      description: The veterinary center's operating hours, including days of the week and times. Look for phrases like "open every weekday from 9am to 6pm" or similar.
+  - animal_types_accepted:
+      type: string
+      description: The types of animals the veterinary center treats, including any limitations or instructions to inquire about other animals. Look for phrases like "We specialize in dogs, cats, and birds" or instructions to inquire about other animals.
+  - visit_fee_range:
+      type: string
+      description: The approximate range for veterinary visit fees. Look for a price range such as "$50 to $60" or "between $X and $Y".
+conversation:
+  number: 6
+  max_cost: 0.9
+  goal_style:
+    all_answered:
+      export: false
+      limit: 24
+  interaction_style:
+  - make spelling mistakes

@@ -1,0 +1,80 @@
+test_name: Information Seeker
+llm:
+  temperature: 0.7
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A user looking for specific information about the veterinary center.
+  context:
+  - 'personality: personalities/disorganized-user'
+  - You are a pet owner looking for a new veterinary center for your beloved animal.
+  - You want to ensure the center offers comprehensive services and has convenient hours to fit your busy schedule.
+  - You also prefer to communicate in Spanish when possible.
+  goals:
+  - Inquire about the veterinary center's hours.
+  - Ask if the veterinary center offers grooming services.
+  - Schedule an appointment for {{date}} at {{time}} for a {{service}}.
+  - Confirm the details of the appointment scheduled for {{date}} at {{time}} for {{service}}.
+  - Request to switch the language to Spanish.
+  - date:
+      function: forward()
+      type: string
+      data:
+      - October 27th
+      - Tomorrow
+      - Next Tuesday
+      - November 5th
+      - The 15th of November
+      - Two weeks from today
+  - service:
+      function: forward()
+      type: string
+      data:
+      - cleaning
+      - dental health
+      - diagnostic testing
+      - lab
+      - physical examinations
+      - vaccinations
+      - Surgery
+  - time:
+      function: forward()
+      type: string
+      data:
+      - 9:00 AM
+      - 10:30 AM
+      - 1:15 PM
+      - 2:45 PM
+      - 4:00 PM
+      - 5:30 PM
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, but I did not understand the last sentence, can you say that again?
+  output:
+  - hours_information:
+      type: str
+      description: The chatbot's response regarding the veterinary center's hours, which should indicate that this information cannot be provided and suggest contacting the center directly or visiting their website.
+  - grooming_services_availability:
+      type: str
+      description: Confirmation from the chatbot about the availability of grooming services at the veterinary center.
+  - appointment_confirmation:
+      type: str
+      description: Confirmation message from the chatbot that the appointment has been scheduled, including the date, time, and type of service for the current iteration of the {{date}}, {{time}}, and {{service}} variables.
+  - appointment_details:
+      type: str
+      description: The chatbot's confirmation of the appointment details including the date, time, and service. This should reflect the current values of the {{date}}, {{time}}, and {{service}} variables used.
+  - language_switch_request:
+      type: str
+      description: The chatbot's request to specify or switch the preferred language.
+conversation:
+  number: 7
+  max_cost: 1.05
+  goal_style:
+    all_answered:
+      export: false
+      limit: 20
+  interaction_style:
+  - all questions
+  - change your mind

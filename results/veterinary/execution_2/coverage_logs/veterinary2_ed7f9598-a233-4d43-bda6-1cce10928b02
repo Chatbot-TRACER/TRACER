@@ -1,0 +1,55 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "vetcen_qa",
+            "make_appointment"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "vetcen_qa": {
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "make_appointment",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": [
+                "16/03/2024",
+                "15/03/2024"
+            ],
+            "time": [
+                "10:00:00",
+                "14:00:00"
+            ],
+            "service": [
+                "Vaccination"
+            ]
+        },
+        "vetcen_qa": {
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "unknown": []
+        },
+        "top-level": {}
+    }
+}
