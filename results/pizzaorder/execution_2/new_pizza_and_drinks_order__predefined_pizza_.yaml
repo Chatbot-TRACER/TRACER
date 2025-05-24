@@ -1,0 +1,39 @@
+test_name: New Pizza and Drinks Order (Predefined Pizza)
+llm:
+  temperature: 0.7
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A customer ordering a predefined pizza and drinks for pickup.
+  context:
+  - 'personality: personalities/formal-user'
+  - You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+  - You also want to grab some drinks to enjoy with your pizza, picking them up at the same time.
+  goals:
+  - Hello, I would like to order a pizza and drinks for pickup.
+  - I'd like to order a large Hawaiian pizza.
+  - I would also like to order two Cokes.
+  - What is the total cost, the estimated time for pickup, and the pickup location?
+  - Can you confirm that delivery is not available?
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - order_summary:
+      type: string
+      description: A comprehensive summary of the order, including the pizza type and size (large Hawaiian), the number and type of drinks (two Cokes), the total cost, the estimated readiness time, the pickup location, and the order ID. This captures the chatbot's confirmation of the entire order.
+  - delivery_information:
+      type: string
+      description: Information regarding delivery availability and pickup instructions. This should confirm that delivery is not available and provide the pickup location address.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - single question
+  - long phrases
