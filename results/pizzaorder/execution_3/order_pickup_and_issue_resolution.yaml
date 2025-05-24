@@ -1,0 +1,47 @@
+test_name: Order Pickup and Issue Resolution
+llm:
+  temperature: 0.6
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: User inquiring about order pickup and handling misunderstandings.
+  context:
+  - 'personality: personalities/rude-user'
+  - You placed an order online for pickup, but you haven't received a confirmation with the pickup address.
+  - You need to confirm the availability of delivery options and, if not available, obtain the pickup location to retrieve your order as soon as possible.
+  goals:
+  - Ask if delivery is available.
+  - If delivery is not available, ask for the pickup location.
+  - If the chatbot cannot provide the pickup address, ask for alternative methods to place the order and get the address.
+  - Provide an uninterpretable input to trigger a request for rephrasing.
+  - Ask what pizza options are available.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.
+  output:
+  - delivery_availability:
+      type: string
+      description: Information indicating whether delivery is available or not. Extract "Delivery is available" or "Delivery is not available".
+  - pickup_location:
+      type: string
+      description: The address of the pickup location provided by the chatbot. Extract the full address, including street name, city, and state, if provided.
+  - order_placement_options:
+      type: string
+      description: Information about alternative methods for placing the order and getting the pickup address, such as ordering through the website or by calling.
+  - pizza_options:
+      type: string
+      description: A list of available pizza options presented by the chatbot. Extract the list of pizza names or descriptions.
+  - rephrase_request:
+      type: string
+      description: A confirmation that the chatbot acknowledged the uninterpretable input and requested the user to rephrase. Extract a phrase like "Could you please rephrase that?" or similar.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 20
+  interaction_style:
+  - make spelling mistakes
