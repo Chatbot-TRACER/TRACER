@@ -106,6 +106,7 @@ class CoverageAnalyzer:
         total_used_fields_count = 0
         total_defined_options_count = 0
         total_covered_options_count = 0
+        total_unknown_questions = 0
 
         # Iterate through modules listed in the spec for field/option counting
         # This ensures we only count fields/options defined in the specification.
@@ -119,6 +120,11 @@ class CoverageAnalyzer:
 
             module_footprint = footprint.get(module_name, {})
             is_module_activated = self.module_activation_status_data["activation_map"].get(module_name, 0.0) == 100.0
+
+            # Count unknown questions for QA modules
+            if module_name in self.qa_modules:
+                unknown_questions = module_footprint.get("unknown", [])
+                total_unknown_questions += len(unknown_questions)
 
             for field_name, spec_value in module_spec.items():
                 total_defined_fields_count += 1
@@ -165,6 +171,9 @@ class CoverageAnalyzer:
                 "covered_option_count": total_covered_options_count,
                 "total_defined_options": total_defined_options_count,
                 "missing_option_count": total_defined_options_count - total_covered_options_count,
+            },
+            "unknown_questions": {
+                "total_count": total_unknown_questions,
             },
         }
 
@@ -232,6 +241,11 @@ class CoverageAnalyzer:
             if module_type == "qa":  # Add question lists for QA
                 module_field_coverage["used_questions_list"] = used_fields_list  # Questions are fields for QA
                 module_field_coverage["missing_questions_list"] = missing_fields_list
+
+                # Add unknown questions for QA modules
+                unknown_questions = module_footprint.get("unknown", [])
+                module_field_coverage["unknown_questions_list"] = sorted(unknown_questions)
+                module_field_coverage["unknown_questions_count"] = len(unknown_questions)
 
             # Option Coverage for this module (if applicable)
             module_option_coverage = None
@@ -372,6 +386,10 @@ class CoverageAnalyzer:
             f"  • Option Coverage:   {gs['option_value_coverage']['percentage']:.2f}% ({gs['option_value_coverage']['covered_option_count']}/{gs['option_value_coverage']['total_defined_options']})"
         )
 
+        # Add unknown questions summary if any exist
+        if gs.get("unknown_questions", {}).get("total_count", 0) > 0:
+            print(f"  • Unknown Questions: {gs['unknown_questions']['total_count']} found")
+
         # 2. Module Activation Status
         print("\n🏗️ MODULE ACTIVATION STATUS\n")
         if ml["used_modules"]:
@@ -489,6 +507,12 @@ class CoverageAnalyzer:
                 print(
                     f"    Overall Question Coverage: {fc['percentage']:.2f}% ({fc['used_count_in_module']}/{fc['total_defined_in_module']} questions)"
                 )
+
+                # Show unknown questions count if any
+                unknown_count = fc.get("unknown_questions_count", 0)
+                if unknown_count > 0:
+                    print(f"    Unknown Questions Found: {unknown_count}")
+
                 print("       ✅ Answered:")
                 if fc.get("used_questions_list"):
                     for q in fc["used_questions_list"]:
@@ -501,6 +525,12 @@ class CoverageAnalyzer:
                         print(f"            • {q}")
                 else:
                     print("            • None")
+
+                # Show unknown questions if any
+                if fc.get("unknown_questions_list"):
+                    print("       ❓ Unknown Questions (not in spec):")
+                    for q in fc["unknown_questions_list"]:
+                        print(f"            • {q}")
             else:
                 print("\n    🔹 No detailed spec available.")
 
