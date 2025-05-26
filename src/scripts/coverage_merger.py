@@ -1,22 +1,24 @@
 import json
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
-def find_coverage_files(basename: str, directory: str = ".") -> List[str]:
+def find_coverage_files(basename: str, input_dir: str = ".") -> list[str]:
     """Find all coverage files matching the basename pattern"""
-    path = Path(directory)
-    return sorted(f for f in path.glob(f"{basename}_*") if not f.suffix)
+    path = Path(input_dir)
+    # Extract just the filename from basename if it contains a path
+    basename_name = Path(basename).name
+    return sorted(str(f) for f in path.glob(f"{basename_name}_*") if not f.suffix)
 
 
-def merge_footprints(files: List[str]) -> Dict[str, Any]:
+def merge_footprints(files: list[str]) -> dict[str, Any]:
     """Merge multiple coverage files into a combined footprint"""
     merged = {"specification": None, "footprint": {"modules": set(), "unknown": set()}}
 
     for file in files:
         try:
-            with open(file, "r") as f:
+            with open(file) as f:
                 data = json.load(f)
 
             # Keep first specification as reference
@@ -54,22 +56,24 @@ def merge_footprints(files: List[str]) -> Dict[str, Any]:
         if module in ["modules", "unknown"]:
             continue
         for field in merged["footprint"][module]:
-            merged["footprint"][module][field] = sorted(
-                merged["footprint"][module][field]
-            )
+            merged["footprint"][module][field] = sorted(merged["footprint"][module][field])
 
     return merged
 
 
-def save_merged_coverage(
-    basename: str, output_dir: str = ".", merged: Dict[str, Any] = None
-):
+def save_merged_coverage(basename: str, input_dir: str = ".", output_dir: str = ".", merged: dict[str, Any] = None):
     """Save merged coverage to a file"""
     if merged is None:
-        files = find_coverage_files(basename, output_dir)
+        files = find_coverage_files(basename, input_dir)
         merged = merge_footprints(files)
 
-    output_path = Path(output_dir) / f"{basename}_coverage.json"
+    # Extract just the filename from basename if it contains a path
+    basename_name = Path(basename).name
+    output_path = Path(output_dir) / f"{basename_name}_coverage.json"
+
+    # Create output directory if it doesn't exist
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
     with open(output_path, "w") as f:
         json.dump(merged, f, indent=2)
     return str(output_path)
@@ -79,15 +83,16 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Merge chatbot coverage files")
-    parser.add_argument(
-        "basename", help='Base name prefix of files to merge (e.g. "bikeshop")'
-    )
-    parser.add_argument(
-        "--output-dir", default=".", help="Directory to output merged file"
-    )
+    parser.add_argument("basename", help='Base name prefix of files to merge (e.g. "bikeshop1" or "path/to/bikeshop1")')
+    parser.add_argument("-i", "--input-dir", default=".", help="Directory containing the coverage files to merge")
+    parser.add_argument("-o", "--output-dir", default=".", help="Directory to output merged file")
     args = parser.parse_args()
 
-    output_file = save_merged_coverage(args.basename, args.output_dir)
+    # If basename contains a path, use its directory as input_dir if not explicitly provided
+    if args.input_dir == "." and "/" in args.basename:
+        args.input_dir = str(Path(args.basename).parent)
+
+    output_file = save_merged_coverage(args.basename, args.input_dir, args.output_dir)
     print(f"Merged coverage saved to: {output_file}")
 
 
