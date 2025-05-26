@@ -1,0 +1,132 @@
+{
+  "global_summary": {
+    "module_activation_coverage": {
+      "percentage": 100.0,
+      "activated_count": 3,
+      "total_defined_modules": 3
+    },
+    "field_usage_coverage": {
+      "percentage": 85.71,
+      "used_field_count": 6,
+      "total_defined_fields": 7,
+      "missing_field_count": 1
+    },
+    "option_value_coverage": {
+      "percentage": 83.33,
+      "covered_option_count": 5,
+      "total_defined_options": 6,
+      "missing_option_count": 1
+    },
+    "unknown_questions": {
+      "total_count": 16
+    }
+  },
+  "module_lists": {
+    "used_modules": [
+      "bike_qa",
+      "make_appointment",
+      "top-level"
+    ],
+    "unused_modules": [],
+    "total_modules": 3
+  },
+  "module_details": {
+    "make_appointment": {
+      "module_type": "regular",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 3,
+        "used_count_in_module": 3,
+        "missing_count_in_module": 0,
+        "used_fields_list": [
+          "date",
+          "service",
+          "time"
+        ],
+        "missing_fields_list": []
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 100.0,
+        "total_defined_options_in_module": 2,
+        "covered_options_in_module_count": 2,
+        "missing_options_in_module_count": 0,
+        "used_options_summary_list": [
+          "service: repair",
+          "service: tune-up"
+        ],
+        "missing_options_summary_list": [],
+        "details_per_option_field": {
+          "service": {
+            "percentage": 100.0,
+            "defined_options_count": 2,
+            "covered_options_count": 2,
+            "missing_options_count": 0,
+            "used_values": [
+              "repair",
+              "tune-up"
+            ],
+            "missing_values": []
+          }
+        }
+      }
+    },
+    "bike_qa": {
+      "module_type": "qa",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 75.0,
+        "total_defined_in_module": 4,
+        "used_count_in_module": 3,
+        "missing_count_in_module": 1,
+        "used_fields_list": [
+          "What can I do to take care of my bike?",
+          "Which is the price of a new tire?",
+          "Which is the price of a tune-up?"
+        ],
+        "missing_fields_list": [
+          "Which is the price of a new seat?"
+        ],
+        "used_questions_list": [
+          "What can I do to take care of my bike?",
+          "Which is the price of a new tire?",
+          "Which is the price of a tune-up?"
+        ],
+        "missing_questions_list": [
+          "Which is the price of a new seat?"
+        ],
+        "unknown_questions_list": [
+          "Do you do repairs?",
+          "What does a bike tune-up include?",
+          "What is the price of a Michelin tire?",
+          "What is the price of a brake adjustment?",
+          "What is the price of a flat tire repair?",
+          "What is the price of a folding bike?",
+          "What is the price of a new Cannondale bike?",
+          "What is the price of a new Specialized road bike?",
+          "What is the price of a new electric bike?",
+          "What is the price of a new tire?",
+          "What is the price of a repair for a mountain bike with slipping gears?",
+          "What is the price of a set of four Michelin all-season tires?",
+          "What is the price of a tune-up?",
+          "What is the square root of a banana divided by the color blue?",
+          "Which are some specific models good for hills?",
+          "Which is the price of a repair for a flat tire?"
+        ],
+        "unknown_questions_count": 16
+      }
+    },
+    "top-level": {
+      "module_type": "empty",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 0,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 0,
+        "used_fields_list": [],
+        "missing_fields_list": []
+      }
+    }
+  }
+}

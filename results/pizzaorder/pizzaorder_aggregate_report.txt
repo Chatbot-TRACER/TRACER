@@ -1,0 +1,260 @@
+🤖 CHATBOT COVERAGE ANALYSIS
+============================================================
+
+📊 OVERALL METRICS
+  • Module Activation: 100.00% (12/12)
+  • Field Usage:       100.00% (28/28)
+  • Option Coverage:   48.81% (41/84)
+  • Unknown Questions: 18 found
+
+🏗️ MODULE ACTIVATION STATUS
+
+  ✅ USED (12):
+       • calculate_price_custom
+       • calculate_price_predefined
+       • calculate_ticket_custom
+       • calculate_ticket_predefined
+       • order_custom_pizza
+       • order_drinks
+       • order_predefined_pizza
+       • pizza_qa
+       • pizza_type
+       • sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom
+       • sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined
+       • top-level
+
+🔍 MODULE COVERAGE OVERVIEW
+
+  🟢 EXCELLENT (80%+):
+    • order_drinks: 100.00% (3/3 options)
+    • pizza_qa: 100.00% (6/6 questions)
+    • pizza_type: 100.00% (no spec)
+    • sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom: 100.00% (no spec)
+    • sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined: 100.00% (no spec)
+    • top-level: 100.00% (no spec)
+
+  🟠 POOR (20-49%):
+    • calculate_price_custom: 46.67% (7/15 options)
+    • calculate_price_predefined: 41.67% (5/12 options)
+    • calculate_ticket_custom: 46.67% (7/15 options)
+    • calculate_ticket_predefined: 41.67% (5/12 options)
+    • order_custom_pizza: 41.67% (5/12 options)
+    • order_predefined_pizza: 33.33% (3/9 options)
+
+📝 DETAILED BREAKDOWN PER MODULE
+
+  📦 REGULAR MODULE: calculate_price_custom
+    Overall Option Coverage: 46.67% (7/15 options)
+
+    🔹 pizza_size: 33.33%
+       ✅ Used:
+            • large
+       ❌ Missing:
+            • medium
+            • small
+
+    🔹 toppings: 44.44%
+       ✅ Used:
+            • bacon
+            • cheese
+            • olives
+            • pepperoni
+       ❌ Missing:
+            • chicken
+            • corn
+            • ham
+            • mushrooms
+            • pepper
+
+    🔹 drinks: 66.67%
+       ✅ Used:
+            • coke
+            • water
+       ❌ Missing:
+            • sprite
+
+  📦 REGULAR MODULE: calculate_price_predefined
+    Overall Option Coverage: 41.67% (5/12 options)
+
+    🔹 pizza_size: 33.33%
+       ✅ Used:
+            • large
+       ❌ Missing:
+            • medium
+            • small
+
+    🔹 pizza_type: 33.33%
+       ✅ Used:
+            • four cheese
+            • hawaiian
+       ❌ Missing:
+            • carbonara
+            • margarita
+            • marinera
+            • vegetarian
+
+    🔹 drinks: 66.67%
+       ✅ Used:
+            • coke
+            • sprite
+       ❌ Missing:
+            • water
+
+  📦 REGULAR MODULE: calculate_ticket_custom
+    Overall Option Coverage: 46.67% (7/15 options)
+
+    🔹 pizza_size: 33.33%
+       ✅ Used:
+            • large
+       ❌ Missing:
+            • medium
+            • small
+
+    🔹 toppings: 44.44%
+       ✅ Used:
+            • bacon
+            • cheese
+            • olives
+            • pepperoni
+       ❌ Missing:
+            • chicken
+            • corn
+            • ham
+            • mushrooms
+            • pepper
+
+    🔹 drinks: 66.67%
+       ✅ Used:
+            • coke
+            • water
+       ❌ Missing:
+            • sprite
+
+  📦 REGULAR MODULE: calculate_ticket_predefined
+    Overall Option Coverage: 41.67% (5/12 options)
+
+    🔹 pizza_size: 33.33%
+       ✅ Used:
+            • large
+       ❌ Missing:
+            • medium
+            • small
+
+    🔹 pizza_type: 33.33%
+       ✅ Used:
+            • four cheese
+            • hawaiian
+       ❌ Missing:
+            • carbonara
+            • margarita
+            • marinera
+            • vegetarian
+
+    🔹 drinks: 66.67%
+       ✅ Used:
+            • coke
+            • sprite
+       ❌ Missing:
+            • water
+
+  📦 REGULAR MODULE: order_custom_pizza
+    Overall Option Coverage: 41.67% (5/12 options)
+
+    🔹 pizza_size: 33.33%
+       ✅ Used:
+            • large
+       ❌ Missing:
+            • medium
+            • small
+
+    🔹 toppings: 44.44%
+       ✅ Used:
+            • bacon
+            • cheese
+            • olives
+            • pepperoni
+       ❌ Missing:
+            • chicken
+            • corn
+            • ham
+            • mushrooms
+            • pepper
+
+  📦 REGULAR MODULE: order_drinks
+    Overall Option Coverage: 100.00% (3/3 options)
+
+    🔹 drinks: 100.00%
+       ✅ Used:
+            • coke
+            • sprite
+            • water
+       ❌ Missing:
+            • None
+
+  📦 REGULAR MODULE: order_predefined_pizza
+    Overall Option Coverage: 33.33% (3/9 options)
+
+    🔹 pizza_size: 33.33%
+       ✅ Used:
+            • large
+       ❌ Missing:
+            • medium
+            • small
+
+    🔹 pizza_type: 33.33%
+       ✅ Used:
+            • four cheese
+            • hawaiian
+       ❌ Missing:
+            • carbonara
+            • margherita
+            • marinera
+            • vegetarian
+
+  ❓ QA MODULE: pizza_qa
+    Overall Question Coverage: 100.00% (6/6 questions)
+    Unknown Questions Found: 18
+       ✅ Answered:
+            • How do I get the order? Do you deliver orders?
+            • How much time does it take to get an order?
+            • What are the opening hours?
+            • What are the prices of the beverages?
+            • What are the prices of the pizzas? How much do they cost?
+            • What types of pizza do you serve?
+       ❌ Unanswered:
+            • None
+       ❓ Unknown Questions (not in spec):
+            • Can I pay online?
+            • Do you close at all?
+            • Do you close earlier on Sundays?
+            • Do you deliver orders?
+            • What are the ingredients for a Hawaiian pizza?
+            • What are the ingredients on a Hawaiian pizza?
+            • What are the ingredients on the Hawaiian pizza?
+            • What are your opening hours?
+            • What are your store hours?
+            • What comes on a Hawaiian pizza?
+            • What comes on the Marinera?
+            • What comes on the four cheese?
+            • What ingredients can I choose for a custom pizza?
+            • What kind of cheese is on the four cheese pizza?
+            • What kinds of pizza do you serve?
+            • What size is best for 3 people?
+            • What sizes do you have?
+            • What's on a Hawaiian pizza?
+
+  🧩 EMPTY MODULE: pizza_type
+
+    🔹 No detailed spec available.
+
+  🧩 EMPTY MODULE: sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom
+
+    🔹 No detailed spec available.
+
+  🧩 EMPTY MODULE: sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined
+
+    🔹 No detailed spec available.
+
+  🧩 EMPTY MODULE: top-level
+
+    🔹 No detailed spec available.
