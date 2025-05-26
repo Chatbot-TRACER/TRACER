@@ -1,0 +1,650 @@
+{
+  "global_summary": {
+    "module_activation_coverage": {
+      "percentage": 83.33,
+      "activated_count": 10,
+      "total_defined_modules": 12
+    },
+    "field_usage_coverage": {
+      "percentage": 67.86,
+      "used_field_count": 19,
+      "total_defined_fields": 28,
+      "missing_field_count": 9
+    },
+    "option_value_coverage": {
+      "percentage": 34.52,
+      "covered_option_count": 29,
+      "total_defined_options": 84,
+      "missing_option_count": 55
+    },
+    "unknown_questions": {
+      "total_count": 9
+    }
+  },
+  "module_lists": {
+    "used_modules": [
+      "calculate_price_custom",
+      "calculate_ticket_custom",
+      "order_custom_pizza",
+      "order_drinks",
+      "order_predefined_pizza",
+      "pizza_qa",
+      "pizza_type",
+      "sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom",
+      "sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined",
+      "top-level"
+    ],
+    "unused_modules": [
+      "calculate_price_predefined",
+      "calculate_ticket_predefined"
+    ],
+    "total_modules": 12
+  },
+  "module_details": {
+    "pizza_qa": {
+      "module_type": "qa",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 83.33,
+        "total_defined_in_module": 6,
+        "used_count_in_module": 5,
+        "missing_count_in_module": 1,
+        "used_fields_list": [
+          "How do I get the order? Do you deliver orders?",
+          "What are the opening hours?",
+          "What are the prices of the beverages?",
+          "What are the prices of the pizzas? How much do they cost?",
+          "What types of pizza do you serve?"
+        ],
+        "missing_fields_list": [
+          "How much time does it take to get an order?"
+        ],
+        "used_questions_list": [
+          "How do I get the order? Do you deliver orders?",
+          "What are the opening hours?",
+          "What are the prices of the beverages?",
+          "What are the prices of the pizzas? How much do they cost?",
+          "What types of pizza do you serve?"
+        ],
+        "missing_questions_list": [
+          "How much time does it take to get an order?"
+        ],
+        "unknown_questions_list": [
+          "Do you close at all?",
+          "Do you close earlier on Sundays?",
+          "Do you deliver orders?",
+          "What are the ingredients on a Hawaiian pizza?",
+          "What are your opening hours?",
+          "What are your store hours?",
+          "What ingredients can I choose for a custom pizza?",
+          "What kind of cheese is on the four cheese pizza?",
+          "What kinds of pizza do you serve?"
+        ],
+        "unknown_questions_count": 9
+      }
+    },
+    "order_predefined_pizza": {
+      "module_type": "regular",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 2,
+        "used_count_in_module": 2,
+        "missing_count_in_module": 0,
+        "used_fields_list": [
+          "pizza_size",
+          "pizza_type"
+        ],
+        "missing_fields_list": []
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 33.33,
+        "total_defined_options_in_module": 9,
+        "covered_options_in_module_count": 3,
+        "missing_options_in_module_count": 6,
+        "used_options_summary_list": [
+          "pizza_size: large",
+          "pizza_type: four cheese",
+          "pizza_type: hawaiian"
+        ],
+        "missing_options_summary_list": [
+          "pizza_size: medium",
+          "pizza_size: small",
+          "pizza_type: carbonara",
+          "pizza_type: margherita",
+          "pizza_type: marinera",
+          "pizza_type: vegetarian"
+        ],
+        "details_per_option_field": {
+          "pizza_size": {
+            "percentage": 33.33,
+            "defined_options_count": 3,
+            "covered_options_count": 1,
+            "missing_options_count": 2,
+            "used_values": [
+              "large"
+            ],
+            "missing_values": [
+              "medium",
+              "small"
+            ]
+          },
+          "pizza_type": {
+            "percentage": 33.33,
+            "defined_options_count": 6,
+            "covered_options_count": 2,
+            "missing_options_count": 4,
+            "used_values": [
+              "four cheese",
+              "hawaiian"
+            ],
+            "missing_values": [
+              "carbonara",
+              "margherita",
+              "marinera",
+              "vegetarian"
+            ]
+          }
+        }
+      }
+    },
+    "order_drinks": {
+      "module_type": "regular",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 2,
+        "used_count_in_module": 2,
+        "missing_count_in_module": 0,
+        "used_fields_list": [
+          "drinks",
+          "num_drinks"
+        ],
+        "missing_fields_list": []
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 66.67,
+        "total_defined_options_in_module": 3,
+        "covered_options_in_module_count": 2,
+        "missing_options_in_module_count": 1,
+        "used_options_summary_list": [
+          "drinks: coke",
+          "drinks: water"
+        ],
+        "missing_options_summary_list": [
+          "drinks: sprite"
+        ],
+        "details_per_option_field": {
+          "drinks": {
+            "percentage": 66.67,
+            "defined_options_count": 3,
+            "covered_options_count": 2,
+            "missing_options_count": 1,
+            "used_values": [
+              "coke",
+              "water"
+            ],
+            "missing_values": [
+              "sprite"
+            ]
+          }
+        }
+      }
+    },
+    "calculate_price_predefined": {
+      "module_type": "regular",
+      "activated": false,
+      "field_coverage": {
+        "percentage": 0.0,
+        "total_defined_in_module": 4,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 4,
+        "used_fields_list": [],
+        "missing_fields_list": [
+          "drinks",
+          "num_drinks",
+          "pizza_size",
+          "pizza_type"
+        ]
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 0.0,
+        "total_defined_options_in_module": 12,
+        "covered_options_in_module_count": 0,
+        "missing_options_in_module_count": 12,
+        "used_options_summary_list": [],
+        "missing_options_summary_list": [
+          "drinks: coke",
+          "drinks: sprite",
+          "drinks: water",
+          "pizza_size: large",
+          "pizza_size: medium",
+          "pizza_size: small",
+          "pizza_type: carbonara",
+          "pizza_type: four cheese",
+          "pizza_type: hawaiian",
+          "pizza_type: margarita",
+          "pizza_type: marinera",
+          "pizza_type: vegetarian"
+        ],
+        "details_per_option_field": {
+          "pizza_size": {
+            "percentage": 0.0,
+            "defined_options_count": 3,
+            "covered_options_count": 0,
+            "missing_options_count": 3,
+            "used_values": [],
+            "missing_values": [
+              "large",
+              "medium",
+              "small"
+            ]
+          },
+          "pizza_type": {
+            "percentage": 0.0,
+            "defined_options_count": 6,
+            "covered_options_count": 0,
+            "missing_options_count": 6,
+            "used_values": [],
+            "missing_values": [
+              "carbonara",
+              "four cheese",
+              "hawaiian",
+              "margarita",
+              "marinera",
+              "vegetarian"
+            ]
+          },
+          "drinks": {
+            "percentage": 0.0,
+            "defined_options_count": 3,
+            "covered_options_count": 0,
+            "missing_options_count": 3,
+            "used_values": [],
+            "missing_values": [
+              "coke",
+              "sprite",
+              "water"
+            ]
+          }
+        }
+      }
+    },
+    "calculate_ticket_predefined": {
+      "module_type": "regular",
+      "activated": false,
+      "field_coverage": {
+        "percentage": 0.0,
+        "total_defined_in_module": 4,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 4,
+        "used_fields_list": [],
+        "missing_fields_list": [
+          "drinks",
+          "num_drinks",
+          "pizza_size",
+          "pizza_type"
+        ]
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 0.0,
+        "total_defined_options_in_module": 12,
+        "covered_options_in_module_count": 0,
+        "missing_options_in_module_count": 12,
+        "used_options_summary_list": [],
+        "missing_options_summary_list": [
+          "drinks: coke",
+          "drinks: sprite",
+          "drinks: water",
+          "pizza_size: large",
+          "pizza_size: medium",
+          "pizza_size: small",
+          "pizza_type: carbonara",
+          "pizza_type: four cheese",
+          "pizza_type: hawaiian",
+          "pizza_type: margarita",
+          "pizza_type: marinera",
+          "pizza_type: vegetarian"
+        ],
+        "details_per_option_field": {
+          "pizza_size": {
+            "percentage": 0.0,
+            "defined_options_count": 3,
+            "covered_options_count": 0,
+            "missing_options_count": 3,
+            "used_values": [],
+            "missing_values": [
+              "large",
+              "medium",
+              "small"
+            ]
+          },
+          "pizza_type": {
+            "percentage": 0.0,
+            "defined_options_count": 6,
+            "covered_options_count": 0,
+            "missing_options_count": 6,
+            "used_values": [],
+            "missing_values": [
+              "carbonara",
+              "four cheese",
+              "hawaiian",
+              "margarita",
+              "marinera",
+              "vegetarian"
+            ]
+          },
+          "drinks": {
+            "percentage": 0.0,
+            "defined_options_count": 3,
+            "covered_options_count": 0,
+            "missing_options_count": 3,
+            "used_values": [],
+            "missing_values": [
+              "coke",
+              "sprite",
+              "water"
+            ]
+          }
+        }
+      }
+    },
+    "sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined": {
+      "module_type": "empty",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 0,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 0,
+        "used_fields_list": [],
+        "missing_fields_list": []
+      }
+    },
+    "order_custom_pizza": {
+      "module_type": "regular",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 2,
+        "used_count_in_module": 2,
+        "missing_count_in_module": 0,
+        "used_fields_list": [
+          "pizza_size",
+          "toppings"
+        ],
+        "missing_fields_list": []
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 41.67,
+        "total_defined_options_in_module": 12,
+        "covered_options_in_module_count": 5,
+        "missing_options_in_module_count": 7,
+        "used_options_summary_list": [
+          "pizza_size: large",
+          "toppings: bacon",
+          "toppings: cheese",
+          "toppings: olives",
+          "toppings: pepperoni"
+        ],
+        "missing_options_summary_list": [
+          "pizza_size: medium",
+          "pizza_size: small",
+          "toppings: chicken",
+          "toppings: corn",
+          "toppings: ham",
+          "toppings: mushrooms",
+          "toppings: pepper"
+        ],
+        "details_per_option_field": {
+          "pizza_size": {
+            "percentage": 33.33,
+            "defined_options_count": 3,
+            "covered_options_count": 1,
+            "missing_options_count": 2,
+            "used_values": [
+              "large"
+            ],
+            "missing_values": [
+              "medium",
+              "small"
+            ]
+          },
+          "toppings": {
+            "percentage": 44.44,
+            "defined_options_count": 9,
+            "covered_options_count": 4,
+            "missing_options_count": 5,
+            "used_values": [
+              "bacon",
+              "cheese",
+              "olives",
+              "pepperoni"
+            ],
+            "missing_values": [
+              "chicken",
+              "corn",
+              "ham",
+              "mushrooms",
+              "pepper"
+            ]
+          }
+        }
+      }
+    },
+    "calculate_price_custom": {
+      "module_type": "regular",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 4,
+        "used_count_in_module": 4,
+        "missing_count_in_module": 0,
+        "used_fields_list": [
+          "drinks",
+          "num_drinks",
+          "pizza_size",
+          "toppings"
+        ],
+        "missing_fields_list": []
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 46.67,
+        "total_defined_options_in_module": 15,
+        "covered_options_in_module_count": 7,
+        "missing_options_in_module_count": 8,
+        "used_options_summary_list": [
+          "drinks: coke",
+          "drinks: water",
+          "pizza_size: large",
+          "toppings: bacon",
+          "toppings: cheese",
+          "toppings: olives",
+          "toppings: pepperoni"
+        ],
+        "missing_options_summary_list": [
+          "drinks: sprite",
+          "pizza_size: medium",
+          "pizza_size: small",
+          "toppings: chicken",
+          "toppings: corn",
+          "toppings: ham",
+          "toppings: mushrooms",
+          "toppings: pepper"
+        ],
+        "details_per_option_field": {
+          "pizza_size": {
+            "percentage": 33.33,
+            "defined_options_count": 3,
+            "covered_options_count": 1,
+            "missing_options_count": 2,
+            "used_values": [
+              "large"
+            ],
+            "missing_values": [
+              "medium",
+              "small"
+            ]
+          },
+          "toppings": {
+            "percentage": 44.44,
+            "defined_options_count": 9,
+            "covered_options_count": 4,
+            "missing_options_count": 5,
+            "used_values": [
+              "bacon",
+              "cheese",
+              "olives",
+              "pepperoni"
+            ],
+            "missing_values": [
+              "chicken",
+              "corn",
+              "ham",
+              "mushrooms",
+              "pepper"
+            ]
+          },
+          "drinks": {
+            "percentage": 66.67,
+            "defined_options_count": 3,
+            "covered_options_count": 2,
+            "missing_options_count": 1,
+            "used_values": [
+              "coke",
+              "water"
+            ],
+            "missing_values": [
+              "sprite"
+            ]
+          }
+        }
+      }
+    },
+    "calculate_ticket_custom": {
+      "module_type": "regular",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 4,
+        "used_count_in_module": 4,
+        "missing_count_in_module": 0,
+        "used_fields_list": [
+          "drinks",
+          "num_drinks",
+          "pizza_size",
+          "toppings"
+        ],
+        "missing_fields_list": []
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 46.67,
+        "total_defined_options_in_module": 15,
+        "covered_options_in_module_count": 7,
+        "missing_options_in_module_count": 8,
+        "used_options_summary_list": [
+          "drinks: coke",
+          "drinks: water",
+          "pizza_size: large",
+          "toppings: bacon",
+          "toppings: cheese",
+          "toppings: olives",
+          "toppings: pepperoni"
+        ],
+        "missing_options_summary_list": [
+          "drinks: sprite",
+          "pizza_size: medium",
+          "pizza_size: small",
+          "toppings: chicken",
+          "toppings: corn",
+          "toppings: ham",
+          "toppings: mushrooms",
+          "toppings: pepper"
+        ],
+        "details_per_option_field": {
+          "pizza_size": {
+            "percentage": 33.33,
+            "defined_options_count": 3,
+            "covered_options_count": 1,
+            "missing_options_count": 2,
+            "used_values": [
+              "large"
+            ],
+            "missing_values": [
+              "medium",
+              "small"
+            ]
+          },
+          "toppings": {
+            "percentage": 44.44,
+            "defined_options_count": 9,
+            "covered_options_count": 4,
+            "missing_options_count": 5,
+            "used_values": [
+              "bacon",
+              "cheese",
+              "olives",
+              "pepperoni"
+            ],
+            "missing_values": [
+              "chicken",
+              "corn",
+              "ham",
+              "mushrooms",
+              "pepper"
+            ]
+          },
+          "drinks": {
+            "percentage": 66.67,
+            "defined_options_count": 3,
+            "covered_options_count": 2,
+            "missing_options_count": 1,
+            "used_values": [
+              "coke",
+              "water"
+            ],
+            "missing_values": [
+              "sprite"
+            ]
+          }
+        }
+      }
+    },
+    "sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom": {
+      "module_type": "empty",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 0,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 0,
+        "used_fields_list": [],
+        "missing_fields_list": []
+      }
+    },
+    "pizza_type": {
+      "module_type": "empty",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 0,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 0,
+        "used_fields_list": [],
+        "missing_fields_list": []
+      }
+    },
+    "top-level": {
+      "module_type": "empty",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 0,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 0,
+        "used_fields_list": [],
+        "missing_fields_list": []
+      }
+    }
+  }
+}

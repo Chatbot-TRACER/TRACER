@@ -1,0 +1,125 @@
+{
+  "global_summary": {
+    "module_activation_coverage": {
+      "percentage": 66.67,
+      "activated_count": 2,
+      "total_defined_modules": 3
+    },
+    "field_usage_coverage": {
+      "percentage": 37.5,
+      "used_field_count": 3,
+      "total_defined_fields": 8,
+      "missing_field_count": 5
+    },
+    "option_value_coverage": {
+      "percentage": 33.33,
+      "covered_option_count": 3,
+      "total_defined_options": 9,
+      "missing_option_count": 6
+    },
+    "unknown_questions": {
+      "total_count": 2
+    }
+  },
+  "module_lists": {
+    "used_modules": [
+      "make_appointment",
+      "top-level"
+    ],
+    "unused_modules": [
+      "vetcen_qa"
+    ],
+    "total_modules": 3
+  },
+  "module_details": {
+    "make_appointment": {
+      "module_type": "regular",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 3,
+        "used_count_in_module": 3,
+        "missing_count_in_module": 0,
+        "used_fields_list": [
+          "date",
+          "service",
+          "time"
+        ],
+        "missing_fields_list": []
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 75.0,
+        "total_defined_options_in_module": 4,
+        "covered_options_in_module_count": 3,
+        "missing_options_in_module_count": 1,
+        "used_options_summary_list": [
+          "service: Dental health and cleaning",
+          "service: Physical examination",
+          "service: Vaccination"
+        ],
+        "missing_options_summary_list": [
+          "service: Lab or diagnostic testing"
+        ],
+        "details_per_option_field": {
+          "service": {
+            "percentage": 75.0,
+            "defined_options_count": 4,
+            "covered_options_count": 3,
+            "missing_options_count": 1,
+            "used_values": [
+              "Dental health and cleaning",
+              "Physical examination",
+              "Vaccination"
+            ],
+            "missing_values": [
+              "Lab or diagnostic testing"
+            ]
+          }
+        }
+      }
+    },
+    "vetcen_qa": {
+      "module_type": "qa",
+      "activated": false,
+      "field_coverage": {
+        "percentage": 0.0,
+        "total_defined_in_module": 5,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 5,
+        "used_fields_list": [],
+        "missing_fields_list": [
+          "How late are you open on weekends?",
+          "How much does a vet visit cost?",
+          "What can I do to take care of my pet?",
+          "What kind of animals do you accept?",
+          "When are you open?"
+        ],
+        "used_questions_list": [],
+        "missing_questions_list": [
+          "How late are you open on weekends?",
+          "How much does a vet visit cost?",
+          "What can I do to take care of my pet?",
+          "What kind of animals do you accept?",
+          "When are you open?"
+        ],
+        "unknown_questions_list": [
+          "What are your hours?",
+          "What is the phone number for the veterinary center?"
+        ],
+        "unknown_questions_count": 2
+      }
+    },
+    "top-level": {
+      "module_type": "empty",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 0,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 0,
+        "used_fields_list": [],
+        "missing_fields_list": []
+      }
+    }
+  }
+}

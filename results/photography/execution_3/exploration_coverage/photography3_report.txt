@@ -1,0 +1,93 @@
+🤖 CHATBOT COVERAGE ANALYSIS
+============================================================
+
+📊 OVERALL METRICS
+  • Module Activation: 100.00% (6/6)
+  • Field Usage:       73.33% (11/15)
+  • Option Coverage:   52.94% (9/17)
+  • Unknown Questions: 2 found
+
+🏗️ MODULE ACTIVATION STATUS
+
+  ✅ USED (6):
+       • call_appointment
+       • estimate_price
+       • photo_qa
+       • sequence-session_details-estimate_price
+       • session_details
+       • top-level
+
+🔍 MODULE COVERAGE OVERVIEW
+
+  🟢 EXCELLENT (80%+):
+    • call_appointment: 100.00% (0/0 options)
+    • sequence-session_details-estimate_price: 100.00% (no spec)
+    • top-level: 100.00% (no spec)
+
+  🟡 GOOD (50-79%):
+    • estimate_price: 66.67% (4/6 options)
+    • session_details: 66.67% (4/6 options)
+
+  🟠 POOR (20-49%):
+    • photo_qa: 20.00% (1/5 questions)
+
+📝 DETAILED BREAKDOWN PER MODULE
+
+  📦 REGULAR MODULE: call_appointment
+    Overall Option Coverage: 100.00% (0/0 options)
+
+  📦 REGULAR MODULE: estimate_price
+    Overall Option Coverage: 66.67% (4/6 options)
+
+    🔹 media: 66.67%
+       ✅ Used:
+            • photography
+            • video
+       ❌ Missing:
+            • 3D rendering
+
+    🔹 type_artworks: 66.67%
+       ✅ Used:
+            • picture
+            • sculpture
+       ❌ Missing:
+            • ceramic
+
+  ❓ QA MODULE: photo_qa
+    Overall Question Coverage: 20.00% (1/5 questions)
+    Unknown Questions Found: 2
+       ✅ Answered:
+            • When are you open?
+       ❌ Unanswered:
+            • Do you charge per hour or by number of photos?
+            • Tell me about your portfolio, what important projects have you worked on?
+            • What media do you work on?
+            • Where is the shop?
+       ❓ Unknown Questions (not in spec):
+            • Are you open on Saturdays?
+            • What are your hours?
+
+  🧩 EMPTY MODULE: sequence-session_details-estimate_price
+
+    🔹 No detailed spec available.
+
+  📦 REGULAR MODULE: session_details
+    Overall Option Coverage: 66.67% (4/6 options)
+
+    🔹 media: 66.67%
+       ✅ Used:
+            • photography
+            • video
+       ❌ Missing:
+            • 3D rendering
+
+    🔹 type_artworks: 66.67%
+       ✅ Used:
+            • picture
+            • sculpture
+       ❌ Missing:
+            • ceramic
+
+  🧩 EMPTY MODULE: top-level
+
+    🔹 No detailed spec available.

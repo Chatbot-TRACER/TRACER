@@ -1,0 +1,59 @@
+🤖 CHATBOT COVERAGE ANALYSIS
+============================================================
+
+📊 OVERALL METRICS
+  • Module Activation: 100.00% (3/3)
+  • Field Usage:       85.71% (6/7)
+  • Option Coverage:   83.33% (5/6)
+  • Unknown Questions: 8 found
+
+🏗️ MODULE ACTIVATION STATUS
+
+  ✅ USED (3):
+       • bike_qa
+       • make_appointment
+       • top-level
+
+🔍 MODULE COVERAGE OVERVIEW
+
+  🟢 EXCELLENT (80%+):
+    • make_appointment: 100.00% (2/2 options)
+    • top-level: 100.00% (no spec)
+
+  🟡 GOOD (50-79%):
+    • bike_qa: 75.00% (3/4 questions)
+
+📝 DETAILED BREAKDOWN PER MODULE
+
+  ❓ QA MODULE: bike_qa
+    Overall Question Coverage: 75.00% (3/4 questions)
+    Unknown Questions Found: 8
+       ✅ Answered:
+            • What can I do to take care of my bike?
+            • Which is the price of a new tire?
+            • Which is the price of a tune-up?
+       ❌ Unanswered:
+            • Which is the price of a new seat?
+       ❓ Unknown Questions (not in spec):
+            • Do you do repairs?
+            • What does a bike tune-up include?
+            • What is the price of a new electric bike?
+            • What is the price of a new tire?
+            • What is the price of a repair for a mountain bike with slipping gears?
+            • What is the price of a tune-up?
+            • Which are some specific models good for hills?
+            • Which is the price of a repair for a flat tire?
+
+  📦 REGULAR MODULE: make_appointment
+    Overall Option Coverage: 100.00% (2/2 options)
+
+    🔹 service: 100.00%
+       ✅ Used:
+            • repair
+            • tune-up
+       ❌ Missing:
+            • None
+
+  🧩 EMPTY MODULE: top-level
+
+    🔹 No detailed spec available.

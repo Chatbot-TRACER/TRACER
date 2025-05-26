@@ -1,0 +1,238 @@
+{
+  "global_summary": {
+    "module_activation_coverage": {
+      "percentage": 100.0,
+      "activated_count": 6,
+      "total_defined_modules": 6
+    },
+    "field_usage_coverage": {
+      "percentage": 73.33,
+      "used_field_count": 11,
+      "total_defined_fields": 15,
+      "missing_field_count": 4
+    },
+    "option_value_coverage": {
+      "percentage": 64.71,
+      "covered_option_count": 11,
+      "total_defined_options": 17,
+      "missing_option_count": 6
+    },
+    "unknown_questions": {
+      "total_count": 1
+    }
+  },
+  "module_lists": {
+    "used_modules": [
+      "call_appointment",
+      "estimate_price",
+      "photo_qa",
+      "sequence-session_details-estimate_price",
+      "session_details",
+      "top-level"
+    ],
+    "unused_modules": [],
+    "total_modules": 6
+  },
+  "module_details": {
+    "photo_qa": {
+      "module_type": "qa",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 20.0,
+        "total_defined_in_module": 5,
+        "used_count_in_module": 1,
+        "missing_count_in_module": 4,
+        "used_fields_list": [
+          "When are you open?"
+        ],
+        "missing_fields_list": [
+          "Do you charge per hour or by number of photos?",
+          "Tell me about your portfolio, what important projects have you worked on?",
+          "What media do you work on?",
+          "Where is the shop?"
+        ],
+        "used_questions_list": [
+          "When are you open?"
+        ],
+        "missing_questions_list": [
+          "Do you charge per hour or by number of photos?",
+          "Tell me about your portfolio, what important projects have you worked on?",
+          "What media do you work on?",
+          "Where is the shop?"
+        ],
+        "unknown_questions_list": [
+          "What factors could change the price?"
+        ],
+        "unknown_questions_count": 1
+      }
+    },
+    "call_appointment": {
+      "module_type": "regular",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 4,
+        "used_count_in_module": 4,
+        "missing_count_in_module": 0,
+        "used_fields_list": [
+          "appointment",
+          "email",
+          "name",
+          "phone_number"
+        ],
+        "missing_fields_list": []
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 100.0,
+        "total_defined_options_in_module": 0,
+        "covered_options_in_module_count": 0,
+        "missing_options_in_module_count": 0,
+        "used_options_summary_list": [],
+        "missing_options_summary_list": [],
+        "details_per_option_field": {}
+      }
+    },
+    "session_details": {
+      "module_type": "regular",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 3,
+        "used_count_in_module": 3,
+        "missing_count_in_module": 0,
+        "used_fields_list": [
+          "media",
+          "number_artworks",
+          "type_artworks"
+        ],
+        "missing_fields_list": []
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 83.33,
+        "total_defined_options_in_module": 6,
+        "covered_options_in_module_count": 5,
+        "missing_options_in_module_count": 1,
+        "used_options_summary_list": [
+          "media: 3D rendering",
+          "media: photography",
+          "media: video",
+          "type_artworks: picture",
+          "type_artworks: sculpture"
+        ],
+        "missing_options_summary_list": [
+          "type_artworks: ceramic"
+        ],
+        "details_per_option_field": {
+          "media": {
+            "percentage": 100.0,
+            "defined_options_count": 3,
+            "covered_options_count": 3,
+            "missing_options_count": 0,
+            "used_values": [
+              "3D rendering",
+              "photography",
+              "video"
+            ],
+            "missing_values": []
+          },
+          "type_artworks": {
+            "percentage": 66.67,
+            "defined_options_count": 3,
+            "covered_options_count": 2,
+            "missing_options_count": 1,
+            "used_values": [
+              "picture",
+              "sculpture"
+            ],
+            "missing_values": [
+              "ceramic"
+            ]
+          }
+        }
+      }
+    },
+    "estimate_price": {
+      "module_type": "regular",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 3,
+        "used_count_in_module": 3,
+        "missing_count_in_module": 0,
+        "used_fields_list": [
+          "media",
+          "number_artworks",
+          "type_artworks"
+        ],
+        "missing_fields_list": []
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 83.33,
+        "total_defined_options_in_module": 6,
+        "covered_options_in_module_count": 5,
+        "missing_options_in_module_count": 1,
+        "used_options_summary_list": [
+          "media: 3D rendering",
+          "media: photography",
+          "media: video",
+          "type_artworks: picture",
+          "type_artworks: sculpture"
+        ],
+        "missing_options_summary_list": [
+          "type_artworks: ceramic"
+        ],
+        "details_per_option_field": {
+          "media": {
+            "percentage": 100.0,
+            "defined_options_count": 3,
+            "covered_options_count": 3,
+            "missing_options_count": 0,
+            "used_values": [
+              "3D rendering",
+              "photography",
+              "video"
+            ],
+            "missing_values": []
+          },
+          "type_artworks": {
+            "percentage": 66.67,
+            "defined_options_count": 3,
+            "covered_options_count": 2,
+            "missing_options_count": 1,
+            "used_values": [
+              "picture",
+              "sculpture"
+            ],
+            "missing_values": [
+              "ceramic"
+            ]
+          }
+        }
+      }
+    },
+    "sequence-session_details-estimate_price": {
+      "module_type": "empty",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 0,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 0,
+        "used_fields_list": [],
+        "missing_fields_list": []
+      }
+    },
+    "top-level": {
+      "module_type": "empty",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 0,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 0,
+        "used_fields_list": [],
+        "missing_fields_list": []
+      }
+    }
+  }
+}

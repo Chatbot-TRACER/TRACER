@@ -1,0 +1,59 @@
+🤖 CHATBOT COVERAGE ANALYSIS
+============================================================
+
+📊 OVERALL METRICS
+  • Module Activation: 66.67% (2/3)
+  • Field Usage:       37.50% (3/8)
+  • Option Coverage:   33.33% (3/9)
+  • Unknown Questions: 2 found
+
+🏗️ MODULE ACTIVATION STATUS
+
+  ✅ USED (2):
+       • make_appointment
+       • top-level
+  ❌ UNUSED (1):
+       • vetcen_qa
+
+🔍 MODULE COVERAGE OVERVIEW
+
+  🟢 EXCELLENT (80%+):
+    • top-level: 100.00% (no spec)
+
+  🟡 GOOD (50-79%):
+    • make_appointment: 75.00% (3/4 options)
+
+  🔴 MISSING/LOW (0-19%):
+    • vetcen_qa: 0.00% (0/5 questions)
+
+📝 DETAILED BREAKDOWN PER MODULE
+
+  📦 REGULAR MODULE: make_appointment
+    Overall Option Coverage: 75.00% (3/4 options)
+
+    🔹 service: 75.00%
+       ✅ Used:
+            • Dental health and cleaning
+            • Physical examination
+            • Vaccination
+       ❌ Missing:
+            • Lab or diagnostic testing
+
+  🧩 EMPTY MODULE: top-level
+
+    🔹 No detailed spec available.
+
+  ❓ QA MODULE: vetcen_qa
+    Overall Question Coverage: 0.00% (0/5 questions)
+    Unknown Questions Found: 2
+       ✅ Answered:
+            • None
+       ❌ Unanswered:
+            • How late are you open on weekends?
+            • How much does a vet visit cost?
+            • What can I do to take care of my pet?
+            • What kind of animals do you accept?
+            • When are you open?
+       ❓ Unknown Questions (not in spec):
+            • What are your hours?
+            • What is the phone number for the veterinary center?
