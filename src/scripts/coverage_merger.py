@@ -79,20 +79,44 @@ def save_merged_coverage(basename: str, input_dir: str = ".", output_dir: str = 
     return str(output_path)
 
 
+def merge_files_from_list(file_list_path: str, output_path: str):
+    """Merge files listed in a text file"""
+    with open(file_list_path) as f:
+        files = [line.strip() for line in f if line.strip()]
+
+    merged = merge_footprints(files)
+
+    with open(output_path, "w") as f:
+        json.dump(merged, f, indent=2)
+
+    return output_path
+
+
 def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Merge chatbot coverage files")
-    parser.add_argument("basename", help='Base name prefix of files to merge (e.g. "bikeshop1" or "path/to/bikeshop1")')
+    parser.add_argument("basename", nargs="?", help="Base name prefix of files to merge")
     parser.add_argument("-i", "--input-dir", default=".", help="Directory containing the coverage files to merge")
     parser.add_argument("-o", "--output-dir", default=".", help="Directory to output merged file")
+    parser.add_argument("-f", "--file-list", help="Path to file containing list of coverage files to merge")
+    parser.add_argument("--output-file", help="Specific output file path")
     args = parser.parse_args()
 
-    # If basename contains a path, use its directory as input_dir if not explicitly provided
-    if args.input_dir == "." and "/" in args.basename:
-        args.input_dir = str(Path(args.basename).parent)
+    if args.file_list:
+        if not args.output_file:
+            print("Error: --output-file required when using --file-list")
+            return 1
+        output_file = merge_files_from_list(args.file_list, args.output_file)
+    else:
+        if not args.basename:
+            print("Error: basename required when not using --file-list")
+            return 1
+        # If basename contains a path, use its directory as input_dir if not explicitly provided
+        if args.input_dir == "." and "/" in args.basename:
+            args.input_dir = str(Path(args.basename).parent)
+        output_file = save_merged_coverage(args.basename, args.input_dir, args.output_dir)
 
-    output_file = save_merged_coverage(args.basename, args.input_dir, args.output_dir)
     print(f"Merged coverage saved to: {output_file}")
 
 
