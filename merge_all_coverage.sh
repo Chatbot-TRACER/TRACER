@@ -1,50 +1,52 @@
 #!/bin/bash
-# filepath: /home/ivan/miso/TRACER/merge_all_coverage.sh
 
 # Base directory for results
 RESULTS_DIR="results"
 
-# Function to merge coverage for a specific execution
-merge_coverage() {
-    local domain=$1
-    local execution=$2
-    local basename=$3
+echo "Starting automatic coverage merger..."
+
+# Find all execution directories and process them
+find "$RESULTS_DIR" -name "execution_*" -type d | while read -r execution_dir; do
+    # Extract domain from path (e.g., "bikeshop" from "results/bikeshop/execution_1")
+    domain=$(basename $(dirname "$execution_dir"))
+    execution=$(basename "$execution_dir")
     
-    local input_dir="${RESULTS_DIR}/${domain}/${execution}/exploration_logs/"
-    local output_dir="${RESULTS_DIR}/${domain}/${execution}/exploration_coverage/"
+    # Look for exploration_logs directory
+    logs_dir="$execution_dir/exploration_logs"
     
-    echo "Processing ${basename} in ${domain}/${execution}..."
-    
-    if [ -d "$input_dir" ]; then
-        python src/scripts/coverage_merger.py "$basename" \
-            --input-dir "$input_dir" \
-            --output-dir "$output_dir"
-    else
-        echo "Warning: Input directory $input_dir does not exist"
+    if [ ! -d "$logs_dir" ]; then
+        echo "Skipping $execution_dir - no exploration_logs directory found"
+        continue
     fi
-}
+    
+    # Find all unique basenames in the logs directory
+    # Extract basename from files like "bikeshop1_uuid" -> "bikeshop1"
+    basenames=$(find "$logs_dir" -maxdepth 1 -type f ! -name ".*" | \
+                sed 's/.*\///' | \
+                sed 's/_[0-9a-f-]\{36\}$//' | \
+                sort -u)
+    
+    if [ -z "$basenames" ]; then
+        echo "No coverage files found in $logs_dir"
+        continue
+    fi
+    
+    # Process each basename found
+    for basename in $basenames; do
+        output_dir="$execution_dir/exploration_coverage"
+        
+        echo "Processing $basename in $domain/$execution..."
+        
+        python src/scripts/coverage_merger.py "$basename" \
+            --input-dir "$logs_dir/" \
+            --output-dir "$output_dir/"
+        
+        if [ $? -eq 0 ]; then
+            echo "✓ Successfully merged $basename"
+        else
+            echo "✗ Failed to merge $basename"
+        fi
+    done
+done
 
-# Main execution
-echo "Starting coverage merger for all executions..."
-
-# Bikeshop executions
-merge_coverage "bikeshop" "execution_1" "bikeshop1"
-merge_coverage "bikeshop" "execution_2" "bikeshop2"
-merge_coverage "bikeshop" "execution_3" "bikeshop3"
-
-# Photography executions
-merge_coverage "photography" "execution_1" "photography1"
-merge_coverage "photography" "execution_2" "photography2"
-merge_coverage "photography" "execution_3" "photography3"
-
-# Pizza order executions
-merge_coverage "pizzaorder" "execution_1" "pizzaorder1"
-merge_coverage "pizzaorder" "execution_2" "pizzaorder2"
-merge_coverage "pizzaorder" "execution_3" "pizzaorder3"
-
-# Veterinary executions
-merge_coverage "veterinary" "execution_1" "veterinary1"
-merge_coverage "veterinary" "execution_2" "veterinary2"
-merge_coverage "veterinary" "execution_3" "veterinary3"
-
-echo "Coverage merging completed for all executions!"
+echo "Automatic coverage merging completed!"
