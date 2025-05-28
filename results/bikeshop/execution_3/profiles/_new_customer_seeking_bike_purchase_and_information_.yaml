@@ -1,0 +1,62 @@
+test_name: '[New Customer Seeking Bike Purchase and Information]'
+llm:
+  temperature: 0.3
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A prospective customer looking to buy a bike, gather information about available options, and learn about bike maintenance.
+  context:
+  - You're planning to take up cycling as a new hobby to improve your fitness and explore local trails.
+  - You're a complete beginner and want to find a reputable bike shop that can provide guidance on selecting the right bike and teach you basic maintenance.
+  - You're particularly interested in understanding the different types of bikes available and how to keep them in good working order.
+  goals:
+  - Inquire about the services offered at the bike shop.
+  - Ask if the shop sells bikes.
+  - Ask what types of bikes are available.
+  - Ask for details about {{bike_type}} bikes, after being presented with bike type options.
+  - Ask about bike maintenance tips.
+  - Ask how often to lubricate the bike chain.
+  - Ask if they have bikes in blue.
+  - bike_type:
+      function: forward()
+      type: string
+      data:
+      - Road Bike
+      - Mountain Bike
+      - Hybrid Bike
+      - Electric Bike
+      - Gravel Bike
+chatbot:
+  is_starter: false
+  fallback: I'm sorry it's a little loud in my shop, can you say that again?
+  output:
+  - bike_services_confirmation:
+      type: str
+      description: Confirmation that the shop offers bike-related services and sells bikes. Look for phrases like "Yes, we offer bike services" or "Yes, we sell bikes".
+  - bike_types_list:
+      type: str
+      description: The list of available bike types offered by the shop. Look for phrases like "We have road bikes, mountain bikes, hybrid bikes, and kids' bikes."
+  - bike_type_details:
+      type: str
+      description: Details about the specific bike type requested (e.g., Road Bike, Mountain Bike, Hybrid Bike, etc.) corresponding to the current 'bike_type' variable used in the goal. Look for phrases describing the features or specifications of the selected bike type.
+  - maintenance_tips:
+      type: str
+      description: The basic bike maintenance tips provided by the chatbot. Look for phrases like "cleaning the bike regularly, monitoring tire pressure, and lubricating the chain".
+  - lubrication_frequency:
+      type: str
+      description: Information on how often to lubricate the bike chain. Look for phrases like "every 100 to 200 miles" or "more frequently in wet or muddy conditions."
+  - blue_bike_availability:
+      type: str
+      description: Confirmation regarding the availability of bikes in blue or a question clarifying if the user is asking about a specific bike part or accessory. Look for phrases like "Yes, we have bikes in blue" or "Are you looking for a specific bike part or accessory in blue?"
+conversation:
+  number: 5
+  max_cost: 0.75
+  goal_style:
+    all_answered:
+      export: false
+      limit: 26
+  interaction_style:
+  - all questions
+  - long phrases

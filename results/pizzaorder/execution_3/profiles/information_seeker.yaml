@@ -1,0 +1,58 @@
+test_name: Information Seeker
+llm:
+  temperature: 0.9
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: User seeking information about the pizzeria, such as prices, menu and opening hours.
+  context:
+  - 'personality: personalities/sarcastic-user'
+  - You are planning a casual dinner with friends and want to order pizza from a local pizzeria.
+  - You need to gather information about the pizzeria's offerings and prices before making a decision on what to order.
+  - You also need to know the opening hours to ensure you can pick up the pizza at the desired time.
+  goals:
+  - Ask for the opening hours of the store.
+  - Ask for the list of available pizza options.
+  - Select the pizza type {{pizza_type}}.
+  - Ask for the pizza prices.
+  - Ask for the available drinks and their prices.
+  - pizza_type:
+      function: forward()
+      type: string
+      data:
+      - Carbonara
+      - Custom
+      - Four cheese
+      - Hawaiian
+      - Margarita
+      - Marinera
+      - Vegetarian
+      - Pepperoni
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.
+  output:
+  - opening_hours:
+      type: string
+      description: The opening hours of the store, as stated by the chatbot. Look for phrases like "We are open from..." or "Our opening hours are...".
+  - pizza_options:
+      type: string
+      description: The list of available pizza options offered by the chatbot. The chatbot should list options like Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian, and Custom.
+  - pizza_prices:
+      type: string
+      description: The prices for different pizza types (Margarita, other predefined except Carbonara, Carbonara, custom) and sizes (small, medium, big). The chatbot should specify the price for each pizza type and size.
+  - drinks_menu:
+      type: string
+      description: The list of available drinks and their corresponding prices. The chatbot response should include the drink name and its price. For example, Coke and Sprite are 1.50$, Water is 1$.
+conversation:
+  number: 8
+  max_cost: 1.2
+  goal_style:
+    all_answered:
+      export: false
+      limit: 18
+  interaction_style:
+  - long phrases
+  - change your mind

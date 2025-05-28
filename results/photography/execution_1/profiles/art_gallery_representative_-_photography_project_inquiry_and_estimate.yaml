@@ -1,0 +1,47 @@
+test_name: Art Gallery Representative - Photography Project Inquiry and Estimate
+llm:
+  temperature: 0.5
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A representative from an art gallery seeking information and a price estimate for photographing artwork for a catalog.
+  context:
+  - You are preparing a catalog to showcase the gallery's latest acquisitions and need professional photographs of the artwork.
+  - The gallery wants to ensure the photographs accurately represent the texture and color of the paintings to attract potential buyers.
+  - You've been asked to get quotes from several photography services to compare pricing and scheduling options.
+  goals:
+  - Inquire about the services ArtClicks offers.
+  - Ask for a price estimate for photographing artwork for a gallery.
+  - 'Provide details for the estimate request: photography, 10 paintings, oil on canvas.'
+  - Ask what factors affect the price of the photography services.
+  - Schedule a session to photograph the artwork.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, I can help you to set an appointment for a session, provide price estimates, and answer on issues related to our shop.
+  output:
+  - company_introduction:
+      type: string
+      description: A brief introduction of ArtClicks, including its specialization in photography services for art galleries. Look for phrases like "ArtClicks specializes in" or "We offer photography services for".
+  - estimate_acknowledgment:
+      type: string
+      description: Acknowledgment from the chatbot that it received the artwork details (type, number, medium) and is preparing an estimate. Look for phrases like "preparing an estimate" or "calculating the price".
+  - estimated_photography_price:
+      type: money
+      description: The estimated price for photographing the artwork, including a caveat that the price is an estimate and may vary. Extract the price and the disclaimer. Look for phrases like "estimated price" or "approximate cost" and "may vary" or "depending on".
+  - pricing_factors_explanation:
+      type: string
+      description: Explanation of the factors that affect the price of the photography services. Extract a summary of the factors mentioned, such as complexity, location, number of images, and post-processing. Look for phrases like "factors that influence the price" or "price depends on".
+  - scheduling_prompt:
+      type: string
+      description: The chatbot's prompt or question asking if the user wants to schedule a session after the estimate discussion. Look for phrases like "schedule a session" or "book an appointment".
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 20
+  interaction_style:
+  - long phrases

@@ -1,0 +1,44 @@
+test_name: Artist - Scheduling a Photography Session
+llm:
+  temperature: 0.6
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: An artist interested in scheduling a photography session to document their artwork.
+  context:
+  - 'personality: personalities/formal-user'
+  - You're a sculptor preparing for an upcoming exhibition and need professional-quality photographs of your pieces for the event catalog and promotional materials.
+  - You're looking for a photography studio that specializes in artwork documentation and can provide high-resolution images suitable for print and online display.
+  goals:
+  - Inquire about the types of photography sessions offered to document artwork.
+  - Request a price estimate for photography services, specifying the need for product photos of ten sculptures.
+  - Schedule a photography session for next Tuesday, providing my name as John Doe and phone number as 555-123-4567.
+  - Confirm my photography session details for next Tuesday and provide my email address as john.doe@example.com.
+  - Ask for the studio's location and operating hours.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, I can help you to set an appointment for a session, provide price estimates, and answer on issues related to our shop.
+  output:
+  - session_types:
+      type: string
+      description: A list or description of the different types of photography sessions offered for artwork documentation, including but not limited to high-resolution art photography, installation shots, detailed close-ups, photography for art galleries, video production, and 3D rendering.
+  - price_estimate:
+      type: string
+      description: The price estimate provided by the chatbot for product photos of ten sculptures. Extract the specific price or price range mentioned.
+  - appointment_confirmation:
+      type: string
+      description: A confirmation message containing the appointment details, including the date (next Tuesday), the user's name (John Doe), phone number (555-123-4567), and email address (john.doe@example.com), if provided. Look for a phrase confirming the scheduled session.
+  - studio_location_hours:
+      type: string
+      description: The studio's location and operating hours as provided by the chatbot. Extract both the location and the hours of operation.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 18
+  interaction_style:
+  - make spelling mistakes

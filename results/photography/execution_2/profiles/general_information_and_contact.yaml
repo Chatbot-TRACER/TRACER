@@ -1,0 +1,46 @@
+test_name: General Information and Contact
+llm:
+  temperature: 0.3
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A user seeking general information about the shop, its services, and contact details.
+  context:
+  - 'personality: personalities/impatient-user'
+  - You are an artist looking for a professional photography studio to document your artwork for archival and promotional purposes.
+  - You need to gather essential information about the studio's services, location, and contact methods to determine if they are a suitable fit.
+  - High-quality documentation is crucial for your artwork, so you want to confirm the studio's capabilities in this area.
+  goals:
+  - Ask about the types of photoshoots offered.
+  - Inquire about artwork documentation.
+  - Ask for the shop's location and opening hours.
+  - Request both the phone number and email address to contact the company.
+  - Confirm the company's ability to document artwork with high-quality photographs.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, I can help you to set an appointment for a session, provide price estimates, and answer on issues related to our shop.
+  output:
+  - photoshoot_info:
+      type: string
+      description: Information about the types of photoshoots offered, including specializations such as photographs for art galleries, video, and 3D rendering. Look for phrases indicating the services provided.
+  - artwork_documentation_info:
+      type: string
+      description: Description of what artwork documentation entails, including capturing detailed and accurate photographs of artworks, often for cataloging or insurance purposes.
+  - contact_details:
+      type: string
+      description: The shop's location, opening hours, phone number, and email address. This output should contain all requested contact information.
+  - artwork_documentation_confirmation:
+      type: string
+      description: Confirmation from the chatbot that the company is able to document artwork with high-quality photographs.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 18
+  interaction_style:
+  - all questions
+  - single question

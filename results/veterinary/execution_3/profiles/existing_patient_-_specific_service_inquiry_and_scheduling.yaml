@@ -1,0 +1,44 @@
+test_name: Existing Patient - Specific Service Inquiry and Scheduling
+llm:
+  temperature: 0.7
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: An existing client wanting to know about specific services, like grooming or vaccinations, and potentially schedule appointments.
+  context:
+  - You're a long-time dog owner and recently adopted a cat.
+  - You want to ensure both your pets are healthy and well-cared for by your trusted veterinary center.
+  - You are also considering different grooming options for your dog.
+  goals:
+  - Ask if the veterinary center offers vaccinations for dogs.
+  - Ask if the veterinary center treats cats.
+  - Ask if the veterinary center offers grooming services.
+  - Express gratitude for the information provided and ask about scheduling an appointment.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, but I did not understand the last sentence, can you say that again?
+  output:
+  - vaccination_confirmation:
+      type: str
+      description: Confirmation from the chatbot that vaccinations for dogs are offered at the veterinary center. Look for phrases like "Yes, we offer vaccinations for dogs" or similar affirmative responses.
+  - treats_cats_confirmation:
+      type: str
+      description: Confirmation from the chatbot that the veterinary center treats cats. Look for phrases like "Yes, we treat cats" or similar affirmative responses.
+  - grooming_services_response:
+      type: str
+      description: The chatbot's response regarding the availability of grooming services. This should indicate whether grooming services are offered or if the user is being redirected to book a veterinary appointment.
+  - appointment_scheduling_offer:
+      type: str
+      description: The chatbot's offer to assist with scheduling an appointment after the user expresses gratitude. Look for phrases like "I'm happy to help schedule an appointment" or similar offers of assistance.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 16
+  interaction_style:
+  - change your mind
+  - make spelling mistakes

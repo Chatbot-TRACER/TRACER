@@ -1,0 +1,89 @@
+test_name: New Pizza and Drinks Order (Custom Pizza)
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A customer ordering a custom pizza and drinks for pickup.
+  context:
+  - 'personality: personalities/elderly-user'
+  - You're planning a casual pizza night with some friends and want to order from your favorite local place.
+  - You've decided to try creating your own custom pizza this time to cater to everyone's preferences.
+  - You're hoping to find a combination of toppings that will be a crowd-pleaser.
+  goals:
+  - I want to order a custom pizza.
+  - What size pizza can I order?
+  - I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+  - Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+  - pizza_size:
+      function: forward()
+      type: string
+      data:
+      - large
+      - medium
+      - small
+      - extra large
+  - topping1:
+      function: forward()
+      type: string
+      data:
+      - bacon
+      - cheese
+      - chicken
+      - corn
+      - ham
+      - mushrooms
+      - olives
+      - pepper
+      - pepperoni
+      - anchovies
+  - topping2:
+      function: forward()
+      type: string
+      data:
+      - bacon
+      - cheese
+      - chicken
+      - corn
+      - ham
+      - mushrooms
+      - olives
+      - pepper
+      - pepperoni
+      - pineapple
+  - topping3:
+      function: forward()
+      type: string
+      data:
+      - bacon
+      - cheese
+      - chicken
+      - corn
+      - ham
+      - mushrooms
+      - olives
+      - pepper
+      - pepperoni
+      - Pineapple
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - pizza_size_options:
+      type: string
+      description: The list of available pizza sizes offered by the chatbot in response to the question about pizza sizes.
+  - custom_pizza_order_confirmation:
+      type: string
+      description: 'Confirmation of the custom pizza order, including pizza size (corresponding to the current value of the ''{pizza_size}'' variable) and the list of toppings (corresponding to the current values of ''{topping1}'', ''{topping2}'', and ''{topping3}'' variables). The confirmation should include details such as "pizza size: [pizza_size]", "toppings: [topping1], [topping2], [topping3]".'
+conversation:
+  number: 10
+  max_cost: 1.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 15
+  interaction_style:
+  - all questions
+  - long phrases

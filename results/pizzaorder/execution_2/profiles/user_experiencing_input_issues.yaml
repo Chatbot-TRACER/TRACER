@@ -1,0 +1,51 @@
+test_name: User Experiencing Input Issues
+llm:
+  temperature: 0.8
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A customer who is having trouble communicating their order to the chatbot.
+  context:
+  - 'personality: personalities/skeptical-user'
+  - You are trying to order a pizza through the chatbot, but you're having some trouble with your phone's microphone.
+  - This is causing the chatbot to misinterpret some of your requests, requiring you to be more careful with your speech.
+  goals:
+  - I want to order a pizza.
+  - I want to order a pizza, can you help me with that?
+  - What kind of pizzas do you have?
+  - I'd like a {{pizza_type}} pizza.
+  - I want to order a custom pizza.
+  - pizza_type:
+      function: forward()
+      type: string
+      data:
+      - Margherita
+      - Pepperoni
+      - Vegetarian
+      - Meat Lovers
+      - Hawaiian
+      - BBQ Chicken
+chatbot:
+  is_starter: false
+  fallback: 'I''m sorry, I did not get what you said. I can help you ordering predefined or custom pizzas, and then drinks.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE'
+  output:
+  - pizza_order_response:
+      type: str
+      description: The chatbot's response to the user expressing their desire to order a pizza, including acknowledging the request, asking about pizza type, or stating it didn't understand. This output captures the chatbot's initial response to the user's pizza order request or acknowledgement of the issue. Look for phrases like "What kind of pizza would you like?", "I can help you with that.", or "I didn't understand."
+  - pizza_type_response:
+      type: str
+      description: The chatbot's response listing available pizza types or acknowledging a specific pizza type request (corresponding to the current 'pizza_type' variable used in the goal). Look for phrases like "We have Margherita, Pepperoni, and Vegetarian" or "You want a {pizza_type} pizza". If the chatbot does not understand, it should respond with an apology or request to rephrase.
+  - custom_pizza_response:
+      type: str
+      description: The chatbot's response to the user's request for a custom pizza, either accepting the request and initiating the customization process or indicating that custom pizzas are not available. If the chatbot does not understand, it should respond with an apology or request to rephrase.
+conversation:
+  number: 6
+  max_cost: 0.9
+  goal_style:
+    all_answered:
+      export: false
+      limit: 16
+  interaction_style:
+  - all questions

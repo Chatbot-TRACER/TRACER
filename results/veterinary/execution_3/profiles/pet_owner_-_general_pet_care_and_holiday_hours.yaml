@@ -1,0 +1,45 @@
+test_name: Pet Owner - General Pet Care and Holiday Hours
+llm:
+  temperature: 0.5
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A pet owner seeking general advice about pet care, especially dog care, and inquiring about holiday hours.
+  context:
+  - 'personality: personalities/sarcastic-user'
+  - You recently adopted a dog and want to ensure you are providing the best possible care for your new companion.
+  - You're also planning a holiday trip soon and need to confirm the veterinary center's availability in case of any emergencies while you're away or before you leave.
+  goals:
+  - Inquire about general pet care advice.
+  - Specify that the pet is a dog and ask for advice on dog food.
+  - Ask if the veterinary center offers 24/7 emergency services.
+  - Ask if the veterinary center is open on holidays.
+  - Confirm that the opening hours on holidays are the same as on weekdays.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, but I did not understand the last sentence, can you say that again?
+  output:
+  - pet_care_advice:
+      type: string
+      description: The general pet care advice provided by the chatbot.
+  - dog_food_advice:
+      type: string
+      description: The chatbot's advice on selecting dog food, including considerations like ingredients, age, size, and health needs.
+  - emergency_services_availability:
+      type: string
+      description: Confirmation from the chatbot regarding the availability of 24/7 emergency services at the veterinary center (should indicate that it's NOT available).
+  - holiday_hours_information:
+      type: string
+      description: The chatbot's response regarding whether the veterinary center is open on holidays and if so, whether the hours are the same as weekdays.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 18
+  interaction_style:
+  - all questions
+  - make spelling mistakes

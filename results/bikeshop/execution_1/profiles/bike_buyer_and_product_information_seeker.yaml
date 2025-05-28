@@ -1,0 +1,45 @@
+test_name: Bike Buyer and Product Information Seeker
+llm:
+  temperature: 0.5
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A customer interested in purchasing a bike (electric or regular), helmets, or other accessories, seeking information about models, types, and availability.
+  context:
+  - You're planning to start biking to work and for leisure, and are looking for a new bike and necessary accessories.
+  - You're interested in exploring both regular and electric bike options to determine which best suits your needs and budget.
+  - Safety is a priority, so you also need to get a helmet.
+  goals:
+  - Inquire if the shop sells electric bikes.
+  - Express interest in learning more about electric bike models.
+  - Ask if helmets are in stock.
+  - Inquire about the price of a helmet.
+  - Ask what types of bikes the shop can provide information about.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry it's a little loud in my shop, can you say that again?
+  output:
+  - electric_bikes_availability:
+      type: string
+      description: Confirms whether the shop sells electric bikes. Should contain a positive affirmation (e.g., "Yes, we sell electric bikes").
+  - helmet_availability:
+      type: string
+      description: Confirms whether helmets are in stock. Should contain a positive affirmation (e.g., "Yes, helmets are in stock").
+  - bike_types_offered:
+      type: string
+      description: Lists the types of bikes the chatbot can provide information about (e.g., "road bikes, mountain bikes, and city bikes"). Look for a list or enumeration of bike types.
+  - helmet_price_information:
+      type: string
+      description: Provides information about the price of a helmet. May include the price itself or a statement about providing price information.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 18
+  interaction_style:
+  - single question
+  - long phrases

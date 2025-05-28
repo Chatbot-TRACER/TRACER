@@ -1,0 +1,67 @@
+test_name: '[Customer Scheduling or Inquiring About Bike Repair Services]'
+llm:
+  temperature: 0.4
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A customer who wants to schedule a bike repair appointment, inquire about repair services, or reschedule an existing appointment.
+  context:
+  - 'personality: personalities/curious-user'
+  - Your bicycle has been making some strange noises lately, and you suspect it needs a tune-up or repair.
+  - You rely on your bike for commuting, so it's important to get it fixed as soon as possible, preferably within the next few days.
+  - You have a fairly busy schedule, so you need to find a convenient time that fits your availability.
+  goals:
+  - Inquire about available bike repair services and scheduling options.
+  - Ask for the price of a tune-up.
+  - Schedule an appointment for a repair, specifying the date and time as {{appointment_date}} and {{appointment_time}}.
+  - Attempt to reschedule the appointment and inquire about the shop's contact information when informed that rescheduling is not possible.
+  - Decline to provide contact information and ask for business hours.
+  - appointment_date:
+      function: forward()
+      type: string
+      data:
+      - Today
+      - Tomorrow
+      - Friday
+      - Saturday
+      - Next Monday
+      - '2024-11-29'
+  - appointment_time:
+      function: forward()
+      type: string
+      data:
+      - 10:00 AM
+      - 1:30 PM
+      - 3:00 PM
+      - 4:30 PM
+      - 9:30 AM
+chatbot:
+  is_starter: false
+  fallback: I'm sorry it's a little loud in my shop, can you say that again?
+  output:
+  - repair_services_info:
+      type: string
+      description: A summary of the bike repair services offered, including tune-up availability and scheduling options. Extract any details about service types and scheduling information provided by the chatbot in response to the initial inquiry.
+  - tune_up_price:
+      type: money
+      description: The price quoted by the chatbot for a bike tune-up service. Extract the numerical value and currency.
+  - appointment_details:
+      type: string
+      description: The confirmed date, time, and service type for the scheduled appointment, corresponding to the provided {{appointment_date}} and {{appointment_time}} variables. This output should capture the final scheduled appointment details after the user provides the date and time. Look for phrases like "Your appointment is scheduled for...".
+  - rescheduling_policy:
+      type: string
+      description: The chatbot's explanation regarding rescheduling appointments. Extract the chatbot's statement about whether or not rescheduling is possible and the provided alternative (e.g., contacting the shop).
+  - business_hours:
+      type: string
+      description: The business hours provided by the chatbot after the user declines to provide contact information.
+conversation:
+  number: 6
+  max_cost: 0.9
+  goal_style:
+    all_answered:
+      export: false
+      limit: 20
+  interaction_style:
+  - long phrases

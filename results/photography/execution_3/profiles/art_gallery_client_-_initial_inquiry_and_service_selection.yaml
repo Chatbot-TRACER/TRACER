@@ -1,0 +1,42 @@
+test_name: Art Gallery Client - Initial Inquiry & Service Selection
+llm:
+  temperature: 0.5
+  model: gpt-4o-mini
+  format:
+    type: text
+user:
+  language: English
+  role: A representative from an art gallery exploring photography and related services for artwork documentation and promotion.
+  context:
+  - 'personality: personalities/skeptical-user'
+  - The gallery is preparing a new exhibition and needs high-quality photographs of its artwork for the catalog and promotional materials.
+  - You are responsible for finding a professional photography service that can accurately capture the details and colors of the paintings.
+  - The gallery needs the photography done quickly to meet the printing deadline for the catalog.
+  goals:
+  - Inquire about the services offered by the art gallery photography studio.
+  - Ask for more details about photography services for art galleries.
+  - Inquire about the pricing for photographing 10 paintings.
+  - 'Provide details for the price estimate: photography, 10 paintings, pictures.'
+  - Ask about scheduling an appointment for the photography session.
+chatbot:
+  is_starter: false
+  fallback: I'm sorry, I can help you to set an appointment for a session, provide price estimates, and answer on issues related to our shop.
+  output:
+  - service_details:
+      type: string
+      description: Details provided by the chatbot about photography services for art galleries, including but not limited to high-quality photographs of artworks, exhibitions, and installations, as well as video and 3D rendering media.
+  - price_estimate_response:
+      type: string
+      description: The chatbot's response to the price inquiry for photographing 10 paintings. This should include an estimated price or a statement about how the price is calculated or obtained.
+  - appointment_scheduling_information:
+      type: string
+      description: Information provided by the chatbot regarding scheduling an appointment for the photography session, including instructions or available options.
+conversation:
+  number: 3
+  max_cost: 0.5
+  goal_style:
+    all_answered:
+      export: false
+      limit: 16
+  interaction_style:
+  - change your mind
