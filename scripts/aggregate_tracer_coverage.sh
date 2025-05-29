@@ -10,8 +10,8 @@ for domain_dir in "${RESULTS_DIR}"/*; do
   domain=$(basename "$domain_dir")
   echo -e "\n Domain: $domain"
 
-  # find all tracer/explorer coverage files from exploration_coverage directories
-  mapfile -t tracer_files < <(find "$domain_dir" -path "*/exploration_coverage/*_coverage.json" -type f)
+  # find all tracer/explorer coverage files from tracer_coverage directories
+  mapfile -t tracer_files < <(find "$domain_dir" -path "*/tracer_coverage/*_tracer_coverage.json" -type f)
   if [ "${#tracer_files[@]}" -eq 0 ]; then
     echo "    no tracer coverage files found, skipping"
     continue

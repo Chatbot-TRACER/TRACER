@@ -23,10 +23,10 @@ for domain_dir in "${RESULTS_DIR}"/*; do
   # Collect ALL profile log files from ALL executions (not grouped by profile)
   all_profile_files=()
   for execution_dir in "${execution_dirs[@]}"; do
-    logs_dir="$execution_dir/profiles_logs"
+    logs_dir="$execution_dir/profile_logs"
 
     if [ ! -d "$logs_dir" ]; then
-      echo "    Skipping $(basename "$execution_dir") - no profiles_logs directory found"
+      echo "    Skipping $(basename "$execution_dir") - no profile_logs directory found"
       continue
     fi
 

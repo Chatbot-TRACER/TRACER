@@ -1,0 +1,76 @@
+{
+  "specification": {
+    "modules": [
+      "top-level",
+      "bike_qa",
+      "make_appointment"
+    ],
+    "make_appointment": {
+      "date": "date",
+      "time": "time",
+      "service": [
+        "repair",
+        "tune-up"
+      ]
+    },
+    "bike_qa": {
+      "Which is the price of a new tire?": [],
+      "Which is the price of a tune-up?": [],
+      "Which is the price of a new seat?": [],
+      "What can I do to take care of my bike?": []
+    },
+    "top-level": {}
+  },
+  "footprint": {
+    "modules": [
+      "bike_qa",
+      "make_appointment",
+      "top-level"
+    ],
+    "unknown": [],
+    "make_appointment": {
+      "date": [
+        "10/07/2024",
+        "11/10/2023",
+        "25/10/2023",
+        "26/10/2023",
+        "27/10/2023",
+        "28/10/2023"
+      ],
+      "time": [
+        "09:00:00",
+        "10:00:00",
+        "11:00:00",
+        "14:00:00",
+        "15:00:00"
+      ],
+      "service": [
+        "repair",
+        "tune-up"
+      ]
+    },
+    "bike_qa": {
+      "Which is the price of a new tire?": [
+        "Which is the price of a new tire?"
+      ],
+      "Which is the price of a tune-up?": [
+        "Which is the price of a tune-up?"
+      ],
+      "Which is the price of a new seat?": [],
+      "What can I do to take care of my bike?": [
+        "What can I do to take care of my bike?"
+      ],
+      "unknown": [
+        "Do you do repairs?",
+        "What does a bike tune-up include?",
+        "What is the price of a new electric bike?",
+        "What is the price of a new tire?",
+        "What is the price of a repair for a mountain bike with slipping gears?",
+        "What is the price of a tune-up?",
+        "Which are some specific models good for hills?",
+        "Which is the price of a repair for a flat tire?"
+      ]
+    },
+    "top-level": {}
+  }
+}

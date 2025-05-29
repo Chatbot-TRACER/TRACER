@@ -8,7 +8,7 @@ RESULTS_DIR="$TRACER_ROOT/results"
 echo "Starting automatic profile coverage analysis..."
 
 # Find all profile coverage JSON files and analyze them
-find "$RESULTS_DIR" -path "*/profiles_coverage/*_coverage.json" -type f | while read -r coverage_file; do
+find "$RESULTS_DIR" -path "*/profile_coverage/*_coverage.json" -type f | while read -r coverage_file; do
     echo "Analyzing: $coverage_file"
     
     python "$TRACER_ROOT/src/scripts/coverage_analyzer.py" "$coverage_file"

@@ -11,11 +11,11 @@ find "$RESULTS_DIR" -name "execution_*" -type d | while read -r execution_dir; d
     domain=$(basename $(dirname "$execution_dir"))
     execution=$(basename "$execution_dir")
     
-    # Look for exploration_logs directory
-    logs_dir="$execution_dir/exploration_logs"
+    # Look for tracer_logs directory
+    logs_dir="$execution_dir/tracer_logs"
     
     if [ ! -d "$logs_dir" ]; then
-        echo "Skipping $execution_dir - no exploration_logs directory found"
+        echo "Skipping $execution_dir - no tracer_logs directory found"
         continue
     fi
     
@@ -33,7 +33,7 @@ find "$RESULTS_DIR" -name "execution_*" -type d | while read -r execution_dir; d
     
     # Process each basename found
     for basename in $basenames; do
-        output_dir="$execution_dir/exploration_coverage"
+        output_dir="$execution_dir/tracer_coverage"
         
         echo "Processing $basename in $domain/$execution..."
         

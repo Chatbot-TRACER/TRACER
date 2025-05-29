@@ -18,10 +18,10 @@ declare -A CHATBOTS=(
 # Profile and connector mappings
 # Note: These paths already use the correct TRACER directory names (e.g., pizzaorder)
 declare -A PROFILES=(
-    ["bikeshop"]="$HOME/miso/TRACER/results/bikeshop/execution_${EXECUTION}/profiles_logs/bikeshop_profile_${EXECUTION}"
-    ["photography"]="$HOME/miso/TRACER/results/photography/execution_${EXECUTION}/profiles_logs/photography_profile_${EXECUTION}"
-    ["pizza-order"]="$HOME/miso/TRACER/results/pizzaorder/execution_${EXECUTION}/profiles_logs/pizzaorder_profile_${EXECUTION}"
-    ["veterinary"]="$HOME/miso/TRACER/results/veterinary/execution_${EXECUTION}/profiles_logs/veterinary_profile_${EXECUTION}"
+    ["bikeshop"]="$HOME/miso/TRACER/results/bikeshop/execution_${EXECUTION}/profile_logs/bikeshop_profile_${EXECUTION}"
+    ["photography"]="$HOME/miso/TRACER/results/photography/execution_${EXECUTION}/profile_logs/photography_profile_${EXECUTION}"
+    ["pizza-order"]="$HOME/miso/TRACER/results/pizzaorder/execution_${EXECUTION}/profile_logs/pizzaorder_profile_${EXECUTION}"
+    ["veterinary"]="$HOME/miso/TRACER/results/veterinary/execution_${EXECUTION}/profile_logs/veterinary_profile_${EXECUTION}"
 )
 
 declare -A CONNECTORS=(
@@ -77,30 +77,30 @@ for chatbot_key in "${!CHATBOTS[@]}"; do # Iterate using the logical chatbot key
     fi
 
     # Path for taskyto profile logs (defined in PROFILES array, but we reconstruct for cleaning)
-    # The actual profile *file* is named like .../profiles_logs/bikeshop_profile_1
-    # The directory to clean is .../profiles_logs/
-    profiles_logs_dir_base="$HOME/miso/TRACER/results/${tracer_dir_name}/execution_${EXECUTION}"
-    profiles_logs_dir="${profiles_logs_dir_base}/profiles_logs"
+    # The actual profile *file* is named like .../profile_logs/bikeshop_profile_1
+    # The directory to clean is .../profile_logs/
+    profile_logs_dir_base="$HOME/miso/TRACER/results/${tracer_dir_name}/execution_${EXECUTION}"
+    profile_logs_dir="${profile_logs_dir_base}/profile_logs"
 
     # Path for sensei_chat.py output (defined in EXTRACTS array)
     sensei_output_dir="${EXTRACTS[$chatbot_key]}" # This is already the full path to sensei_output
 
-    # Path for profiles_coverage directory
-    profiles_coverage_dir="${profiles_logs_dir_base}/profiles_coverage"
+    # Path for profile_coverage directory
+    profile_coverage_dir="${profile_logs_dir_base}/profile_coverage"
 
-    echo "  - Cleaning taskyto profile logs in: $profiles_logs_dir"
-    if [ -d "$profiles_logs_dir" ]; then
-        rm -rf "${profiles_logs_dir:?}"/* # Clears content, keeps dir. :? for safety.
+    echo "  - Cleaning taskyto profile logs in: $profile_logs_dir"
+    if [ -d "$profile_logs_dir" ]; then
+        rm -rf "${profile_logs_dir:?}"/* # Clears content, keeps dir. :? for safety.
     else
-        mkdir -p "$profiles_logs_dir" # Ensure it exists
+        mkdir -p "$profile_logs_dir" # Ensure it exists
     fi
-    # If you want to remove and recreate the profiles_logs dir itself:
-    # rm -rf "$profiles_logs_dir"
-    # mkdir -p "$profiles_logs_dir"
+    # If you want to remove and recreate the profile_logs dir itself:
+    # rm -rf "$profile_logs_dir"
+    # mkdir -p "$profile_logs_dir"
 
-    echo "  - Cleaning profiles coverage in: $profiles_coverage_dir"
-    rm -rf "$profiles_coverage_dir" # Remove the directory entirely
-    mkdir -p "$profiles_coverage_dir" # Recreate it empty
+    echo "  - Cleaning profiles coverage in: $profile_coverage_dir"
+    rm -rf "$profile_coverage_dir" # Remove the directory entirely
+    mkdir -p "$profile_coverage_dir" # Recreate it empty
 
     echo "  - Cleaning sensei_chat.py output in: $sensei_output_dir"
     rm -rf "$sensei_output_dir" # Remove the directory entirely
@@ -194,7 +194,7 @@ tmux send-keys -t $SESSION_NAME:2 "echo ''" C-m
 tmux send-keys -t $SESSION_NAME:2 "echo '🧹 Output directories (should be clean for this execution):'" C-m
 for chatbot_key in "${!CHATBOTS[@]}"; do
     tracer_name=${TRACER_DIR_NAMES[$chatbot_key]:-$chatbot_key}
-    tmux send-keys -t $SESSION_NAME:2 "echo \"  - $HOME/miso/TRACER/results/${tracer_name}/execution_${EXECUTION}/profiles_logs/\"" C-m
+    tmux send-keys -t $SESSION_NAME:2 "echo \"  - $HOME/miso/TRACER/results/${tracer_name}/execution_${EXECUTION}/profile_logs/\"" C-m
     tmux send-keys -t $SESSION_NAME:2 "echo \"  - $HOME/miso/TRACER/results/${tracer_name}/execution_${EXECUTION}/profile_coverage/\"" C-m
     tmux send-keys -t $SESSION_NAME:2 "echo \"  - ${EXTRACTS[$chatbot_key]}/\"" C-m
 done
