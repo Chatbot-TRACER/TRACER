@@ -1,0 +1,76 @@
+serial: 2025-05-29-13-11-57
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You are planning a casual movie night at home with a few friends and want to order
+  pizza and drinks.
+- You're looking for a quick and easy meal option that everyone will enjoy, and the
+  pizza place nearby seems convenient.
+- You have a specific number of friends coming over, so you need to order accordingly.
+ask_about:
+- Ask what information the chatbot can provide.
+- Ask what kinds of pizzas are available.
+- Ask for the price of a Margarita pizza.
+- Order a {{pizza_size}} Margarita pizza.
+- Order a {{number_of_drinks}} {{drink_type}}.
+- drink_type: coke
+- number_of_drinks: Five
+- pizza_size: large
+conversation:
+- interaction_style:
+  - single questions
+- number: 5
+- all_answered:
+    export: false
+    limit: 20
+data_output:
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- margarita_price: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for
+    big.
+- order_summary: Your order is a large margherita pizza and five Cokes.
+- total_cost: The cost of a large margherita pizza and five Cokes is $27.50.
+- pickup_details: Your order will be ready in 15 minutes. Please visit our shop at
+    23 Main Street, NY.
+errors: []
+total_cost($): 0.00176805
+---
+conversation time: 53.716173
+assistant response time:
+- 2.945911
+- 3.420976
+- 4.326491
+- 3.926265
+- 5.426866
+response time report:
+  average: 4.009301
+  max: 5.426866
+  min: 2.945911
+---
+interaction:
+- User: What kinds of pizzas are available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What is the price of a Margarita pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I'll take a large Margarita pizza, please.
+- Assistant: It looks like there was a small typo in the pizza type you provided.
+    Could you please confirm if you meant "margherita"? If so, I have all the information
+    I need! If not, please provide the correct pizza type. Thank you!
+- User: I'll take a large Margherita pizza, please.
+- Assistant: 'Thanks for ordering a large margherita pizza!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks you prefer (coke,
+    sprite, or water)? '
+- User: I'll take five cokes, please.
+- Assistant: 'I have received your order for five Cokes.
+
+    The cost of a large margherita pizza and five Cokes is $27.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 7ccddb.'

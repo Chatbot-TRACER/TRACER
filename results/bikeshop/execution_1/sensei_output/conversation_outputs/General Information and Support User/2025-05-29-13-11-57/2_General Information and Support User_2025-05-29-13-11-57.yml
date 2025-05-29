@@ -1,0 +1,152 @@
+serial: 2025-05-29-13-11-57
+language: English
+context:
+- You are a new resident in town and are looking for a local bike shop for potential
+  future repairs and maintenance.
+- You want to gather some basic information about the shop's services and operating
+  hours before visiting in person.
+- You also want to know if the chatbot can handle appointment rescheduling, as you
+  might need to adjust a future booking.
+ask_about:
+- Ask for the shop's weekday operating hours.
+- Ask if the shop is open on Saturdays.
+- Ask if the chatbot can help reschedule an appointment.
+- Ask for the shop's phone number.
+- Ask what capabilities the chatbot has.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- all_answered:
+    export: false
+    limit: 20
+data_output:
+- weekday_operating_hours: The shop's weekday operating hours are every weekday from
+    9am to 5:30pm.
+- saturday_open: I'm sorry, I only have information about the shop's weekday hours.
+    Please note that we are open every weekday from 9am to 5:30pm.
+- appointment_reschedule_response: Hello! I see that the service is repair. Could
+    you please tell me the date and time you'd like to reschedule your appointment?
+- phone_number_information: I'm here to help with bike repairs and appointments, but
+    I don't have the shop's phone number. Would you like me to assist you with scheduling
+    or rescheduling an appointment?
+- chatbot_capabilities: I can assist you with scheduling, rescheduling, and managing
+    appointments for bike repairs and tune-ups at our shop. If you need to set up
+    or change an appointment, just let me know the details!
+errors: []
+total_cost($): 0.00745935
+---
+conversation time: 113.987224
+assistant response time:
+- 0.884162
+- 1.008386
+- 1.872241
+- 1.150656
+- 1.21751
+- 0.910025
+- 1.06134
+- 1.125756
+- 1.289539
+- 1.086902
+- 1.119098
+- 1.160322
+- 1.462975
+- 0.947101
+- 1.024068
+- 1.089255
+- 1.185959
+- 1.144656
+- 1.384736
+- 1.211756
+response time report:
+  average: 1.166822
+  max: 1.872241
+  min: 0.884162
+---
+interaction:
+- User: What are the shop's weekday operating hours?
+- Assistant: The shop's weekday operating hours are every weekday from 9am to 5:30pm.
+- User: Are you open on Saturdays?
+- Assistant: I'm sorry, I only have information about the shop's weekday hours. Please
+    note that we are open every weekday from 9am to 5:30pm.
+- User: Can you help me reschedule an appointment?
+- Assistant: Hello! I see that the service is repair. Could you please tell me the
+    date and time you'd like to reschedule your appointment?
+- User: What is the shop's phone number?
+- Assistant: I'm here to help with bike repairs and appointments, but I don't have
+    the shop's phone number. Would you like me to assist you with scheduling or rescheduling
+    an appointment?
+- User: What capabilities do you have?
+- Assistant: I can assist you with scheduling, rescheduling, and managing appointments
+    for bike repairs and tune-ups at our shop. If you need to set up or change an
+    appointment, just let me know the details!
+- User: What services does the shop offer?
+- Assistant: Our bike shop offers repair services and tune-ups to keep your bike in
+    top condition. How can I assist you further?
+- User: Do you offer any special services, like custom bike builds or fitting sessions?
+- Assistant: We primarily offer repair services and tune-ups. For custom bike builds
+    or fitting sessions, I recommend contacting the shop directly to see if they provide
+    those specialized services. How else can I assist you today?
+- User: Do you have any information on the shop's warranty or guarantee policies for
+    repairs?
+- Assistant: I'm here to assist with scheduling and managing appointments for repairs
+    and tune-ups, but I don't have information on warranty or guarantee policies.
+    For details about our warranty policies, I recommend contacting the shop directly.
+    How else can I assist you today?
+- User: What types of bike repairs do you specialize in?
+- Assistant: I specialize in a variety of bike repairs, including brake adjustments,
+    gear tuning, wheel truing, chain replacements, and general tune-ups. If you have
+    a specific issue, please let me know, and I can provide more details or help you
+    schedule an appointment!
+- User: What types of bike repairs do you specialize in?
+- Assistant: I specialize in a variety of bike repairs, including brake adjustments,
+    gear tuning, wheel truing, chain replacements, and general tune-ups. If you have
+    a specific issue, please let me know, and I can provide more details or help you
+    schedule an appointment!
+- User: Do you offer any services for electric bikes?
+- Assistant: I'm here to assist with scheduling and managing appointments for repairs
+    and tune-ups, but I don't have specific information about services for electric
+    bikes. If you'd like to schedule a repair or tune-up for your electric bike, please
+    let me know the date and time you'd prefer!
+- User: Do you offer any services for electric bikes?
+- Assistant: I specialize in general bike repairs and tune-ups, but I don't have specific
+    information about services for electric bikes. If you'd like to schedule a repair
+    or tune-up for your electric bike, please provide the preferred date and time!
+- User: Do you have any information on the shop's warranty or guarantee policies for
+    repairs?
+- Assistant: I'm here to assist with scheduling and managing appointments for repairs
+    and tune-ups, but I don't have information on warranty or guarantee policies.
+    For details about our warranty policies, I recommend contacting the shop directly.
+    How else can I assist you today?
+- User: Do you offer any services for electric bikes?
+- Assistant: I primarily handle scheduling and managing appointments for repairs and
+    tune-ups. If you'd like to schedule a repair or tune-up for your electric bike,
+    please let me know the preferred date and time!
+- User: Do you offer any services for electric bikes?
+- Assistant: I primarily handle scheduling and managing appointments for repairs and
+    tune-ups. If you'd like to schedule a repair or tune-up for your electric bike,
+    please let me know the preferred date and time!
+- User: What types of bike repairs do you specialize in?
+- Assistant: I specialize in a variety of bike repairs, including brake adjustments,
+    gear tuning, wheel truing, chain replacements, and general tune-ups. If you have
+    a specific issue, please let me know, and I can provide more details or help you
+    schedule an appointment!
+- User: Do you offer any services for electric bikes?
+- Assistant: We do offer repair and tune-up services for electric bikes as well. Would
+    you like to schedule an appointment for your electric bike? If so, please provide
+    the preferred date and time.
+- User: What types of bike repairs do you specialize in?
+- Assistant: I specialize in a variety of bike repairs, including brake adjustments,
+    gear tuning, wheel truing, chain replacements, and general tune-ups. If you'd
+    like to schedule an appointment for any of these services, please let me know
+    the preferred date and time!
+- User: What types of bike repairs do you specialize in?
+- Assistant: I specialize in a variety of bike repairs, including brake adjustments,
+    gear tuning, wheel truing, chain replacements, and general tune-ups. If you would
+    like to schedule an appointment for any of these services, please provide the
+    preferred date and time.
+- User: What types of bike repairs do you specialize in?
+- Assistant: I specialize in a variety of bike repairs, including brake adjustments,
+    gear tuning, wheel truing, chain replacements, and general tune-ups. If you would
+    like to schedule an appointment for any of these services, please provide the
+    preferred date and time.

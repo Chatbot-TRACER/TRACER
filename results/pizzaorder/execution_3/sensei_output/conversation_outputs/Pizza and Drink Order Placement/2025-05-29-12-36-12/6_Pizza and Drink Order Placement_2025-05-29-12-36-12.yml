@@ -1,0 +1,72 @@
+serial: 2025-05-29-12-36-12
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You are planning a casual get-together with friends at your place tonight.
+- You decided to order pizza and drinks for everyone to make it easier and more enjoyable.
+- You need to pick it up on your way home from work.
+ask_about:
+- Ask what kinds of pizzas are available.
+- Order a {{pizza_type}} pizza.
+- Select the size {{pizza_size}} for the {{pizza_type}} pizza.
+- Ask what drinks are available.
+- Order {{number_of_drinks}} {{drink_type}}.
+- drink_type: Fountain Drink
+- number_of_drinks: Three
+- pizza_size: small
+- pizza_type: Vegetarian
+conversation:
+- interaction_style:
+  - single questions
+- number: 8
+- all_answered:
+    export: false
+    limit: 24
+data_output:
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients).
+- drink_options: 'We have the following drinks available: coke, sprite, and water.'
+- order_summary: Your order will be ready in 15 minutes. Your order is a small vegetarian
+    pizza and three Cokes.
+- total_cost: The cost of a small vegetarian pizza and three Cokes is $16.50.
+- estimated_readiness_time: Your order will be ready in 15 minutes.
+- pickup_location: Please visit our shop at 23 Main Street, NY.
+- order_id: Your order ID is a4dbe4.
+errors: []
+total_cost($): 0.00157515
+---
+conversation time: 36.126742
+assistant response time:
+- 1.851681
+- 4.397157
+- 3.377466
+- 1.093312
+- 3.581795
+response time report:
+  average: 2.860282
+  max: 4.397157
+  min: 1.093312
+---
+interaction:
+- User: What kinds of pizzas are available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'll take a Vegetarian pizza.
+- Assistant: It looks like I have the pizza type as "Vegetarian," but I still need
+    to know the pizza size. Could you please let me know if you would like a small,
+    medium, or large pizza?
+- User: Small, please.
+- Assistant: 'Thanks for ordering a small vegetarian pizza!
+
+    Thank you for the pizza order! Now, could you please let me know how many drinks
+    you would like to order? '
+- User: What drinks do you have available?
+- Assistant: 'We have the following drinks available: coke, sprite, and water. How
+    many drinks would you like to order and which type?'
+- User: I'll take three fountain drinks.
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a small vegetarian pizza and three Cokes is $16.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is a4dbe4.'

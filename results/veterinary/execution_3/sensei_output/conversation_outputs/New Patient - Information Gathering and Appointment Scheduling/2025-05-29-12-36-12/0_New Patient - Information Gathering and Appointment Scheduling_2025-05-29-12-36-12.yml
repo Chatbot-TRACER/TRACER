@@ -1,0 +1,139 @@
+serial: 2025-05-29-12-36-12
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to establish him with a reputable veterinary
+  center for his healthcare needs.
+- You want to find a vet that offers comprehensive services and has appointment times
+  that fit your busy schedule.
+ask_about:
+- Inquire about the services offered at the veterinary center.
+- Ask about the veterinary center's policy on accepting certain animal types as patients.
+- Ask what the approximate cost range is for a standard veterinary visit.
+- Inquire about the available times for an appointment.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- date: Today
+- time: 9:30 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- all_answered:
+    export: false
+    limit: 20
+data_output:
+- services_offered: I'm not sure. However, I can provide information about our opening
+    hours, weekend hours, veterinary visit fees, the types of animals we accept, and
+    pet care advice.
+- animal_acceptance_policy: We specialize in dogs, cats, and birds. For other animals,
+    please inquire beforehand.
+- standard_visit_cost_range: Approximately $50 to $60
+- appointment_availability_info: Our veterinary center is open every weekday from
+    9am to 6pm.
+- appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 27/10/2023 at 09:30:00 for Vaccination. \nSee you then!    \n"
+errors: []
+total_cost($): 0.0067308
+---
+conversation time: 124.718178
+assistant response time:
+- 2.947818
+- 3.204254
+- 2.152682
+- 0.834962
+- 0.826401
+- 0.759875
+- 0.84103
+- 0.743143
+- 0.833623
+- 0.987483
+- 0.696611
+- 0.802785
+- 1.557166
+- 0.815911
+- 1.002753
+- 1.282767
+- 0.97201
+- 0.735509
+- 0.967418
+- 0.821276
+response time report:
+  average: 1.189273
+  max: 3.204254
+  min: 0.696611
+---
+interaction:
+- User: What services do you offer at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information about our opening hours,
+    weekend hours, veterinary visit fees, the types of animals we accept, and pet
+    care advice.
+- User: What types of animals do you accept as patients at your veterinary center?
+- Assistant: We specialize in dogs, cats, and birds. For other animals, please inquire
+    beforehand.
+- User: What is the approximate cost range for a standard veterinary visit?
+- Assistant: Approximately $50 to $60
+- User: What are the available times for an appointment?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm. Would you
+    like to schedule an appointment?
+- User: Can I schedule a vaccination appointment for my dog on Friday at 9:30 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 27/10/2023\
+    \ at 09:30:00 for Vaccination. \nSee you then!    \n"
+- User: Can you confirm what vaccinations my puppy will need during the first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations will my puppy need during the first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are typically recommended for puppies during their first
+    visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are usually recommended for puppies during their first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are generally recommended for puppies during their first
+    visit?
+- Assistant: Vaccinations generally recommended for puppies during their first visit
+    include distemper, parvovirus, adenovirus, and rabies. Would you like to schedule
+    an appointment for your puppy?
+- User: What other preventive care services do you recommend for puppies during their
+    first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What other preventive care services do you suggest for puppies during their
+    first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What preventive care services do you recommend for puppies during their first
+    visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What preventive care services are typically recommended for puppies during
+    their first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What preventive care services are usually suggested for puppies during their
+    first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What preventive care services are generally recommended for puppies during
+    their first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What other preventive care services should I consider for my puppy during
+    his first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What preventive care services should I consider for my puppy during his first
+    visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What preventive care services are recommended for puppies during their first
+    visit?
+- Assistant: Vaccinations generally recommended for puppies during their first visit
+    include distemper, parvovirus, adenovirus, and rabies. Would you like to schedule
+    an appointment for your puppy?
+- User: What preventive care services, in addition to vaccinations, are recommended
+    for puppies during their first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

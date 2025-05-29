@@ -1,0 +1,87 @@
+serial: 2025-05-29-13-11-57
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You are planning a casual movie night at home with a few friends and want to order
+  pizza and drinks.
+- You're looking for a quick and easy meal option that everyone will enjoy, and the
+  pizza place nearby seems convenient.
+- You have a specific number of friends coming over, so you need to order accordingly.
+ask_about:
+- Ask what information the chatbot can provide.
+- Ask what kinds of pizzas are available.
+- Ask for the price of a Margarita pizza.
+- Order a {{pizza_size}} Margarita pizza.
+- Order a {{number_of_drinks}} {{drink_type}}.
+- drink_type: sprite
+- number_of_drinks: Two
+- pizza_size: medium
+conversation:
+- interaction_style:
+  - single questions
+- number: 5
+- all_answered:
+    export: false
+    limit: 20
+data_output:
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- margarita_price: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for
+    big.
+- order_summary: 'Thanks for ordering a medium margherita pizza!
+
+    Thank you for confirming your order for a medium Margarita pizza! Now, could you
+    please let me know how many drinks you would like to order and what type of drinks
+    (coke, sprite, or water)? Thank you!
+
+    Got it! I''ve received your order for 2 Sprites.
+
+    The cost for a medium margherita pizza and two Sprites is $18.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is a9e43f.'
+- total_cost: The cost for a medium margherita pizza and two Sprites is $18.00.
+- pickup_details: Your order will be ready in 15 minutes. Please visit our shop at
+    23 Main Street, NY.
+errors: []
+total_cost($): 0.0018354
+---
+conversation time: 49.299441
+assistant response time:
+- 1.695408
+- 2.930696
+- 4.889381
+- 2.868807
+- 3.912841
+response time report:
+  average: 3.259426
+  max: 4.889381
+  min: 1.695408
+---
+interaction:
+- User: What kinds of pizzas are available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What is the price of a Margarita pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I'll take a medium Margarita pizza, please.
+- Assistant: It looks like there was a small typo in the pizza type you provided.
+    Could you please confirm if you meant "margherita"? If so, I have the size as
+    "medium." If not, please provide the correct pizza type. Thank you!
+- User: Yes, I meant "Margarita." Please confirm my order for a medium Margarita pizza.
+- Assistant: 'Thanks for ordering a medium margherita pizza!
+
+    Thank you for confirming your order for a medium Margarita pizza! Now, could you
+    please let me know how many drinks you would like to order and what type of drinks
+    (coke, sprite, or water)? Thank you!'
+- User: I'll take two Sprite, please.
+- Assistant: 'Got it! I''ve received your order for 2 Sprites.
+
+    The cost for a medium margherita pizza and two Sprites is $18.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is a9e43f.'

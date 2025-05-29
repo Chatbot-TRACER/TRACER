@@ -1,0 +1,62 @@
+serial: 2025-05-29-12-36-12
+language: English
+context:
+- 'personality: personalities/sarcastic-user'
+- You are planning a casual dinner with friends and want to order pizza from a local
+  pizzeria.
+- You need to gather information about the pizzeria's offerings and prices before
+  making a decision on what to order.
+- You also need to know the opening hours to ensure you can pick up the pizza at the
+  desired time.
+ask_about:
+- Ask for the opening hours of the store.
+- Ask for the list of available pizza options.
+- Select the pizza type {{pizza_type}}.
+- Ask for the pizza prices.
+- Ask for the available drinks and their prices.
+- pizza_type: Marinera
+conversation:
+- interaction_style:
+  - single questions
+- number: 8
+- all_answered:
+    export: false
+    limit: 18
+data_output:
+- opening_hours: Every day from 1pm to 11:30pm
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- pizza_prices: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big.
+    The other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- drinks_menu: Sprite and Coke are 1.50$. Water is 1$.
+errors: []
+total_cost($): 0.00107265
+---
+conversation time: 27.64154
+assistant response time:
+- 1.496068
+- 1.746864
+- 2.573181
+- 1.724187
+response time report:
+  average: 1.885075
+  max: 2.573181
+  min: 1.496068
+---
+interaction:
+- User: What are the opening hours of the pizzeria?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Great, thanks! Now, what pizza options do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'll go with the Marinera. What are the prices for that one?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: How much are the drinks, and what options do you have?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.

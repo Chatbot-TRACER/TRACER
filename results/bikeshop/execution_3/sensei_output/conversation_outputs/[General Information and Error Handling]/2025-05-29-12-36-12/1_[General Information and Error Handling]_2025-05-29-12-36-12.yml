@@ -1,0 +1,112 @@
+serial: 2025-05-29-12-36-12
+language: English
+context:
+- 'personality: personalities/curious-user'
+- You are planning a visit to a local shop and need to gather some basic information
+  before heading over.
+- You have a few specific items in mind, but you're also open to exploring other related
+  products they might offer.
+- You are not very tech-savvy and sometimes make errors when interacting with online
+  systems.
+ask_about:
+- Ask for the shop's operating hours.
+- Inquire about the availability of unicorn saddles.
+- Ask 'Tell me more about the options.
+- State 'I'd like to schedule an appointment', then when prompted for date/time, respond
+  with unintelligible noise.
+- Ask about bike helmets, then when told they don't have info, ask about bike prices.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- all_answered:
+    export: false
+    limit: 20
+data_output:
+- business_hours: Our shop is open every weekday from 9am to 5:30pm.
+- unavailable_item_response: I'm sorry, I don't have information about unicorn saddles.
+    Can I help you with something else?
+- clarification_request: Would you like me to find out the specific prices for you?
+- unintelligible_request_response: Our shop is open every weekday from 9am to 5:30pm.
+- alternative_information_options: I'm sorry, I don't have information about bike
+    helmets. Can I help you with something else?
+errors: []
+total_cost($): 0.00610755
+---
+conversation time: 126.28937
+assistant response time:
+- 0.837333
+- 0.836722
+- 0.756458
+- 0.75844
+- 0.63858
+- 0.788277
+- 2.423545
+- 2.064756
+- 1.958665
+- 1.957358
+- 0.888226
+- 8.155637
+- 0.651734
+- 0.844355
+- 0.901999
+- 0.974955
+- 0.748389
+- 0.844615
+- 1.04425
+- 0.932366
+response time report:
+  average: 1.450332
+  max: 8.155637
+  min: 0.63858
+---
+interaction:
+- User: What are your operating hours?
+- Assistant: Our shop is open every weekday from 9am to 5:30pm.
+- User: Are unicorn saddles available at your shop?
+- Assistant: I'm sorry, I don't have information about unicorn saddles. Can I help
+    you with something else?
+- User: What other options do you have for unique saddles?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What unique saddle options do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What unique types of saddles can I find in your store?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What about bike helmets? Do you have any available?
+- Assistant: We do have bike helmets available. Would you like to know about the prices
+    or specific types?
+- User: What are the prices for the bike helmets?
+- Assistant: The response to the question "What is the price of a new helmet?" is
+    "I do not know." However, I can provide information about the cost of a new tire,
+    a tune-up, a new seat, or offer advice on how to maintain your bike.
+- User: What are the prices for new bike tires?
+- Assistant: The response to the question "What is the price of a new tire?" is $20.
+- User: What about the prices for bike seats?
+- Assistant: The response to the question "What are the prices for new bike seats?"
+    is that they range from $50 to $100.
+- User: What are the prices for a bike tune-up?
+- Assistant: The response to the question "What is the price of a tune-up?" is $150.
+- User: What are the prices for bike accessories?
+- Assistant: I'm sorry, I don't have information about the prices for bike accessories.
+    Can I help you with something else?
+- User: Do you have any unique bike accessories that you can tell me about?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What unique bike accessories can you tell me about?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What unique bike accessories do you offer in your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What about custom bike decals? Do you have any available?
+- Assistant: I'm sorry, I don't have information about custom bike decals. Can I help
+    you with something else?
+- User: Do you have any unique bike lights for sale?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What unique bike lights do you have for sale?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any glow-in-the-dark bike lights?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any reflective bike lights available?
+- Assistant: We do have reflective bike lights available. Would you like to know more
+    about the options or prices?
+- User: What are the prices for the reflective bike lights?
+- Assistant: The prices for reflective bike lights vary depending on the type and
+    features. Would you like me to find out the specific prices for you?

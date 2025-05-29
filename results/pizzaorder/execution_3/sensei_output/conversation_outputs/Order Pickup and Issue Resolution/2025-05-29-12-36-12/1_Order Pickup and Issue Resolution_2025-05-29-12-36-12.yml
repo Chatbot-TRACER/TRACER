@@ -1,0 +1,134 @@
+serial: 2025-05-29-12-36-12
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You placed an order online for pickup, but you haven't received a confirmation with
+  the pickup address.
+- You need to confirm the availability of delivery options and, if not available,
+  obtain the pickup location to retrieve your order as soon as possible.
+ask_about:
+- Ask if delivery is available.
+- If delivery is not available, ask for the pickup location.
+- If the chatbot cannot provide the pickup address, ask for alternative methods to
+  place the order and get the address.
+- Provide an uninterpretable input to trigger a request for rephrasing.
+- Ask what pizza options are available.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- all_answered:
+    export: false
+    limit: 20
+data_output:
+- delivery_availability: We do not do delivery, but customers need to get the shop
+    for their orders.
+- pickup_location: We are located at 23 Main Street, New York.
+- order_placement_options: We do not do delivery, but customers need to get the shop
+    for their orders. We are located at 23 Main Street, New York.
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- rephrase_request: I'm sorry, I did not get what you said. I can help you ordering
+    predefined or custom pizzas, and then drinks.
+errors: []
+total_cost($): 0.00710895
+---
+conversation time: 133.997574
+assistant response time:
+- 2.942641
+- 1.887979
+- 1.157267
+- 0.816272
+- 0.723191
+- 2.028663
+- 1.77916
+- 2.360353
+- 1.901082
+- 1.913047
+- 1.918722
+- 1.947717
+- 1.916184
+- 1.90163
+- 2.084177
+- 2.438354
+- 2.385917
+- 2.255433
+- 2.295115
+- 2.104894
+response time report:
+  average: 1.937889
+  max: 2.942641
+  min: 0.723191
+---
+interaction:
+- User: Is delivery available for my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: What are the pizza options available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I get a list of the toppings available for the Custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you provide a list of toppings for the Custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you just tell me what toppings I can choose for the Custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What are the available toppings for the Custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings can I choose for the Custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings can I pick for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.
+- User: What toppings are available for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, order pickup process, and estimated
+    time for orders.
+- User: What toppings can I choose for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, order pickup information, and
+    estimated time for orders.
+- User: What toppings can I choose for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What toppings can I pick for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What toppings can I choose for the Custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings can I choose for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and order time.
+- User: What toppings can I choose for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup information, and
+    estimated time for orders.
+- User: What toppings can I pick for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, order pickup process, and estimated
+    time for orders.
+- User: What toppings can I choose for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup information, and
+    estimated time for orders.
+- User: What toppings are available for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What are the toppings available for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What toppings can I pick for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.

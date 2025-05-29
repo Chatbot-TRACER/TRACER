@@ -1,0 +1,105 @@
+serial: 2025-05-29-13-11-57
+language: English
+context:
+- You are trying to test the limitations of a chatbot's knowledge and capabilities.
+- You begin with a general knowledge question to assess the bot's basic functionality
+  before exploring its more specific services.
+- You also want to see if it can handle requests outside its intended domain.
+ask_about:
+- Inquire about the capital of France.
+- Ask if they can assist with pizza or drink orders.
+- Ask about ordering a pizza.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- all_answered:
+    export: false
+    limit: 15
+data_output:
+- unrecognized_query_response: I'm sorry, I did not get what you said. I can help
+    you ordering predefined or custom pizzas, and then drinks.
+errors: []
+total_cost($): 0.00363375
+---
+conversation time: 84.505325
+assistant response time:
+- 0.821925
+- 0.742856
+- 0.84432
+- 3.07881
+- 1.845955
+- 5.792418
+- 3.813157
+- 4.582657
+- 4.573699
+- 4.424237
+- 0.914322
+- 1.700218
+- 3.242061
+- 1.084997
+- 1.851921
+response time report:
+  average: 2.620903
+  max: 5.792418
+  min: 0.742856
+---
+interaction:
+- User: What is the capital of France?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What is the capital city of France?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What can you tell me about the capital city of France?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you recommend for a pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What drinks do you have available with the pizza?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Can you help me order a pizza with extra pineapple and jalapeños?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza? Also, please note that the
+    toppings you provided include "extra pineapple" and "jalapeños," which are not
+    available. You can choose from cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, or corn. Thank you!
+- User: Can I order a pizza with just cheese and mushrooms?
+- Assistant: I see that you've chosen a medium pizza. Could you please confirm your
+    toppings? You can choose from cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, or corn. Thank you!
+- User: Can I get a large pizza with pepperoni and olives?
+- Assistant: Thank you for confirming the pizza size as large! Could you please let
+    me know your toppings? You can choose from cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, or corn. Thank you!
+- User: I’d like a large pizza with just pepperoni, please.
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e, r, o, n and i!
+
+    Thank you for your order of a large pizza with just pepperoni! Now, could you
+    please let me know how many drinks you would like to order? Also, please specify
+    the type of drink you prefer: coke, sprite, or water. Thank you!'
+- User: Can I get two drinks, one Coke and one Sprite, with my pizza order?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large pizza topped with pepperoni and two Cokes is $26.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 2a0be0.'
+- User: What if I wanted to order a pizza with pickles and gummy bears on it?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can I order a pizza with just pickles and gummy bears as toppings?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me if you have any special deals on pizzas today?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Are there any desserts available with your pizza orders?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What time do you close for pizza orders?
+- Assistant: Every day from 1pm to 11:30pm

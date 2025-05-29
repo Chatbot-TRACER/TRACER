@@ -1,0 +1,49 @@
+serial: 2025-05-29-13-11-57
+language: English
+context:
+- 'personality: personalities/conversational-user'
+- You're feeling unwell but aren't sure what kind of medical attention you need.
+- You're exploring the services offered by this clinic to determine the best course
+  of action.
+- You're also concerned about the potential costs associated with different types
+  of examinations.
+ask_about:
+- I'm not sure what I need, can you tell me what services you offer?
+- What kind of appointments are available?
+- What does a physical examination include?
+- How much does a physical examination cost?
+- If you don't know, can you find out the cost of a physical examination for me?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- all_answered:
+    export: false
+    limit: 22
+data_output:
+- service_options: We offer services such as Physical examination, Vaccination, Dental
+    health and cleaning, and Lab or diagnostic testing.
+- appointment_types: We offer services such as Physical examination, Vaccination,
+    Dental health and cleaning, and Lab or diagnostic testing.
+- physical_examination_description: Physical examination, Vaccination, Dental health
+    and cleaning, and Lab or diagnostic testing.
+- cost_inquiry_response: None
+- recommendation: We offer services such as Physical examination, Vaccination, Dental
+    health and cleaning, and Lab or diagnostic testing.
+- assistance_options: We offer services such as Physical examination, Vaccination,
+    Dental health and cleaning, and Lab or diagnostic testing.
+errors: []
+total_cost($): 0.00051285
+---
+conversation time: 12.100068
+assistant response time:
+- 1.035212
+response time report:
+  average: 1.035212
+  max: 1.035212
+  min: 1.035212
+---
+interaction:
+- User: I'm not sure what I need, can you tell me what services you offer?
+- Assistant: We offer services such as Physical examination, Vaccination, Dental health
+    and cleaning, and Lab or diagnostic testing. How can I assist you further?

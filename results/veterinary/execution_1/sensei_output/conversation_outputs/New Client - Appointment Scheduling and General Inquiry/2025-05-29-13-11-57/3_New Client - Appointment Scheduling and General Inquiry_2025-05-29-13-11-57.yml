@@ -1,0 +1,87 @@
+serial: 2025-05-29-13-11-57
+language: English
+context:
+- You recently moved to the area and are looking for a reputable veterinary center
+  for your pets.
+- You have a rabbit that requires regular grooming and you'd like to establish care
+  with a local vet.
+- Before committing, you want to gather some preliminary information about their services
+  and pricing.
+ask_about:
+- Inquire about the types of animals the veterinary center treats.
+- If the veterinary center treats rabbits, ask to schedule a grooming appointment
+  for a rabbit.
+- Provide the date {{date}} and time {{time}} for the grooming appointment.
+- Ask about the typical price range for a veterinary visit.
+- Ask about available services and information.
+- date: Next Monday
+- time: 4:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- all_answered:
+    export: false
+    limit: 18
+data_output:
+- animal_acceptance_response: Yes, we do treat rabbits at our veterinary center. How
+    can I assist you further?
+- grooming_appointment_confirmation: "Ok, I have received your request to schedule\
+    \ an appointment for 30/10/2023 at 16:30:00 for Dental health and cleaning. \n\
+    See you then!    \n"
+- veterinary_visit_price_range: The typical price for a veterinary visit can vary
+    depending on the services needed.
+- available_services_and_information: We treat a variety of animals, including dogs,
+    cats, and small pets. Yes, we do treat rabbits at our veterinary center. We offer
+    various services for rabbit care, including grooming and health check-ups.
+errors: []
+total_cost($): 0.00309795
+---
+conversation time: 60.592653
+assistant response time:
+- 1.093958
+- 0.817499
+- 1.047567
+- 0.919442
+- 0.953842
+- 0.61748
+- 0.921474
+- 0.880986
+- 1.050946
+response time report:
+  average: 0.922577
+  max: 1.093958
+  min: 0.61748
+---
+interaction:
+- User: What types of animals do you treat at your veterinary center?
+- Assistant: We treat a variety of animals, including dogs, cats, and small pets.
+    If you have a specific animal in mind, please let me know!
+- User: Do you also treat rabbits at your veterinary center?
+- Assistant: Yes, we do treat rabbits at our veterinary center. How can I assist you
+    further?
+- User: Can I schedule a grooming appointment for my rabbit next Monday at 4:30 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 30/10/2023\
+    \ at 16:30:00 for Dental health and cleaning. \nSee you then!    \n"
+- User: What is the typical price range for a veterinary visit at your center?
+- Assistant: The typical price for a veterinary visit can vary depending on the services
+    needed. Would you like to know the specific cost for a general consultation or
+    a particular service?
+- User: What is the price for a general consultation?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is the cost for a standard consultation at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is the typical cost for a standard consultation at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What services do you offer for rabbit care, specifically for grooming and
+    health check-ups?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What services do you provide for rabbit care, especially regarding grooming
+    and health check-ups?
+- Assistant: We offer various services for rabbit care, including grooming and health
+    check-ups. If you would like to schedule an appointment or need more specific
+    information, please let me know!

@@ -1,0 +1,58 @@
+serial: 2025-05-29-12-36-12
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- all_answered:
+    export: false
+    limit: 15
+data_output:
+- rephrase_request: Our veterinary center is open every weekday from 9am to 6pm.
+errors: []
+total_cost($): 0.00120045
+---
+conversation time: 29.720787
+assistant response time:
+- 1.075137
+- 1.553162
+- 1.486834
+- 0.994531
+- 0.899807
+- 0.904604
+response time report:
+  average: 1.152345
+  max: 1.553162
+  min: 0.899807
+---
+interaction:
+- User: What's the deal with just popping in for stuff?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the scoop on the fur stuff they do?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the vibe on the emergency stuff at night?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm. For emergencies
+    outside of these hours, please contact an emergency veterinary service in your
+    area.
+- User: What’s the plan for the holiday times?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the price for a look-see for my pet?
+- Assistant: The cost of a vet visit can vary. Would you like me to provide more specific
+    information or help you schedule an appointment?
+- User: What’s the deal with the drop-in times?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm.

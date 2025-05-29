@@ -1,0 +1,104 @@
+serial: 2025-05-29-12-36-12
+language: English
+context:
+- You've noticed your car's tires are wearing thin and need to be replaced soon.
+- You want to get an idea of pricing and options before committing to a purchase.
+- You are particularly interested in understanding the differences between various
+  tire types.
+ask_about:
+- Ask if the business offers tire replacements.
+- Inquire about the price of a tire, specifying the size as {{tire_size}}, the brand
+  as {{tire_brand}}, and the type as {{tire_type}}.
+- Ask about the types of tires available.
+- Inquire about the price for a set of four all-season tires.
+- tire_brand: Continental
+- tire_size: 275/60R20
+- tire_type: Run-Flat
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- all_answered:
+    export: false
+    limit: 16
+data_output:
+- tire_replacement_confirmation: Yes, we do offer tire replacements.
+- tire_price: null
+- tire_types_information: I'm sorry, I can't provide specific details about the types
+    of tires we have available. Would you like to ask about another service or product?
+- all_season_tire_set_inquiry: Would you like to know the price of a specific brand
+    or type?
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0042915
+---
+conversation time: 81.295608
+assistant response time:
+- 0.945609
+- 0.999873
+- 0.964718
+- 3.009753
+- 0.799984
+- 0.637093
+- 0.808917
+- 0.95031
+- 0.753618
+- 0.579797
+- 0.561541
+- 0.892966
+- 0.777354
+- 0.884873
+- 0.742587
+- 2.824477
+response time report:
+  average: 1.070841
+  max: 3.009753
+  min: 0.561541
+---
+interaction:
+- User: Do you offer tire replacements at your business?
+- Assistant: Yes, we do offer tire replacements. Would you like to schedule an appointment
+    or need more information?
+- User: What is the price for a Continental Run-Flat tire in the size 275/60R20?
+- Assistant: I'm sorry, I don't have the specific prices for tires. Would you like
+    to ask about another service or product?
+- User: What types of tires do you have available?
+- Assistant: I'm sorry, I can't provide specific details about the types of tires
+    we have available. Would you like to ask about another service or product?
+- User: What is the price for a set of four all-season tires?
+- Assistant: The response to the question "What is the price for a set of four all-season
+    tires?" is "I do not know." However, I can help with questions regarding the cost
+    of a new tire, a tune-up, a new seat, or advice on how to maintain your bike.
+- User: Can you tell me what brands of all-season tires you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What brands of all-season tires do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What brands of all-season tires do you carry?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the price for a set of four all-season tires?
+- Assistant: The price for a set of four all-season tires can vary depending on the
+    brand and specifications. Would you like to know the price of a specific brand
+    or type?
+- User: What specific brands of all-season tires do you have in stock?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What specific brands of all-season tires do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What specific brands of all-season tires do you carry?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What about the pricing for performance tires?
+- Assistant: I'm sorry, I can't provide specific pricing for performance tires. Would
+    you like to ask about another product or service?
+- User: What is the price for a set of four performance tires?
+- Assistant: I'm sorry, I can't provide specific pricing for performance tires. Would
+    you like to ask about another product or service?
+- User: What are the best performance tires you have available?
+- Assistant: I'm sorry, I can't provide specific information about the best performance
+    tires we have available. Would you like to ask about another product or service?
+- User: What is the price for a set of four all-season tires?
+- Assistant: I'm sorry, I can't provide specific prices for tires. Would you like
+    to ask about another service or product?
+- User: What types of performance tires do you have available?
+- Assistant: The response to the question "What types of performance tires do you
+    have available?" is "I do not know." However, I can assist with questions regarding
+    the price of a new tire, a tune-up, a new seat, or advice on how to maintain your
+    bike.

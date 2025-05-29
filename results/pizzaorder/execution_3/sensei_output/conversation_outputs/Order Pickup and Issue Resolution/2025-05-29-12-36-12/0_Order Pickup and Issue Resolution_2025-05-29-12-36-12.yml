@@ -1,0 +1,54 @@
+serial: 2025-05-29-12-36-12
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You placed an order online for pickup, but you haven't received a confirmation with
+  the pickup address.
+- You need to confirm the availability of delivery options and, if not available,
+  obtain the pickup location to retrieve your order as soon as possible.
+ask_about:
+- Ask if delivery is available.
+- If delivery is not available, ask for the pickup location.
+- If the chatbot cannot provide the pickup address, ask for alternative methods to
+  place the order and get the address.
+- Provide an uninterpretable input to trigger a request for rephrasing.
+- Ask what pizza options are available.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- all_answered:
+    export: false
+    limit: 20
+data_output:
+- delivery_availability: We do not do delivery, but customers need to get the shop
+    for their orders.
+- pickup_location: We are located at 23 Main Street, New York.
+- order_placement_options: I'm sorry, I did not get what you said. I can help you
+    ordering predefined or custom pizzas, and then drinks.
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- rephrase_request: I'm sorry, I did not get what you said.
+errors: []
+total_cost($): 0.0010212
+---
+conversation time: 23.294299
+assistant response time:
+- 2.222315
+- 0.977247
+- 1.852073
+response time report:
+  average: 1.683878
+  max: 2.222315
+  min: 0.977247
+---
+interaction:
+- User: Is delivery available for my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: What are the alternative methods to place the order and get the address?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What pizza options do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)

@@ -1,0 +1,87 @@
+serial: 2025-05-29-12-36-12
+language: English
+context:
+- You're a long-time dog owner and recently adopted a cat.
+- You want to ensure both your pets are healthy and well-cared for by your trusted
+  veterinary center.
+- You are also considering different grooming options for your dog.
+ask_about:
+- Ask if the veterinary center offers vaccinations for dogs.
+- Ask if the veterinary center treats cats.
+- Ask if the veterinary center offers grooming services.
+- Express gratitude for the information provided and ask about scheduling an appointment.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- all_answered:
+    export: false
+    limit: 16
+data_output:
+- vaccination_confirmation: Yes, we do offer vaccinations for dogs. Would you like
+    to schedule an appointment or need more information?
+- treats_cats_confirmation: We do treat cats as well.
+- grooming_services_response: I'm sorry, but I did not understand the last sentence,
+    can you say that again?
+- appointment_scheduling_offer: null
+errors:
+- 1000: Exceeded loop Limit
+- 1001: 1 goals left to complete.
+total_cost($): 0.00262965
+---
+conversation time: 60.734441
+assistant response time:
+- 0.979309
+- 1.637407
+- 1.360252
+- 0.860975
+- 0.994701
+- 1.0316
+- 0.94932
+- 1.008921
+- 1.032769
+- 1.014702
+- 0.825394
+- 1.306742
+response time report:
+  average: 1.083507
+  max: 1.637407
+  min: 0.825394
+---
+interaction:
+- User: Do you offer vaccinations for dogs?
+- Assistant: Yes, we do offer vaccinations for dogs. Would you like to schedule an
+    appointment or need more information?
+- User: Do you treat cats as well?
+- Assistant: We do treat cats as well. Would you like to schedule an appointment or
+    need more information?
+- User: Do you offer grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have grooming services available for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have grooming services available for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have grooming services available for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you offer grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have any grooming services available for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you offer grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have grooming options for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
