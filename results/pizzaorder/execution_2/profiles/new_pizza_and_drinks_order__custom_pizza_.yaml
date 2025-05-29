@@ -76,7 +76,7 @@ chatbot:
       description: The list of available pizza sizes offered by the chatbot in response to the question about pizza sizes.
   - custom_pizza_order_confirmation:
       type: string
-      description: 'Confirmation of the custom pizza order, including pizza size (corresponding to the current value of the ''{pizza_size}'' variable) and the list of toppings (corresponding to the current values of ''{topping1}'', ''{topping2}'', and ''{topping3}'' variables). The confirmation should include details such as "pizza size: [pizza_size]", "toppings: [topping1], [topping2], [topping3]".'
+      description: 'Confirmation of the custom pizza order, including pizza size (corresponding to the current value of the pizza_size variable) and the list of toppings (corresponding to the current values of topping1, topping2, and topping3 variables). The confirmation should include details such as "pizza size: [pizza_size]", "toppings: [topping1], [topping2], [topping3]".'
 conversation:
   number: 10
   max_cost: 1.5
