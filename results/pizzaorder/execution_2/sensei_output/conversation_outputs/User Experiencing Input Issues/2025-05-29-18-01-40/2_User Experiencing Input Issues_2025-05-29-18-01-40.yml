@@ -1,0 +1,122 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type: Vegetarian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: Welcome to Fast Pizza!. I'm a chatbot assistant that can help
+    you order pizzas and drinks. What can I do for you?
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: I do not know. I can answer questions about our opening hours,
+    types of pizza we serve, prices of pizzas and beverages, order pickup process,
+    and estimated time for orders.
+errors: []
+total_cost($): 0.0056313
+---
+conversation time: 131.479095
+assistant response time:
+- 1.119622
+- 2.244638
+- 4.123147
+- 2.580704
+- 4.119552
+- 2.980545
+- 1.767501
+- 2.039612
+- 2.079342
+- 2.124801
+- 2.36938
+- 1.928517
+- 2.095174
+- 2.730337
+- 2.554509
+- 2.854126
+response time report:
+  average: 2.481969
+  max: 4.123147
+  min: 1.119622
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Vegetarian pizza.
+- Assistant: I see that you've chosen a vegetarian pizza. Could you please let me
+    know the size of the pizza? It can be small, medium, or large.
+- User: Medium, please. Can you make sure it has extra mushrooms on it?
+- Assistant: 'Thanks for ordering a medium vegetarian pizza!
+
+    Thank you for the details about your pizza! Now, could you please let me know
+    how many drinks you would like to order? Also, please specify the type of drink
+    (coke, sprite, or water).'
+- User: I'd like one Coke, please. What's the total for my order?
+- Assistant: 'Got it! I''ve received your order for one Coke.
+
+    The cost of a medium vegetarian pizza and one Coke is $18.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 9b871d.'
+- User: Can you double-check if the vegetarian pizza has extra mushrooms included?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I just want to confirm that my medium vegetarian pizza has extra mushrooms
+    on it. Can you check that for me?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I just want to make sure my pizza includes extra mushrooms. Can you confirm
+    that?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is my medium vegetarian pizza confirmed to have extra mushrooms, or do I need
+    to specify that again?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is my pizza confirmed to have extra mushrooms, or do I need to add that again?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is my medium vegetarian pizza going to have extra mushrooms, or do I need
+    to specify that again?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is my medium vegetarian pizza confirmed to have extra mushrooms, or do I need
+    to specify that again?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there a way to check if extra mushrooms were added to my order for the
+    medium vegetarian pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, order pickup process, and estimated
+    time for orders.
+- User: Can you tell me if there's a way to specify extra toppings when ordering a
+    pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there a way for me to add extra toppings after I've placed my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get your order, and
+    how long it takes to get an order.
+- User: Is there any way to ensure that my special requests, like extra mushrooms,
+    are noted in my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, order pickup, and estimated time for
+    orders.

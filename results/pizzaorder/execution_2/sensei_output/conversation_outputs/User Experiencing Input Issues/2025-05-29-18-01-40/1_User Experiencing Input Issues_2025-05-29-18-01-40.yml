@@ -1,0 +1,115 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type: Pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: 'Sure! I can help you with that. Could you please tell me
+    the size of the pizza you would like? It can be small, medium, or large. Also,
+    let me know your choice of toppings from the following options: cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, or chicken.'
+errors: []
+total_cost($): 0.00538695
+---
+conversation time: 139.743348
+assistant response time:
+- 1.106891
+- 2.078983
+- 2.229586
+- 1.342942
+- 0.86715
+- 0.854853
+- 0.928232
+- 0.883379
+- 3.610245
+- 4.322724
+- 3.497452
+- 3.654042
+- 3.788532
+- 4.026503
+- 3.432203
+- 4.237681
+response time report:
+  average: 2.553837
+  max: 4.322724
+  min: 0.854853
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Pepperoni pizza. Could you confirm that for me?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a Pepperoni pizza. Can you confirm that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a Pepperoni pizza. Can you confirm that for me?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a Pepperoni pizza. Is that clear now?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a Pepperoni pizza. Can you please confirm my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to confirm my order for a Pepperoni pizza. Can you do that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a custom pizza. Can you help with that?
+- Assistant: 'Sure! I can help you with that. Could you please tell me the size of
+    the pizza you would like? It can be small, medium, or large. Also, let me know
+    your choice of toppings from the following options: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, or chicken.'
+- User: I want a large custom pizza with pepperoni and olives. Can you confirm that?
+- Assistant: I have noted that you want a large pizza. Could you please confirm your
+    choice of toppings? You can choose from cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken.
+- User: I want a large custom pizza with pepperoni and olives. Can you confirm that?
+- Assistant: I have noted that you want a large pizza. However, I still need to confirm
+    your choice of toppings. You can choose from cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken. Please let me know your selection!
+- User: I want a large pizza with pepperoni and olives. Can you confirm that order?
+- Assistant: 'I have noted that you want a large pizza. However, I still need to confirm
+    your choice of toppings. Could you please let me know if you would like pepperoni,
+    olives, or any other topping from the following options: cheese, mushrooms, pepper,
+    ham, bacon, corn, or chicken? Thank you!'
+- User: I want a large pizza with pepperoni and olives. Can you confirm that order
+    now?
+- Assistant: 'I have noted that you want a large pizza. However, I still need to confirm
+    your choice of toppings. Could you please let me know if you would like pepperoni,
+    olives, or any other topping from the following options: cheese, mushrooms, pepper,
+    ham, bacon, corn, or chicken? Thank you!'
+- User: I want a large pizza with pepperoni and olives. Are you able to confirm that
+    now?
+- Assistant: 'I have noted that you want a large pizza. However, I still need to confirm
+    your choice of toppings. Could you please let me know if you would like pepperoni,
+    olives, or any other topping from the following options: cheese, mushrooms, pepper,
+    ham, bacon, corn, or chicken? Thank you!'
+- User: I want to order a large pizza with pepperoni and olives. Can you just confirm
+    that for me?
+- Assistant: 'I have noted that you want a large pizza. However, I still need to confirm
+    your choice of toppings. Could you please let me know if you would like pepperoni,
+    olives, or any other topping from the following options: cheese, mushrooms, pepper,
+    ham, bacon, corn, or chicken? Thank you!'
+- User: I want to order a large pizza with pepperoni and olives. Can you just confirm
+    that order already?
+- Assistant: 'I have noted that you want a large pizza. However, I still need to confirm
+    your choice of toppings. Could you please let me know if you would like pepperoni,
+    olives, or any other topping from the following options: cheese, mushrooms, pepper,
+    ham, bacon, corn, or chicken? Thank you!'

@@ -1,0 +1,61 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "vetcen_qa": {
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "make_appointment": {
+            "date": [
+                "03/11/2023"
+            ],
+            "time": [
+                "16:00:00"
+            ],
+            "service": [
+                "Vaccination"
+            ]
+        },
+        "vetcen_qa": {
+            "When are you open?": [
+                "When are you open?"
+            ],
+            "How late are you open on weekends?": [],
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [
+                "What can I do to take care of my pet?"
+            ],
+            "unknown": [
+                "What vaccinations are provided for dogs at your veterinary center?",
+                "What services do you offer at the veterinary center?"
+            ]
+        },
+        "top-level": {}
+    }
+}

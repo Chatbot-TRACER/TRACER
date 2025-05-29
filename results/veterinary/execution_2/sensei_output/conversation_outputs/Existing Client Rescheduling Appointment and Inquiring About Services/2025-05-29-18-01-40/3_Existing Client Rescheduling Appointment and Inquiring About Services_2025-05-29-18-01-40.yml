@@ -1,0 +1,178 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You've been a client at this pet clinic for several years and typically bring your
+  dog in for annual vaccinations.
+- You're now trying to reschedule a recently missed appointment, but you're also considering
+  adding a grooming service for your dog during the visit.
+- You want to confirm all the details and ensure it fits into your schedule for this
+  week.
+ask_about:
+- Attempt to reschedule a vaccination appointment but be vague about it.
+- 'When prompted for details, provide a new date and time for the rescheduling: {{new_date}}
+  at {{new_time}}.'
+- If the chatbot confirms the appointment with the wrong service, acknowledge the
+  confirmation.
+- Inquire about grooming services.
+- If grooming services are offered, attempt to schedule a grooming appointment for
+  {{grooming_date}} at {{grooming_time}}.
+- If the chatbot states it cannot directly handle appointment cancellations or reschedulings,
+  ask for contact information to handle the request.
+- grooming_date: Next Monday
+- grooming_time: 4:30 PM
+- new_date: October 28th
+- new_time: 4:15 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- rescheduling_acknowledgment: 'Ok, I have received your request to schedule an appointment
+    for 28/10/2023 at 16:15:00 for Vaccination.
+
+    See you then!'
+- appointment_confirmation: Ok, I have received your request to schedule an appointment
+    for 28/10/2023 at 16:15:00 for Vaccination.
+- incorrect_service_name: "Ok, I have received your request to schedule an appointment\
+    \ for 28/10/2023 at 16:15:00 for Vaccination. \nSee you then!"
+- grooming_services_offered: I'm sorry, but I did not understand the last sentence,
+    can you say that again?
+- grooming_appointment_scheduled: None
+- contact_information_provided: I'm sorry, but I did not understand the last sentence,
+    can you say that again?
+errors: []
+total_cost($): 0.00993285
+---
+conversation time: 171.006209
+assistant response time:
+- 1.685921
+- 1.850844
+- 1.911255
+- 1.165011
+- 1.097429
+- 1.244561
+- 0.772799
+- 0.824427
+- 1.560573
+- 1.185823
+- 1.140496
+- 1.40614
+- 1.146024
+- 1.080197
+- 1.158716
+- 1.192635
+- 0.892848
+- 0.901014
+- 1.538597
+- 1.351171
+- 1.123266
+- 0.968114
+- 1.143237
+- 1.042864
+response time report:
+  average: 1.224331
+  max: 1.911255
+  min: 0.772799
+---
+interaction:
+- User: I need to reschedule a vaccination appointment for my dog. Can you help with
+    that?
+- Assistant: Could you please provide the date and time for the rescheduled vaccination
+    appointment?
+- User: Can we do it sometime this week?
+- Assistant: Could you please specify the date and time you would like to reschedule
+    the vaccination appointment for?
+- User: How about October 28th at 4:15 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2023\
+    \ at 16:15:00 for Vaccination. \nSee you then!    \n"
+- User: I actually wanted to check if you offer grooming services as well.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you offer grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have grooming services available for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there someone I can talk to about grooming services for dogs?
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'
+- User: I wanted to know if you offer grooming services for dogs.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there a way to find out if you have grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have any information on whether you offer grooming services for dogs?
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'
+- User: Is there someone I can talk to about grooming services for dogs?
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'
+- User: I need to know if you provide grooming services for dogs.
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'
+- User: I really need to find out if you offer grooming services for dogs. Can you
+    help me with that?
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'
+- User: I need to know if you provide grooming services for dogs.
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'
+- User: Is there any way to get information about grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have any information on whether you offer grooming services for dogs?
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'
+- User: I need to know if you provide grooming services for dogs.
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'
+- User: Is there a way I can find out if you offer grooming services for dogs?
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'
+- User: I really need to know if you offer grooming services for dogs. Can you help
+    me with that?
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'
+- User: I need to know if you provide grooming services for dogs.
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'
+- User: Is there someone I can talk to about grooming services for dogs?
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'

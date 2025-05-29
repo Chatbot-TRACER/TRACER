@@ -1,0 +1,112 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size: large
+- topping1: ham
+- topping2: ham
+- topping3: ham
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_order_confirmation: 'Thanks for ordering a large pizza with h, a and
+    m!
+
+    Thank you for confirming your pizza order!'
+errors: []
+total_cost($): 0.00425625
+---
+conversation time: 78.944088
+assistant response time:
+- 2.080021
+- 2.09949
+- 4.579588
+- 2.431854
+- 3.842182
+- 1.158977
+- 0.842436
+- 0.936287
+- 0.863475
+- 0.812942
+- 1.658157
+- 1.238691
+- 0.729743
+- 0.692306
+- 1.466738
+response time report:
+  average: 1.695525
+  max: 4.579588
+  min: 0.692306
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I get a large custom pizza with ham, ham, and ham?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I order a large pizza with just ham as the topping?
+- Assistant: It looks like I still need to confirm the pizza size. Could you please
+    confirm that you would like a large pizza?
+- User: Yes, I want to confirm my order for a large pizza with just ham as the topping.
+- Assistant: 'Thanks for ordering a large pizza with h, a and m!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks (coke, sprite, or
+    water) you would like?'
+- User: I'll have three drinks, please. Can I get two cokes and one sprite?
+- Assistant: 'I have received your order for three Cokes.
+
+    The cost of a large pizza with h, a, and m, along with three Cokes, is $24.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is c573d5.'
+- User: Could you please confirm if you'd like to add anything else to your order,
+    like desserts or sides?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me if I can add any sides or desserts to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me if there are any sides or desserts available to add to my
+    order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you please tell me what sides or desserts are available to add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please let me know what sides or desserts you have available to
+    add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any sides or desserts that I can add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any appetizers or salads available to add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What types of appetizers or salads do you have that I can add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What types of sides or desserts can I add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you please tell me if there are any salads or appetizers available to
+    add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

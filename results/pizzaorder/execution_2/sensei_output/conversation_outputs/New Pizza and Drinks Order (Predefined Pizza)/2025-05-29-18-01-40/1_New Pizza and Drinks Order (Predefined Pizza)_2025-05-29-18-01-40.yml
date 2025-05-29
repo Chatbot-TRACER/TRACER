@@ -1,0 +1,125 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: 'The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 5f71e1.'
+- delivery_information: We do not do delivery, but customers need to get the shop
+    for their orders. We are located at 23 Main Street, New York.
+errors: []
+total_cost($): 0.0054654
+---
+conversation time: 113.280263
+assistant response time:
+- 5.706153
+- 3.556891
+- 4.463458
+- 2.339755
+- 2.448622
+- 2.217234
+- 3.404037
+- 3.332698
+- 2.453369
+- 4.712157
+- 1.453651
+- 0.980699
+- 0.773907
+- 0.712914
+- 1.117782
+response time report:
+  average: 2.644888
+  max: 5.706153
+  min: 0.712914
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. What is the total
+    cost?
+- Assistant: It looks like I still need some information to complete your order. Could
+    you please provide the pizza size (small, medium, or large) and the pizza type
+    (margherita, carbonara, marinera, hawaiian, four cheese, vegetarian)? Thank you!
+- User: I already mentioned that I'd like a large Hawaiian pizza. Can you give me
+    the total cost for that and two Cokes?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for your patience! I see that you would like two Cokes, which means
+    I just need to confirm the number of drinks. Could you please tell me how many
+    drinks you would like to order? '
+- User: I already mentioned that I would like to order two Cokes. Can you provide
+    the total cost for the large Hawaiian pizza and two Cokes?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 5f71e1.'
+- User: Can you confirm that delivery is not available?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a way to customize my Hawaiian pizza, like adding extra toppings
+    or removing any?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I add extra pineapple and remove the ham from my Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I add extra pineapple and remove the ham from my Hawaiian pizza?
+- Assistant: 'I see you want to modify a Hawaiian pizza. Could you please provide
+    me with the pizza size (small, medium, or large) and the toppings you''d like
+    to include? '
+- User: I'd like to keep the large size and just add extra pineapple while removing
+    the ham. Can you confirm if that's possible?
+- Assistant: Thank you for confirming the pizza size as large. Could you please provide
+    me with the toppings you'd like to include? You can choose from cheese, mushrooms,
+    pepper, bacon, pepperoni, olives, corn, or chicken.
+- User: I’d like to keep the cheese and just add extra pineapple with no ham. Can
+    you confirm if that modification can be made?
+- Assistant: 'Thanks for ordering a large pizza with c, h, e, e, s and e!
+
+    Thank you for your patience! I see that you would like to order two Cokes. Just
+    to confirm, could you please tell me the exact number of drinks you would like
+    to order? '
+- User: I would like to order two Cokes, as I mentioned earlier. Can you confirm that
+    the modification of adding extra pineapple and removing the ham is possible?
+- Assistant: 'I have received your order for two Cokes.
+
+    The cost of a large pizza topped with cheese and two Cokes is $24.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is e937fc.'
+- User: Can you confirm if the modified Hawaiian pizza with extra pineapple and no
+    ham is correctly noted in my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you confirm if my modified Hawaiian pizza with extra pineapple and no
+    ham is correctly noted in my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you confirm if my modified Hawaiian pizza with extra pineapple and no
+    ham is correctly noted in my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you please confirm if my modified Hawaiian pizza with extra pineapple
+    and no ham is correctly noted in my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you confirm if my modified Hawaiian pizza with extra pineapple and no
+    ham is correctly noted in my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

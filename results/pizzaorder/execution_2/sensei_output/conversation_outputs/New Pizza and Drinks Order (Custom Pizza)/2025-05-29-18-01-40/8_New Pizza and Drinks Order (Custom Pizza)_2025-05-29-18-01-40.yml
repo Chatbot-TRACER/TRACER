@@ -1,0 +1,143 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size: large
+- topping1: pepperoni
+- topping2: pepperoni
+- topping3: pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_order_confirmation: Your order is confirmed for a large pizza with
+    pepperoni, peppers, and olives, along with two Cokes and one water. Everything
+    looks correct! Would you like to proceed with the order?
+errors: []
+total_cost($): 0.0051186
+---
+conversation time: 110.079689
+assistant response time:
+- 3.637878
+- 4.791318
+- 2.37386
+- 4.448885
+- 5.676513
+- 2.476034
+- 3.683627
+- 0.981814
+- 1.278835
+- 3.567342
+- 2.92851
+- 3.0727
+- 3.854862
+- 3.265944
+- 3.137604
+response time report:
+  average: 3.278381
+  max: 5.676513
+  min: 0.981814
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I get a large pizza with pepperoni, peppers, and olives?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?
+- User: I want a large pizza with pepperoni, peppers, and olives.
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e, r, o, n and i!
+
+    Thank you for your pizza order! Could you please let me know how many drinks you
+    would like to order and what type of drink (coke, sprite, or water) you prefer?'
+- User: I’d like to order three drinks, please. Can I get two cokes and one water?
+- Assistant: 'I have received your order for three Cokes.
+
+    The cost of a large pizza topped with pepperoni and three Cokes is $27.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 8501ce.'
+- User: Can I confirm my order for a large pizza with pepperoni, peppers, and olives,
+    along with two Cokes and one water?
+- Assistant: It seems that I still need the pizza size. Could you please confirm if
+    you would like a small, medium, or large pizza?
+- User: I want to confirm my order for a large pizza with pepperoni, peppers, and
+    olives, along with two Cokes and one water.
+- Assistant: 'Thanks for ordering a large pizza with pepperoni and olives!
+
+    Thank you for confirming your pizza order! I see that you would like two Cokes
+    and one water, which totals three drinks. Could you please confirm the number
+    of drinks you would like to order? '
+- User: I want to confirm my order for a large pizza with pepperoni, peppers, and
+    olives, along with two Cokes and one water.
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost for a large pepperoni and olive pizza, along with three Cokes, is $24.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is b3f7fa.'
+- User: I want to confirm my order for a large pizza with pepperoni, peppers, and
+    olives, along with two Cokes and one water. Can you make sure everything is correct?
+- Assistant: "Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order\
+    \ pizzas and drinks. \nWhat can I do for you?"
+- User: I want to confirm my order for a large pizza with pepperoni, peppers, and
+    olives, along with two Cokes and one water. Can you check that everything is correct?
+- Assistant: Your order is confirmed for a large pizza with pepperoni, peppers, and
+    olives, along with two Cokes and one water. Everything looks correct! Would you
+    like to proceed with the order?
+- User: I just want to double-check the total cost for my order. What is it?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Can you tell me how much the large pizza with pepperoni, peppers, and olives
+    costs, along with two Cokes and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I just want to know the total cost for my large pizza with pepperoni, peppers,
+    and olives, plus two Cokes and one water. Can you calculate that for me?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the cost of a large pizza with pepperoni, peppers, and olives, along
+    with two Cokes and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Can you please tell me the total price for a large pizza with pepperoni, peppers,
+    and olives, plus two Cokes and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I just want to know the total cost for my large pizza with pepperoni, peppers,
+    and olives, plus two Cokes and one water. Can you calculate that for me?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.

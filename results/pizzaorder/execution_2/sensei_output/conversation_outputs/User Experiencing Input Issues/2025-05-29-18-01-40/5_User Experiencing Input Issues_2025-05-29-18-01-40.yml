@@ -1,0 +1,125 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type: BBQ Chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that!
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: 'I can help you with that! Could you please tell me the size
+    of the pizza you would like to order? It can be small, medium, or large. Also,
+    let me know your choice of toppings from the following options: cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, or chicken.'
+errors: []
+total_cost($): 0.0054516
+---
+conversation time: 144.06821
+assistant response time:
+- 1.078416
+- 2.087899
+- 1.920997
+- 1.023244
+- 1.842577
+- 3.824016
+- 3.855163
+- 4.450407
+- 5.805539
+- 3.547568
+- 3.412847
+- 4.734877
+- 5.293441
+- 4.624057
+- 3.953646
+- 4.418711
+response time report:
+  average: 3.492087
+  max: 5.805539
+  min: 1.023244
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a BBQ Chicken pizza.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a BBQ Chicken pizza.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I’d like to order a BBQ Chicken pizza, please.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a custom pizza.
+- Assistant: 'I can help you with that! Could you please tell me the size of the pizza
+    you would like to order? It can be small, medium, or large. Also, let me know
+    your choice of toppings from the following options: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, or chicken.'
+- User: I want a medium pizza with cheese, mushrooms, and pepperoni.
+- Assistant: Thank you for your order! I see you want a medium pizza. Could you please
+    confirm your choice of toppings? You can choose from cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, or chicken.
+- User: I already said I want cheese, mushrooms, and pepperoni. Can you just confirm
+    that?
+- Assistant: 'I appreciate your patience! Just to confirm, could you please specify
+    your choice of toppings? You can choose from cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken. '
+- User: I want to confirm that my toppings are cheese, mushrooms, and pepperoni for
+    the medium pizza. Can you note that down?
+- Assistant: 'Thank you for confirming the pizza size as medium! I just need to confirm
+    your choice of toppings. You mentioned cheese, mushrooms, and pepperoni. Is that
+    correct? '
+- User: Yes, that's correct! My toppings are cheese, mushrooms, and pepperoni. Can
+    you take my order now?
+- Assistant: 'Thank you for your patience! I have noted that you want a medium pizza.
+    Now, I just need to confirm your choice of toppings. You mentioned cheese, mushrooms,
+    and pepperoni. Is that correct? '
+- User: Yes, that's correct! Can you take my order now?
+- Assistant: 'Thank you for your patience! I have noted that you want a medium pizza.
+    Now, could you please confirm your choice of toppings? You mentioned cheese, mushrooms,
+    and pepperoni. Is that correct? '
+- User: I want to confirm that my toppings are cheese, mushrooms, and pepperoni for
+    the medium pizza. Can you take my order now?
+- Assistant: 'Thank you for your patience! I have noted that you want a medium pizza.
+    However, I still need to confirm your choice of toppings. Could you please let
+    me know your toppings from the following options: cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, corn, or chicken?'
+- User: I already confirmed my toppings! They're cheese, mushrooms, and pepperoni.
+    Can you just take my order now?
+- Assistant: 'Thank you for your patience! I have noted that you want a medium pizza.
+    However, I still need to confirm your choice of toppings. Could you please let
+    me know your toppings from the following options: cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, corn, or chicken?'
+- User: I want to confirm that my toppings are cheese, mushrooms, and pepperoni for
+    the medium pizza. Can you take my order now?
+- Assistant: 'Thank you for your patience! I have noted that you want a medium pizza.
+    However, I still need to confirm your choice of toppings. Could you please let
+    me know your toppings from the following options: cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, corn, or chicken?'
+- User: I want to confirm that my toppings are cheese, mushrooms, and pepperoni for
+    the medium pizza. Can you take my order now?
+- Assistant: 'Thank you for your patience! I have noted that you want a medium pizza.
+    However, I still need to confirm your choice of toppings. Could you please let
+    me know your toppings from the following options: cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, corn, or chicken?'
+- User: I want to confirm that my toppings are cheese, mushrooms, and pepperoni for
+    the medium pizza. Can you take my order now?
+- Assistant: 'Thank you for your patience! I have noted that you want a medium pizza.
+    However, I still need to confirm your choice of toppings. Could you please let
+    me know your toppings from the following options: cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, corn, or chicken?'

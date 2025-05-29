@@ -1,0 +1,142 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to ensure it receives the necessary vaccinations
+  to stay healthy.
+- As a first-time dog owner, you're also keen to learn more about the veterinary center
+  and responsible pet care practices.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask what types of animals the veterinary center treats.
+- Confirm if the veterinary center treats dogs.
+- Ask about the types of vaccinations offered for dogs.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- Ask about the business hours of operation.
+- date: Thursday
+- time: 11:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- available_veterinary_services: We offer various vaccinations for dogs, including
+    rabies, distemper, parvovirus, and others.
+- treatable_animals: We treat dogs, cats, and small pets.
+- treatable_animal_confirmation: Yes, we do offer vaccinations for dogs.
+- vaccination_information: We offer various vaccinations for dogs, including rabies,
+    distemper, parvovirus, and others.
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 26/10/2023 at 11:00:00 for Vaccination. \nSee you then!    \n"
+- business_hours: Monday through Friday, 9:00 AM to 6:00 PM.
+errors: []
+total_cost($): 0.0102411
+---
+conversation time: 201.280871
+assistant response time:
+- 0.73253
+- 0.933899
+- 1.539602
+- 1.279491
+- 1.282082
+- 2.844151
+- 1.277078
+- 0.968484
+- 1.264442
+- 1.562958
+- 1.062342
+- 1.38177
+- 1.184378
+- 1.311688
+- 1.372056
+- 1.294943
+- 1.05917
+- 1.134927
+- 1.23416
+- 1.05946
+- 1.303376
+- 1.074469
+- 1.273748
+- 0.992913
+response time report:
+  average: 1.267671
+  max: 2.844151
+  min: 0.73253
+---
+interaction:
+- User: What types of animals do you treat at the veterinary center?
+- Assistant: What kind of animals do you accept?
+- User: Do you offer vaccinations for dogs?
+- Assistant: Yes, we do offer vaccinations for dogs. Would you like to schedule an
+    appointment for that?
+- User: What types of vaccinations do you offer for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of vaccinations do you provide for dogs?
+- Assistant: We offer various vaccinations for dogs, including rabies, distemper,
+    parvovirus, and others. Would you like to schedule an appointment for a vaccination?
+- User: Can I schedule a vaccination appointment for my dog on Thursday at 11:00 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 26/10/2023\
+    \ at 11:00:00 for Vaccination. \nSee you then!    \n"
+- User: What are your business hours of operation?
+- Assistant: Monday through Friday, 9:00 AM to 6:00 PM.
+- User: Are there any other services you offer at the veterinary center besides vaccinations?
+- Assistant: We offer several services besides vaccinations, including physical examinations,
+    dental health and cleaning, and lab or diagnostic testing. Would you like to schedule
+    any of these services?
+- User: What kind of physical examinations do you provide for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of physical examinations do you offer for dogs?
+- Assistant: We offer general physical examinations for dogs, which include a thorough
+    health check to assess their overall condition. If you need a specific type of
+    examination or have concerns, please let me know!
+- User: 'User: Do you provide any dental health services for dogs?'
+- Assistant: Yes, we do offer dental health and cleaning services for dogs. Would
+    you like to schedule an appointment for that?
+- User: What diagnostic testing services do you provide for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of diagnostic testing do you offer for dogs?
+- Assistant: We offer various diagnostic testing services for dogs, including blood
+    tests, x-rays, and laboratory analyses. If you would like to schedule a specific
+    test or need more information, please let me know!
+- User: Are there any wellness plans or packages available for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What wellness plans or packages do you have available for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What packages or wellness plans do you offer for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What preventive care services do you provide for dogs?
+- Assistant: We offer preventive care services such as vaccinations, dental health
+    and cleaning, and general health check-ups for dogs. Would you like to schedule
+    an appointment for any of these services?
+- User: What types of nutritional advice or dietary plans do you offer for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What dietary plans or nutritional advice do you provide for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of nutritional guidance or dietary recommendations do you offer
+    for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of nutritional support or feeding plans do you have for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What nutritional advice or feeding plans do you offer for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of dietary recommendations do you have for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What recommendations do you have for my dog's diet?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What dietary advice can you provide for my dog?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

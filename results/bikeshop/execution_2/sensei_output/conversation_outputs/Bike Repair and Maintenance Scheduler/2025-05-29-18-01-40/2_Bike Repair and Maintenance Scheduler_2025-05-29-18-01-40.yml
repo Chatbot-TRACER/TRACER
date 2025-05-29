@@ -1,0 +1,113 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/rude-user'
+- Your bike hasn't been running smoothly lately, and you rely on it for daily commuting.
+- You want to get it professionally serviced to ensure it's in good working order
+  before the weather gets worse.
+- You are looking for a reliable shop that offers comprehensive tune-up services and
+  can schedule an appointment quickly.
+ask_about:
+- Ask if tune-up services are offered.
+- If tune-up services are offered, ask for the price of a tune-up.
+- If the price is provided, ask what the tune-up includes.
+- Ask how long a tune-up takes.
+- Schedule a tune-up for tomorrow at 2pm.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- tune_up_offered: 'Ok, I have scheduled your appointment for 25/10/2023 at 14:00:00
+    for a tune-up.
+
+    See you then!'
+- tune_up_price: The response to the question "What is the cost of a tune-up?" is
+    $150.
+- tune_up_description: I'm sorry, I cannot provide specific details about what is
+    included in the tune-up service. Would you like to know the price or schedule
+    an appointment?
+- tune_up_duration: A standard tune-up typically takes about a few hours, but the
+    exact time can vary depending on the bike.
+- appointment_confirmation: 'Ok, I have scheduled your appointment for 25/10/2023
+    at 14:00:00 for a tune-up.
+
+    See you then!'
+errors: []
+total_cost($): 0.0061011
+---
+conversation time: 114.661236
+assistant response time:
+- 2.795701
+- 0.890632
+- 1.536788
+- 1.030569
+- 0.931742
+- 1.30267
+- 1.272983
+- 1.226825
+- 0.90923
+- 1.070268
+- 0.992113
+- 0.90972
+- 0.969318
+- 0.944586
+- 1.239078
+- 2.353621
+- 0.968392
+- 1.009404
+- 0.99698
+- 1.260788
+response time report:
+  average: 1.23057
+  max: 2.795701
+  min: 0.890632
+---
+interaction:
+- User: Do you offer tune-up services for bikes?
+- Assistant: The response to the question "What is the cost of a tune-up?" is $150.
+- User: What does the tune-up include?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is included in the tune-up service?
+- Assistant: I'm sorry, I cannot provide specific details about what is included in
+    the tune-up service. Would you like to know the price or schedule an appointment?
+- User: How long does a tune-up take?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: How much time does a typical tune-up take?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: How long does a standard tune-up take?
+- Assistant: A standard tune-up typically takes about a few hours, but the exact time
+    can vary depending on the bike. Would you like to schedule an appointment?
+- User: I want to schedule a tune-up for tomorrow at 2pm.
+- Assistant: 'Ok, I have scheduled your appointment for 25/10/2023 at 14:00:00 for
+    a tune-up.
+
+    See you then!'
+- User: Is there a cancellation policy I should be aware of for my appointment?
+- Assistant: I'm sorry, I cannot provide information about cancellation policies.
+    Would you like to schedule or modify your appointment?
+- User: What if I need to cancel my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What happens if I need to cancel my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the cancellation policy for my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What if I'm running late for my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What happens if I'm late for my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What if I arrive late for my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What happens if I arrive late for my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What if I show up late for my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What if I arrive late for my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What if I need to reschedule my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What if I have to change the time of my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What if I need to modify the time of my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

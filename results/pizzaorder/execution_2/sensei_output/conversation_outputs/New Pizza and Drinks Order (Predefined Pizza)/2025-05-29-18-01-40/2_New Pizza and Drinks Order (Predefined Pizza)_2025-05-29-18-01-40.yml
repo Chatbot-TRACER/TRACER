@@ -1,0 +1,120 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready for pickup in 15 minutes at our shop located at 23 Main
+    Street, NY. Your order ID is 9370e0.'
+- delivery_information: We do not do delivery, but customers need to get the shop
+    for their orders. We are located at 23 Main Street, New York.
+errors: []
+total_cost($): 0.0051909
+---
+conversation time: 101.811123
+assistant response time:
+- 5.001548
+- 3.027129
+- 4.167592
+- 1.902892
+- 0.966873
+- 2.223612
+- 1.091921
+- 1.109874
+- 1.008344
+- 0.87989
+- 1.005814
+- 0.949937
+- 0.921448
+- 0.699772
+- 0.786776
+response time report:
+  average: 1.716228
+  max: 5.001548
+  min: 0.699772
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. What is the total
+    cost?
+- Assistant: It looks like I need to collect some additional information from you.
+    Could you please specify the 'pizza_size' (small, medium, or large) and the 'pizza_type'
+    (margherita, carbonara, marinera, hawaiian, four cheese, vegetarian) for your
+    order? Thank you!
+- User: I already mentioned that I'd like a large Hawaiian pizza. Can you provide
+    the total cost now?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    I apologize for the oversight! I see that you have ordered two Cokes, but I need
+    to confirm the number of drinks. Could you please tell me how many drinks you
+    would like to order? Additionally, please specify the type of drinks (coke, sprite,
+    or water). Thank you!'
+- User: I would like to order two Cokes, as I mentioned earlier. Can you provide the
+    total cost now?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready for pickup in 15 minutes at our shop located at 23 Main
+    Street, NY. Your order ID is 9370e0.'
+- User: Can you confirm that delivery is not available?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a specific time you'd like to pick up your order, or is the 15-minute
+    estimate sufficient?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I'd like to confirm if the 15-minute estimate for pickup is sufficient for
+    me to arrive and collect my order. Is that okay?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Can you provide an estimate of how busy you are right now?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is it possible to know the current wait times or how many orders you have
+    ahead of mine?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there any way you can let me know how busy you are right now?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a way to check if online ordering is available for future orders?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a way to confirm if online ordering will be available for future
+    orders?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you let me know if there are any plans to implement online ordering in
+    the future?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a way to contact customer service for inquiries about future online
+    ordering options?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a customer service number I can call for inquiries about future online
+    ordering options?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a customer service email address I can use to inquire about future
+    online ordering options?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

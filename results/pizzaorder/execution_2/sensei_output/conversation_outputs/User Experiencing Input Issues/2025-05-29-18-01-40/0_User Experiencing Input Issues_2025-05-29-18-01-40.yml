@@ -1,0 +1,71 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type: Margherita
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: 'Thanks for ordering a large margherita pizza!
+
+    Thank you for confirming the large Margherita pizza with extra cheese! Now, could
+    you please let me know how many drinks you would like to order and what type of
+    drinks (coke, sprite, or water)?'
+errors:
+- 504: No response was received from the server in less than 20
+total_cost($): 0.0015333
+---
+conversation time: 66.469349
+assistant response time:
+- 0.879858
+- 2.12229
+- 3.413272
+- 2.344825
+- 4.217113
+- 20.001327
+response time report:
+  average: 5.496447
+  max: 20.001327
+  min: 0.879858
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Margherita pizza, please.
+- Assistant: It looks like I have the pizza type as Margherita, but I still need to
+    know the pizza size. Could you please tell me if you would like a small, medium,
+    or large pizza?
+- User: I’d like a large pizza, but wait, can I add extra cheese to that?
+- Assistant: 'Thanks for ordering a large margherita pizza!
+
+    Thank you for confirming the large Margherita pizza with extra cheese! Now, could
+    you please let me know how many drinks you would like to order and what type of
+    drinks (coke, sprite, or water)?'
+- User: Can I just get one drink, make it a Coke?
+- Assistant: 'Got it! I''ve received your order for one Coke.
+
+    The cost of a large margherita pizza and one Coke is $21.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 8da763.'
+- User: Can I add some toppings to the Margherita pizza, like olives or mushrooms?

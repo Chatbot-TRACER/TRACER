@@ -1,0 +1,123 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type: Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that!
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: I can help you with that! Please let me know what type of
+    custom pizza you would like and any specific toppings or preferences you have
+    in mind.
+errors: []
+total_cost($): 0.0062943
+---
+conversation time: 124.307725
+assistant response time:
+- 0.967422
+- 1.95861
+- 4.276783
+- 2.748751
+- 1.351447
+- 1.216376
+- 1.171195
+- 1.321367
+- 1.352504
+- 1.406717
+- 1.575119
+- 1.559704
+- 1.482334
+- 1.724
+- 1.2203
+- 1.219189
+response time report:
+  average: 1.659488
+  max: 4.276783
+  min: 0.967422
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Hawaiian pizza.
+- Assistant: It looks like I have the pizza type as Hawaiian, but I still need to
+    know the pizza size. Could you please tell me if you would like a small, medium,
+    or large pizza?
+- User: I want a large pizza.
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for the information! I have your large Hawaiian pizza. Now, could you
+    please let me know how many drinks you would like to order and what type of drinks
+    (coke, sprite, or water) you prefer?'
+- User: I didn’t say I wanted drinks. Can I just get the pizza for now?
+- Assistant: I understand that you only want the pizza for now. You have ordered a
+    large Hawaiian pizza. If you change your mind about drinks later, feel free to
+    let me know!
+- User: I just want to confirm, can you repeat my order back to me?
+- Assistant: You have ordered a large Hawaiian pizza. If you need anything else or
+    want to add drinks later, just let me know!
+- User: I want to order a custom pizza. Can you help me with that?
+- Assistant: I can help you with that! Please let me know what type of custom pizza
+    you would like and any specific toppings or preferences you have in mind.
+- User: I’d like a custom pizza with pepperoni, mushrooms, and extra cheese. Can you
+    confirm that?
+- Assistant: You have ordered a custom pizza with pepperoni, mushrooms, and extra
+    cheese. If you need anything else or want to add drinks, just let me know!
+- User: I want to make sure I get the size right for my custom pizza. Can you ask
+    about the size options?
+- Assistant: I can help you with that! Please let me know if you would like a small,
+    medium, or large size for your custom pizza with pepperoni, mushrooms, and extra
+    cheese.
+- User: I’d like a large size for my custom pizza. Can you confirm that?
+- Assistant: You have ordered a large custom pizza with pepperoni, mushrooms, and
+    extra cheese. If you need anything else or want to add drinks, just let me know!
+- User: I want to know if I can add any special instructions for my pizza, like asking
+    for a thinner crust or no sauce. Can I do that?
+- Assistant: Yes, you can add special instructions for your pizza, such as requesting
+    a thinner crust or no sauce. Please let me know what specific instructions you
+    would like to include for your large custom pizza with pepperoni, mushrooms, and
+    extra cheese!
+- User: I want to request a thinner crust for my large custom pizza. Can you confirm
+    that?
+- Assistant: You have requested a thinner crust for your large custom pizza with pepperoni,
+    mushrooms, and extra cheese. If you need anything else or want to add drinks,
+    just let me know!
+- User: I want to know what the estimated delivery time is for my pizza. Can you tell
+    me that?
+- Assistant: The estimated delivery time for your pizza is typically around 30 to
+    45 minutes, depending on the current order volume. If you have any other questions
+    or want to add drinks, just let me know!
+- User: I want to make sure my order is correct. Can you repeat everything back to
+    me, including the delivery time?
+- Assistant: You have ordered a large custom pizza with pepperoni, mushrooms, and
+    extra cheese, and you have requested a thinner crust. The estimated delivery time
+    for your pizza is typically around 30 to 45 minutes, depending on the current
+    order volume. If you need anything else or want to add drinks, just let me know!
+- User: I want to know if there are any extra charges for adding special instructions
+    like thinner crust. Can you tell me that?
+- Assistant: There are no extra charges for adding special instructions like requesting
+    a thinner crust for your pizza. If you have any other questions or want to add
+    drinks, just let me know!
+- User: I want to know if I can pay with cash on delivery for my pizza. Can you confirm
+    that?
+- Assistant: Yes, you can pay with cash on delivery for your pizza. If you have any
+    other questions or want to add drinks, just let me know!

@@ -1,0 +1,122 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size: small
+- topping1: olives
+- topping2: olives
+- topping3: olives
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_order_confirmation: 'Thanks for ordering a small pizza with o, l, i,
+    v, e and s!
+
+    Thank you for confirming your pizza order!'
+errors: []
+total_cost($): 0.00446535
+---
+conversation time: 88.840339
+assistant response time:
+- 1.989859
+- 4.374793
+- 3.018189
+- 3.94457
+- 0.747662
+- 0.820097
+- 0.826336
+- 0.858795
+- 0.886341
+- 0.733295
+- 2.706302
+- 1.852142
+- 2.936708
+- 2.868012
+- 4.661187
+response time report:
+  average: 2.214952
+  max: 4.661187
+  min: 0.733295
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want a small pizza with olives, olives, and olives. Can you confirm that
+    for me?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you'd like a small, medium, or large pizza?
+- User: I already said I want a small pizza with olives, olives, and olives. Can you
+    confirm that?
+- Assistant: 'Thanks for ordering a small pizza with o, l, i, v, e and s!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks you prefer? You can
+    choose from coke, sprite, or water.'
+- User: I’d like to order two drinks, please. Can I get one coke and one water?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a small pizza topped with olives and two Cokes is $14.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 2f134f.'
+- User: Can you tell me if there are any special instructions I should include for
+    my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you let me know if there are any special instructions I should consider
+    for my pizza order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any special requests or instructions I should include for my small
+    pizza with olives?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any toppings or modifications I should consider that might make
+    my pizza even better?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any toppings or modifications I should consider to enhance my small
+    pizza with olives?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any suggested toppings or modifications I should think about to
+    improve my small pizza with olives?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What are the most popular toppings that people usually add to their pizzas?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, how to get the order, and how long it
+    takes to get an order.
+- User: What are your opening hours?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What types of pizza do you offer?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can you tell me the prices for each type of pizza you offer?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What would the total cost be for a small Hawaiian pizza with an extra topping
+    of mushrooms?
+- Assistant: It looks like I have the pizza type as Hawaiian, but I still need to
+    know the pizza size. Could you please let me know if you would like a small, medium,
+    or large pizza?

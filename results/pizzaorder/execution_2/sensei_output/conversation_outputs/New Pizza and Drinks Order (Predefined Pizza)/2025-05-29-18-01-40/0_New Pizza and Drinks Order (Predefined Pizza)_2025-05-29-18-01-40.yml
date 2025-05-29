@@ -1,0 +1,117 @@
+serial: 2025-05-29-18-01-40
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: The large Hawaiian pizza costs 22$ (20$ for the pizza plus 2$ for
+    the size increment). Each Coke is 1.50$, so two Cokes cost 3$. The total is 25$.
+    We are located at 23 Main Street, New York.
+- delivery_information: We do not do delivery, but customers need to get the shop
+    for their orders. We are located at 23 Main Street, New York.
+errors: []
+total_cost($): 0.005175
+---
+conversation time: 91.770683
+assistant response time:
+- 1.908471
+- 3.249111
+- 2.871305
+- 2.866384
+- 3.227071
+- 3.083875
+- 2.488174
+- 1.562328
+- 2.209657
+- 2.179258
+- 0.9341
+- 0.760457
+- 0.823145
+- 1.987178
+- 2.210754
+response time report:
+  average: 2.157417
+  max: 3.249111
+  min: 0.760457
+---
+interaction:
+- User: I would like to confirm that delivery is not available, correct?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Can you tell me the total cost for a large Hawaiian pizza and two Cokes?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the price of the large Hawaiian pizza and the two Cokes combined?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the specific price for the large Hawaiian pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the specific price for the large Hawaiian pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the specific price for a large Hawaiian pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the price of a large Hawaiian pizza, specifically?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the specific price for a large Hawaiian pizza?
+- Assistant: The price of a large Hawaiian pizza is 22$.
+- User: Could you please provide the total cost for the large Hawaiian pizza and the
+    two Cokes?
+- Assistant: The large Hawaiian pizza costs 22$ (20$ for the pizza plus 2$ for the
+    size increment). Each Coke is 1.50$, so two Cokes cost 3$. The total is 25$.
+- User: What is the estimated time for pickup?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please let me know how busy you are right now to give me a more
+    accurate estimated time for pickup?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you provide an update on how busy you are at the moment for a more accurate
+    pickup time?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me how busy the restaurant is right now to estimate
+    the pickup time more accurately?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What are the current wait times for pickup orders?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you provide a rough estimate of how long I might have to wait for my
+    order given the current situation?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
