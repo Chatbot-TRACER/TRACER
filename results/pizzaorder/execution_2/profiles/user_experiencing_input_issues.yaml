@@ -36,7 +36,7 @@ chatbot:
       description: The chatbot's response to the user expressing their desire to order a pizza, including acknowledging the request, asking about pizza type, or stating it didn't understand. This output captures the chatbot's initial response to the user's pizza order request or acknowledgement of the issue. Look for phrases like "What kind of pizza would you like?", "I can help you with that.", or "I didn't understand."
   - pizza_type_response:
       type: str
-      description: The chatbot's response listing available pizza types or acknowledging a specific pizza type request (corresponding to the current 'pizza_type' variable used in the goal). Look for phrases like "We have Margherita, Pepperoni, and Vegetarian" or "You want a {pizza_type} pizza". If the chatbot does not understand, it should respond with an apology or request to rephrase.
+      description: The chatbot's response listing available pizza types or acknowledging a specific pizza type request (corresponding to the current 'pizza_type' variable used in the goal). Look for phrases like "We have Margherita, Pepperoni, and Vegetarian" or "You want a pizza_type pizza". If the chatbot does not understand, it should respond with an apology or request to rephrase.
   - custom_pizza_response:
       type: str
       description: The chatbot's response to the user's request for a custom pizza, either accepting the request and initiating the customization process or indicating that custom pizzas are not available. If the chatbot does not understand, it should respond with an apology or request to rephrase.
