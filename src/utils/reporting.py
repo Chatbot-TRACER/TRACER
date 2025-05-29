@@ -359,9 +359,11 @@ def _build_label(
             if isinstance(p_options, list) and len(p_options) > 0:
                 options = [str(opt) for opt in p_options[:max_options]]
                 options_str = ", ".join(options)
+                truncated = False
                 if len(options_str) > options_max_length:
                     options_str = options_str[:options_max_length] + "..."
-                if len(p_options) > max_options:
+                    truncated = True
+                if len(p_options) > max_options and not truncated:
                     options_str += "..."
                 actual_param_rows.append(
                     f'<tr><td><font point-size="{small_font_size}">{p_name_html}: {options_str}</font></td></tr>'
