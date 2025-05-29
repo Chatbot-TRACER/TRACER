@@ -1,0 +1,78 @@
+{
+  "specification": {
+    "modules": [
+      "make_appointment",
+      "top-level",
+      "bike_qa"
+    ],
+    "make_appointment": {
+      "date": "date",
+      "time": "time",
+      "service": [
+        "repair",
+        "tune-up"
+      ]
+    },
+    "bike_qa": {
+      "Which is the price of a new tire?": [],
+      "Which is the price of a tune-up?": [],
+      "Which is the price of a new seat?": [],
+      "What can I do to take care of my bike?": []
+    },
+    "top-level": {}
+  },
+  "footprint": {
+    "modules": [
+      "bike_qa",
+      "make_appointment",
+      "top-level"
+    ],
+    "unknown": [],
+    "make_appointment": {
+      "date": [
+        "07/10/2023",
+        "26/04/2024",
+        "29/04/2024",
+        "29/11/2024",
+        "30/05/2025",
+        "30/10/2023"
+      ],
+      "time": [
+        "09:30:00",
+        "10:00:00",
+        "13:30:00",
+        "15:00:00",
+        "16:30:00"
+      ],
+      "service": [
+        "repair",
+        "tune-up"
+      ]
+    },
+    "bike_qa": {
+      "Which is the price of a new tire?": [
+        "Which is the price of a new tire?"
+      ],
+      "Which is the price of a tune-up?": [],
+      "Which is the price of a new seat?": [],
+      "What can I do to take care of my bike?": [
+        "What can I do to take care of my bike?"
+      ],
+      "unknown": [
+        "Can you provide details about Hybrid Bikes?",
+        "Can you tell me more about the Gravel Bikes you have?",
+        "What are the general bike prices?",
+        "What are the prices for bike helmets?",
+        "What are the prices for new bike seats?",
+        "What is the price for a set of four all-season tires?",
+        "What is the price for a standard tune-up?",
+        "What is the price for a tune-up?",
+        "What is the price of a new helmet?",
+        "What is the price of a new tire?",
+        "What is the price of a tune-up?",
+        "What types of performance tires do you have available?"
+      ]
+    },
+    "top-level": {}
+  }
+}

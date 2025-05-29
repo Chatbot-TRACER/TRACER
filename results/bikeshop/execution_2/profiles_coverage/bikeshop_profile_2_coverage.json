@@ -1,0 +1,64 @@
+{
+  "specification": {
+    "modules": [
+      "top-level",
+      "bike_qa",
+      "make_appointment"
+    ],
+    "make_appointment": {
+      "date": "date",
+      "time": "time",
+      "service": [
+        "repair",
+        "tune-up"
+      ]
+    },
+    "bike_qa": {
+      "Which is the price of a new tire?": [],
+      "Which is the price of a tune-up?": [],
+      "Which is the price of a new seat?": [],
+      "What can I do to take care of my bike?": []
+    },
+    "top-level": {}
+  },
+  "footprint": {
+    "modules": [
+      "bike_qa",
+      "make_appointment",
+      "top-level"
+    ],
+    "unknown": [],
+    "make_appointment": {
+      "date": [
+        "27/10/2023"
+      ],
+      "time": [
+        "14:00:00"
+      ],
+      "service": [
+        "tune-up"
+      ]
+    },
+    "bike_qa": {
+      "Which is the price of a new tire?": [],
+      "Which is the price of a tune-up?": [
+        "Which is the price of a tune-up?"
+      ],
+      "Which is the price of a new seat?": [],
+      "What can I do to take care of my bike?": [
+        "What can I do to take care of my bike?"
+      ],
+      "unknown": [
+        "What can you tell me about Michelin tires?",
+        "What can you tell me about the Trek Domane road bike?",
+        "What can you tell me about the different types of bike tires available?",
+        "What does the tune-up include?",
+        "What is the price of a tune-up for a bike?",
+        "What is the price of a tune-up?",
+        "What should I look for when choosing a lubricant for my bike chain?",
+        "What specific services are included in the tune-up?"
+      ]
+    },
+    "top-level": {}
+  }
+}

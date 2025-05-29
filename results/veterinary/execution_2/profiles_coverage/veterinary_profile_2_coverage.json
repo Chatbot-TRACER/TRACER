@@ -1,0 +1,80 @@
+{
+  "specification": {
+    "modules": [
+      "make_appointment",
+      "top-level",
+      "vetcen_qa"
+    ],
+    "make_appointment": {
+      "date": "date",
+      "time": "time",
+      "service": [
+        "Physical examination",
+        "Vaccination",
+        "Dental health and cleaning",
+        "Lab or diagnostic testing"
+      ]
+    },
+    "vetcen_qa": {
+      "When are you open?": [],
+      "How late are you open on weekends?": [],
+      "How much does a vet visit cost?": [],
+      "What kind of animals do you accept?": [],
+      "What can I do to take care of my pet?": []
+    },
+    "top-level": {}
+  },
+  "footprint": {
+    "modules": [
+      "make_appointment",
+      "top-level",
+      "vetcen_qa"
+    ],
+    "unknown": [],
+    "make_appointment": {
+      "date": [
+        "01/11/2023",
+        "03/11/2023",
+        "10/10/2023",
+        "10/11/2023",
+        "25/10/2023",
+        "26/10/2023",
+        "28/10/2023",
+        "30/10/2023"
+      ],
+      "time": [
+        "09:00:00",
+        "09:30:00",
+        "10:00:00",
+        "11:00:00",
+        "13:00:00",
+        "16:00:00",
+        "16:15:00"
+      ],
+      "service": [
+        "Dental health and cleaning",
+        "Physical examination",
+        "Vaccination"
+      ]
+    },
+    "vetcen_qa": {
+      "When are you open?": [],
+      "How late are you open on weekends?": [],
+      "How much does a vet visit cost?": [],
+      "What kind of animals do you accept?": [
+        "What kind of animals do you accept?"
+      ],
+      "What can I do to take care of my pet?": [],
+      "unknown": [
+        "Do you have any options for pet insurance or financing for the veterinary services?",
+        "How much does teeth whitening for dogs cost at your veterinary center?",
+        "Is teeth whitening for dogs a service that your veterinary center provides?",
+        "What are the veterinary visit fees?",
+        "What are your hours of operation?",
+        "What is the price for teeth whitening services for pets at your veterinary center?",
+        "What services do you offer at your veterinary center besides vaccinations?"
+      ]
+    },
+    "top-level": {}
+  }
+}

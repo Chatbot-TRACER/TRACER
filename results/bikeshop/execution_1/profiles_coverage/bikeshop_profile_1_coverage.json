@@ -1,0 +1,69 @@
+{
+  "specification": {
+    "modules": [
+      "bike_qa",
+      "make_appointment",
+      "top-level"
+    ],
+    "make_appointment": {
+      "date": "date",
+      "time": "time",
+      "service": [
+        "repair",
+        "tune-up"
+      ]
+    },
+    "bike_qa": {
+      "Which is the price of a new tire?": [],
+      "Which is the price of a tune-up?": [],
+      "Which is the price of a new seat?": [],
+      "What can I do to take care of my bike?": []
+    },
+    "top-level": {}
+  },
+  "footprint": {
+    "modules": [
+      "bike_qa",
+      "make_appointment",
+      "top-level"
+    ],
+    "unknown": [],
+    "make_appointment": {
+      "date": [
+        "11/10/2023",
+        "25/10/2023",
+        "27/10/2023"
+      ],
+      "time": [
+        "10:00:00"
+      ],
+      "service": [
+        "repair"
+      ]
+    },
+    "bike_qa": {
+      "Which is the price of a new tire?": [
+        "Which is the price of a new tire?"
+      ],
+      "Which is the price of a tune-up?": [],
+      "Which is the price of a new seat?": [],
+      "What can I do to take care of my bike?": [
+        "What can I do to take care of my bike?"
+      ],
+      "unknown": [
+        "What about tire installation? How much do you charge for that?",
+        "What is the cost for tire installation?",
+        "What is the cost of a tune-up at the bike shop?",
+        "What is the price for tire installation?",
+        "What is the price of a bike tune-up?",
+        "What is the price of a helmet?",
+        "What is the price of a new tire?",
+        "What is the price of a tune-up?",
+        "What is the price of tire installation?",
+        "What specific maintenance services are available at the bike shop?",
+        "What type of lubricant should I use on my bike chain?"
+      ]
+    },
+    "top-level": {}
+  }
+}
