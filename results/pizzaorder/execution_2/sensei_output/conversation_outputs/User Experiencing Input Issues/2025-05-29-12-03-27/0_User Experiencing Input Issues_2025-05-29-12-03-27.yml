@@ -1,0 +1,89 @@
+serial: 2025-05-29-12-03-27
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type: Margherita
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- all_answered:
+    export: false
+    limit: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: It looks like I still need to know the size of your pizza.
+    Could you please tell me if you would like a small, medium, or large pizza?
+errors: []
+total_cost($): 0.0037695
+---
+conversation time: 86.921442
+assistant response time:
+- 1.473919
+- 2.069662
+- 2.111093
+- 2.084924
+- 1.868762
+- 2.07077
+- 1.76427
+- 2.178377
+- 1.941736
+- 1.836426
+- 3.954367
+response time report:
+  average: 2.123118
+  max: 3.954367
+  min: 1.473919
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Margherita pizza, but can you double-check that it's the right
+    one?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is the Margherita pizza the one with just tomato sauce, mozzarella, and basil?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is the Margherita pizza the one with just tomato sauce, mozzarella, and basil?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is the Margherita pizza the one with just tomato sauce, mozzarella, and basil?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is the Margherita pizza the one with just tomato sauce, mozzarella, and basil?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is the Margherita pizza considered a classic option on your menu?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there a way to customize the Margherita pizza if I want to add extra toppings?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can I add extra toppings like pepperoni or mushrooms to the Margherita pizza?
+- Assistant: I do not know. However, I can answer questions about our opening hours,
+    types of pizza we serve, prices of pizzas and beverages, how to get the order,
+    and how much time it takes to get an order.
+- User: Can I order a custom pizza instead?
+- Assistant: It looks like I still need to know the size of your pizza. Could you
+    please tell me if you would like a small, medium, or large pizza?

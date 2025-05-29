@@ -1,0 +1,68 @@
+serial: 2025-05-29-12-03-27
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- all_answered:
+    export: false
+    limit: 15
+data_output:
+- order_summary: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 5871e1.'
+- delivery_information: We do not do delivery, but customers need to get the shop
+    for their orders. We are located at 23 Main Street, New York.
+errors: []
+total_cost($): 0.0012873
+---
+conversation time: 32.125919
+assistant response time:
+- 4.96064
+- 2.577758
+- 3.457319
+- 1.575173
+response time report:
+  average: 3.142722
+  max: 4.96064
+  min: 1.575173
+---
+interaction:
+- User: I would like to order a large Hawaiian pizza and two Cokes for pickup. What
+    is the total cost?
+- Assistant: It looks like I have the order details for your pizza and drinks, but
+    I still need to confirm the pizza size and type. Could you please provide the
+    pizza size (small, medium, or large) and the pizza type (margherita, carbonara,
+    marinera, hawaiian, four cheese, vegetarian)? Thank you!
+- User: I already mentioned I want a large Hawaiian pizza and two Cokes. Can you tell
+    me the total cost now?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    I apologize for the confusion, but I still need to confirm the number of drinks
+    and the specific drink type. Could you please let me know how many drinks you
+    would like and if they are Coke, Sprite, or Water? Thank you!'
+- User: I already specified that I want two Cokes. Can you provide the total cost
+    now?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 5871e1.'
+- User: Can you confirm that delivery is not available for my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.

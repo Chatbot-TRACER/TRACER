@@ -1,0 +1,77 @@
+serial: 2025-05-29-12-03-27
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to ensure it receives the necessary vaccinations
+  to stay healthy.
+- As a first-time dog owner, you're also keen to learn more about the veterinary center
+  and responsible pet care practices.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask what types of animals the veterinary center treats.
+- Confirm if the veterinary center treats dogs.
+- Ask about the types of vaccinations offered for dogs.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- Ask about the business hours of operation.
+- date: November 3
+- time: 4:00 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- all_answered:
+    export: false
+    limit: 24
+data_output:
+- available_veterinary_services: We specialize in dogs, cats, and birds. We treat
+    dogs as well. We offer various vaccinations for dogs, including rabies, distemper,
+    parvovirus, and leptospirosis. Our veterinary center is open every weekday from
+    9am to 6pm. We offer additional services such as physical examinations, dental
+    health and cleaning, and lab or diagnostic testing.
+- treatable_animals: We specialize in dogs, cats, and birds.
+- treatable_animal_confirmation: Yes, we treat dogs as well.
+- vaccination_information: We offer various vaccinations for dogs, including rabies,
+    distemper, parvovirus, and leptospirosis.
+- appointment_details: Ok, I have received your request to schedule an appointment
+    for 03/11/2023 at 16:00:00 for Vaccination.
+- business_hours: Our veterinary center is open every weekday from 9am to 6pm.
+errors: []
+total_cost($): 0.0021804
+---
+conversation time: 36.415961
+assistant response time:
+- 2.225922
+- 0.989072
+- 0.774311
+- 0.924194
+- 0.872969
+- 0.697225
+- 1.079002
+response time report:
+  average: 1.080385
+  max: 2.225922
+  min: 0.697225
+---
+interaction:
+- User: What types of animals do you treat at your veterinary center?
+- Assistant: We specialize in dogs, cats, and birds. For other animals, please inquire
+    beforehand.
+- User: Do you treat dogs as well?
+- Assistant: Yes, we treat dogs as well. How can I assist you further?
+- User: What types of vaccinations do you offer for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations do you provide for dogs?
+- Assistant: We offer various vaccinations for dogs, including rabies, distemper,
+    parvovirus, and leptospirosis. Would you like to schedule an appointment for a
+    vaccination?
+- User: Can I schedule a vaccination appointment for my dog on November 3 at 4:00
+    PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 03/11/2023\
+    \ at 16:00:00 for Vaccination. \nSee you then!    \n"
+- User: What are your business hours of operation?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm.
+- User: Are there any additional services you offer besides vaccinations?
+- Assistant: We offer additional services such as physical examinations, dental health
+    and cleaning, and lab or diagnostic testing. Would you like to schedule any of
+    these services?

@@ -1,0 +1,115 @@
+serial: 2025-05-29-12-03-27
+language: English
+context:
+- 'personality: personalities/sarcastic-user'
+- You recently adopted a puppy and want to ensure it receives the necessary healthcare.
+- You are particularly concerned about protecting your dog from common and potentially
+  dangerous diseases prevalent in your area.
+- You want to find a reliable veterinary center that offers comprehensive vaccination
+  services and is available in case of emergencies.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask about the core vaccinations needed for dogs.
+- Inquire if emergency services are available outside of business hours.
+- Ask what the business hours are.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- all_answered:
+    export: false
+    limit: 16
+data_output:
+- services_offered: We offer services such as physical examinations, vaccinations,
+    dental health and cleaning, and lab or diagnostic testing.
+- core_vaccinations_list: The essential vaccinations for your puppy typically include
+    vaccines against distemper, parvovirus, adenovirus, and rabies.
+- emergency_services_availability: I'm sorry, but I did not understand the last sentence,
+    can you say that again?
+- business_hours: We are open every weekday from 9am to 6pm.
+errors: []
+total_cost($): 0.00448755
+---
+conversation time: 57.287707
+assistant response time:
+- 0.80949
+- 0.938004
+- 0.944413
+- 0.756353
+- 1.16077
+- 0.831018
+- 0.805702
+- 0.64191
+- 0.749845
+- 0.991565
+- 0.700024
+- 0.651869
+- 0.743884
+- 0.744427
+- 0.748288
+- 0.737545
+response time report:
+  average: 0.809694
+  max: 1.16077
+  min: 0.64191
+---
+interaction:
+- User: What core vaccinations are necessary for my puppy to keep it safe from common
+    diseases?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the essential vaccinations my puppy needs to protect it from common
+    diseases?
+- Assistant: The essential vaccinations for your puppy typically include vaccines
+    against distemper, parvovirus, adenovirus, and rabies. However, it's best to consult
+    with a veterinarian for a tailored vaccination plan. Would you like to schedule
+    a vaccination appointment?
+- User: What services do you offer at your veterinary center?
+- Assistant: We offer services such as physical examinations, vaccinations, dental
+    health and cleaning, and lab or diagnostic testing. Would you like to know more
+    about any specific service or schedule an appointment?
+- User: Do you provide emergency services outside of regular business hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have emergency services available if my puppy needs help outside of
+    regular business hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you offer any emergency services if my puppy requires assistance after
+    hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are your business hours?
+- Assistant: We are open every weekday from 9am to 6pm.
+- User: Are you open on weekends, or is it just weekdays?
+- Assistant: We are open every weekday from 9am to 6pm.
+- User: Do you offer any services on weekends, or is it strictly a Monday to Friday
+    operation?
+- Assistant: We are open every weekday from 9am to 6pm.
+- User: Is there a specific time I should call if I have an emergency outside of those
+    hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: If I have an emergency outside of your business hours, is there a specific
+    time or procedure I should follow to get assistance?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I do if I have an emergency with my puppy after your regular business
+    hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there a particular vet you recommend for emergencies, or should I just
+    wing it and hope for the best?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I do if my puppy has an emergency when you're closed?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: If my puppy has an emergency when your center is closed, what steps should
+    I take?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there someone I can call for help if my puppy has an emergency when you’re
+    not open?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

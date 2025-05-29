@@ -1,0 +1,88 @@
+serial: 2025-05-29-12-03-27
+language: English
+context:
+- You are traveling abroad and need to find a local bike shop for some cycling-related
+  inquiries.
+- You are not fluent in the local language (English or Spanish) and prefer to communicate
+  in your native language for clarity.
+ask_about:
+- Ask about the brands of road bikes that the shop carries in a non-English language.
+- Ask about the price of a tune-up in a non-English language.
+- Ask about the brands of tires that are available in a non-English language.
+- Ask about what services the shop offers in a non-English language.
+- Ask what types of bikes are available.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- all_answered:
+    export: false
+    limit: 15
+data_output:
+- language_support_response: Por favor, cambia a inglés o español para poder ayudarte
+    mejor.
+- rephrase_request: The response to the question "What is the price of a tune-up?"
+    is $150.
+errors: []
+total_cost($): 0.0034089
+---
+conversation time: 65.26375
+assistant response time:
+- 0.614711
+- 0.571815
+- 0.595872
+- 0.6037
+- 2.346506
+- 0.542824
+- 0.611227
+- 0.55733
+- 0.757586
+- 0.554232
+- 0.892332
+- 0.549599
+- 0.587609
+- 0.736487
+- 0.904184
+response time report:
+  average: 0.761734
+  max: 2.346506
+  min: 0.542824
+---
+interaction:
+- User: ¿Cuáles son las marcas de bicicletas de carretera que tienen en la tienda?
+- Assistant: Por favor, cambia a inglés o español para poder ayudarte mejor.
+- User: ¿Quelles sont les marques de vélos de route que vous avez dans le magasin
+    ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles marques de vélos de route proposez-vous dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles sont les marques de vélos de route disponibles dans votre magasin
+    ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Combien coûte un réglage de vélo dans votre magasin ?
+- Assistant: The response to the question "What is the price of a tune-up?" is $150.
+- User: Quelles marques de pneus avez-vous disponibles dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles sont les marques de pneus que vous avez dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: 'User: Quels services proposez-vous dans votre magasin ?'
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quels types de vélos avez-vous disponibles dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles marques de vélos de route avez-vous dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles marques de vélos de route sont disponibles dans votre magasin ?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Quelles marques de pneus avez-vous disponibles dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles sont les marques de pneus que vous avez dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles sont les marques de pneus que vous proposez dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles sont les marques de vélos de route que vous avez dans votre magasin
+    ?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'

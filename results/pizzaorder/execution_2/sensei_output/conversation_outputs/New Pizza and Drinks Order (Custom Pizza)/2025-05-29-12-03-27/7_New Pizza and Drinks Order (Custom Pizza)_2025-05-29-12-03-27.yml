@@ -1,0 +1,147 @@
+serial: 2025-05-29-12-03-27
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size: extra large
+- topping1: pepper
+- topping2: pepper
+- topping3: pepper
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- all_answered:
+    export: false
+    limit: 15
+data_output:
+- pizza_size_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_order_confirmation: Thanks for ordering a large pizza with p, e, p,
+    p, e and r! Thank you for your order of a large pizza with pepper, pepper, and
+    pepper.
+errors: []
+total_cost($): 0.0051114
+---
+conversation time: 83.59972
+assistant response time:
+- 2.488358
+- 4.804227
+- 1.789909
+- 1.514346
+- 3.259928
+- 4.199172
+- 2.675492
+- 4.042438
+- 1.074808
+- 3.660322
+- 3.518306
+- 3.379617
+- 2.588135
+- 2.999382
+- 2.788158
+response time report:
+  average: 2.985506
+  max: 4.804227
+  min: 1.074808
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want an extra-large pizza with pepper, pepper, and pepper. Can you confirm
+    that?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?
+- User: I already said I want an extra-large pizza. Can you confirm my order for an
+    extra-large pizza with pepper, pepper, and pepper?
+- Assistant: I apologize, but we only offer small, medium, or large pizza sizes. Could
+    you please choose one of those sizes for your order?
+- User: I want to stick with the extra-large size. Can you please confirm my order
+    for an extra-large pizza with pepper, pepper, and pepper?
+- Assistant: I understand that you want an extra-large pizza, but unfortunately, we
+    only offer small, medium, or large sizes. Could you please choose one of those
+    sizes for your order?
+- User: I want to order a large pizza with pepper, pepper, and pepper. Can you confirm
+    that?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    Thank you for your order of a large pizza with pepper, pepper, and pepper. Could
+    you please let me know how many drinks you would like to order and what type of
+    drinks (coke, sprite, or water)?'
+- User: I would like to order three drinks, please. Can I have two cokes and one water?
+- Assistant: 'I have received your order for three Cokes.
+
+    The cost of a large pizza topped with pepperoni, peppers, and mushrooms, along
+    with three Cokes, is $26.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 41fead.'
+- User: Can you confirm the total cost for my order?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: How much would it cost if I added an extra pepper to my large pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: If you add an extra pepper to your large pizza, it would cost an additional
+    $0.50, bringing the total cost of your large pizza with four peppers to $20.50.
+    Would you like to proceed with that?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me the total cost for a large pizza with three peppers and three
+    drinks, two cokes and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: How much would it cost for a large pizza with three peppers and three drinks,
+    two cokes and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the total cost for a large pizza with three peppers and three drinks,
+    two cokes and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: 'What would be the total cost for a large pizza with three peppers and three
+    drinks: two cokes and one water?'
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: 'What is the total cost for a large pizza with three peppers and three drinks:
+    two cokes and one water?'
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the price for a large pizza with three peppers?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.

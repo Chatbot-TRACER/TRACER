@@ -1,0 +1,119 @@
+serial: 2025-05-29-12-03-27
+language: English
+context:
+- You recently adopted a rabbit and want to ensure it receives the necessary preventative
+  care.
+- You are particularly concerned about common rabbit diseases like myxomatosis and
+  RHD, as you've heard they can be fatal.
+- You want to find a local vet that can provide vaccinations and advice on rabbit
+  health, but you are also curious if they treat other types of pets.
+ask_about:
+- Ask what kind of animals they treat.
+- Inquire if they treat rabbits.
+- Ask what vaccinations rabbits typically need.
+- Ask for the symptoms of myxomatosis in rabbits.
+- Ask if they care for birds.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- all_answered:
+    export: false
+    limit: 18
+data_output:
+- treats_rabbits: Yes, we do treat rabbits at our clinic.
+- rabbit_vaccinations_info: Vaccinations for rabbits typically include myxomatosis
+    and rabbit hemorrhagic disease (RHD). However, it's best to consult with a veterinarian
+    for personalized recommendations.
+- myxomatosis_symptoms: The common symptoms of myxomatosis in rabbits include swelling
+    around the eyes, face, and ears, skin tumors, lethargy, and loss of appetite.
+    If you notice any of these signs, please consult a veterinarian promptly. How
+    else can I assist you?
+- cares_for_birds: None
+errors: []
+total_cost($): 0.00559905
+---
+conversation time: 113.760069
+assistant response time:
+- 1.219248
+- 1.13224
+- 1.039866
+- 1.049339
+- 1.375322
+- 0.969365
+- 0.706977
+- 0.965685
+- 1.02936
+- 0.970849
+- 0.918942
+- 1.66841
+- 0.92437
+- 1.328851
+- 0.952236
+- 0.862844
+- 0.879251
+- 0.956134
+response time report:
+  average: 1.052738
+  max: 1.66841
+  min: 0.706977
+---
+interaction:
+- User: What kind of animals do you treat at your clinic?
+- Assistant: We treat a variety of animals, including dogs, cats, and small pets.
+    How can I assist you further?
+- User: Do you also treat rabbits at your clinic?
+- Assistant: Yes, we do treat rabbits at our clinic. How can I assist you further?
+- User: What vaccinations do rabbits typically need?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccines are usually recommended for rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are generally advised for rabbits?
+- Assistant: Vaccinations for rabbits typically include myxomatosis and rabbit hemorrhagic
+    disease (RHD). However, it's best to consult with a veterinarian for personalized
+    recommendations. How else can I assist you?
+- User: What are the symptoms of myxomatosis in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What symptoms should I look for to identify myxomatosis in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What signs should I watch for to recognize myxomatosis in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the common signs or symptoms of myxomatosis in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the typical signs or symptoms of myxomatosis in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the usual signs or symptoms of myxomatosis in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the common symptoms of myxomatosis in rabbits?
+- Assistant: The common symptoms of myxomatosis in rabbits include swelling around
+    the eyes, face, and ears, skin tumors, lethargy, and loss of appetite. If you
+    notice any of these signs, please consult a veterinarian promptly. How else can
+    I assist you?
+- User: How often should rabbits be vaccinated for myxomatosis and RHD?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: How frequently do rabbits need to be vaccinated for myxomatosis and RHD?
+- Assistant: The vaccination schedule for rabbits can vary, but generally, rabbits
+    should be vaccinated against myxomatosis and RHD annually. However, it's best
+    to consult with a veterinarian for personalized advice. How else can I assist
+    you?
+- User: What other types of pets do you treat at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What other kinds of animals are treated at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What other species of animals do you provide care for at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What other types of animals do you see at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

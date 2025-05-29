@@ -1,0 +1,71 @@
+serial: 2025-05-29-12-03-27
+language: English
+context:
+- You are traveling abroad and need to find a local bike shop for some cycling-related
+  inquiries.
+- You are not fluent in the local language (English or Spanish) and prefer to communicate
+  in your native language for clarity.
+ask_about:
+- Ask about the brands of road bikes that the shop carries in a non-English language.
+- Ask about the price of a tune-up in a non-English language.
+- Ask about the brands of tires that are available in a non-English language.
+- Ask about what services the shop offers in a non-English language.
+- Ask what types of bikes are available.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- all_answered:
+    export: false
+    limit: 15
+data_output:
+- language_support_response: Por favor, ¿puedes cambiar a inglés o español?
+- rephrase_request: null
+errors:
+- 1000: Exceeded loop Limit
+- 1001: 1 goals left to complete.
+total_cost($): 0.00204555
+---
+conversation time: 40.845066
+assistant response time:
+- 0.635805
+- 0.582633
+- 0.623496
+- 0.582199
+- 0.574301
+- 0.838118
+- 0.620402
+- 0.581788
+- 0.602201
+- 0.50108
+- 0.747389
+response time report:
+  average: 0.62631
+  max: 0.838118
+  min: 0.501079
+---
+interaction:
+- User: ¿Cuáles son las marcas de bicicletas de carretera que tienen en la tienda?
+- Assistant: Por favor, ¿puedes cambiar a inglés o español?
+- User: ¿Quelles sont les marques de vélos de route que vous avez dans le magasin
+    ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles marques de vélos de route avez-vous dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles sont les marques de vélos de route disponibles dans votre magasin
+    ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles sont les marques de pneus disponibles dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles sont les marques de pneus que vous avez dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles marques de pneus avez-vous dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quelles sont les services que vous proposez dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quels services offrez-vous dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quels types de vélos avez-vous dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Quels types de vélos avez-vous dans votre magasin ?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

@@ -1,0 +1,68 @@
+serial: 2025-05-29-12-03-27
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size: large
+- topping1: ham
+- topping2: ham
+- topping3: ham
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- all_answered:
+    export: false
+    limit: 15
+data_output:
+- pizza_size_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_order_confirmation: 'Thanks for ordering a large pizza with h, a and
+    m!
+
+    I have your order for a large pizza with ham.'
+errors: []
+total_cost($): 0.0009345
+---
+conversation time: 29.594156
+assistant response time:
+- 2.817295
+- 3.654806
+- 2.732555
+- 3.82422
+response time report:
+  average: 3.257219
+  max: 3.82422
+  min: 2.732555
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want a large custom pizza. What toppings do you recommend for a crowd-pleaser?
+- Assistant: 'It looks like I have the pizza size as large, but I still need to know
+    your toppings. Please choose from the following options: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, or chicken.'
+- User: I want a large pizza with ham, ham, and ham. Can you confirm my order?
+- Assistant: 'Thanks for ordering a large pizza with h, a and m!
+
+    I have your order for a large pizza with ham. However, I still need to know how
+    many drinks you would like to order and what type of drinks you prefer. Please
+    let me know the number of drinks and choose from coke, sprite, or water.'
+- User: I’d like to order three drinks, please. Can I have two Cokes and one Sprite?
+- Assistant: 'I have received your order for three Cokes.
+
+    The cost of a large pizza with h, a, and m, along with 3 Cokes, is $24.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is f5fb2e.'
