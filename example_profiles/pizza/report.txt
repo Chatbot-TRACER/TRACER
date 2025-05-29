@@ -42,28 +42,13 @@
 ## FUNCTIONALITIES (Raw JSON Structure)
 [
   {
-    "name": "provide_welcome_message_and_list_capabilities",
-    "description": "Welcomes the user to Fast Pizza and indicates it can help order pizzas and drinks.",
-    "parameters": [
-      null
-    ],
-    "outputs": [
-      null
-    ],
-    "parent_names": [],
-    "suggested_category": "Chatbot Meta",
-    "children": []
-  },
-  {
-    "name": "state_available_information_domains",
-    "description": "States the types of questions the chatbot can answer.",
-    "parameters": [
-      null
-    ],
+    "name": "State Available Information",
+    "description": "States what kind of questions the chatbot can answer regarding the Pizzeria's services and offerings, such as opening hours, types of pizzas, etc.",
+    "parameters": [],
     "outputs": [
       {
-        "category": "information_domains",
-        "description": "opening hours, types of pizza we serve, prices of pizzas and beverages, how to get the order, and how much time it takes to get an order."
+        "category": "available_information",
+        "description": "opening hours, types of pizzas available, pricing, pickup details, and order turnaround times."
       }
     ],
     "parent_names": [],
@@ -71,205 +56,108 @@
     "children": []
   },
   {
-    "name": "provide_opening_hours",
-    "description": "Provides the opening hours of the pizza shop.",
-    "parameters": [
-      null
-    ],
+    "name": "Provide Welcome Message And Available Services",
+    "description": "Welcomes the user to Fast Pizza and indicates the available services, primarily helping with ordering pizzas.",
+    "parameters": [],
     "outputs": [
       {
-        "category": "opening_hours",
-        "description": "Every day from 1pm to 11:30pm"
-      }
-    ],
-    "parent_names": [],
-    "suggested_category": "Information Retrieval",
-    "children": []
-  },
-  {
-    "name": "provide_pickup_information",
-    "description": "States that the shop does not do delivery, provides the location, and tells the customer they need to pick up their order.",
-    "parameters": [
-      null
-    ],
-    "outputs": [
-      {
-        "category": "delivery_status",
-        "description": "We do not do delivery"
+        "category": "welcome_message",
+        "description": "Welcome to Fast Pizza!"
       },
       {
-        "category": "pickup_requirement",
-        "description": "customers need to get the shop for their orders"
-      },
-      {
-        "category": "shop_location",
-        "description": "23 Main Street, New York."
+        "category": "available_services",
+        "description": "I can help you order pizzas."
       }
-    ],
-    "parent_names": [],
-    "suggested_category": "Information Retrieval",
-    "children": []
-  },
-  {
-    "name": "estimate_order_delivery_time",
-    "description": "Provides the estimated time for the order preparation and delivery, taking into account factors like the number of items and current workload.",
-    "parameters": [
-      null
-    ],
-    "outputs": [
-      {
-        "category": "estimated_delivery_time",
-        "description": "The estimated time for preparation and delivery of the order, taking into account factors like the number of items and restaurant workload."
-      }
-    ],
-    "parent_names": [],
-    "suggested_category": "Order Confirmation",
-    "children": []
-  },
-  {
-    "name": "list_available_pizza_sizes",
-    "description": "Lists the available sizes for pizzas.",
-    "parameters": [
-      null
-    ],
-    "outputs": [
-      {
-        "category": "pizza_sizes",
-        "description": "small, medium, and large"
-      }
-    ],
-    "parent_names": [],
-    "suggested_category": "Information Retrieval",
-    "children": []
-  },
-  {
-    "name": "list_pizza_types",
-    "description": "Lists the available pizza types.",
-    "parameters": [
-      null
-    ],
-    "outputs": [
-      {
-        "category": "pizza_types",
-        "description": "A list of available pizza types, including Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian, and Custom (where the user chooses the ingredients)."
-      }
-    ],
-    "parent_names": [],
-    "suggested_category": "Information Retrieval",
-    "children": []
-  },
-  {
-    "name": "request_rephrasing",
-    "description": "Indicates that the chatbot did not understand the user's request and asks the user to rephrase.",
-    "parameters": [
-      null
-    ],
-    "outputs": [
-      null
     ],
     "parent_names": [],
     "suggested_category": "Chatbot Meta",
     "children": []
   },
   {
-    "name": "provide_drink_information",
-    "description": "Provides a list of available drink options and their prices.",
+    "name": "Prompt For Pizza Details",
+    "description": "Asks the user to specify the size (e.g., small, medium, large) and type of pizza they want to order (e.g., carbonara, four cheese).",
     "parameters": [
-      null
-    ],
-    "outputs": [
       {
-        "category": "drink_menu",
-        "description": "A list of available drinks and their prices. For example, Sprite and Coke are $1.50 each, and Water is $1.00."
-      }
-    ],
-    "parent_names": [],
-    "suggested_category": "Information Retrieval",
-    "children": []
-  },
-  {
-    "name": "prompt_for_pizza_type",
-    "description": "Asks the user to specify the type of pizza they want from a list of options.",
-    "parameters": [
+        "name": "pizza_size",
+        "description": "The desired size for the pizza.",
+        "options": ["large", "medium", "small"]
+      },
       {
         "name": "pizza_type",
-        "description": "The type of pizza the user wants to order.",
-        "options": [
-          "margarita",
-          "carbonara",
-          "marinera",
-          "hawaiian",
-          "four cheese",
-          "vegetarian"
-        ]
+        "description": "The desired type of pizza.",
+        "options": ["carbonara", "four cheese", "hawaiian", "margarita", "marinara", "vegetarian"]
       }
     ],
-    "outputs": [
-      null
-    ],
+    "outputs": [],
     "parent_names": [],
     "suggested_category": "Order Placement",
     "children": [
       {
-        "name": "confirm_order_and_prompt_for_drinks",
-        "description": "Confirms the pizza order and prompts the user to specify the number and type of drinks they would like to order, including presenting available drink options.",
+        "name": "Confirm Pizza Type",
+        "description": "Asks the user to confirm the type of pizza they have selected for their order.",
         "parameters": [
           {
-            "name": "number_of_drinks",
-            "description": "The number of drinks desired; drink_type (coke/sprite/water): The type of drink",
-            "options": []
+            "name": "pizza_type",
+            "description": "The type of pizza chosen by the user that requires confirmation."
           }
         ],
-        "outputs": [
-          null
-        ],
-        "parent_names": [
-          "prompt_for_pizza_type"
-        ],
+        "outputs": [],
+        "parent_names": ["Prompt For Pizza Details"],
         "suggested_category": "Order Placement",
         "children": [
           {
-            "name": "calculate_order_total",
-            "description": "Calculates and provides the total cost of the order.",
+            "name": "Prompt For Drinks",
+            "description": "Prompts the user to specify the type and number of drinks they would like to add to their order (e.g., coke, sprite, water).",
             "parameters": [
-              null
-            ],
-            "outputs": [
               {
-                "category": "order_total_cost",
-                "description": "The total cost of the order, expressed in dollars."
+                "name": "drink_type",
+                "description": "The desired type of drink.",
+                "options": ["coke", "sprite", "water"]
+              },
+              {
+                "name": "number_of_drinks",
+                "description": "The quantity of the selected drink type."
               }
             ],
-            "parent_names": [
-              "confirm_order_and_prompt_for_drinks"
-            ],
-            "suggested_category": "Order Confirmation",
-            "children": []
-          },
-          {
-            "name": "prompt_for_order_confirmation_or_additions",
-            "description": "Prompts the user to confirm the current order and asks if they want to proceed with the order or add more items. Summarizes the order if applicable.",
-            "parameters": [
-              null
-            ],
-            "outputs": [
+            "outputs": [],
+            "parent_names": ["Confirm Pizza Type"],
+            "suggested_category": "Order Placement",
+            "children": [
               {
-                "category": "order_summary",
-                "description": "Summarizes the current order, including pizza type and drink quantity."
+                "name": "Provide Order Total",
+                "description": "Provides the total cost of the entire order, including all selected pizzas and drinks.",
+                "parameters": [],
+                "outputs": [
+                  {
+                    "category": "total_cost",
+                    "description": "The total monetary cost of the confirmed order."
+                  }
+                ],
+                "parent_names": ["Prompt For Drinks"],
+                "suggested_category": "Order Confirmation",
+                "children": []
               }
-            ],
-            "parent_names": [
-              "confirm_order_and_prompt_for_drinks"
-            ],
-            "suggested_category": "Order Confirmation",
-            "children": []
+            ]
           }
         ]
       }
     ]
+  },
+  {
+    "name": "List Available Pizza Types",
+    "description": "Lists the types of pizzas available for order, such as Margarita, Carbonara, Marinara, etc.",
+    "parameters": [],
+    "outputs": [
+      {
+        "category": "pizza_types_list",
+        "description": "Margarita, Carbonara, Marinara, Hawaiian, Four Cheese, Vegetarian"
+      }
+    ],
+    "parent_names": [],
+    "suggested_category": "Order Placement",
+    "children": []
   }
 ]
-
 
 ## SUPPORTED LANGUAGES
 1. English
