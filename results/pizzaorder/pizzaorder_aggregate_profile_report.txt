@@ -1,0 +1,314 @@
+🤖 CHATBOT COVERAGE ANALYSIS
+============================================================
+
+📊 OVERALL METRICS
+  • Module Activation: 100.00% (12/12)
+  • Field Usage:       100.00% (28/28)
+  • Option Coverage:   90.48% (76/84)
+  • Unknown Questions: 64 found
+
+🏗️ MODULE ACTIVATION STATUS
+
+  ✅ USED (12):
+       • calculate_price_custom
+       • calculate_price_predefined
+       • calculate_ticket_custom
+       • calculate_ticket_predefined
+       • order_custom_pizza
+       • order_drinks
+       • order_predefined_pizza
+       • pizza_qa
+       • pizza_type
+       • sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom
+       • sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined
+       • top-level
+
+🔍 MODULE COVERAGE OVERVIEW
+
+  🟢 EXCELLENT (80%+):
+    • calculate_price_custom: 80.00% (12/15 options)
+    • calculate_price_predefined: 91.67% (11/12 options)
+    • calculate_ticket_custom: 80.00% (12/15 options)
+    • calculate_ticket_predefined: 91.67% (11/12 options)
+    • order_custom_pizza: 100.00% (12/12 options)
+    • order_drinks: 100.00% (3/3 options)
+    • order_predefined_pizza: 100.00% (9/9 options)
+    • pizza_qa: 100.00% (6/6 questions)
+    • pizza_type: 100.00% (no spec)
+    • sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom: 100.00% (no spec)
+    • sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined: 100.00% (no spec)
+    • top-level: 100.00% (no spec)
+
+📝 DETAILED BREAKDOWN PER MODULE
+
+  📦 REGULAR MODULE: calculate_price_custom
+    Overall Option Coverage: 80.00% (12/15 options)
+
+    🔹 pizza_size: 100.00%
+       ✅ Used:
+            • large
+            • medium
+            • small
+       ❌ Missing:
+            • None
+
+    🔹 toppings: 88.89%
+       ✅ Used:
+            • bacon
+            • cheese
+            • chicken
+            • corn
+            • ham
+            • mushrooms
+            • olives
+            • pepperoni
+       ❌ Missing:
+            • pepper
+
+    🔹 drinks: 33.33%
+       ✅ Used:
+            • coke
+       ❌ Missing:
+            • sprite
+            • water
+
+  📦 REGULAR MODULE: calculate_price_predefined
+    Overall Option Coverage: 91.67% (11/12 options)
+
+    🔹 pizza_size: 100.00%
+       ✅ Used:
+            • large
+            • medium
+            • small
+       ❌ Missing:
+            • None
+
+    🔹 pizza_type: 83.33%
+       ✅ Used:
+            • carbonara
+            • four cheese
+            • hawaiian
+            • marinera
+            • vegetarian
+       ❌ Missing:
+            • margarita
+
+    🔹 drinks: 100.00%
+       ✅ Used:
+            • coke
+            • sprite
+            • water
+       ❌ Missing:
+            • None
+
+  📦 REGULAR MODULE: calculate_ticket_custom
+    Overall Option Coverage: 80.00% (12/15 options)
+
+    🔹 pizza_size: 100.00%
+       ✅ Used:
+            • large
+            • medium
+            • small
+       ❌ Missing:
+            • None
+
+    🔹 toppings: 88.89%
+       ✅ Used:
+            • bacon
+            • cheese
+            • chicken
+            • corn
+            • ham
+            • mushrooms
+            • olives
+            • pepperoni
+       ❌ Missing:
+            • pepper
+
+    🔹 drinks: 33.33%
+       ✅ Used:
+            • coke
+       ❌ Missing:
+            • sprite
+            • water
+
+  📦 REGULAR MODULE: calculate_ticket_predefined
+    Overall Option Coverage: 91.67% (11/12 options)
+
+    🔹 pizza_size: 100.00%
+       ✅ Used:
+            • large
+            • medium
+            • small
+       ❌ Missing:
+            • None
+
+    🔹 pizza_type: 83.33%
+       ✅ Used:
+            • carbonara
+            • four cheese
+            • hawaiian
+            • marinera
+            • vegetarian
+       ❌ Missing:
+            • margarita
+
+    🔹 drinks: 100.00%
+       ✅ Used:
+            • coke
+            • sprite
+            • water
+       ❌ Missing:
+            • None
+
+  📦 REGULAR MODULE: order_custom_pizza
+    Overall Option Coverage: 100.00% (12/12 options)
+
+    🔹 pizza_size: 100.00%
+       ✅ Used:
+            • large
+            • medium
+            • small
+       ❌ Missing:
+            • None
+
+    🔹 toppings: 100.00%
+       ✅ Used:
+            • bacon
+            • cheese
+            • chicken
+            • corn
+            • ham
+            • mushrooms
+            • olives
+            • pepper
+            • pepperoni
+       ❌ Missing:
+            • None
+
+  📦 REGULAR MODULE: order_drinks
+    Overall Option Coverage: 100.00% (3/3 options)
+
+    🔹 drinks: 100.00%
+       ✅ Used:
+            • coke
+            • sprite
+            • water
+       ❌ Missing:
+            • None
+
+  📦 REGULAR MODULE: order_predefined_pizza
+    Overall Option Coverage: 100.00% (9/9 options)
+
+    🔹 pizza_size: 100.00%
+       ✅ Used:
+            • large
+            • medium
+            • small
+       ❌ Missing:
+            • None
+
+    🔹 pizza_type: 100.00%
+       ✅ Used:
+            • carbonara
+            • four cheese
+            • hawaiian
+            • margherita
+            • marinera
+            • vegetarian
+       ❌ Missing:
+            • None
+
+  ❓ QA MODULE: pizza_qa
+    Overall Question Coverage: 100.00% (6/6 questions)
+    Unknown Questions Found: 64
+       ✅ Answered:
+            • How do I get the order? Do you deliver orders?
+            • How much time does it take to get an order?
+            • What are the opening hours?
+            • What are the prices of the beverages?
+            • What are the prices of the pizzas? How much do they cost?
+            • What types of pizza do you serve?
+       ❌ Unanswered:
+            • None
+       ❓ Unknown Questions (not in spec):
+            • Are there any combo deals for pizzas and drinks that I can choose from?
+            • Are there any combo deals if I order multiple pizzas or drinks?
+            • Are there any deals for ordering multiple pizzas, or am I just paying full price for each one?
+            • Are there any discounts available if I order multiple pizzas?
+            • Are there any discounts if I get a few pizzas, or is each one going to cost me an arm and a leg?
+            • Are there any gluten-free options for the pizzas?
+            • Are there any gluten-free pizza options available?
+            • Are there any promotions for ordering drinks with the pizza?
+            • Are there any special deals or combos if I order multiple pizzas?
+            • Are there any special deals or discounts available for my order?
+            • Are there any special deals or discounts available for pizza and drinks?
+            • Are there any special deals or discounts for ordering multiple pizzas?
+            • Are there any special deals or promotions available for pizza orders?
+            • Are there any toppings available for the Custom pizza?
+            • Are there any vegetarian or vegan pizza options available?
+            • Can I add any toppings to the Margarita pizza?
+            • Can I modify my order after I've placed it?
+            • Can I pay with cash when I pick it up?
+            • Can you confirm if extra mushrooms were added to my medium vegetarian pizza order?
+            • Can you tell me if I can pick up my order earlier than the estimated time?
+            • Can you tell me if there are any special deals or combos available for the pizzas?
+            • Can you tell me what other drinks are available?
+            • Do you have any deals or discounts available for this order?
+            • Do you have any promotions or deals on pizzas today?
+            • Do you have any sides like garlic bread or desserts available?
+            • Do you have any special deals or discounts for large orders?
+            • Do you have any special offers on pizzas today?
+            • Do you have garlic bread as a side option?
+            • Is the Margarita pizza the classic one with just tomato sauce and cheese, or do you throw in any surprises?
+            • Is the Vegetarian pizza a real option, or does it just come topped with regrets?
+            • Is there a way for me to add extra toppings after I've placed my order?
+            • Is there a way to specify extra toppings when ordering a pizza?
+            • Is there any way to ensure that my special requests, like extra mushrooms, are noted in my order?
+            • What about sides? Do you have anything like garlic knots or wings, and how much do they cost?
+            • What about the size options for the Custom pizza?
+            • What are the available sizes for your pizzas?
+            • What are the available toppings for custom pizzas?
+            • What are the ingredients in the Margarita pizza?
+            • What are the most popular toppings that people usually add to their pizzas?
+            • What are the payment options available for my order?
+            • What are the payment options available for placing an order?
+            • What are the prices for your custom pizzas?
+            • What are the prices of the pizzas?
+            • What can you tell me about ordering a pizza?
+            • What ingredients are included in the Margarita pizza?
+            • What is the estimated time for my order to be ready?
+            • What is the price of a large Carbonara pizza?
+            • What is the price of a large Four cheese pizza?
+            • What is the price of a large Hawaiian pizza?
+            • What is the price of a large Marinera pizza?
+            • What is the price of a large Vegetarian pizza?
+            • What is the price of a small Carbonara pizza?
+            • What is the price of the large Hawaiian pizza and the two Cokes combined?
+            • What kind of cheese do you use on the Margarita pizza?
+            • What sizes do your pizzas come in?
+            • What toppings can I choose for the Custom pizza?
+            • What toppings come standard on the Margarita pizza?
+            • What toppings do you recommend for a pizza?
+            • What types of cheese do you offer for the custom pizzas?
+            • What types of meats can I select for my custom pizza?
+            • What types of pizzas do you serve?
+            • What types of toppings can I choose for my custom pizza?
+            • What types of vegetables can I choose for my custom pizza?
+            • What's the pickup location for my order?
+
+  🧩 EMPTY MODULE: pizza_type
+
+    🔹 No detailed spec available.
+
+  🧩 EMPTY MODULE: sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom
+
+    🔹 No detailed spec available.
+
+  🧩 EMPTY MODULE: sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined
+
+    🔹 No detailed spec available.
+
+  🧩 EMPTY MODULE: top-level
+
+    🔹 No detailed spec available.

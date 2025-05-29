@@ -1,0 +1,273 @@
+🤖 CHATBOT COVERAGE ANALYSIS
+============================================================
+
+📊 OVERALL METRICS
+  • Module Activation: 100.00% (12/12)
+  • Field Usage:       96.43% (27/28)
+  • Option Coverage:   57.14% (48/84)
+  • Unknown Questions: 26 found
+
+🏗️ MODULE ACTIVATION STATUS
+
+  ✅ USED (12):
+       • calculate_price_custom
+       • calculate_price_predefined
+       • calculate_ticket_custom
+       • calculate_ticket_predefined
+       • order_custom_pizza
+       • order_drinks
+       • order_predefined_pizza
+       • pizza_qa
+       • pizza_type
+       • sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom
+       • sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined
+       • top-level
+
+🔍 MODULE COVERAGE OVERVIEW
+
+  🟢 EXCELLENT (80%+):
+    • calculate_price_predefined: 83.33% (10/12 options)
+    • calculate_ticket_predefined: 83.33% (10/12 options)
+    • order_predefined_pizza: 100.00% (9/9 options)
+    • pizza_qa: 83.33% (5/6 questions)
+    • pizza_type: 100.00% (no spec)
+    • sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom: 100.00% (no spec)
+    • sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined: 100.00% (no spec)
+    • top-level: 100.00% (no spec)
+
+  🟡 GOOD (50-79%):
+    • order_custom_pizza: 50.00% (6/12 options)
+    • order_drinks: 66.67% (2/3 options)
+
+  🟠 POOR (20-49%):
+    • calculate_price_custom: 20.00% (3/15 options)
+    • calculate_ticket_custom: 20.00% (3/15 options)
+
+📝 DETAILED BREAKDOWN PER MODULE
+
+  📦 REGULAR MODULE: calculate_price_custom
+    Overall Option Coverage: 20.00% (3/15 options)
+
+    🔹 pizza_size: 33.33%
+       ✅ Used:
+            • medium
+       ❌ Missing:
+            • large
+            • small
+
+    🔹 toppings: 11.11%
+       ✅ Used:
+            • pepperoni
+       ❌ Missing:
+            • bacon
+            • cheese
+            • chicken
+            • corn
+            • ham
+            • mushrooms
+            • olives
+            • pepper
+
+    🔹 drinks: 33.33%
+       ✅ Used:
+            • coke
+       ❌ Missing:
+            • sprite
+            • water
+
+  📦 REGULAR MODULE: calculate_price_predefined
+    Overall Option Coverage: 83.33% (10/12 options)
+
+    🔹 pizza_size: 100.00%
+       ✅ Used:
+            • large
+            • medium
+            • small
+       ❌ Missing:
+            • None
+
+    🔹 pizza_type: 83.33%
+       ✅ Used:
+            • carbonara
+            • four cheese
+            • hawaiian
+            • marinera
+            • vegetarian
+       ❌ Missing:
+            • margarita
+
+    🔹 drinks: 66.67%
+       ✅ Used:
+            • coke
+            • water
+       ❌ Missing:
+            • sprite
+
+  📦 REGULAR MODULE: calculate_ticket_custom
+    Overall Option Coverage: 20.00% (3/15 options)
+
+    🔹 pizza_size: 33.33%
+       ✅ Used:
+            • medium
+       ❌ Missing:
+            • large
+            • small
+
+    🔹 toppings: 11.11%
+       ✅ Used:
+            • pepperoni
+       ❌ Missing:
+            • bacon
+            • cheese
+            • chicken
+            • corn
+            • ham
+            • mushrooms
+            • olives
+            • pepper
+
+    🔹 drinks: 33.33%
+       ✅ Used:
+            • coke
+       ❌ Missing:
+            • sprite
+            • water
+
+  📦 REGULAR MODULE: calculate_ticket_predefined
+    Overall Option Coverage: 83.33% (10/12 options)
+
+    🔹 pizza_size: 100.00%
+       ✅ Used:
+            • large
+            • medium
+            • small
+       ❌ Missing:
+            • None
+
+    🔹 pizza_type: 83.33%
+       ✅ Used:
+            • carbonara
+            • four cheese
+            • hawaiian
+            • marinera
+            • vegetarian
+       ❌ Missing:
+            • margarita
+
+    🔹 drinks: 66.67%
+       ✅ Used:
+            • coke
+            • water
+       ❌ Missing:
+            • sprite
+
+  📦 REGULAR MODULE: order_custom_pizza
+    Overall Option Coverage: 50.00% (6/12 options)
+
+    🔹 pizza_size: 100.00%
+       ✅ Used:
+            • large
+            • medium
+            • small
+       ❌ Missing:
+            • None
+
+    🔹 toppings: 33.33%
+       ✅ Used:
+            • cheese
+            • ham
+            • pepperoni
+       ❌ Missing:
+            • bacon
+            • chicken
+            • corn
+            • mushrooms
+            • olives
+            • pepper
+
+  📦 REGULAR MODULE: order_drinks
+    Overall Option Coverage: 66.67% (2/3 options)
+
+    🔹 drinks: 66.67%
+       ✅ Used:
+            • coke
+            • water
+       ❌ Missing:
+            • sprite
+
+  📦 REGULAR MODULE: order_predefined_pizza
+    Overall Option Coverage: 100.00% (9/9 options)
+
+    🔹 pizza_size: 100.00%
+       ✅ Used:
+            • large
+            • medium
+            • small
+       ❌ Missing:
+            • None
+
+    🔹 pizza_type: 100.00%
+       ✅ Used:
+            • carbonara
+            • four cheese
+            • hawaiian
+            • margherita
+            • marinera
+            • vegetarian
+       ❌ Missing:
+            • None
+
+  ❓ QA MODULE: pizza_qa
+    Overall Question Coverage: 83.33% (5/6 questions)
+    Unknown Questions Found: 26
+       ✅ Answered:
+            • How do I get the order? Do you deliver orders?
+            • What are the opening hours?
+            • What are the prices of the beverages?
+            • What are the prices of the pizzas? How much do they cost?
+            • What types of pizza do you serve?
+       ❌ Unanswered:
+            • How much time does it take to get an order?
+       ❓ Unknown Questions (not in spec):
+            • Are there any combo deals for pizzas and drinks that I can choose from?
+            • Are there any combo deals if I order multiple pizzas or drinks?
+            • Are there any deals for ordering multiple pizzas, or am I just paying full price for each one?
+            • Are there any discounts available if I order multiple pizzas?
+            • Are there any discounts if I get a few pizzas, or is each one going to cost me an arm and a leg?
+            • Are there any gluten-free options for the pizzas?
+            • Are there any special deals or combos if I order multiple pizzas?
+            • Are there any special deals or discounts available for my order?
+            • Can I add any toppings to the Margarita pizza?
+            • Can I modify my order after I've placed it?
+            • Can I pay with cash when I pick it up?
+            • Can you tell me if I can pick up my order earlier than the estimated time?
+            • Can you tell me if there are any special deals or combos available for the pizzas?
+            • Do you have any deals or discounts available for this order?
+            • Do you have any promotions or deals on pizzas today?
+            • Do you have any sides like garlic bread or desserts available?
+            • Do you have any special offers on pizzas today?
+            • Do you have garlic bread as a side option?
+            • Is the Margarita pizza the classic one with just tomato sauce and cheese, or do you throw in any surprises?
+            • Is the Vegetarian pizza a real option, or does it just come topped with regrets?
+            • What about sides? Do you have anything like garlic knots or wings, and how much do they cost?
+            • What are the ingredients in the Margarita pizza?
+            • What are the prices of the pizzas?
+            • What kind of cheese do you use on the Margarita pizza?
+            • What toppings come standard on the Margarita pizza?
+            • What's the pickup location for my order?
+
+  🧩 EMPTY MODULE: pizza_type
+
+    🔹 No detailed spec available.
+
+  🧩 EMPTY MODULE: sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom
+
+    🔹 No detailed spec available.
+
+  🧩 EMPTY MODULE: sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined
+
+    🔹 No detailed spec available.
+
+  🧩 EMPTY MODULE: top-level
+
+    🔹 No detailed spec available.

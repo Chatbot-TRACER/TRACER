@@ -1,0 +1,133 @@
+{
+  "global_summary": {
+    "module_activation_coverage": {
+      "percentage": 100.0,
+      "activated_count": 3,
+      "total_defined_modules": 3
+    },
+    "field_usage_coverage": {
+      "percentage": 75.0,
+      "used_field_count": 6,
+      "total_defined_fields": 8,
+      "missing_field_count": 2
+    },
+    "option_value_coverage": {
+      "percentage": 55.56,
+      "covered_option_count": 5,
+      "total_defined_options": 9,
+      "missing_option_count": 4
+    },
+    "unknown_questions": {
+      "total_count": 9
+    }
+  },
+  "module_lists": {
+    "used_modules": [
+      "make_appointment",
+      "top-level",
+      "vetcen_qa"
+    ],
+    "unused_modules": [],
+    "total_modules": 3
+  },
+  "module_details": {
+    "make_appointment": {
+      "module_type": "regular",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 3,
+        "used_count_in_module": 3,
+        "missing_count_in_module": 0,
+        "used_fields_list": [
+          "date",
+          "service",
+          "time"
+        ],
+        "missing_fields_list": []
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 50.0,
+        "total_defined_options_in_module": 4,
+        "covered_options_in_module_count": 2,
+        "missing_options_in_module_count": 2,
+        "used_options_summary_list": [
+          "service: Dental health and cleaning",
+          "service: Vaccination"
+        ],
+        "missing_options_summary_list": [
+          "service: Lab or diagnostic testing",
+          "service: Physical examination"
+        ],
+        "details_per_option_field": {
+          "service": {
+            "percentage": 50.0,
+            "defined_options_count": 4,
+            "covered_options_count": 2,
+            "missing_options_count": 2,
+            "used_values": [
+              "Dental health and cleaning",
+              "Vaccination"
+            ],
+            "missing_values": [
+              "Lab or diagnostic testing",
+              "Physical examination"
+            ]
+          }
+        }
+      }
+    },
+    "vetcen_qa": {
+      "module_type": "qa",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 60.0,
+        "total_defined_in_module": 5,
+        "used_count_in_module": 3,
+        "missing_count_in_module": 2,
+        "used_fields_list": [
+          "What can I do to take care of my pet?",
+          "What kind of animals do you accept?",
+          "When are you open?"
+        ],
+        "missing_fields_list": [
+          "How late are you open on weekends?",
+          "How much does a vet visit cost?"
+        ],
+        "used_questions_list": [
+          "What can I do to take care of my pet?",
+          "What kind of animals do you accept?",
+          "When are you open?"
+        ],
+        "missing_questions_list": [
+          "How late are you open on weekends?",
+          "How much does a vet visit cost?"
+        ],
+        "unknown_questions_list": [
+          "Are there any specific vaccines that you recommend based on common diseases in my area?",
+          "Is there a 24-hour emergency vet service you can recommend if your center is closed?",
+          "Is there a 24-hour emergency vet service you can refer me to if you're closed?",
+          "What are your business hours of operation?",
+          "What is the cost of dental cleaning services for dogs at your veterinary center?",
+          "What services do you offer at the veterinary center?",
+          "What specific vaccines do you recommend based on the common diseases prevalent in this area?",
+          "What treatments can rabbits receive if they are diagnosed with myxomatosis?",
+          "What vaccinations are provided for dogs at your veterinary center?"
+        ],
+        "unknown_questions_count": 9
+      }
+    },
+    "top-level": {
+      "module_type": "empty",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 0,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 0,
+        "used_fields_list": [],
+        "missing_fields_list": []
+      }
+    }
+  }
+}

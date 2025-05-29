@@ -1,0 +1,127 @@
+{
+  "specification": {
+    "modules": [
+      "photo_qa",
+      "session_details",
+      "sequence-session_details-estimate_price",
+      "call_appointment",
+      "top-level",
+      "estimate_price"
+    ],
+    "photo_qa": {
+      "When are you open?": [],
+      "Where is the shop?": [],
+      "Tell me about your portfolio, what important projects have you worked on?": [],
+      "Do you charge per hour or by number of photos?": [],
+      "What media do you work on?": []
+    },
+    "call_appointment": {
+      "name": "Person name",
+      "phone_number": "Phone number",
+      "email": "email",
+      "appointment": "date"
+    },
+    "session_details": {
+      "media": [
+        "photography",
+        "video",
+        "3D rendering"
+      ],
+      "number_artworks": "number",
+      "type_artworks": [
+        "picture",
+        "sculpture",
+        "ceramic"
+      ]
+    },
+    "estimate_price": {
+      "media": [
+        "photography",
+        "video",
+        "3D rendering"
+      ],
+      "number_artworks": "number",
+      "type_artworks": [
+        "picture",
+        "sculpture",
+        "ceramic"
+      ]
+    },
+    "sequence-session_details-estimate_price": {},
+    "top-level": {}
+  },
+  "footprint": {
+    "modules": [
+      "call_appointment",
+      "estimate_price",
+      "photo_qa",
+      "session_details",
+      "top-level"
+    ],
+    "unknown": [],
+    "photo_qa": {
+      "When are you open?": [
+        "When are you open?"
+      ],
+      "Where is the shop?": [
+        "Where is the shop?"
+      ],
+      "Tell me about your portfolio, what important projects have you worked on?": [],
+      "Do you charge per hour or by number of photos?": [],
+      "What media do you work on?": [],
+      "unknown": [
+        "What specific elements can influence the pricing of your photography services?"
+      ]
+    },
+    "call_appointment": {
+      "name": [
+        "Alex",
+        "John Doe"
+      ],
+      "phone_number": [
+        "555-123-4567",
+        "555-1234"
+      ],
+      "email": [
+        "john.doe@example.com"
+      ],
+      "appointment": [
+        "03/11/2024",
+        "29/10/2024",
+        "30/10/2024"
+      ]
+    },
+    "session_details": {
+      "media": [
+        "photography",
+        "video"
+      ],
+      "number_artworks": [
+        3.0,
+        5.0,
+        10.0
+      ],
+      "type_artworks": [
+        "picture",
+        "sculpture"
+      ]
+    },
+    "estimate_price": {
+      "media": [
+        "photography",
+        "video"
+      ],
+      "number_artworks": [
+        3.0,
+        5.0,
+        10.0
+      ],
+      "type_artworks": [
+        "picture",
+        "sculpture"
+      ]
+    },
+    "sequence-session_details-estimate_price": {},
+    "top-level": {}
+  }
+}

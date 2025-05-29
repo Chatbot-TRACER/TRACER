@@ -1,0 +1,148 @@
+{
+  "global_summary": {
+    "module_activation_coverage": {
+      "percentage": 100.0,
+      "activated_count": 3,
+      "total_defined_modules": 3
+    },
+    "field_usage_coverage": {
+      "percentage": 71.43,
+      "used_field_count": 5,
+      "total_defined_fields": 7,
+      "missing_field_count": 2
+    },
+    "option_value_coverage": {
+      "percentage": 50.0,
+      "covered_option_count": 3,
+      "total_defined_options": 6,
+      "missing_option_count": 3
+    },
+    "unknown_questions": {
+      "total_count": 30
+    }
+  },
+  "module_lists": {
+    "used_modules": [
+      "bike_qa",
+      "make_appointment",
+      "top-level"
+    ],
+    "unused_modules": [],
+    "total_modules": 3
+  },
+  "module_details": {
+    "make_appointment": {
+      "module_type": "regular",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 3,
+        "used_count_in_module": 3,
+        "missing_count_in_module": 0,
+        "used_fields_list": [
+          "date",
+          "service",
+          "time"
+        ],
+        "missing_fields_list": []
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 50.0,
+        "total_defined_options_in_module": 2,
+        "covered_options_in_module_count": 1,
+        "missing_options_in_module_count": 1,
+        "used_options_summary_list": [
+          "service: repair"
+        ],
+        "missing_options_summary_list": [
+          "service: tune-up"
+        ],
+        "details_per_option_field": {
+          "service": {
+            "percentage": 50.0,
+            "defined_options_count": 2,
+            "covered_options_count": 1,
+            "missing_options_count": 1,
+            "used_values": [
+              "repair"
+            ],
+            "missing_values": [
+              "tune-up"
+            ]
+          }
+        }
+      }
+    },
+    "bike_qa": {
+      "module_type": "qa",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 50.0,
+        "total_defined_in_module": 4,
+        "used_count_in_module": 2,
+        "missing_count_in_module": 2,
+        "used_fields_list": [
+          "What can I do to take care of my bike?",
+          "Which is the price of a new tire?"
+        ],
+        "missing_fields_list": [
+          "Which is the price of a new seat?",
+          "Which is the price of a tune-up?"
+        ],
+        "used_questions_list": [
+          "What can I do to take care of my bike?",
+          "Which is the price of a new tire?"
+        ],
+        "missing_questions_list": [
+          "Which is the price of a new seat?",
+          "Which is the price of a tune-up?"
+        ],
+        "unknown_questions_list": [
+          "Are there any nearby bike repair shops that are open on weekends?",
+          "Can you explain the steps involved in fixing a flat tire?",
+          "Can you provide details about Mountain Bikes?",
+          "Can you provide details about electric bikes?",
+          "Can you tell me more about the Gravel Bikes you have?",
+          "Do you offer any services for fixing flat tires?",
+          "What are some popular brands of hybrid bikes that you recommend for beginners?",
+          "What are the prices for a set of four all-season tires from Bridgestone?",
+          "What are the prices for a set of four all-season tires from Pirelli?",
+          "What are the prices for the bike lights?",
+          "What is the price for a Michelin Touring tire, size 205/55R16?",
+          "What is the price for a set of four all-season tires from the brand Bridgestone?",
+          "What is the price for a set of four all-season tires from the brand Continental?",
+          "What is the price for a set of four all-season tires from the brand Dunlop?",
+          "What is the price for a set of four all-season tires from the brand Michelin?",
+          "What is the price for a set of four all-season tires from the brand Pirelli?",
+          "What is the price for a set of four all-season tires?",
+          "What is the price for a standard tune-up?",
+          "What is the price for a tune-up?",
+          "What is the price of a new tire?",
+          "What is the price of a set of four all-season tires from the brand Goodyear?",
+          "What is the price of a set of four all-season tires from the brand Yokohama?",
+          "What is the price of a tune-up?",
+          "What specific issues do you typically handle with brake adjustments?",
+          "What specific maintenance options do you provide for bike repairs?",
+          "What types of bikes do you have available?",
+          "What types of emergency repair services do you provide?",
+          "What types of specific maintenance options do you offer for bike repairs?",
+          "What types of specific maintenance services do you offer for bike repairs?",
+          "Which is the price of a repair?"
+        ],
+        "unknown_questions_count": 30
+      }
+    },
+    "top-level": {
+      "module_type": "empty",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 0,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 0,
+        "used_fields_list": [],
+        "missing_fields_list": []
+      }
+    }
+  }
+}

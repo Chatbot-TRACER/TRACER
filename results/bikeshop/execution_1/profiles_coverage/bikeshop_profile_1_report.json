@@ -1,0 +1,122 @@
+{
+  "global_summary": {
+    "module_activation_coverage": {
+      "percentage": 100.0,
+      "activated_count": 3,
+      "total_defined_modules": 3
+    },
+    "field_usage_coverage": {
+      "percentage": 71.43,
+      "used_field_count": 5,
+      "total_defined_fields": 7,
+      "missing_field_count": 2
+    },
+    "option_value_coverage": {
+      "percentage": 50.0,
+      "covered_option_count": 3,
+      "total_defined_options": 6,
+      "missing_option_count": 3
+    },
+    "unknown_questions": {
+      "total_count": 4
+    }
+  },
+  "module_lists": {
+    "used_modules": [
+      "bike_qa",
+      "make_appointment",
+      "top-level"
+    ],
+    "unused_modules": [],
+    "total_modules": 3
+  },
+  "module_details": {
+    "make_appointment": {
+      "module_type": "regular",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 3,
+        "used_count_in_module": 3,
+        "missing_count_in_module": 0,
+        "used_fields_list": [
+          "date",
+          "service",
+          "time"
+        ],
+        "missing_fields_list": []
+      },
+      "option_coverage": {
+        "overall_percentage_for_module": 50.0,
+        "total_defined_options_in_module": 2,
+        "covered_options_in_module_count": 1,
+        "missing_options_in_module_count": 1,
+        "used_options_summary_list": [
+          "service: repair"
+        ],
+        "missing_options_summary_list": [
+          "service: tune-up"
+        ],
+        "details_per_option_field": {
+          "service": {
+            "percentage": 50.0,
+            "defined_options_count": 2,
+            "covered_options_count": 1,
+            "missing_options_count": 1,
+            "used_values": [
+              "repair"
+            ],
+            "missing_values": [
+              "tune-up"
+            ]
+          }
+        }
+      }
+    },
+    "bike_qa": {
+      "module_type": "qa",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 50.0,
+        "total_defined_in_module": 4,
+        "used_count_in_module": 2,
+        "missing_count_in_module": 2,
+        "used_fields_list": [
+          "What can I do to take care of my bike?",
+          "Which is the price of a new tire?"
+        ],
+        "missing_fields_list": [
+          "Which is the price of a new seat?",
+          "Which is the price of a tune-up?"
+        ],
+        "used_questions_list": [
+          "What can I do to take care of my bike?",
+          "Which is the price of a new tire?"
+        ],
+        "missing_questions_list": [
+          "Which is the price of a new seat?",
+          "Which is the price of a tune-up?"
+        ],
+        "unknown_questions_list": [
+          "What is the cost of tire installation?",
+          "What is the price of a bike tune-up?",
+          "What is the price of a helmet?",
+          "What is the price of a new tire?"
+        ],
+        "unknown_questions_count": 4
+      }
+    },
+    "top-level": {
+      "module_type": "empty",
+      "activated": true,
+      "field_coverage": {
+        "percentage": 100.0,
+        "total_defined_in_module": 0,
+        "used_count_in_module": 0,
+        "missing_count_in_module": 0,
+        "used_fields_list": [],
+        "missing_fields_list": []
+      }
+    }
+  }
+}

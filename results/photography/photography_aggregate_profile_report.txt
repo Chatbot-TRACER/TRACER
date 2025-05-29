@@ -1,0 +1,97 @@
+🤖 CHATBOT COVERAGE ANALYSIS
+============================================================
+
+📊 OVERALL METRICS
+  • Module Activation: 100.00% (6/6)
+  • Field Usage:       93.33% (14/15)
+  • Option Coverage:   94.12% (16/17)
+  • Unknown Questions: 6 found
+
+🏗️ MODULE ACTIVATION STATUS
+
+  ✅ USED (6):
+       • call_appointment
+       • estimate_price
+       • photo_qa
+       • sequence-session_details-estimate_price
+       • session_details
+       • top-level
+
+🔍 MODULE COVERAGE OVERVIEW
+
+  🟢 EXCELLENT (80%+):
+    • call_appointment: 100.00% (0/0 options)
+    • estimate_price: 100.00% (6/6 options)
+    • photo_qa: 80.00% (4/5 questions)
+    • sequence-session_details-estimate_price: 100.00% (no spec)
+    • session_details: 100.00% (6/6 options)
+    • top-level: 100.00% (no spec)
+
+📝 DETAILED BREAKDOWN PER MODULE
+
+  📦 REGULAR MODULE: call_appointment
+    Overall Option Coverage: 100.00% (0/0 options)
+
+  📦 REGULAR MODULE: estimate_price
+    Overall Option Coverage: 100.00% (6/6 options)
+
+    🔹 media: 100.00%
+       ✅ Used:
+            • 3D rendering
+            • photography
+            • video
+       ❌ Missing:
+            • None
+
+    🔹 type_artworks: 100.00%
+       ✅ Used:
+            • ceramic
+            • picture
+            • sculpture
+       ❌ Missing:
+            • None
+
+  ❓ QA MODULE: photo_qa
+    Overall Question Coverage: 80.00% (4/5 questions)
+    Unknown Questions Found: 6
+       ✅ Answered:
+            • Tell me about your portfolio, what important projects have you worked on?
+            • What media do you work on?
+            • When are you open?
+            • Where is the shop?
+       ❌ Unanswered:
+            • Do you charge per hour or by number of photos?
+       ❓ Unknown Questions (not in spec):
+            • Are weekend photography sessions available?
+            • Are you open on Saturdays?
+            • What are the pricing methods you use for your services?
+            • What are your opening hours?
+            • What factors influence the cost of photography sessions?
+            • What specific elements can influence the pricing of your photography services?
+
+  🧩 EMPTY MODULE: sequence-session_details-estimate_price
+
+    🔹 No detailed spec available.
+
+  📦 REGULAR MODULE: session_details
+    Overall Option Coverage: 100.00% (6/6 options)
+
+    🔹 media: 100.00%
+       ✅ Used:
+            • 3D rendering
+            • photography
+            • video
+       ❌ Missing:
+            • None
+
+    🔹 type_artworks: 100.00%
+       ✅ Used:
+            • ceramic
+            • picture
+            • sculpture
+       ❌ Missing:
+            • None
+
+  🧩 EMPTY MODULE: top-level
+
+    🔹 No detailed spec available.

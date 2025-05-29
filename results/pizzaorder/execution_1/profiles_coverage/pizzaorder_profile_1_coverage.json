@@ -1,0 +1,307 @@
+{
+  "specification": {
+    "modules": [
+      "calculate_ticket_predefined",
+      "top-level",
+      "order_drinks",
+      "pizza_qa",
+      "calculate_price_predefined",
+      "sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined",
+      "order_predefined_pizza",
+      "sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom",
+      "calculate_price_custom",
+      "pizza_type",
+      "calculate_ticket_custom",
+      "order_custom_pizza"
+    ],
+    "pizza_qa": {
+      "What are the opening hours?": [],
+      "What types of pizza do you serve?": [],
+      "What are the prices of the pizzas? How much do they cost?": [],
+      "What are the prices of the beverages?": [],
+      "How do I get the order? Do you deliver orders?": [],
+      "How much time does it take to get an order?": []
+    },
+    "order_predefined_pizza": {
+      "pizza_size": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "pizza_type": [
+        "margherita",
+        "carbonara",
+        "marinera",
+        "hawaiian",
+        "four cheese",
+        "vegetarian"
+      ]
+    },
+    "order_drinks": {
+      "num_drinks": "integer",
+      "drinks": [
+        "coke",
+        "sprite",
+        "water"
+      ]
+    },
+    "calculate_price_predefined": {
+      "pizza_size": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "pizza_type": [
+        "margarita",
+        "carbonara",
+        "marinera",
+        "hawaiian",
+        "four cheese",
+        "vegetarian"
+      ],
+      "num_drinks": "integer",
+      "drinks": [
+        "coke",
+        "sprite",
+        "water"
+      ]
+    },
+    "calculate_ticket_predefined": {
+      "pizza_size": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "pizza_type": [
+        "margarita",
+        "carbonara",
+        "marinera",
+        "hawaiian",
+        "four cheese",
+        "vegetarian"
+      ],
+      "num_drinks": "integer",
+      "drinks": [
+        "coke",
+        "sprite",
+        "water"
+      ]
+    },
+    "sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined": {},
+    "order_custom_pizza": {
+      "pizza_size": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "toppings": [
+        "cheese",
+        "mushrooms",
+        "pepper",
+        "ham",
+        "bacon",
+        "pepperoni",
+        "olives",
+        "corn",
+        "chicken"
+      ]
+    },
+    "calculate_price_custom": {
+      "pizza_size": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "toppings": [
+        "cheese",
+        "mushrooms",
+        "pepper",
+        "ham",
+        "bacon",
+        "pepperoni",
+        "olives",
+        "corn",
+        "chicken"
+      ],
+      "num_drinks": "integer",
+      "drinks": [
+        "coke",
+        "sprite",
+        "water"
+      ]
+    },
+    "calculate_ticket_custom": {
+      "pizza_size": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "toppings": [
+        "cheese",
+        "mushrooms",
+        "pepper",
+        "ham",
+        "bacon",
+        "pepperoni",
+        "olives",
+        "corn",
+        "chicken"
+      ],
+      "num_drinks": "integer",
+      "drinks": [
+        "coke",
+        "sprite",
+        "water"
+      ]
+    },
+    "sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom": {},
+    "pizza_type": {},
+    "top-level": {}
+  },
+  "footprint": {
+    "modules": [
+      "calculate_price_predefined",
+      "calculate_ticket_predefined",
+      "order_drinks",
+      "order_predefined_pizza",
+      "pizza_qa",
+      "pizza_type",
+      "top-level"
+    ],
+    "unknown": [],
+    "pizza_qa": {
+      "What are the opening hours?": [
+        "What are the opening hours?"
+      ],
+      "What types of pizza do you serve?": [
+        "What types of pizza do you serve?"
+      ],
+      "What are the prices of the pizzas? How much do they cost?": [
+        "What are the prices of the pizzas? How much do they cost?"
+      ],
+      "What are the prices of the beverages?": [
+        "What are the prices of the beverages?"
+      ],
+      "How do I get the order? Do you deliver orders?": [
+        "How do I get the order? Do you deliver orders?"
+      ],
+      "How much time does it take to get an order?": [
+        "How much time does it take to get an order?"
+      ],
+      "unknown": [
+        "Are there any gluten-free pizza options available?",
+        "Are there any special deals or discounts available for pizza and drinks?",
+        "Are there any special deals or discounts for ordering multiple pizzas?",
+        "Are there any special deals or promotions available for pizza orders?",
+        "Are there any toppings available for the Custom pizza?",
+        "Are there any vegetarian or vegan pizza options available?",
+        "Can you tell me what other drinks are available?",
+        "Do you have any special deals or discounts for large orders?",
+        "What about the size options for the Custom pizza?",
+        "What are the payment options available for my order?",
+        "What are the prices for your custom pizzas?",
+        "What can you tell me about ordering a pizza?",
+        "What ingredients are included in the Margarita pizza?",
+        "What is the estimated time for my order to be ready?",
+        "What is the price of a large Carbonara pizza?",
+        "What is the price of a large Four cheese pizza?",
+        "What is the price of a large Hawaiian pizza?",
+        "What is the price of a large Marinera pizza?",
+        "What is the price of a large Vegetarian pizza?",
+        "What is the price of a small Carbonara pizza?",
+        "What toppings can I choose for the Custom pizza?",
+        "What toppings do you recommend for a pizza?",
+        "What types of pizzas do you serve?"
+      ]
+    },
+    "order_predefined_pizza": {
+      "pizza_size": [
+        "large",
+        "medium",
+        "small"
+      ],
+      "pizza_type": [
+        "margherita"
+      ]
+    },
+    "order_drinks": {
+      "num_drinks": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "drinks": [
+        "coke",
+        "sprite",
+        "water"
+      ]
+    },
+    "calculate_price_predefined": {
+      "pizza_size": [
+        "large",
+        "medium",
+        "small"
+      ],
+      "pizza_type": [
+        "margherita"
+      ],
+      "num_drinks": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "drinks": [
+        "coke",
+        "sprite",
+        "water"
+      ]
+    },
+    "calculate_ticket_predefined": {
+      "pizza_size": [
+        "large",
+        "medium",
+        "small"
+      ],
+      "pizza_type": [
+        "margherita"
+      ],
+      "num_drinks": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "drinks": [
+        "coke",
+        "sprite",
+        "water"
+      ]
+    },
+    "sequence-order_predefined_pizza-order_drinks-calculate_price_predefined-calculate_ticket_predefined": {},
+    "order_custom_pizza": {
+      "pizza_size": [],
+      "toppings": []
+    },
+    "calculate_price_custom": {
+      "pizza_size": [],
+      "toppings": [],
+      "num_drinks": [],
+      "drinks": []
+    },
+    "calculate_ticket_custom": {
+      "pizza_size": [],
+      "toppings": [],
+      "num_drinks": [],
+      "drinks": []
+    },
+    "sequence-order_custom_pizza-order_drinks-calculate_price_custom-calculate_ticket_custom": {},
+    "pizza_type": {},
+    "top-level": {}
+  }
+}

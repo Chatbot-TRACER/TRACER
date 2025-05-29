@@ -1,0 +1,142 @@
+{
+  "specification": {
+    "modules": [
+      "estimate_price",
+      "top-level",
+      "sequence-session_details-estimate_price",
+      "call_appointment",
+      "photo_qa",
+      "session_details"
+    ],
+    "photo_qa": {
+      "When are you open?": [],
+      "Where is the shop?": [],
+      "Tell me about your portfolio, what important projects have you worked on?": [],
+      "Do you charge per hour or by number of photos?": [],
+      "What media do you work on?": []
+    },
+    "call_appointment": {
+      "name": "Person name",
+      "phone_number": "Phone number",
+      "email": "email",
+      "appointment": "date"
+    },
+    "session_details": {
+      "media": [
+        "photography",
+        "video",
+        "3D rendering"
+      ],
+      "number_artworks": "number",
+      "type_artworks": [
+        "picture",
+        "sculpture",
+        "ceramic"
+      ]
+    },
+    "estimate_price": {
+      "media": [
+        "photography",
+        "video",
+        "3D rendering"
+      ],
+      "number_artworks": "number",
+      "type_artworks": [
+        "picture",
+        "sculpture",
+        "ceramic"
+      ]
+    },
+    "sequence-session_details-estimate_price": {},
+    "top-level": {}
+  },
+  "footprint": {
+    "modules": [
+      "call_appointment",
+      "estimate_price",
+      "photo_qa",
+      "session_details",
+      "top-level"
+    ],
+    "unknown": [],
+    "photo_qa": {
+      "When are you open?": [
+        "When are you open?"
+      ],
+      "Where is the shop?": [
+        "Where is the shop?"
+      ],
+      "Tell me about your portfolio, what important projects have you worked on?": [],
+      "Do you charge per hour or by number of photos?": [],
+      "What media do you work on?": [],
+      "unknown": [
+        "Are weekend photography sessions available?",
+        "What are your opening hours?",
+        "What factors influence the cost of photography sessions?"
+      ]
+    },
+    "call_appointment": {
+      "name": [
+        "Jane Doe",
+        "John Smith",
+        "The Johnson Estate"
+      ],
+      "phone_number": [
+        "555-123-4567",
+        "555-246-8013",
+        "555-369-1215",
+        "555-789-3456",
+        "555-987-6543"
+      ],
+      "email": [
+        "johnsmith@email.com"
+      ],
+      "appointment": [
+        "03/11/2024",
+        "10/11/2024",
+        "27/10/2024",
+        "28/10/2024",
+        "29/10/2024",
+        "30/10/2024"
+      ]
+    },
+    "session_details": {
+      "media": [
+        "photography"
+      ],
+      "number_artworks": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0
+      ],
+      "type_artworks": [
+        "ceramic",
+        "picture",
+        "sculpture"
+      ]
+    },
+    "estimate_price": {
+      "media": [
+        "photography"
+      ],
+      "number_artworks": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0
+      ],
+      "type_artworks": [
+        "ceramic",
+        "picture",
+        "sculpture"
+      ]
+    },
+    "sequence-session_details-estimate_price": {},
+    "top-level": {}
+  }
+}

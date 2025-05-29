@@ -1,0 +1,58 @@
+🤖 CHATBOT COVERAGE ANALYSIS
+============================================================
+
+📊 OVERALL METRICS
+  • Module Activation: 100.00% (3/3)
+  • Field Usage:       62.50% (5/8)
+  • Option Coverage:   44.44% (4/9)
+  • Unknown Questions: 3 found
+
+🏗️ MODULE ACTIVATION STATUS
+
+  ✅ USED (3):
+       • make_appointment
+       • top-level
+       • vetcen_qa
+
+🔍 MODULE COVERAGE OVERVIEW
+
+  🟢 EXCELLENT (80%+):
+    • top-level: 100.00% (no spec)
+
+  🟡 GOOD (50-79%):
+    • make_appointment: 50.00% (2/4 options)
+
+  🟠 POOR (20-49%):
+    • vetcen_qa: 40.00% (2/5 questions)
+
+📝 DETAILED BREAKDOWN PER MODULE
+
+  📦 REGULAR MODULE: make_appointment
+    Overall Option Coverage: 50.00% (2/4 options)
+
+    🔹 service: 50.00%
+       ✅ Used:
+            • Dental health and cleaning
+            • Physical examination
+       ❌ Missing:
+            • Lab or diagnostic testing
+            • Vaccination
+
+  🧩 EMPTY MODULE: top-level
+
+    🔹 No detailed spec available.
+
+  ❓ QA MODULE: vetcen_qa
+    Overall Question Coverage: 40.00% (2/5 questions)
+    Unknown Questions Found: 3
+       ✅ Answered:
+            • How much does a vet visit cost?
+            • What kind of animals do you accept?
+       ❌ Unanswered:
+            • How late are you open on weekends?
+            • What can I do to take care of my pet?
+            • When are you open?
+       ❓ Unknown Questions (not in spec):
+            • What are some typical diagnostic tests that may be conducted during a physical examination?
+            • What diseases are rabbits typically vaccinated against?
+            • What is the typical price range for a veterinary visit?

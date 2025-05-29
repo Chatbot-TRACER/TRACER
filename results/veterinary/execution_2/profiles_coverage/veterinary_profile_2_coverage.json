@@ -1,0 +1,90 @@
+{
+  "specification": {
+    "modules": [
+      "vetcen_qa",
+      "top-level",
+      "make_appointment"
+    ],
+    "make_appointment": {
+      "date": "date",
+      "time": "time",
+      "service": [
+        "Physical examination",
+        "Vaccination",
+        "Dental health and cleaning",
+        "Lab or diagnostic testing"
+      ]
+    },
+    "vetcen_qa": {
+      "When are you open?": [],
+      "How late are you open on weekends?": [],
+      "How much does a vet visit cost?": [],
+      "What kind of animals do you accept?": [],
+      "What can I do to take care of my pet?": []
+    },
+    "top-level": {}
+  },
+  "footprint": {
+    "modules": [
+      "make_appointment",
+      "top-level",
+      "vetcen_qa"
+    ],
+    "unknown": [],
+    "make_appointment": {
+      "date": [
+        "01/11/2023",
+        "03/11/2023",
+        "04/10/2023",
+        "10/10/2023",
+        "10/11/2023",
+        "15/11/2023",
+        "25/10/2023",
+        "26/10/2023",
+        "27/10/2023",
+        "28/10/2023",
+        "30/10/2023"
+      ],
+      "time": [
+        "09:30:00",
+        "10:00:00",
+        "11:00:00",
+        "13:00:00",
+        "13:30:00",
+        "14:30:00",
+        "15:00:00",
+        "16:00:00",
+        "16:15:00"
+      ],
+      "service": [
+        "Dental health and cleaning",
+        "Vaccination"
+      ]
+    },
+    "vetcen_qa": {
+      "When are you open?": [
+        "When are you open?"
+      ],
+      "How late are you open on weekends?": [],
+      "How much does a vet visit cost?": [],
+      "What kind of animals do you accept?": [
+        "What kind of animals do you accept?"
+      ],
+      "What can I do to take care of my pet?": [
+        "What can I do to take care of my pet?"
+      ],
+      "unknown": [
+        "Are there any specific vaccines that you recommend based on common diseases in my area?",
+        "Is there a 24-hour emergency vet service you can recommend if your center is closed?",
+        "Is there a 24-hour emergency vet service you can refer me to if you're closed?",
+        "What are your business hours of operation?",
+        "What is the cost of dental cleaning services for dogs at your veterinary center?",
+        "What services do you offer at the veterinary center?",
+        "What specific vaccines do you recommend based on the common diseases prevalent in this area?",
+        "What treatments can rabbits receive if they are diagnosed with myxomatosis?",
+        "What vaccinations are provided for dogs at your veterinary center?"
+      ]
+    },
+    "top-level": {}
+  }
+}
