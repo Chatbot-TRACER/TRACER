@@ -8,7 +8,7 @@ Replaces:
 
 With:
   goal_style:
-    step: X
+    steps: X
 """
 
 import glob
@@ -26,11 +26,11 @@ def update_goal_style_in_file(file_path):
         # This pattern looks for the goal_style section with all_answered configuration
         pattern = r"(goal_style:\s*\n\s+)all_answered:\s*\n\s+export:\s*false\s*\n\s+limit:\s*(\d+)"
 
-        # Replace with step configuration
+        # Replace with steps configuration
         def replacement(match):
             indent = match.group(1)
             limit_value = match.group(2)
-            return f"{indent}step: {limit_value}"
+            return f"{indent}steps: {limit_value}"
 
         # Check if pattern exists before replacement
         if re.search(pattern, content):
