@@ -85,8 +85,8 @@ for chatbot_key in "${!CHATBOTS[@]}"; do # Iterate using the logical chatbot key
     # Path for sensei_chat.py output (defined in EXTRACTS array)
     sensei_output_dir="${EXTRACTS[$chatbot_key]}" # This is already the full path to sensei_output
 
-    # Path for profile_coverage directory
-    profile_coverage_dir="${profiles_logs_dir_base}/profile_coverage"
+    # Path for profiles_coverage directory
+    profiles_coverage_dir="${profiles_logs_dir_base}/profiles_coverage"
 
     echo "  - Cleaning taskyto profile logs in: $profiles_logs_dir"
     if [ -d "$profiles_logs_dir" ]; then
@@ -98,9 +98,9 @@ for chatbot_key in "${!CHATBOTS[@]}"; do # Iterate using the logical chatbot key
     # rm -rf "$profiles_logs_dir"
     # mkdir -p "$profiles_logs_dir"
 
-    echo "  - Cleaning profile coverage in: $profile_coverage_dir"
-    rm -rf "$profile_coverage_dir" # Remove the directory entirely
-    mkdir -p "$profile_coverage_dir" # Recreate it empty
+    echo "  - Cleaning profiles coverage in: $profiles_coverage_dir"
+    rm -rf "$profiles_coverage_dir" # Remove the directory entirely
+    mkdir -p "$profiles_coverage_dir" # Recreate it empty
 
     echo "  - Cleaning sensei_chat.py output in: $sensei_output_dir"
     rm -rf "$sensei_output_dir" # Remove the directory entirely
