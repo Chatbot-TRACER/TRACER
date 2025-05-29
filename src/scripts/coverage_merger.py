@@ -115,7 +115,18 @@ def main():
         # If basename contains a path, use its directory as input_dir if not explicitly provided
         if args.input_dir == "." and "/" in args.basename:
             args.input_dir = str(Path(args.basename).parent)
-        output_file = save_merged_coverage(args.basename, args.input_dir, args.output_dir)
+
+        if args.output_file:
+            # Use specific output file path
+            files = find_coverage_files(args.basename, args.input_dir)
+            merged = merge_footprints(files)
+            Path(args.output_file).parent.mkdir(parents=True, exist_ok=True)
+            with open(args.output_file, "w") as f:
+                json.dump(merged, f, indent=2)
+            output_file = args.output_file
+        else:
+            # Use output directory approach
+            output_file = save_merged_coverage(args.basename, args.input_dir, args.output_dir)
 
     print(f"Merged coverage saved to: {output_file}")
 
