@@ -396,22 +396,36 @@ def _build_label(
                 if len(p_options) > max_options:
                     options_str += "..."
                 full_line = f"{p_name}: {options_str}"
+
+                # Apply consistent truncation based on font size to the entire line
+                if graph_font_size >= 20:
+                    line_max_length = 35  # Very aggressive for large fonts
+                elif graph_font_size >= 16:
+                    line_max_length = 45  # Moderate for medium-large fonts
+                else:
+                    line_max_length = 55  # Standard for smaller fonts
+
+                if len(full_line) > line_max_length:
+                    full_line = full_line[: line_max_length - 3] + "..."
+
+                # Format with only parameter name in bold
+                escaped_name = html.escape(p_name.replace("_", " "))
+                escaped_options = html.escape(options_str)
+                p_name_html = f"<b>{escaped_name}</b>: {escaped_options}"
             else:
-                # Just parameter name
-                full_line = p_name
+                # Just parameter name - truncate if needed
+                if graph_font_size >= 20:
+                    line_max_length = 35
+                elif graph_font_size >= 16:
+                    line_max_length = 45
+                else:
+                    line_max_length = 55
 
-            # Apply consistent truncation based on font size to the entire line
-            if graph_font_size >= 20:
-                line_max_length = 35  # Very aggressive for large fonts
-            elif graph_font_size >= 16:
-                line_max_length = 45  # Moderate for medium-large fonts
-            else:
-                line_max_length = 55  # Standard for smaller fonts
+                if len(p_name) > line_max_length:
+                    p_name = p_name[: line_max_length - 3] + "..."
 
-            if len(full_line) > line_max_length:
-                full_line = full_line[: line_max_length - 3] + "..."
+                p_name_html = f"<b>{html.escape(p_name.replace('_', ' '))}</b>"
 
-            p_name_html = f"<b>{html.escape(full_line.replace('_', ' '))}</b>"
             actual_param_rows.append(f'<tr><td><font point-size="{small_font_size}">{p_name_html}</font></td></tr>')
 
         # Show parameter count if there are more parameters than we're displaying
@@ -433,23 +447,6 @@ def _build_label(
                 is_significant = bool(p_name or p_desc or (isinstance(p_options, list) and p_options))
 
                 if is_significant:
-                    # Create the full line content first, then truncate consistently
-                    if isinstance(p_options, list) and p_options:
-                        # Format: name: option1, option2, option3...
-                        options_display = [str(opt) for opt in p_options[:max_options]]
-                        options_str = ", ".join(options_display)
-                        if len(p_options) > max_options:
-                            options_str += "..."
-                        full_line = f"{p_name}: {options_str}"
-                    elif p_desc:  # Has description
-                        # Format: name: description
-                        full_line = f"{p_name}: {p_desc}"
-                    elif p_name:  # Has name, but no options and no description
-                        # Just parameter name
-                        full_line = p_name
-                    else:
-                        continue  # Skip if no meaningful content
-
                     # Apply consistent truncation based on font size to the entire line
                     if graph_font_size >= 20:
                         line_max_length = 35  # Very aggressive for large fonts
@@ -458,13 +455,68 @@ def _build_label(
                     else:
                         line_max_length = 70  # Standard for smaller fonts
 
-                    if len(full_line) > line_max_length:
-                        full_line = full_line[: line_max_length - 3] + "..."
+                    # Create the formatted line with only name in bold
+                    if isinstance(p_options, list) and p_options:
+                        # Format: name: option1, option2, option3...
+                        options_display = [str(opt) for opt in p_options[:max_options]]
+                        options_str = ", ".join(options_display)
+                        if len(p_options) > max_options:
+                            options_str += "..."
 
-                    p_line_html = f"<b>{html.escape(full_line.replace('_', ' ').title())}</b>"
+                        full_line = f"{p_name}: {options_str}"
+                        if len(full_line) > line_max_length:
+                            # Calculate how much space we need for name + ": "
+                            name_part = f"{p_name}: "
+                            if len(name_part) < line_max_length - 3:
+                                remaining_space = line_max_length - len(name_part) - 3
+                                options_str = options_str[:remaining_space] + "..."
+                            else:
+                                # If name itself is too long, truncate the whole thing
+                                full_line = full_line[: line_max_length - 3] + "..."
+                                escaped_name = html.escape(p_name.replace("_", " ").title())
+                                escaped_rest = html.escape(full_line[len(p_name) :])
+                                p_line_html = f"<b>{escaped_name}</b>{escaped_rest}"
+
+                        if "p_line_html" not in locals():
+                            escaped_name = html.escape(p_name.replace("_", " ").title())
+                            escaped_options = html.escape(options_str)
+                            p_line_html = f"<b>{escaped_name}</b>: {escaped_options}"
+
+                    elif p_desc:  # Has description
+                        # Format: name: description
+                        full_line = f"{p_name}: {p_desc}"
+                        if len(full_line) > line_max_length:
+                            # Calculate how much space we need for name + ": "
+                            name_part = f"{p_name}: "
+                            if len(name_part) < line_max_length - 3:
+                                remaining_space = line_max_length - len(name_part) - 3
+                                p_desc = p_desc[:remaining_space] + "..."
+                            else:
+                                # If name itself is too long, truncate the whole thing
+                                full_line = full_line[: line_max_length - 3] + "..."
+                                escaped_name = html.escape(p_name.replace("_", " ").title())
+                                escaped_rest = html.escape(full_line[len(p_name) :])
+                                p_line_html = f"<b>{escaped_name}</b>{escaped_rest}"
+
+                        if "p_line_html" not in locals():
+                            escaped_name = html.escape(p_name.replace("_", " ").title())
+                            escaped_desc = html.escape(p_desc)
+                            p_line_html = f"<b>{escaped_name}</b>: {escaped_desc}"
+
+                    elif p_name:  # Has name, but no options and no description
+                        # Just parameter name
+                        if len(p_name) > line_max_length:
+                            p_name = p_name[: line_max_length - 3] + "..."
+                        p_line_html = f"<b>{html.escape(p_name.replace('_', ' ').title())}</b>"
+                    else:
+                        continue  # Skip if no meaningful content
+
                     actual_param_rows.append(
                         f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_line_html}</font></td></tr>'
                     )
+                    # Reset for next iteration
+                    if "p_line_html" in locals():
+                        del p_line_html
             elif p_data is not None:  # Fallback for non-dict parameters
                 actual_param_rows.append(
                     f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;<b>{html.escape(str(p_data))}</b></font></td></tr>'
@@ -493,32 +545,54 @@ def _build_label(
                     # Format exactly like parameters: "category: description"
                     if o_category and o_desc:
                         full_line = f"{o_category}: {o_desc}"
-                    elif o_category:
-                        full_line = o_category
-                    else:
-                        full_line = o_desc
 
-                    # Truncate the entire line if it's too long (same logic as parameters)
-                    if len(full_line) > output_combined_max_length:
-                        full_line = full_line[: output_combined_max_length - 3] + "..."
+                        # Truncate the entire line if it's too long (same logic as parameters)
+                        if len(full_line) > output_combined_max_length:
+                            # Calculate how much space we need for category + ": "
+                            category_part = f"{o_category}: "
+                            if len(category_part) < output_combined_max_length - 3:
+                                remaining_space = output_combined_max_length - len(category_part) - 3
+                                o_desc = o_desc[:remaining_space] + "..."
+                            else:
+                                # If category itself is too long, truncate the whole thing
+                                full_line = full_line[: output_combined_max_length - 3] + "..."
+                                escaped_category = html.escape(o_category.replace("_", " "))
+                                escaped_rest = html.escape(full_line[len(o_category) :])
+                                output_html = f"<b>{escaped_category}</b>{escaped_rest}"
+
+                        if "output_html" not in locals():
+                            escaped_category = html.escape(o_category.replace("_", " "))
+                            escaped_desc = html.escape(o_desc)
+                            output_html = f"<b>{escaped_category}</b>: {escaped_desc}"
+
+                    elif o_category:
+                        if len(o_category) > output_combined_max_length:
+                            o_category = o_category[: output_combined_max_length - 3] + "..."
+                        output_html = f"<b>{html.escape(o_category.replace('_', ' '))}</b>"
+                    else:
+                        if len(o_desc) > output_combined_max_length:
+                            o_desc = o_desc[: output_combined_max_length - 3] + "..."
+                        output_html = html.escape(o_desc)
 
                     # Format consistently with parameters
                     font_size = small_font_size if compact else normal_font_size
                     indent = "" if compact else "&nbsp;&nbsp;"
-                    output_html = f"<b>{html.escape(full_line.replace('_', ' '))}</b>"
 
                     actual_output_rows.append(
                         f'<tr><td><font point-size="{font_size}">{indent}{output_html}</font></td></tr>'
                     )
+                    # Reset for next iteration
+                    if "output_html" in locals():
+                        del output_html
             elif o_data is not None:
-                # Non-dict outputs
+                # Non-dict outputs - just display as normal text, no bold
                 full_line = str(o_data)
                 if len(full_line) > output_combined_max_length:
                     full_line = full_line[: output_combined_max_length - 3] + "..."
 
                 font_size = small_font_size if compact else normal_font_size
                 indent = "" if compact else "&nbsp;&nbsp;"
-                output_html = f"<b>{html.escape(full_line)}</b>"
+                output_html = html.escape(full_line)
 
                 actual_output_rows.append(
                     f'<tr><td><font point-size="{font_size}">{indent}{output_html}</font></td></tr>'
