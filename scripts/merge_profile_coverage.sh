@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Base directory for results
-RESULTS_DIR="results"
+# Base directory for results (relative to TRACER root)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TRACER_ROOT="$(dirname "$SCRIPT_DIR")"
+RESULTS_DIR="$TRACER_ROOT/results"
 
 echo "Starting automatic profile coverage merger..."
 
@@ -37,7 +39,7 @@ find "$RESULTS_DIR" -name "execution_*" -type d | while read -r execution_dir; d
         
         echo "Processing $basename in $domain/$execution..."
         
-        python src/scripts/coverage_merger.py "$basename" \
+        python "$TRACER_ROOT/src/scripts/coverage_merger.py" "$basename" \
             --input-dir "$logs_dir/" \
             --output-dir "$output_dir/"
         
