@@ -1,0 +1,118 @@
+serial: 2025-05-29-17-21-34
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Today
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 27/10/2023 at 10:00:00 for Physical examination. \nSee you then!"
+- rescheduling_prompt: I need to confirm again that the appointment should be for
+    a consultation today at 10:00 AM. Can we finalize that?
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 27/10/2023 at 10:00:00 for Physical examination. \nSee you then!    \n"
+errors: []
+total_cost($): 0.0044817
+---
+conversation time: 96.213677
+assistant response time:
+- 1.038838
+- 1.369885
+- 0.92555
+- 0.78839
+- 0.894608
+- 0.909829
+- 3.150729
+- 1.581871
+- 2.438587
+- 1.679534
+- 1.559394
+- 3.763374
+- 1.392027
+- 1.718747
+- 2.852721
+response time report:
+  average: 1.737605
+  max: 3.763374
+  min: 0.78839
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can we change it to today at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to update my appointment to today at 10:00 AM because the previous
+    details were incorrect. Can we do that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 04/10/2023\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I actually need to clarify that the appointment should be for a different
+    service instead of a physical examination. Can we change that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to specify that the appointment is for a consultation instead of a
+    physical examination. Can we update that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to make sure my appointment is for a consultation instead of a physical
+    examination. Can we change that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to clarify the type of service for my appointment. It should be for
+    a consultation. Can we update that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to ensure that my appointment is for a consultation. Can we change
+    it from a physical examination to a consultation?
+- Assistant: It seems you want to update your appointment to a consultation. Could
+    you please specify the service type for this appointment? The options are Physical
+    examination, Vaccination, Dental health and cleaning, or Lab or diagnostic testing.
+- User: I just want to change it to a consultation, can we do that?
+- Assistant: 'It looks like you want to change the service to a consultation, but
+    I need to know the specific service type from the options provided: Physical examination,
+    Vaccination, Dental health and cleaning, or Lab or diagnostic testing. Could you
+    please specify which one you''d like?'
+- User: I just want to change it to a consultation; can we proceed with that?
+- Assistant: It seems there might be some confusion. Currently, I can only schedule
+    appointments with specific services like Physical examination, Vaccination, Dental
+    health and cleaning, or Lab or diagnostic testing. "Consultation" isn't listed
+    as an option. Could you please specify which of the available services you'd like
+    to schedule?
+- User: I understand, but my appointment needs to be for a consultation. Can we just
+    proceed with that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/05/2025\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I really need that appointment to be for a consultation instead of a physical
+    examination. Can we confirm that change?
+- Assistant: I can help you schedule a new appointment for a consultation. Please
+    provide the date and time you prefer.
+- User: Can we set the appointment for today at 10:00 AM as a consultation?
+- Assistant: Thank you for the details. Could you please specify the service type
+    for your appointment? The options are Physical examination, Vaccination, Dental
+    health and cleaning, or Lab or diagnostic testing.
+- User: I need to confirm again that the appointment should be for a consultation
+    today at 10:00 AM. Can we finalize that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 27/10/2023\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to emphasize that I want the appointment for a consultation today at
+    10:00 AM. Can we make that change?
+- Assistant: "Ok, I have received your request to schedule an appointment for 27/10/2023\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I want to ensure that my appointment is for a consultation today at 10:00
+    AM. Can we change it from a physical examination?
+- Assistant: Thank you for confirming the date and time. Could you please specify
+    the service type for your appointment? The options are Physical examination, Vaccination,
+    Dental health and cleaning, or Lab or diagnostic testing.

@@ -1,0 +1,108 @@
+{
+    "specification": {
+        "modules": [
+            "photo_qa",
+            "session_details",
+            "sequence-session_details-estimate_price",
+            "call_appointment",
+            "top-level",
+            "estimate_price"
+        ],
+        "photo_qa": {
+            "When are you open?": [],
+            "Where is the shop?": [],
+            "Tell me about your portfolio, what important projects have you worked on?": [],
+            "Do you charge per hour or by number of photos?": [],
+            "What media do you work on?": []
+        },
+        "call_appointment": {
+            "name": "Person name",
+            "phone_number": "Phone number",
+            "email": "email",
+            "appointment": "date"
+        },
+        "session_details": {
+            "media": [
+                "photography",
+                "video",
+                "3D rendering"
+            ],
+            "number_artworks": "number",
+            "type_artworks": [
+                "picture",
+                "sculpture",
+                "ceramic"
+            ]
+        },
+        "estimate_price": {
+            "media": [
+                "photography",
+                "video",
+                "3D rendering"
+            ],
+            "number_artworks": "number",
+            "type_artworks": [
+                "picture",
+                "sculpture",
+                "ceramic"
+            ]
+        },
+        "sequence-session_details-estimate_price": {},
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "photo_qa",
+            "session_details",
+            "call_appointment",
+            "top-level",
+            "estimate_price"
+        ],
+        "photo_qa": {
+            "When are you open?": [],
+            "Where is the shop?": [],
+            "Tell me about your portfolio, what important projects have you worked on?": [],
+            "Do you charge per hour or by number of photos?": [],
+            "What media do you work on?": [],
+            "unknown": [
+                "What specific elements can influence the pricing of your photography services?"
+            ]
+        },
+        "call_appointment": {
+            "name": [
+                "Alex"
+            ],
+            "phone_number": [
+                "555-1234"
+            ],
+            "email": [],
+            "appointment": [
+                "03/11/2024"
+            ]
+        },
+        "session_details": {
+            "media": [
+                "photography"
+            ],
+            "number_artworks": [
+                10.0
+            ],
+            "type_artworks": [
+                "picture"
+            ]
+        },
+        "estimate_price": {
+            "media": [
+                "photography"
+            ],
+            "number_artworks": [
+                10.0
+            ],
+            "type_artworks": [
+                "picture"
+            ]
+        },
+        "sequence-session_details-estimate_price": {},
+        "top-level": {}
+    }
+}

@@ -1,0 +1,143 @@
+serial: 2025-05-29-17-21-34
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You are planning a casual movie night at home with a few friends and want to order
+  pizza and drinks.
+- You're looking for a quick and easy meal option that everyone will enjoy, and the
+  pizza place nearby seems convenient.
+- You have a specific number of friends coming over, so you need to order accordingly.
+ask_about:
+- Ask what information the chatbot can provide.
+- Ask what kinds of pizzas are available.
+- Ask for the price of a Margarita pizza.
+- Order a {{pizza_size}} Margarita pizza.
+- Order a {{number_of_drinks}} {{drink_type}}.
+- drink_type: Juice
+- number_of_drinks: Four
+- pizza_size: Extra Large
+conversation:
+- interaction_style:
+  - single questions
+- number: 5
+- steps: 20
+data_output:
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- margarita_price: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for
+    big.
+- order_summary: Your order is a Large Margarita pizza and four Cokes. The cost for
+    a large margherita pizza and four Cokes is $26.00.
+- total_cost: The cost for a large margherita pizza and four Cokes is $26.00.
+- pickup_details: 'I have received your order for four Cokes.
+
+    The cost for a large margherita pizza and four Cokes is $26.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is c7e670.'
+errors: []
+total_cost($): 0.0084111
+---
+conversation time: 144.545854
+assistant response time:
+- 1.865275
+- 3.383284
+- 4.385344
+- 2.495731
+- 2.533983
+- 4.133336
+- 1.251686
+- 1.78532
+- 3.759155
+- 1.109453
+- 2.501266
+- 1.014949
+- 0.86728
+- 1.143107
+- 0.820447
+- 0.849766
+- 1.881768
+- 1.487844
+- 1.490613
+- 1.216225
+response time report:
+  average: 1.998791
+  max: 4.385344
+  min: 0.820447
+---
+interaction:
+- User: What kinds of pizzas are available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What is the price of a Margarita pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I'll take an Extra Large Margarita pizza, please.
+- Assistant: It seems that the pizza size and type you provided are not valid options.
+    Could you please specify a pizza size (small, medium, or large) and a pizza type
+    (margherita, carbonara, marinera, hawaiian, four cheese, vegetarian)? Thank you!
+- User: I'll take a Large Margarita pizza, please.
+- Assistant: 'Thanks for ordering a large margherita pizza!
+
+    Thank you for your order of a Large Margarita pizza! Could you please let me know
+    how many drinks you would like to order (num_drinks) and the type of drinks (coke,
+    sprite, or water)? Thank you!'
+- User: How many drinks would you like to order?
+- Assistant: It seems that I still need to know the type of drinks you'd like to order
+    (coke, sprite, or water). Could you please provide that information? Thank you!
+- User: I'll take four juices, please.
+- Assistant: Thank you for letting me know that you'd like to order 4 drinks. However,
+    I need to know the type of drinks you'd like (coke, sprite, or water). Could you
+    please provide that information? Thank you!
+- User: I'll take four orange juices, please.
+- Assistant: I'm sorry, but we only offer coke, sprite, or water as drink options.
+    Could you please choose one of those? Thank you!
+- User: Could you please tell me what information you can provide about the drinks?
+- Assistant: I can help you order drinks, but we only offer coke, sprite, or water.
+    Since you've already mentioned that you'd like to order 4 drinks, could you please
+    specify which type of drink you'd like from those options? Thank you!
+- User: I'll take four cokes, please.
+- Assistant: 'I have received your order for four Cokes.
+
+    The cost for a large margherita pizza and four Cokes is $26.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is c7e670.'
+- User: Can you tell me if there are any special deals or discounts available for
+    pizza and drinks?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any special deals or discounts available for pizza and drinks?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Are there any special offers for large orders?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any special offers for large orders?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any promotions for ordering multiple pizzas?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any promotions for ordering multiple pizzas?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any promotions for ordering multiple pizzas?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any promotions for ordering multiple pizzas?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any discounts for ordering drinks with the pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any discounts for ordering drinks with the pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any promotions for ordering multiple pizzas?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

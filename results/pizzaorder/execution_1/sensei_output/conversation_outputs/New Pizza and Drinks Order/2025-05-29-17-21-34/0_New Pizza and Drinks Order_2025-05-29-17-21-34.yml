@@ -1,0 +1,161 @@
+serial: 2025-05-29-17-21-34
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You are planning a casual movie night at home with a few friends and want to order
+  pizza and drinks.
+- You're looking for a quick and easy meal option that everyone will enjoy, and the
+  pizza place nearby seems convenient.
+- You have a specific number of friends coming over, so you need to order accordingly.
+ask_about:
+- Ask what information the chatbot can provide.
+- Ask what kinds of pizzas are available.
+- Ask for the price of a Margarita pizza.
+- Order a {{pizza_size}} Margarita pizza.
+- Order a {{number_of_drinks}} {{drink_type}}.
+- drink_type: coke
+- number_of_drinks: One
+- pizza_size: large
+conversation:
+- interaction_style:
+  - single questions
+- number: 5
+- steps: 20
+data_output:
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- margarita_price: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for
+    big.
+- order_summary: 'I have received your order for two Cokes.
+
+    The cost for a large margherita pizza and two Cokes is $23.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is bd9291.'
+- total_cost: The cost for a large margherita pizza and two Cokes is $23.00.
+- pickup_details: Your order will be ready for pickup in 15 minutes at our shop located
+    at 23 Main Street, NY.
+errors: []
+total_cost($): 0.00872205
+---
+conversation time: 176.188326
+assistant response time:
+- 2.335416
+- 3.071834
+- 4.459224
+- 2.193191
+- 4.758532
+- 1.598791
+- 4.636563
+- 2.505596
+- 4.25066
+- 1.591716
+- 4.79116
+- 3.114753
+- 4.027325
+- 1.588594
+- 4.90769
+- 3.476591
+- 3.735405
+- 3.252219
+- 1.864881
+- 3.387409
+response time report:
+  average: 3.277377
+  max: 4.90769
+  min: 1.588594
+---
+interaction:
+- User: What kinds of pizzas are available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What is the price of a Margarita pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I'll take a large Margarita pizza, please.
+- Assistant: It looks like there was a small typo in the pizza type you provided.
+    Could you please confirm if you meant "margherita"? If so, I have all the information
+    I need. If not, please provide the correct pizza type. Thank you!
+- User: I'll take a large Margherita pizza, please.
+- Assistant: 'Thanks for ordering a large margherita pizza!
+
+    Thank you for confirming your pizza order! Could you please let me know how many
+    drinks you would like to order? Also, please specify the type of drink (coke,
+    sprite, or water). Thank you!'
+- User: I'll take one coke, please.
+- Assistant: 'Got it! I''ve received your order for one Coke.
+
+    The cost of a large margherita pizza and one Coke is $21.50.
+
+    Your order will be ready for pickup in 15 minutes at our shop located at 23 Main
+    Street, NY. Your order ID is d65e8e.'
+- User: Can you tell me what other drinks are available?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: I'll take one Sprite, please.
+- Assistant: Thank you for your order! I have the size as "large," but I still need
+    to confirm the pizza type. Could you please confirm that you want a "margherita"
+    pizza? Once I have that, I'll be able to process your order. Thank you!
+- User: I'll take a large Margherita pizza and one Sprite, please.
+- Assistant: 'Thanks for ordering a large margherita pizza!
+
+    Thank you for your order! I see that you would like one Sprite, but I still need
+    to confirm the number of drinks. Could you please let me know how many drinks
+    you would like to order? Thank you!'
+- User: I'll take one Sprite, please.
+- Assistant: 'Got it! I''ve received your order for one sprite.
+
+    The cost of a large margherita pizza and one Sprite is $21.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 63491b.'
+- User: Can you tell me what other drinks are available?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: I'll take one water, please.
+- Assistant: Thank you for your order! I have the size as "large," but I still need
+    to confirm the pizza type. Could you please confirm that you want a "margherita"
+    pizza? Once I have that, I'll be able to process your order. Thank you!
+- User: I'll take a large Margherita pizza and one water, please.
+- Assistant: 'Thanks for ordering a large margherita pizza!
+
+    Thank you for your order! I see that you would like one water, but I still need
+    to confirm the total number of drinks you would like to order. Could you please
+    let me know how many drinks you would like? Thank you!'
+- User: I'll take one water, please.
+- Assistant: 'Got it! I''ve received your order for one water.
+
+    The cost for a large margherita pizza and one bottle of water is $21.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 9a8fa8.'
+- User: Can you tell me what other drinks are available?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: I'll take one more Coke, please.
+- Assistant: It seems I still need to confirm the pizza size and type for your order.
+    Could you please provide the pizza size (small, medium, or large) and confirm
+    that you want a "margherita" pizza? Thank you!
+- User: I'll take a large Margherita pizza and one more Coke, please.
+- Assistant: 'Thanks for ordering a large margherita pizza!
+
+    Thank you for your order! I see that you would like a large Margherita pizza and
+    one more Coke. However, I still need to confirm the total number of drinks you
+    would like to order. Could you please let me know how many drinks you would like?
+    Also, please specify the types of drinks (coke, sprite, or water). Thank you!'
+- User: I'll take one large Margherita pizza and two Cokes, please.
+- Assistant: 'I have received your order for two Cokes.
+
+    The cost for a large margherita pizza and two Cokes is $23.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is bd9291.'
+- User: Can you tell me what other drinks are available?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas, prices of beverages, how to get the order,
+    and how much time it takes to get an order.
+- User: I'll take one more Sprite, please.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'll take one more Sprite, please.
+- Assistant: I still need to confirm the pizza type for your order. Could you please
+    confirm that you want a "margherita" pizza? Thank you!

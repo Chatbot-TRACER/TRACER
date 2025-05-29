@@ -1,0 +1,41 @@
+serial: 2025-05-29-17-21-34
+language: English
+context:
+- You are a new resident in town and are looking for a local bike shop for potential
+  future repairs and maintenance.
+- You want to gather some basic information about the shop's services and operating
+  hours before visiting in person.
+- You also want to know if the chatbot can handle appointment rescheduling, as you
+  might need to adjust a future booking.
+ask_about:
+- Ask for the shop's weekday operating hours.
+- Ask if the shop is open on Saturdays.
+- Ask if the chatbot can help reschedule an appointment.
+- Ask for the shop's phone number.
+- Ask what capabilities the chatbot has.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- weekday_operating_hours: 'Error: timeout'
+- saturday_open: 'Error: timeout'
+- appointment_reschedule_response: 'Error: timeout'
+- phone_number_information: 'Error: timeout'
+- chatbot_capabilities: 'Error: timeout'
+errors:
+- 504: No response was received from the server in less than 20
+total_cost($): 0.00018885
+---
+conversation time: 22.532192
+assistant response time:
+- 20.023396
+response time report:
+  average: 20.023396
+  max: 20.023396
+  min: 20.023396
+---
+interaction:
+- User: What are the shop's weekday operating hours?
+- Assistant: 'Error: timeout'

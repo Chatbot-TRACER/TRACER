@@ -1,0 +1,152 @@
+serial: 2025-05-29-17-21-34
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You are planning a casual movie night at home with a few friends and want to order
+  pizza and drinks.
+- You're looking for a quick and easy meal option that everyone will enjoy, and the
+  pizza place nearby seems convenient.
+- You have a specific number of friends coming over, so you need to order accordingly.
+ask_about:
+- Ask what information the chatbot can provide.
+- Ask what kinds of pizzas are available.
+- Ask for the price of a Margarita pizza.
+- Order a {{pizza_size}} Margarita pizza.
+- Order a {{number_of_drinks}} {{drink_type}}.
+- drink_type: water
+- number_of_drinks: Three
+- pizza_size: small
+conversation:
+- interaction_style:
+  - single questions
+- number: 5
+- steps: 20
+data_output:
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- margarita_price: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for
+    big.
+- order_summary: Your order is a small margherita pizza and three bottles of water.
+- total_cost: The cost for a small margherita pizza and three bottles of water is
+    $13.
+- pickup_details: 'Got it! I''ve received your order for three bottles of water.
+
+    The cost for a small margherita pizza and three bottles of water is $13.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is c335f9.'
+errors: []
+total_cost($): 0.0085017
+---
+conversation time: 139.066467
+assistant response time:
+- 1.841925
+- 3.108461
+- 3.99308
+- 4.146461
+- 5.084633
+- 0.854761
+- 0.792569
+- 1.465873
+- 1.758075
+- 2.488458
+- 0.868752
+- 0.900437
+- 0.819969
+- 1.006312
+- 0.860002
+- 0.800133
+- 0.783416
+- 0.899454
+- 1.020854
+- 0.908681
+response time report:
+  average: 1.720115
+  max: 5.084633
+  min: 0.783416
+---
+interaction:
+- User: What kinds of pizzas are available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What is the price of a Margarita pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I'll take a small Margarita pizza, please.
+- Assistant: It looks like there was a small typo in the pizza type you provided.
+    Could you please confirm if you meant "margherita"? If so, I have all the information
+    I need. If not, please provide the correct pizza type. Thank you!
+- User: I meant a small Margarita pizza, yes. Could you also order three waters for
+    me?
+- Assistant: 'Thanks for ordering a small margherita pizza!
+
+    Thank you for confirming the pizza order! I see that you''ve requested three waters.
+    Just to confirm, could you please let me know the number of drinks you would like
+    to order? It seems I already have that as three, but I also need to confirm the
+    type of drink. Is it just water, or would you like to include any other drinks?
+    Thank you!'
+- User: I just want three waters, please. Can you confirm my order?
+- Assistant: 'Got it! I''ve received your order for three bottles of water.
+
+    The cost for a small margherita pizza and three bottles of water is $13.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is c335f9.'
+- User: Can you tell me what information you can provide about the order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me what details you can provide about my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you provide details about my order, like the total cost and estimated
+    pickup time?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me the estimated pickup time for my order?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please confirm the estimated pickup time for my order?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please tell me if there are any special deals or discounts available
+    for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please let me know if there are any special deals or discounts available
+    for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please let me know if there are any special deals or discounts available
+    for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any options for sides or appetizers that I can order along with
+    my pizza and drinks?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any options for sides or appetizers that I can order along with
+    my pizza and drinks?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if there are any options for sides or appetizers
+    that I can order along with my pizza and drinks?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any desserts available that I can order with my pizza and drinks?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please let me know if there are any desserts available that I can
+    order with my pizza and drinks?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if there are any desserts available that I can order
+    with my pizza and drinks?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any vegetarian options for sides or appetizers that I can order
+    along with my pizza and drinks?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

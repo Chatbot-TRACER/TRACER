@@ -1,0 +1,117 @@
+serial: 2025-05-29-17-21-34
+language: English
+context:
+- You are trying to test the limitations of a chatbot's knowledge and capabilities.
+- You begin with a general knowledge question to assess the bot's basic functionality
+  before exploring its more specific services.
+- You also want to see if it can handle requests outside its intended domain.
+ask_about:
+- Inquire about the capital of France.
+- Ask if they can assist with pizza or drink orders.
+- Ask about ordering a pizza.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- unrecognized_query_response: I'm sorry, I did not get what you said. I can help
+    you ordering predefined or custom pizzas, and then drinks.
+errors: []
+total_cost($): 0.0037893
+---
+conversation time: 79.557396
+assistant response time:
+- 0.753088
+- 0.988865
+- 1.144253
+- 1.80654
+- 2.717588
+- 1.725287
+- 2.714177
+- 2.080035
+- 2.843404
+- 3.081561
+- 2.706214
+- 2.322403
+- 3.857736
+- 2.562165
+- 2.738455
+response time report:
+  average: 2.269451
+  max: 3.857736
+  min: 0.753088
+---
+interaction:
+- User: What is the capital of France?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What city serves as the capital of France?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What is the name of the city that is the capital of France?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you recommend for a pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What are the ingredients in a Hawaiian pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What drinks do you have available for order?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: What are the prices for your custom pizzas?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the delivery time for pizza orders?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: What if I want to order a pizza with five toppings? How would the pricing
+    work?
+- Assistant: Custom pizzas with up to three ingredients are the same prices as predefined
+    ones. Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara, are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Each additional ingredient has an increment of 50
+    cents.
+- User: If I wanted to order a pizza with five toppings, how much would that be for
+    a medium size?
+- Assistant: Custom pizzas with up to three ingredients are the same prices as predefined
+    ones. Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara, are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Each additional ingredient has an increment of 50
+    cents.
+- User: If I wanted to order a medium custom pizza with five toppings, can you break
+    down the total cost for me?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: If I order a medium custom pizza with five toppings, how much would I end
+    up paying in total?
+- Assistant: Custom pizzas with up to three ingredients are the same prices as predefined
+    ones. Each additional ingredient has an increment of 50 cents.
+- User: What would the total cost be for a medium custom pizza with five toppings,
+    including the base price?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: If I order a medium pizza with three toppings, what would the total cost be?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: If I wanted to order a medium pizza with three toppings, can you tell me how
+    much that would cost?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.

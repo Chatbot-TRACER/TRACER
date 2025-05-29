@@ -1,0 +1,140 @@
+serial: 2025-05-29-17-21-34
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You are planning a casual movie night at home with a few friends and want to order
+  pizza and drinks.
+- You're looking for a quick and easy meal option that everyone will enjoy, and the
+  pizza place nearby seems convenient.
+- You have a specific number of friends coming over, so you need to order accordingly.
+ask_about:
+- Ask what information the chatbot can provide.
+- Ask what kinds of pizzas are available.
+- Ask for the price of a Margarita pizza.
+- Order a {{pizza_size}} Margarita pizza.
+- Order a {{number_of_drinks}} {{drink_type}}.
+- drink_type: coke
+- number_of_drinks: Five
+- pizza_size: large
+conversation:
+- interaction_style:
+  - single questions
+- number: 5
+- steps: 20
+data_output:
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- margarita_price: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for
+    big.
+- order_summary: Your order is a large margherita pizza and five Cokes.
+- total_cost: The cost of a large margherita pizza and five Cokes is $27.50.
+- pickup_details: 'Got it! I''ve received your order for 5 Cokes.
+
+    The cost of a large margherita pizza and five Cokes is $27.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is f9cab1.'
+errors: []
+total_cost($): 0.0084942
+---
+conversation time: 173.434935
+assistant response time:
+- 1.728078
+- 2.718651
+- 4.287835
+- 2.016593
+- 3.955598
+- 2.962292
+- 2.376676
+- 1.517075
+- 0.846841
+- 2.989551
+- 1.578522
+- 2.020071
+- 0.998644
+- 2.451775
+- 1.844649
+- 2.077902
+- 2.530366
+- 2.169918
+- 2.006502
+- 0.857875
+response time report:
+  average: 2.19677
+  max: 4.287835
+  min: 0.846841
+---
+interaction:
+- User: What kinds of pizzas are available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What is the price of a Margarita pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I'll take a large Margarita pizza, please.
+- Assistant: 'It looks like there was a small typo in the pizza type you provided.
+    Could you please confirm if you meant "margherita" instead of "Margarita"? '
+- User: I meant "Margarita." Please go ahead and order a large Margarita pizza.
+- Assistant: 'Thanks for ordering a large margherita pizza!
+
+    Thank you for confirming the pizza order! Could you please let me know how many
+    drinks you would like to order and what type of drinks (coke, sprite, or water)
+    you prefer?'
+- User: I'd like to order five cokes, please.
+- Assistant: 'Got it! I''ve received your order for 5 Cokes.
+
+    The cost of a large margherita pizza and five Cokes is $27.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is f9cab1.'
+- User: Could you tell me what information you can provide about my order?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What other drinks do you have available besides Coke?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: What is the price of a Sprite?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please tell me if there are any special deals or promotions available
+    for pizza orders?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any special deals or promotions available for pizza orders?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me what the opening hours are?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What time do you close on weekends?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What are the payment options available for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What payment methods can I use for my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup process, and estimated
+    time for orders.
+- User: What is the estimated time for my order to be ready?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: What is the estimated time for my order to be ready?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: What is the estimated time for my order to be ready?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: What is the estimated time for my order to be ready?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and estimated
+    time for orders.
+- User: What is the estimated time for my order to be ready?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: What payment methods can I use for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

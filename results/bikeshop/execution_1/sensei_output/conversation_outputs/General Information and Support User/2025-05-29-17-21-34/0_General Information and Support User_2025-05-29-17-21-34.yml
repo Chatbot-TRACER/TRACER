@@ -1,0 +1,111 @@
+serial: 2025-05-29-17-21-34
+language: English
+context:
+- You are a new resident in town and are looking for a local bike shop for potential
+  future repairs and maintenance.
+- You want to gather some basic information about the shop's services and operating
+  hours before visiting in person.
+- You also want to know if the chatbot can handle appointment rescheduling, as you
+  might need to adjust a future booking.
+ask_about:
+- Ask for the shop's weekday operating hours.
+- Ask if the shop is open on Saturdays.
+- Ask if the chatbot can help reschedule an appointment.
+- Ask for the shop's phone number.
+- Ask what capabilities the chatbot has.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- weekday_operating_hours: Our shop is open every weekday from 9am to 5:30pm.
+- saturday_open: I'm sorry, it's a little loud in my shop, can you say that again?
+- appointment_reschedule_response: I'm sorry, I can only assist with scheduling new
+    appointments. If you'd like to make a new appointment, please provide the date,
+    time, and service you need.
+- phone_number_information: I'm sorry, I don't have the shop's phone number. Would
+    you like to make an appointment or ask about our services?
+- chatbot_capabilities: I can help answer questions about our services and products,
+    assist with scheduling appointments for repairs or tune-ups, and provide information
+    about bike care.
+errors: []
+total_cost($): 0.00552405
+---
+conversation time: 97.234443
+assistant response time:
+- 1.133909
+- 0.825555
+- 0.821923
+- 0.752324
+- 0.878109
+- 0.82879
+- 0.822056
+- 0.750497
+- 1.010228
+- 1.043623
+- 1.166414
+- 1.110569
+- 1.015222
+- 0.900793
+- 1.188967
+- 1.489509
+- 0.603441
+- 0.833244
+- 1.297019
+- 0.634029
+response time report:
+  average: 0.955311
+  max: 1.489509
+  min: 0.603441
+---
+interaction:
+- User: What are your weekday operating hours?
+- Assistant: Our shop is open every weekday from 9am to 5:30pm.
+- User: Are you open on Saturdays?
+- Assistant: I'm sorry, it's a little loud in my shop, can you say that again?
+- User: Are you open on Saturdays?
+- Assistant: I'm sorry, it's a little loud in my shop, can you say that again?
+- User: Are you available on Saturdays?
+- Assistant: I'm sorry, it's a little loud in my shop, can you say that again?
+- User: Are you open on Saturdays?
+- Assistant: I'm sorry, it's a little loud in my shop, can you say that again?
+- User: Are you open on Saturdays?
+- Assistant: I'm sorry, it's a little loud in my shop, can you say that again?
+- User: Are you open on Saturdays?
+- Assistant: I'm sorry, it's a little loud in my shop, can you say that again?
+- User: Are you open on Saturdays?
+- Assistant: I'm sorry, it's a little loud in my shop, can you say that again?
+- User: Are you available on Saturdays?
+- Assistant: I'm sorry, it's a little loud in my shop, can you say that again?
+- User: Are you open on Saturdays?
+- Assistant: I'm sorry, it's a little loud in my shop, can you say that again?
+- User: Can you help me reschedule an appointment?
+- Assistant: I'm sorry, I can only assist with scheduling new appointments. If you'd
+    like to make a new appointment, please provide the date, time, and service you
+    need.
+- User: What is the shop's phone number?
+- Assistant: I'm sorry, I don't have the shop's phone number. Would you like to make
+    an appointment or ask about our services?
+- User: What capabilities do you have?
+- Assistant: I can help answer questions about our services and products, assist with
+    scheduling appointments for repairs or tune-ups, and provide information about
+    bike care. How can I assist you today?
+- User: Can you tell me what services your shop offers?
+- Assistant: I can help answer questions about our services and products. Would you
+    like to know about specific services we offer?
+- User: What services do you offer at the shop?
+- Assistant: We offer repair services and tune-ups for bikes. If you need more specific
+    information, feel free to ask!
+- User: What types of bike repairs do you provide?
+- Assistant: We provide a variety of bike repair services, including fixing flat tires,
+    brake adjustments, gear tuning, and more. If you have a specific repair in mind,
+    please let me know!
+- User: What types of bike accessories do you sell?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike accessories do you have for sale?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike accessories do you have for sale?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike accessories do you have for sale?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

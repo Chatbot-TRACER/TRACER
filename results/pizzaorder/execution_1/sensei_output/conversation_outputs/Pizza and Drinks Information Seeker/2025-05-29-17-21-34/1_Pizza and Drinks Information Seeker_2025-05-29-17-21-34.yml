@@ -1,0 +1,132 @@
+serial: 2025-05-29-17-21-34
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You're planning a casual pizza night at home with friends this weekend and are considering
+  ordering from a local pizzeria.
+- You want to gather all the necessary information before deciding what to order and
+  whether to pick it up or have it delivered.
+- You have a variety of preferences among your friends, so you need to find options
+  that cater to different tastes.
+ask_about:
+- Ask about the available pizza types.
+- Ask about the price of a Margarita pizza.
+- Ask about the available drinks and their prices.
+- Ask about the shop's operating hours.
+- Ask if they deliver.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- pizza_types: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- margarita_price: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for
+    big.
+- drinks_and_prices: Sprite and Coke are 1.50$. Water is 1$.
+- operating_hours: Every day from 1pm to 11:30pm
+- delivery_availability: We do not do delivery, but customers need to get the shop
+    for their orders.
+errors: []
+total_cost($): 0.0077583
+---
+conversation time: 158.098775
+assistant response time:
+- 2.360178
+- 2.600562
+- 2.108934
+- 1.677514
+- 1.824972
+- 2.187752
+- 2.343015
+- 1.80675
+- 2.173259
+- 1.747963
+- 2.069042
+- 1.813067
+- 2.186952
+- 1.946847
+- 2.100392
+- 1.867548
+- 2.924069
+- 3.002468
+- 2.095275
+- 2.806547
+response time report:
+  average: 2.182155
+  max: 3.002468
+  min: 1.677514
+---
+interaction:
+- User: What types of pizza do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What’s the price of a Margarita pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What drinks do you have available and how much do they cost?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: What are your operating hours?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Do you offer delivery services?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: What other pizza types do you have available besides the ones you mentioned?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What about specialty pizzas? Do you have any unique or seasonal options?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Are there any toppings available for the Custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings can I choose for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What toppings can I choose for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, order pickup, and estimated
+    time for orders.
+- User: What about the size options for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What about the size options for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup information, and
+    estimated time for orders.
+- User: What about the size options for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and order time.
+- User: What about the size options for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and order time.
+- User: What toppings can I choose for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What toppings can I choose for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup process, and estimated
+    time for orders.
+- User: What about the size options for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What about the size options for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup information, and
+    estimated time for orders.
+- User: What toppings can I choose for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What toppings can I choose for the Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup process, and estimated
+    time for orders.

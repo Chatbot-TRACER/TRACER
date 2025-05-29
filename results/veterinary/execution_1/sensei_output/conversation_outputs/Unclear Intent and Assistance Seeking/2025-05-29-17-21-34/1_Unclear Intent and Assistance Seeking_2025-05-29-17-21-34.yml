@@ -1,0 +1,128 @@
+serial: 2025-05-29-17-21-34
+language: English
+context:
+- 'personality: personalities/conversational-user'
+- You're feeling unwell but aren't sure what kind of medical attention you need.
+- You're exploring the services offered by this clinic to determine the best course
+  of action.
+- You're also concerned about the potential costs associated with different types
+  of examinations.
+ask_about:
+- I'm not sure what I need, can you tell me what services you offer?
+- What kind of appointments are available?
+- What does a physical examination include?
+- How much does a physical examination cost?
+- If you don't know, can you find out the cost of a physical examination for me?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 22
+data_output:
+- service_options: We offer services such as Physical examination, Vaccination, Dental
+    health and cleaning, and Lab or diagnostic testing.
+- appointment_types: We offer appointments for Physical examination, Vaccination,
+    Dental health and cleaning, and Lab or diagnostic testing.
+- physical_examination_description: A physical examination typically involves checking
+    your pet's overall health, including examining their eyes, ears, mouth, skin,
+    coat, weight, and vital signs.
+- cost_inquiry_response: I'm sorry, but I did not have information about the cost
+    of a physical examination. Would you like to ask about something else?
+- recommendation: We offer services such as Physical examination, Vaccination, Dental
+    health and cleaning, and Lab or diagnostic testing.
+- assistance_options: We offer services such as Physical examination, Vaccination,
+    Dental health and cleaning, and Lab or diagnostic testing.
+errors: []
+total_cost($): 0.0076734
+---
+conversation time: 129.021965
+assistant response time:
+- 1.157978
+- 1.380394
+- 1.362285
+- 1.225728
+- 1.47849
+- 1.029024
+- 1.485186
+- 1.309858
+- 1.788796
+- 1.254166
+- 1.458147
+- 1.245499
+- 0.935135
+- 1.339104
+- 1.343176
+- 1.236806
+- 1.328685
+- 1.280651
+- 0.983974
+- 1.363527
+- 1.089411
+- 0.957064
+response time report:
+  average: 1.274231
+  max: 1.788796
+  min: 0.935135
+---
+interaction:
+- User: I'm not sure what I need, can you tell me what services you offer?
+- Assistant: We offer services such as Physical examination, Vaccination, Dental health
+    and cleaning, and Lab or diagnostic testing. How can I assist you further?
+- User: What kind of appointments are available?
+- Assistant: We offer appointments for Physical examination, Vaccination, Dental health
+    and cleaning, and Lab or diagnostic testing. Would you like to schedule one?
+- User: What does a physical examination include?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What components are included in a physical examination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What does a physical examination typically involve?
+- Assistant: A physical examination typically involves checking your pet's overall
+    health, including examining their eyes, ears, mouth, skin, coat, weight, and vital
+    signs. If you'd like to schedule an appointment for a physical examination, please
+    let me know the preferred date and time.
+- User: What is the cost of a physical examination?
+- Assistant: I'm sorry, but I did not have information about the cost of a physical
+    examination. Would you like to ask about something else?
+- User: Can you find out the cost of a physical examination for me?
+- Assistant: I'm sorry, but I did not have information about the cost of a physical
+    examination. Would you like to ask about something else?
+- User: What is the pricing for a physical examination?
+- Assistant: I'm sorry, but I did not have information about the cost of a physical
+    examination. Would you like to ask about something else?
+- User: What other types of services do you provide besides physical examinations?
+- Assistant: We offer services such as Vaccination, Dental health and cleaning, and
+    Lab or diagnostic testing. Would you like more information about any of these
+    services or to schedule an appointment?
+- User: What kind of vaccinations do you offer?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of vaccinations are available at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kinds of vaccinations can I get at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations do you recommend for adults?
+- Assistant: Please switch to English or Spanish so I can assist you better.
+- User: What vaccinations do you recommend for adults?
+- Assistant: Please switch to English or Spanish so I can assist you better.
+- User: What vaccinations do you recommend for adults?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are suggested for adults at your clinic?
+- Assistant: Please switch to English or Spanish so I can assist you better.
+- User: What vaccinations are available for adults at your clinic?
+- Assistant: Please switch to English or Spanish so I can assist you better.
+- User: What vaccinations can I get at your clinic for adults?
+- Assistant: Please switch to English or Spanish so I can assist you better.
+- User: What vaccinations do you offer for adults?
+- Assistant: Please switch to English or Spanish so I can assist you better.
+- User: What vaccinations do you provide for adults?
+- Assistant: Please switch to English or Spanish so I can assist you better.
+- User: What are the recommended vaccinations for adults at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations should adults consider getting at your clinic?
+- Assistant: Please switch to English or Spanish so I can assist you better.

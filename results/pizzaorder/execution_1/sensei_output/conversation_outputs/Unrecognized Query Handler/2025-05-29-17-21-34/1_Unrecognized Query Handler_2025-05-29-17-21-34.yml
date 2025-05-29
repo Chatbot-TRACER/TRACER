@@ -1,0 +1,80 @@
+serial: 2025-05-29-17-21-34
+language: English
+context:
+- You are trying to test the limitations of a chatbot's knowledge and capabilities.
+- You begin with a general knowledge question to assess the bot's basic functionality
+  before exploring its more specific services.
+- You also want to see if it can handle requests outside its intended domain.
+ask_about:
+- Inquire about the capital of France.
+- Ask if they can assist with pizza or drink orders.
+- Ask about ordering a pizza.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- unrecognized_query_response: I'm sorry, I did not get what you said. I can help
+    you ordering predefined or custom pizzas, and then drinks.
+errors: []
+total_cost($): 0.0028341
+---
+conversation time: 59.347605
+assistant response time:
+- 0.885329
+- 0.947057
+- 0.820064
+- 2.213367
+- 2.533408
+- 1.550081
+- 1.433793
+- 1.02391
+- 1.932406
+- 1.066327
+- 1.246764
+- 1.510441
+- 1.891374
+- 1.070736
+- 1.18781
+response time report:
+  average: 1.420857
+  max: 2.533408
+  min: 0.820064
+---
+interaction:
+- User: What is the capital of France?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What is the capital city of France?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What is the capital of France?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What can you tell me about ordering a pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas, prices of beverages, how to get the order,
+    and how much time it takes to get an order.
+- User: Can you help me with a pizza order? I want to know the available toppings.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings can I choose from for my pizza order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What types of drinks do you offer with pizza orders?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What is the largest planet in our solar system?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the different sizes of pizzas that I can order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drinks can I order with my pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What is the fastest land animal?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What is the tallest mountain in the world?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the available sizes for the pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What is the capital of Japan?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What is the capital city of Japan?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

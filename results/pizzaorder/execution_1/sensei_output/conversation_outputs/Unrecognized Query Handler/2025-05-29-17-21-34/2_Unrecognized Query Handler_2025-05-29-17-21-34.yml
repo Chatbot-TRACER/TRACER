@@ -1,0 +1,87 @@
+serial: 2025-05-29-17-21-34
+language: English
+context:
+- You are trying to test the limitations of a chatbot's knowledge and capabilities.
+- You begin with a general knowledge question to assess the bot's basic functionality
+  before exploring its more specific services.
+- You also want to see if it can handle requests outside its intended domain.
+ask_about:
+- Inquire about the capital of France.
+- Ask if they can assist with pizza or drink orders.
+- Ask about ordering a pizza.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- unrecognized_query_response: I'm sorry, I did not get what you said. I can help
+    you ordering predefined or custom pizzas, and then drinks.
+errors: []
+total_cost($): 0.0030753
+---
+conversation time: 63.873149
+assistant response time:
+- 0.915322
+- 0.916713
+- 1.832145
+- 2.350314
+- 1.836426
+- 2.183969
+- 2.333222
+- 1.860148
+- 1.765528
+- 2.64455
+- 0.714418
+- 0.849282
+- 0.824922
+- 2.03384
+- 0.916042
+response time report:
+  average: 1.598456
+  max: 2.64455
+  min: 0.714418
+---
+interaction:
+- User: What is the capital of France?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What can you tell me about the capital city of France?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you help me with a pizza order?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What types of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings can I choose for a custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What ingredients can I choose for my custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What ingredients are included in the Margarita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What are your opening hours?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What are the prices for your beverages?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: What is the delivery time for pizza orders?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: What if I wanted to order a drink instead of pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you help me with ordering a drink?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me more about the drinks you offer?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What if I wanted to order a pizza with extra toppings?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you give me details about ordering a pizza with additional toppings?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
