@@ -154,14 +154,23 @@ def _set_graph_attributes(
     graph_fontsize = str(graph_font_size + 1)  # Graph title slightly larger
     title_fontsize = str(graph_font_size + 2)  # Node titles larger than normal text
 
-    # Adjust layout parameters based on compact mode
-    if compact:
+    # Adjust layout parameters based on compact mode and font size
+    if graph_font_size >= 20:
+        # Very tight spacing for large fonts
+        pad = "0.3"
+        nodesep = "0.3"
+        ranksep = "0.5"
+        splines = "ortho"
+        overlap = "compress"
+        node_margin = "0.1,0.08"  # Reduced margins for large fonts
+    elif compact:
         # Compact mode - tighter spacing, orthogonal lines
         pad = "0.4"
         nodesep = "0.4"
         ranksep = "0.7"
         splines = "ortho"
         overlap = "compress"
+        node_margin = "0.15,0.1"  # Slightly reduced margins for compact
     else:
         # Standard mode - more spacious layout, curved lines
         pad = "0.7"
@@ -169,6 +178,7 @@ def _set_graph_attributes(
         ranksep = "1.3"  # Slightly reduced from original 1.5
         splines = "curved"
         overlap = "false"
+        node_margin = "0.2,0.15"  # Standard margins
 
     # Set graph orientation based on top_down parameter
     rankdir = "TB" if top_down else "LR"  # TB = Top to Bottom, LR = Left to Right
@@ -194,7 +204,7 @@ def _set_graph_attributes(
         style="filled,rounded",
         fontname=font,
         fontsize=node_fontsize,
-        margin="0.2,0.15",
+        margin=node_margin,
         penwidth="1.5",
         fontcolor=fontcolor,
         height="0",  # Allow height to be determined by content
@@ -278,13 +288,14 @@ def _add_nodes(
         )
 
 
-def _truncate_text(text: str | None, max_length: int) -> str:
+def _truncate_text(text: str | None, max_length: int, already_escaped: bool = False) -> str:
     """Truncates text to a maximum length, adding ellipsis if truncated."""
     if text is None:
         return ""
     if len(text) > max_length:
-        return html.escape(text[: max_length - 3].rstrip()) + "..."
-    return html.escape(text)
+        truncated = text[: max_length - 3].rstrip() + "..."
+        return truncated if already_escaped else html.escape(truncated)
+    return text if already_escaped else html.escape(text)
 
 
 def _build_label(
@@ -305,24 +316,47 @@ def _build_label(
         title_font_size = graph_font_size + 1  # Smaller title in compact mode
         normal_font_size = max(graph_font_size - 1, 8)  # Smaller content
         small_font_size = max(graph_font_size - 2, 7)  # Very small details
-
-        # Shorter max lengths for compact mode
-        desc_max_length = 45
-        output_max_length = 30
-        max_params = 3
-        max_options = 3
-        options_max_length = 25
     else:
         title_font_size = graph_font_size + 2  # Larger title in standard mode
         normal_font_size = graph_font_size  # Normal content size
         small_font_size = max(graph_font_size - 1, 8)  # Smaller for details
 
-        # Original max lengths for standard mode
+    # Adjust truncation limits based on font size for better readability with large fonts
+    if graph_font_size >= 20:
+        # Very aggressive truncation for large fonts (20+)
+        title_max_length = 25  # Increased from 15
+        desc_max_length = 25
+        output_combined_max_length = 30  # Combined name + description
+        max_params = 2
+        max_options = 2
+        options_max_length = 15
+    elif graph_font_size >= 16:
+        # Moderate truncation for medium-large fonts (16-19)
+        title_max_length = 30  # Increased from 20
+        desc_max_length = 35
+        output_combined_max_length = 40  # Combined name + description
+        max_params = 3
+        max_options = 3
+        options_max_length = 20
+    elif compact:
+        # Original compact mode truncation for smaller fonts
+        title_max_length = 40  # Increased from 30
+        desc_max_length = 45
+        output_combined_max_length = 50  # Combined name + description
+        max_params = 3
+        max_options = 3
+        options_max_length = 25
+    else:
+        # Original standard mode truncation for smaller fonts
+        title_max_length = 60  # Increased from 50
         desc_max_length = 70
-        output_max_length = 50
+        output_combined_max_length = 70  # Combined name + description
         max_params = 4
         max_options = 4
         options_max_length = 50
+
+    # Truncate title if it's too long
+    title = _truncate_text(title, title_max_length, already_escaped=True)
 
     rows = [f'<tr><td><font point-size="{title_font_size}"><b>{title}</b></font></td></tr>']
 
@@ -353,23 +387,32 @@ def _build_label(
 
         for p_data in shown_params:
             p_name = p_data.get("name", "")
-            p_name_html = f"<b>{html.escape(p_name.replace('_', ' '))}</b>" if p_name else ""
-
             p_options = p_data.get("options", [])
+
+            # Create the full line content first, then truncate the entire line consistently
             if isinstance(p_options, list) and len(p_options) > 0:
                 options = [str(opt) for opt in p_options[:max_options]]
                 options_str = ", ".join(options)
-                truncated = False
-                if len(options_str) > options_max_length:
-                    options_str = options_str[:options_max_length] + "..."
-                    truncated = True
-                if len(p_options) > max_options and not truncated:
+                if len(p_options) > max_options:
                     options_str += "..."
-                actual_param_rows.append(
-                    f'<tr><td><font point-size="{small_font_size}">{p_name_html}: {options_str}</font></td></tr>'
-                )
+                full_line = f"{p_name}: {options_str}"
             else:
-                actual_param_rows.append(f'<tr><td><font point-size="{small_font_size}">{p_name_html}</font></td></tr>')
+                # Just parameter name
+                full_line = p_name
+
+            # Apply consistent truncation based on font size to the entire line
+            if graph_font_size >= 20:
+                line_max_length = 35  # Very aggressive for large fonts
+            elif graph_font_size >= 16:
+                line_max_length = 45  # Moderate for medium-large fonts
+            else:
+                line_max_length = 55  # Standard for smaller fonts
+
+            if len(full_line) > line_max_length:
+                full_line = full_line[: line_max_length - 3] + "..."
+
+            p_name_html = f"<b>{html.escape(full_line.replace('_', ' '))}</b>"
+            actual_param_rows.append(f'<tr><td><font point-size="{small_font_size}">{p_name_html}</font></td></tr>')
 
         # Show parameter count if there are more parameters than we're displaying
         if len(significant_params) > len(shown_params):
@@ -390,27 +433,38 @@ def _build_label(
                 is_significant = bool(p_name or p_desc or (isinstance(p_options, list) and p_options))
 
                 if is_significant:
-                    p_name_html = f"<b>{html.escape(p_name.replace('_', ' ').title())}</b>" if p_name else "N/A"
-
+                    # Create the full line content first, then truncate consistently
                     if isinstance(p_options, list) and p_options:
-                        options_display = [html.escape(str(opt)) for opt in p_options[:max_options]]
+                        # Format: name: option1, option2, option3...
+                        options_display = [str(opt) for opt in p_options[:max_options]]
                         options_str = ", ".join(options_display)
-                        if len(options_str) > options_max_length:
-                            options_str = options_str[: options_max_length - 3] + "..."
                         if len(p_options) > max_options:
                             options_str += "..."
-                        actual_param_rows.append(
-                            f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}: {options_str}</font></td></tr>'
-                        )
+                        full_line = f"{p_name}: {options_str}"
                     elif p_desc:  # Has description
-                        truncated_p_desc = _truncate_text(p_desc, desc_max_length)
-                        actual_param_rows.append(
-                            f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}: {truncated_p_desc}</font></td></tr>'
-                        )
+                        # Format: name: description
+                        full_line = f"{p_name}: {p_desc}"
                     elif p_name:  # Has name, but no options and no description
-                        actual_param_rows.append(
-                            f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_name_html}</font></td></tr>'
-                        )
+                        # Just parameter name
+                        full_line = p_name
+                    else:
+                        continue  # Skip if no meaningful content
+
+                    # Apply consistent truncation based on font size to the entire line
+                    if graph_font_size >= 20:
+                        line_max_length = 35  # Very aggressive for large fonts
+                    elif graph_font_size >= 16:
+                        line_max_length = 45  # Moderate for medium-large fonts
+                    else:
+                        line_max_length = 70  # Standard for smaller fonts
+
+                    if len(full_line) > line_max_length:
+                        full_line = full_line[: line_max_length - 3] + "..."
+
+                    p_line_html = f"<b>{html.escape(full_line.replace('_', ' ').title())}</b>"
+                    actual_param_rows.append(
+                        f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{p_line_html}</font></td></tr>'
+                    )
             elif p_data is not None:  # Fallback for non-dict parameters
                 actual_param_rows.append(
                     f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;<b>{html.escape(str(p_data))}</b></font></td></tr>'
@@ -429,57 +483,60 @@ def _build_label(
     outputs_data = node.get("outputs") or []
 
     if outputs_data:
-        # Process outputs with different styling based on compact mode
+        # Process outputs exactly like parameters: name: description format
         for o_data in outputs_data:
             if isinstance(o_data, dict):
                 o_category = o_data.get("category")
                 o_desc = o_data.get("description")
 
                 if o_category or o_desc:
-                    if compact:
-                        # More compact formatting for outputs
-                        o_category_html = f"<b>{html.escape(o_category or 'Output')}</b>" if o_category else ""
-                        if o_desc:
-                            truncated_o_desc = _truncate_text(o_desc, output_max_length)
-                            if o_category:
-                                actual_output_rows.append(
-                                    f'<tr><td><font point-size="{small_font_size}">{o_category_html}: {truncated_o_desc}</font></td></tr>'
-                                )
-                            else:
-                                actual_output_rows.append(
-                                    f'<tr><td><font point-size="{small_font_size}">{truncated_o_desc}</font></td></tr>'
-                                )
-                        elif o_category:
-                            actual_output_rows.append(
-                                f'<tr><td><font point-size="{small_font_size}">{o_category_html}</font></td></tr>'
-                            )
+                    # Format exactly like parameters: "category: description"
+                    if o_category and o_desc:
+                        full_line = f"{o_category}: {o_desc}"
+                    elif o_category:
+                        full_line = o_category
                     else:
-                        # Standard formatting for outputs
-                        o_category_html = (
-                            f"<b>{html.escape(o_category.replace('_', ' ').title())}</b>" if o_category else "N/A"
-                        )
-                        if o_desc:
-                            truncated_o_desc = _truncate_text(o_desc, output_max_length)
-                            actual_output_rows.append(
-                                f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{o_category_html}: {truncated_o_desc}</font></td></tr>'
-                            )
-                        elif o_category:
-                            actual_output_rows.append(
-                                f'<tr><td><font point-size="{normal_font_size}">&nbsp;&nbsp;{o_category_html}</font></td></tr>'
-                            )
+                        full_line = o_desc
+
+                    # Truncate the entire line if it's too long (same logic as parameters)
+                    if len(full_line) > output_combined_max_length:
+                        full_line = full_line[: output_combined_max_length - 3] + "..."
+
+                    # Format consistently with parameters
+                    font_size = small_font_size if compact else normal_font_size
+                    indent = "" if compact else "&nbsp;&nbsp;"
+                    output_html = f"<b>{html.escape(full_line.replace('_', ' '))}</b>"
+
+                    actual_output_rows.append(
+                        f'<tr><td><font point-size="{font_size}">{indent}{output_html}</font></td></tr>'
+                    )
             elif o_data is not None:
                 # Non-dict outputs
+                full_line = str(o_data)
+                if len(full_line) > output_combined_max_length:
+                    full_line = full_line[: output_combined_max_length - 3] + "..."
+
                 font_size = small_font_size if compact else normal_font_size
                 indent = "" if compact else "&nbsp;&nbsp;"
+                output_html = f"<b>{html.escape(full_line)}</b>"
+
                 actual_output_rows.append(
-                    f'<tr><td><font point-size="{font_size}">{indent}<b>{html.escape(str(o_data))}</b></font></td></tr>'
+                    f'<tr><td><font point-size="{font_size}">{indent}{output_html}</font></td></tr>'
                 )
 
     if actual_output_rows:
-        # Limit to max 3 outputs in compact mode
-        if compact and len(actual_output_rows) > 3:
-            shown_outputs = actual_output_rows[:3]
-            remaining = len(actual_output_rows) - 3
+        # Limit outputs based on font size and compact mode for better space usage
+        max_outputs_to_show = 3
+        if graph_font_size >= 20:
+            max_outputs_to_show = 2  # Very aggressive for large fonts
+        elif graph_font_size >= 16:
+            max_outputs_to_show = 2  # Moderate for medium-large fonts
+        elif compact:
+            max_outputs_to_show = 3  # Original compact logic
+
+        if len(actual_output_rows) > max_outputs_to_show:
+            shown_outputs = actual_output_rows[:max_outputs_to_show]
+            remaining = len(actual_output_rows) - max_outputs_to_show
             shown_outputs.append(
                 f'<tr><td><font point-size="{small_font_size}"><i>+{remaining} more outputs</i></font></td></tr>'
             )
@@ -493,7 +550,7 @@ def _build_label(
 
         # Add heading and output rows
         output_title = "Outputs"
-        if compact and len(outputs_data) > 3:
+        if len(outputs_data) > max_outputs_to_show:
             output_title = f"Outputs ({len(outputs_data)})"
         rows.append(f'<tr><td><font point-size="{normal_font_size}"><u>{output_title}</u></font></td></tr>')
         rows.extend(actual_output_rows)
