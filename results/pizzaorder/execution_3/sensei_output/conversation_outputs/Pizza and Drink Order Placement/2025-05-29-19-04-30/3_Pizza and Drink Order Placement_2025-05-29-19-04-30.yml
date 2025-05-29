@@ -1,0 +1,152 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You are planning a casual get-together with friends at your place tonight.
+- You decided to order pizza and drinks for everyone to make it easier and more enjoyable.
+- You need to pick it up on your way home from work.
+ask_about:
+- Ask what kinds of pizzas are available.
+- Order a {{pizza_type}} pizza.
+- Select the size {{pizza_size}} for the {{pizza_type}} pizza.
+- Ask what drinks are available.
+- Order {{number_of_drinks}} {{drink_type}}.
+- drink_type: Iced Tea
+- number_of_drinks: Four
+- pizza_size: extra large
+- pizza_type: Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 8
+- steps: 24
+data_output:
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- drink_options: 'We have three types of drinks available: coke, sprite, and water.'
+- order_summary: 'Thanks for ordering a large hawaiian pizza!
+
+    I have received your order for four Cokes.
+
+    The cost of a large Hawaiian pizza and four Cokes is $28.00.
+
+    Your order will be ready in 15 minutes.'
+- total_cost: The cost of a large Hawaiian pizza and four Cokes is $28.00.
+- estimated_readiness_time: Your order will be ready in 15 minutes.
+- pickup_location: Please visit our shop at 23 Main Street, NY.
+- order_id: Your order ID is 5b3ddd.
+errors: []
+total_cost($): 0.00882135
+---
+conversation time: 148.559295
+assistant response time:
+- 3.787125
+- 4.980742
+- 1.642665
+- 3.26705
+- 1.445686
+- 1.601302
+- 3.907261
+- 0.938395
+- 0.844662
+- 0.915969
+- 0.980569
+- 0.822792
+- 0.96906
+- 1.105806
+- 1.29009
+- 1.073025
+- 1.057939
+- 1.191415
+- 1.918977
+- 0.941015
+- 1.104491
+- 1.033274
+- 0.970492
+- 2.054069
+response time report:
+  average: 1.660161
+  max: 4.980742
+  min: 0.822792
+---
+interaction:
+- User: What kinds of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'll take a Hawaiian pizza.
+- Assistant: It looks like I have the pizza type as Hawaiian, but I still need to
+    know the pizza size. Could you please tell me if you would like a small, medium,
+    or large pizza?
+- User: Extra large for the Hawaiian pizza.
+- Assistant: I'm sorry, but we only offer small, medium, or large sizes for our pizzas.
+    Could you please choose one of those sizes for your Hawaiian pizza?
+- User: Large for the Hawaiian pizza, then.
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for the details about the Hawaiian pizza. Now, could you please let
+    me know how many drinks you would like to order and what type of drinks you prefer?
+    You can choose from coke, sprite, or water.'
+- User: What drinks do you have available?
+- Assistant: 'We have three types of drinks available: coke, sprite, and water. How
+    many drinks would you like to order and which type do you prefer?'
+- User: I'll take four iced tea.
+- Assistant: I'm sorry, but we only offer coke, sprite, or water as drink options.
+    Could you please choose from those?
+- User: I'll take four cokes, then.
+- Assistant: 'I have received your order for four Cokes.
+
+    The cost of a large Hawaiian pizza and four Cokes is $28.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 5b3ddd.'
+- User: Can I add a dessert to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can I add a dessert to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can I get a dessert added to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you just tell me if you have any desserts available?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any desserts available?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any desserts on the menu?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any desserts on the menu?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you offer any desserts?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any desserts to add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any desserts to offer?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any desserts at all?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you even have any desserts, or what?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you even have a menu with desserts on it?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any desserts or not?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any desserts or not?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any desserts or not?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any desserts or not?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

@@ -1,0 +1,116 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/curious-user'
+- Your bicycle has been making some strange noises lately, and you suspect it needs
+  a tune-up or repair.
+- You rely on your bike for commuting, so it's important to get it fixed as soon as
+  possible, preferably within the next few days.
+- You have a fairly busy schedule, so you need to find a convenient time that fits
+  your availability.
+ask_about:
+- Inquire about available bike repair services and scheduling options.
+- Ask for the price of a tune-up.
+- Schedule an appointment for a repair, specifying the date and time as {{appointment_date}}
+  and {{appointment_time}}.
+- Attempt to reschedule the appointment and inquire about the shop's contact information
+  when informed that rescheduling is not possible.
+- Decline to provide contact information and ask for business hours.
+- appointment_date: Tomorrow
+- appointment_time: 1:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- repair_services_info: We offer repair, tune-up, and other bike services. To schedule
+    an appointment, please provide the date and time that works best for you.
+- tune_up_price: The cost of a standard tune-up is $150.
+- appointment_details: 'Ok, I have scheduled your appointment for 11/10/2023 at 13:30:00
+    for a repair.
+
+    See you then!'
+- rescheduling_policy: I'm sorry it's a little loud in my shop, can you say that again?
+- business_hours: Our business hours are every weekday from 9am to 5:30pm.
+errors: []
+total_cost($): 0.00682695
+---
+conversation time: 140.498081
+assistant response time:
+- 1.074528
+- 2.430705
+- 1.136452
+- 1.243358
+- 0.864809
+- 1.072497
+- 1.076156
+- 1.052382
+- 1.088968
+- 1.134447
+- 0.992743
+- 0.855059
+- 0.773884
+- 1.01014
+- 1.115437
+- 1.241698
+- 1.221836
+- 1.198443
+- 1.5171
+- 1.04906
+response time report:
+  average: 1.157485
+  max: 2.430705
+  min: 0.773884
+---
+interaction:
+- User: What bike repair services do you offer, and how can I schedule an appointment?
+- Assistant: We offer repair, tune-up, and other bike services. To schedule an appointment,
+    please provide the date and time that works best for you.
+- User: What is the price for a standard tune-up?
+- Assistant: The cost of a standard tune-up is $150.
+- User: Is it possible to schedule an appointment for a repair tomorrow at 1:30 PM?
+- Assistant: 'Ok, I have scheduled your appointment for 11/10/2023 at 13:30:00 for
+    a repair.
+
+    See you then!'
+- User: I need to reschedule that appointment. What are your business hours?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: Can you provide me with your contact information in case I need to reach you?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Can you share your contact information so I can reach you if needed?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your business hours?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: What are your business hours on weekends?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: What are your business hours on weekends?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: What are your business hours on weekends?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: What are your business hours on weekends?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: What are your business hours on weekends?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: What are your business hours on weekends?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: What are your business hours on weekends?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: What are your business hours on weekends?
+- Assistant: Nuestras horas de atención los fines de semana no están especificadas,
+    pero estamos abiertos de lunes a viernes de 9 a.m. a 5:30 p.m.
+- User: What are your business hours on weekends?
+- Assistant: Nuestras horas de atención los fines de semana no están especificadas,
+    pero estamos abiertos de lunes a viernes de 9 a.m. a 5:30 p.m.
+- User: What are your business hours on weekends?
+- Assistant: Nuestras horas de atención los fines de semana no están especificadas,
+    pero estamos abiertos de lunes a viernes de 9 a.m. a 5:30 p.m.
+- User: What are your business hours on weekends?
+- Assistant: Nuestras horas de atención los fines de semana no están especificadas,
+    pero estamos abiertos de lunes a viernes de 9 a.m. a 5:30 p.m.
+- User: What are your business hours on weekends?
+- Assistant: Nuestras horas de atención los fines de semana no están especificadas,
+    pero estamos abiertos de lunes a viernes de 9 a.m. a 5:30 p.m.
+- User: What are your business hours on weekends?
+- Assistant: Nuestras horas de atención los fines de semana no están especificadas,
+    pero estamos abiertos de lunes a viernes de 9 a.m. a 5:30 p.m.

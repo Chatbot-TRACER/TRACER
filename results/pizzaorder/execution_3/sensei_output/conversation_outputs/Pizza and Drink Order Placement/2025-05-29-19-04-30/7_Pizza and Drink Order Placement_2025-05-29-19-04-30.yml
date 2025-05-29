@@ -1,0 +1,116 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You are planning a casual get-together with friends at your place tonight.
+- You decided to order pizza and drinks for everyone to make it easier and more enjoyable.
+- You need to pick it up on your way home from work.
+ask_about:
+- Ask what kinds of pizzas are available.
+- Order a {{pizza_type}} pizza.
+- Select the size {{pizza_size}} for the {{pizza_type}} pizza.
+- Ask what drinks are available.
+- Order {{number_of_drinks}} {{drink_type}}.
+- drink_type: Bottled Soda
+- number_of_drinks: Four
+- pizza_size: extra large
+- pizza_type: Pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 8
+- steps: 24
+data_output:
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- drink_options: null
+- order_summary: null
+- total_cost: null
+- estimated_readiness_time: null
+- pickup_location: None
+- order_id: null
+errors:
+- 1001: 5 goals left to complete.
+total_cost($): 0.0065754
+---
+conversation time: 121.932044
+assistant response time:
+- 2.484966
+- 2.011685
+- 1.217052
+- 1.764144
+- 1.011537
+- 1.072304
+- 1.659893
+- 1.069724
+- 0.906907
+- 0.881035
+- 1.016992
+- 0.923471
+- 1.031237
+- 1.007878
+- 1.542586
+- 1.51124
+- 0.971726
+- 1.022356
+- 1.155271
+- 0.95462
+- 1.038377
+- 1.204701
+- 0.845454
+- 0.995617
+response time report:
+  average: 1.220865
+  max: 2.484966
+  min: 0.845454
+---
+interaction:
+- User: What kinds of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'll take a Pepperoni pizza.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'll have a Pepperoni pizza, please.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'll go with a Pepperoni pizza.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want a Pepperoni pizza, okay?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want a Pepperoni pizza, alright?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want a Pepperoni pizza, alright?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drinks do you have available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What kinds of drinks do you have?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the drink options you have?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drinks can I order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drink options do you have available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What kind of drinks do you offer?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Forget the drinks. Can I just get a Pepperoni pizza in extra large?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want an extra-large Pepperoni pizza.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I just get an extra-large Pepperoni pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I need an extra-large Pepperoni pizza, okay?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I get an extra-large Pepperoni pizza, please?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I just order an extra-large Pepperoni pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drinks do you have available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What types of drinks can I order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drink options do you have?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the drink choices you have?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drinks can I choose from?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

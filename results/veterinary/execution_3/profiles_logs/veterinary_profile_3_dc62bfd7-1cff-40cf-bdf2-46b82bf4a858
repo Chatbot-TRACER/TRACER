@@ -1,0 +1,60 @@
+{
+    "specification": {
+        "modules": [
+            "make_appointment",
+            "vetcen_qa",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "vetcen_qa": {
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "make_appointment",
+            "vetcen_qa",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": [
+                "11/10/2023"
+            ],
+            "time": [
+                "11:00:00"
+            ],
+            "service": [
+                "Vaccination"
+            ]
+        },
+        "vetcen_qa": {
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "unknown": [
+                "What vaccinations should I expect my puppy to receive during the appointment?",
+                "What vaccinations does your clinic typically recommend for puppies during their initial appointment?",
+                "What vaccinations do you usually recommend for puppies at their first visit?",
+                "What vaccinations will my puppy typically receive during his initial appointment?",
+                "What vaccinations do you typically recommend for puppies during their initial appointment?"
+            ]
+        },
+        "top-level": {}
+    }
+}

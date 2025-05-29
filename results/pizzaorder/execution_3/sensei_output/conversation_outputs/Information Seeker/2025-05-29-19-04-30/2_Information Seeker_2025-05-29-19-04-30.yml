@@ -1,0 +1,117 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/sarcastic-user'
+- You are planning a casual dinner with friends and want to order pizza from a local
+  pizzeria.
+- You need to gather information about the pizzeria's offerings and prices before
+  making a decision on what to order.
+- You also need to know the opening hours to ensure you can pick up the pizza at the
+  desired time.
+ask_about:
+- Ask for the opening hours of the store.
+- Ask for the list of available pizza options.
+- Select the pizza type {{pizza_type}}.
+- Ask for the pizza prices.
+- Ask for the available drinks and their prices.
+- pizza_type: Four cheese
+conversation:
+- interaction_style:
+  - single questions
+- number: 8
+- steps: 18
+data_output:
+- opening_hours: Every day from 1pm to 11:30pm
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- pizza_prices: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big.
+    The other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- drinks_menu: Sprite and Coke are 1.50$. Water is 1$.
+errors: []
+total_cost($): 0.00629895
+---
+conversation time: 120.700396
+assistant response time:
+- 2.264019
+- 2.313614
+- 3.140733
+- 2.9795
+- 0.750557
+- 0.65538
+- 0.876281
+- 0.983315
+- 0.799258
+- 0.868945
+- 0.797521
+- 0.707338
+- 2.478993
+- 0.953765
+- 2.214644
+- 1.320647
+- 0.829688
+- 1.068538
+response time report:
+  average: 1.444596
+  max: 3.140733
+  min: 0.65538
+---
+interaction:
+- User: What are the opening hours of the pizzeria?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Great, that gives me some time. What pizza options do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Nice, the Four Cheese sounds delicious. Can you tell me how much that one
+    costs?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What drinks do you have and how much do they cost?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Do you have any dessert options, and what's the price range?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What dessert options do you have, and how much do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What dessert options are available, and what do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What dessert options are available, and what do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What dessert options do you have, and how much do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any dessert options on the menu, and what's the price range?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What about sides? Do you have any, and how much do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What about sides? Are there any available, and what's the price range?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any sides available, and what are the prices?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What about salads? Are there any on the menu, and how much do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What about salads? Do you have any on the menu, and how much do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What about salads? Are there any available, and what do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What about salads? Are there any available, and what do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any salads on the menu, and how much do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

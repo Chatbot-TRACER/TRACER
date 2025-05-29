@@ -1,0 +1,170 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You are planning a casual get-together with friends at your place tonight.
+- You decided to order pizza and drinks for everyone to make it easier and more enjoyable.
+- You need to pick it up on your way home from work.
+ask_about:
+- Ask what kinds of pizzas are available.
+- Order a {{pizza_type}} pizza.
+- Select the size {{pizza_size}} for the {{pizza_type}} pizza.
+- Ask what drinks are available.
+- Order {{number_of_drinks}} {{drink_type}}.
+- drink_type: Fountain Drink
+- number_of_drinks: Three
+- pizza_size: small
+- pizza_type: Vegetarian
+conversation:
+- interaction_style:
+  - single questions
+- number: 8
+- steps: 24
+data_output:
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- drink_options: 'We have three types of drinks available: coke, sprite, and water.'
+- order_summary: 'Thanks for ordering a small vegetarian pizza!
+
+    I''ve received your order for three Cokes.
+
+    The cost of a small vegetarian pizza and three Cokes is $16.50.'
+- total_cost: The cost of a small vegetarian pizza and three Cokes is $16.50.
+- estimated_readiness_time: Your order will be ready for pickup in 15 minutes at our
+    shop located at 23 Main Street, NY.
+- pickup_location: Your order will be ready for pickup in 15 minutes at our shop located
+    at 23 Main Street, NY.
+- order_id: Your order ID is 70d615.
+errors: []
+total_cost($): 0.0098766
+---
+conversation time: 173.353569
+assistant response time:
+- 2.146792
+- 8.462439
+- 3.125214
+- 1.054882
+- 4.659218
+- 2.064214
+- 1.970326
+- 3.778689
+- 2.3228
+- 1.252817
+- 2.638624
+- 2.456685
+- 2.469367
+- 2.173968
+- 3.027056
+- 2.266054
+- 2.878269
+- 4.939841
+- 3.147649
+- 1.150177
+- 1.928352
+- 1.489544
+- 2.644117
+- 1.219462
+response time report:
+  average: 2.719439
+  max: 8.462439
+  min: 1.054882
+---
+interaction:
+- User: What kinds of pizzas are available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'll take a Vegetarian pizza.
+- Assistant: 'It looks like I still need to know the size of your pizza. Could you
+    please tell me if you would like a small, medium, or large pizza? Also, please
+    confirm the type of pizza you would like from the following options: margherita,
+    carbonara, marinera, hawaiian, four cheese, or vegetarian.'
+- User: Small for the Vegetarian pizza.
+- Assistant: 'Thanks for ordering a small vegetarian pizza!
+
+    Thank you for the details about your pizza! Now, could you please let me know
+    how many drinks you would like to order and what type of drinks you prefer? You
+    can choose from coke, sprite, or water.'
+- User: What drinks do you have available?
+- Assistant: 'We have three types of drinks available: coke, sprite, and water. How
+    many drinks would you like to order and which type do you prefer?'
+- User: I'll take three fountain drinks, all coke.
+- Assistant: 'I''ve received your order for three Cokes.
+
+    The cost of a small vegetarian pizza and three Cokes is $16.50.
+
+    Your order will be ready for pickup in 15 minutes at our shop located at 23 Main
+    Street, NY. Your order ID is 70d615.'
+- User: Can I pay for the order when I pick it up?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Can I pay with cash when I pick it up?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, order pickup, and how long it takes
+    to get an order.
+- User: Can you find out if I can pay with cash when I pick it up?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.
+- User: Can you check if I can pay with cash when I pick it up?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, order pickup, and how long it takes
+    to get an order.
+- User: Can you tell me if there are any special deals or discounts available for
+    my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any special deals or discounts available for my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Are there any combo deals for pizzas and drinks that I can choose from?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.
+- User: Can you at least tell me what your opening hours are?
+- Assistant: Every day from 1pm to 11:30pm
+- User: So you're saying you're open from 1pm to 11:30pm? What a convenient schedule.
+    Can I get a confirmation on that?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Is there any way to get a discount if I order more than one pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Are there any additional toppings I can add to my Vegetarian pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: Can I add extra cheese to my Vegetarian pizza?'
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I add extra cheese to my Vegetarian pizza?
+- Assistant: I see that you want to add extra cheese to your Vegetarian pizza. However,
+    I need to know the size of the pizza (small, medium, or large) and the toppings
+    you would like to add. Could you please provide that information?
+- User: Can I just add extra cheese to the small Vegetarian pizza I already ordered?
+- Assistant: 'Thanks for ordering a small pizza with c, h, e, e, s and e!
+
+    I see that you''ve mentioned wanting three drinks of coke, which is great! Just
+    to confirm, could you please provide the number of drinks you would like to order? '
+- User: I already ordered three Cokes. Just confirm that I can add extra cheese to
+    my small Vegetarian pizza.
+- Assistant: Yes, you can add extra cheese to your small Vegetarian pizza. Your order
+    includes three Cokes as well. Thank you for your order!
+- User: Can you tell me how much extra cheese will cost for the small Vegetarian pizza?
+- Assistant: I'm sorry, but I don't have information on the cost of extra cheese for
+    the small Vegetarian pizza. You may want to check with the staff at Fast Pizza
+    for the pricing details. Is there anything else I can assist you with regarding
+    your order?
+- User: Can you tell me how long it will take for my order to be ready?
+- Assistant: I'm sorry, but I don't have information on how long it will take for
+    your order to be ready. You may want to check with the staff at Fast Pizza for
+    the estimated time. Is there anything else I can assist you with regarding your
+    order?
+- User: Can you give me a rough estimate of when I should expect my order to be ready?
+- Assistant: I'm sorry, but I don't have information on how long it will take for
+    your order to be ready. You may want to check with the staff at Fast Pizza for
+    the estimated time. Is there anything else I can assist you with regarding your
+    order?
+- User: Is there a way to contact the staff at the shop to get more information about
+    my order?
+- Assistant: I'm sorry, but I don't have information on how to contact the staff at
+    Fast Pizza. You may want to check their website or visit the shop for more details.
+    Is there anything else I can assist you with regarding your order?

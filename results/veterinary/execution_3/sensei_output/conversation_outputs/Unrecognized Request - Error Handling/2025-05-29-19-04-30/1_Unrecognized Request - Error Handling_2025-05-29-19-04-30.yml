@@ -1,0 +1,91 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: Our veterinary center is open every weekday from 9am to 6pm. For
+    24/7 emergency services, please contact an emergency veterinary hospital.
+errors: []
+total_cost($): 0.00369375
+---
+conversation time: 55.298659
+assistant response time:
+- 0.805333
+- 0.863622
+- 1.09222
+- 0.950741
+- 0.967191
+- 0.858628
+- 0.912409
+- 0.900387
+- 0.848241
+- 0.942124
+- 0.850774
+- 0.991123
+- 0.900177
+- 0.982728
+- 1.122966
+response time report:
+  average: 0.932577
+  max: 1.122966
+  min: 0.805333
+---
+interaction:
+- User: What’s the deal with walk-ins?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What about the grooming, like what's the sitch?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the scoop on the 24/7 emergencies?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm. For 24/7
+    emergency services, please contact an emergency veterinary hospital.
+- User: What’s the holiday vibe for service hours?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm.
+- User: What’s it gonna cost for a checkup, any idea?
+- Assistant: The cost of a vet visit can vary. Would you like me to provide specific
+    information about the price?
+- User: How much for a quick look, you know, the checkup thing?
+- Assistant: The cost of a vet visit can vary. Would you like me to provide specific
+    information about the price?
+- User: What's the price range for a peek, like just a quick checkup?
+- Assistant: The cost of a vet visit can vary. Would you like me to provide specific
+    information about the price?
+- User: What about the drop-in thing for pets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the deal with the grooming, like how does that work?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the story with the emergency stuff, you know, like if something happens
+    at night?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm. For emergencies
+    that happen at night, please contact an emergency veterinary hospital.
+- User: What about the holiday hours, like when's the schedule?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm.
+- User: What’s the scoop on the drop-in service for pets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the lowdown on grooming, like how’s that work?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the word on the emergency care, like if something urgent pops up?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm. For emergencies
+    that happen at night, please contact an emergency veterinary hospital.
+- User: What’s the vibe for the holiday hours, like when are you open?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm.

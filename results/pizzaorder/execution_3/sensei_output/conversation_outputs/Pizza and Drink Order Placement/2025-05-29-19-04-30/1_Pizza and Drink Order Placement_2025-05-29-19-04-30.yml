@@ -1,0 +1,162 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You are planning a casual get-together with friends at your place tonight.
+- You decided to order pizza and drinks for everyone to make it easier and more enjoyable.
+- You need to pick it up on your way home from work.
+ask_about:
+- Ask what kinds of pizzas are available.
+- Order a {{pizza_type}} pizza.
+- Select the size {{pizza_size}} for the {{pizza_type}} pizza.
+- Ask what drinks are available.
+- Order {{number_of_drinks}} {{drink_type}}.
+- drink_type: Bottled Soda
+- number_of_drinks: Two
+- pizza_size: medium
+- pizza_type: Custom
+conversation:
+- interaction_style:
+  - single questions
+- number: 8
+- steps: 24
+data_output:
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- drink_options: 'Thanks for ordering a medium pizza with p, e, p, p, e, r, o, n and
+    i!
+
+    Thank you for your pizza order! Now, could you please let me know how many drinks
+    you would like to order and what type of drinks you prefer (coke, sprite, or water)?'
+- order_summary: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a medium pizza topped with pepperoni and two Cokes is $21.00.
+
+    Your order will be ready in 15 minutes.'
+- total_cost: The cost of a medium pizza topped with pepperoni and two Cokes is $21.00.
+- estimated_readiness_time: Your order will be ready in 15 minutes.
+- pickup_location: 'The cost of a medium pizza topped with pepperoni and two Cokes
+    is $21.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY.'
+- order_id: Your order ID is 640228.
+errors: []
+total_cost($): 0.0100413
+---
+conversation time: 172.272668
+assistant response time:
+- 2.671109
+- 5.146196
+- 3.669595
+- 3.730463
+- 4.322346
+- 2.033688
+- 1.519454
+- 2.772557
+- 2.817927
+- 2.884615
+- 3.066885
+- 10.385642
+- 1.770209
+- 1.272225
+- 1.436819
+- 1.192503
+- 1.548682
+- 2.914387
+- 1.860079
+- 0.817118
+- 1.054249
+- 1.070818
+- 1.979967
+- 2.213568
+response time report:
+  average: 2.672962
+  max: 10.385642
+  min: 0.817118
+---
+interaction:
+- User: What kinds of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a Custom pizza.
+- Assistant: It looks like I still need some information to complete your order. Could
+    you please provide the pizza size (small, medium, or large) and the toppings you'd
+    like (cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken)?
+- User: I’ll go with a medium for the Custom pizza. Now, for the toppings, let’s do
+    pepperoni, mushrooms, and olives. What drinks do you have available?
+- Assistant: 'Thanks for ordering a medium pizza with p, e, p, p, e, r, o, n and i!
+
+    Thank you for your pizza order! Now, could you please let me know how many drinks
+    you would like to order and what type of drinks you prefer (coke, sprite, or water)?'
+- User: I’ll take two bottled sodas. Can you make sure they’re both Coke?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a medium pizza topped with pepperoni and two Cokes is $21.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 640228.'
+- User: What’s the total for that order?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: So, for your medium Custom pizza with pepperoni, mushrooms, and olives, the
+    total comes to $17.00. Adding the two Cokes brings the total to $21.00. Would
+    you like to add anything else to your order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What’s the total for that order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What’s the total for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What’s the total for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What’s the total for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What’s the cost of my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What’s the total for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What’s the total for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What’s the cost of my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What do you mean you can't get it? Just tell me the total already!
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What do you mean you can't get it? Just tell me the total already!
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What’s the total for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What are your delivery options?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: What time do you close?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What’s the total for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What do you mean you can't get it? Just tell me the total already!
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What’s the total for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What other sizes do you have for your pizzas?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: I meant what sizes do you have for the pizzas?'
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)

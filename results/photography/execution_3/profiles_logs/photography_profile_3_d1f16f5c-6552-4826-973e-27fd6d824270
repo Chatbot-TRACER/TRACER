@@ -1,0 +1,93 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "call_appointment",
+            "photo_qa",
+            "sequence-session_details-estimate_price",
+            "session_details",
+            "estimate_price"
+        ],
+        "photo_qa": {
+            "When are you open?": [],
+            "Where is the shop?": [],
+            "Tell me about your portfolio, what important projects have you worked on?": [],
+            "Do you charge per hour or by number of photos?": [],
+            "What media do you work on?": []
+        },
+        "call_appointment": {
+            "name": "Person name",
+            "phone_number": "Phone number",
+            "email": "email",
+            "appointment": "date"
+        },
+        "session_details": {
+            "media": [
+                "photography",
+                "video",
+                "3D rendering"
+            ],
+            "number_artworks": "number",
+            "type_artworks": [
+                "picture",
+                "sculpture",
+                "ceramic"
+            ]
+        },
+        "estimate_price": {
+            "media": [
+                "photography",
+                "video",
+                "3D rendering"
+            ],
+            "number_artworks": "number",
+            "type_artworks": [
+                "picture",
+                "sculpture",
+                "ceramic"
+            ]
+        },
+        "sequence-session_details-estimate_price": {},
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "photo_qa",
+            "top-level"
+        ],
+        "photo_qa": {
+            "When are you open?": [
+                "When are you open?"
+            ],
+            "Where is the shop?": [
+                "Where is the shop?"
+            ],
+            "Tell me about your portfolio, what important projects have you worked on?": [],
+            "Do you charge per hour or by number of photos?": [],
+            "What media do you work on?": [
+                "What media do you work on?"
+            ],
+            "unknown": [
+                "Are you open on Saturdays?"
+            ]
+        },
+        "call_appointment": {
+            "name": [],
+            "phone_number": [],
+            "email": [],
+            "appointment": []
+        },
+        "session_details": {
+            "media": [],
+            "number_artworks": [],
+            "type_artworks": []
+        },
+        "estimate_price": {
+            "media": [],
+            "number_artworks": [],
+            "type_artworks": []
+        },
+        "sequence-session_details-estimate_price": {},
+        "top-level": {}
+    }
+}

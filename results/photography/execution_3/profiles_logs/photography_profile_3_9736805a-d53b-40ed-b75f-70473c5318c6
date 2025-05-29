@@ -1,0 +1,103 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "call_appointment",
+            "photo_qa",
+            "sequence-session_details-estimate_price",
+            "session_details",
+            "estimate_price"
+        ],
+        "photo_qa": {
+            "When are you open?": [],
+            "Where is the shop?": [],
+            "Tell me about your portfolio, what important projects have you worked on?": [],
+            "Do you charge per hour or by number of photos?": [],
+            "What media do you work on?": []
+        },
+        "call_appointment": {
+            "name": "Person name",
+            "phone_number": "Phone number",
+            "email": "email",
+            "appointment": "date"
+        },
+        "session_details": {
+            "media": [
+                "photography",
+                "video",
+                "3D rendering"
+            ],
+            "number_artworks": "number",
+            "type_artworks": [
+                "picture",
+                "sculpture",
+                "ceramic"
+            ]
+        },
+        "estimate_price": {
+            "media": [
+                "photography",
+                "video",
+                "3D rendering"
+            ],
+            "number_artworks": "number",
+            "type_artworks": [
+                "picture",
+                "sculpture",
+                "ceramic"
+            ]
+        },
+        "sequence-session_details-estimate_price": {},
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "call_appointment",
+            "estimate_price",
+            "top-level",
+            "session_details"
+        ],
+        "photo_qa": {
+            "When are you open?": [],
+            "Where is the shop?": [],
+            "Tell me about your portfolio, what important projects have you worked on?": [],
+            "Do you charge per hour or by number of photos?": [],
+            "What media do you work on?": [],
+            "unknown": []
+        },
+        "call_appointment": {
+            "name": [],
+            "phone_number": [
+                "555-123-4567"
+            ],
+            "email": [],
+            "appointment": [
+                "27/10/2024"
+            ]
+        },
+        "session_details": {
+            "media": [
+                "3D rendering"
+            ],
+            "number_artworks": [
+                1.0
+            ],
+            "type_artworks": [
+                "ceramic"
+            ]
+        },
+        "estimate_price": {
+            "media": [
+                "3D rendering"
+            ],
+            "number_artworks": [
+                1.0
+            ],
+            "type_artworks": [
+                "ceramic"
+            ]
+        },
+        "sequence-session_details-estimate_price": {},
+        "top-level": {}
+    }
+}

@@ -1,0 +1,125 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/sarcastic-user'
+- You are planning a casual dinner with friends and want to order pizza from a local
+  pizzeria.
+- You need to gather information about the pizzeria's offerings and prices before
+  making a decision on what to order.
+- You also need to know the opening hours to ensure you can pick up the pizza at the
+  desired time.
+ask_about:
+- Ask for the opening hours of the store.
+- Ask for the list of available pizza options.
+- Select the pizza type {{pizza_type}}.
+- Ask for the pizza prices.
+- Ask for the available drinks and their prices.
+- pizza_type: Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 8
+- steps: 18
+data_output:
+- opening_hours: Every day from 1pm to 11:30pm
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- pizza_prices: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big.
+    The other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- drinks_menu: Sprite and Coke are 1.50$. Water is 1$.
+errors: []
+total_cost($): 0.00656835
+---
+conversation time: 128.167116
+assistant response time:
+- 1.712692
+- 2.710246
+- 2.611903
+- 2.821818
+- 1.798272
+- 1.017802
+- 0.999627
+- 0.929132
+- 0.849315
+- 0.941264
+- 0.808809
+- 0.935272
+- 2.356981
+- 1.008026
+- 1.010639
+- 1.855899
+- 0.988707
+- 1.501649
+response time report:
+  average: 1.492114
+  max: 2.821818
+  min: 0.808809
+---
+interaction:
+- User: What are the opening hours of the pizzeria?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Great, so they open at 1pm. Now, what kind of pizza options do they have on
+    the menu?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Hawaiian, huh? That's the one with pineapple, right? Do they have any other
+    unique toppings or just the classics?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Alright, but do they have any prices listed for these pizzas?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What about drinks? What do they have and how much do they cost?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Are there any desserts on the menu, and what are their prices?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What about desserts? Are there any options available, and what do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What about desserts? Are there any options available, and what do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What kinds of desserts do you have, and how much do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What kinds of desserts do you offer, and what's the pricing for them?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What's the deal with desserts? Do you have any options and how much do they
+    cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What about sides? Do you have anything like garlic knots or wings, and how
+    much do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there anything like garlic knots or wings on the menu, and how much do
+    they cost?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What about dips? Do you have any available, and what's the pricing for them?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What about dips? Are there any available and how much do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What are the sides you have on the menu, like garlic knots or wings, and what
+    do they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What about sides? Are there any options like garlic knots or wings, and what's
+    the pricing for them?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any sides available, like garlic knots or wings, and how much do
+    they cost?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

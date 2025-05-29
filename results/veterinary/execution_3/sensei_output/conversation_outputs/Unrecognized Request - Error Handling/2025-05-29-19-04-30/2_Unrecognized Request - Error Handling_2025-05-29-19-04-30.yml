@@ -1,0 +1,94 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: The cost for a veterinary check-up can vary.
+errors: []
+total_cost($): 0.0044616
+---
+conversation time: 62.663305
+assistant response time:
+- 1.235141
+- 0.766747
+- 0.904065
+- 1.117423
+- 1.241443
+- 1.960706
+- 1.144407
+- 1.190766
+- 1.010383
+- 0.945478
+- 1.027016
+- 1.046256
+- 0.912402
+- 1.024394
+- 1.120081
+response time report:
+  average: 1.10978
+  max: 1.960706
+  min: 0.766747
+---
+interaction:
+- User: What's the deal with just walking in for stuff?
+- Assistant: We recommend making an appointment for most services to ensure we can
+    assist you promptly. However, walk-ins are sometimes accepted depending on availability.
+    Would you like to schedule an appointment or need more information?
+- User: What about the fluff and stuff for pets, like the spa day?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What about the pampering options for furry friends, like the day at the spa?
+- Assistant: We offer various services for pet pampering, including grooming and spa
+    days. Would you like to schedule an appointment for a specific service?
+- User: What’s the deal with the round-the-clock rescue thing for pets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the situation with the always-open help for pets?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm. If you need
+    urgent assistance outside these hours, please let us know, and we can provide
+    guidance.
+- User: What’s the plan for the holiday times?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm. If you need
+    specific information about holiday hours, please let me know!
+- User: What’s the cost for a peek at the little check-up?
+- Assistant: The cost for a veterinary check-up can vary. Would you like me to provide
+    more specific information or help you schedule an appointment?
+- User: What’s the scoop on the prices for a quick look for the pets?
+- Assistant: The cost for a veterinary check-up can vary. Would you like me to provide
+    more specific information or help you schedule an appointment?
+- User: What’s the word on the fees for a fast glance at the pets?
+- Assistant: The cost for a veterinary check-up can vary. Would you like me to provide
+    more specific information or help you schedule an appointment?
+- User: What’s the lowdown on the charges for a quick look-see at the pets?
+- Assistant: The cost for a veterinary check-up can vary. Would you like me to provide
+    more specific information or help you schedule an appointment?
+- User: What’s the update on the rates for a speedy peek at the pets?
+- Assistant: The cost for a veterinary check-up can vary. Would you like me to provide
+    more specific information or help you schedule an appointment?
+- User: What’s the latest info on the costs for a zoom-in on the furry ones?
+- Assistant: The cost for a veterinary check-up can vary. Would you like me to provide
+    more specific information or help you schedule an appointment?
+- User: What’s the 411 on the prices for a quick glance at the furballs?
+- Assistant: The cost for a veterinary check-up can vary. Would you like me to provide
+    more specific information or help you schedule an appointment?
+- User: What's the scoop on just checking the fur kids for a few bucks?
+- Assistant: The cost for a veterinary check-up can vary. Would you like me to provide
+    more specific information or help you schedule an appointment?
+- User: What’s the news on the fees for a tiny check on the fur babies?
+- Assistant: The cost for a veterinary check-up can vary. Would you like me to provide
+    more specific information or help you schedule an appointment?

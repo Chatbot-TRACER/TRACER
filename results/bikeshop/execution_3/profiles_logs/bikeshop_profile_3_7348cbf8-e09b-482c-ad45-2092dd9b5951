@@ -1,0 +1,51 @@
+{
+    "specification": {
+        "modules": [
+            "make_appointment",
+            "bike_qa",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "repair",
+                "tune-up"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a tune-up?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "top-level",
+            "bike_qa"
+        ],
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a tune-up?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": [],
+            "unknown": [
+                "What is the price for a set of four all-season tires from the brand Continental?",
+                "What is the price of a set of four all-season tires from the brand Goodyear?",
+                "What is the price for a set of four all-season tires from the brand Bridgestone?",
+                "What is the price for a set of four all-season tires from the brand Michelin?",
+                "What is the price of a set of four all-season tires from the brand Yokohama?",
+                "What is the price for a set of four all-season tires from the brand Dunlop?",
+                "What is the price for a set of four all-season tires from the brand Pirelli?"
+            ]
+        },
+        "top-level": {}
+    }
+}

@@ -1,0 +1,157 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You placed an order online for pickup, but you haven't received a confirmation with
+  the pickup address.
+- You need to confirm the availability of delivery options and, if not available,
+  obtain the pickup location to retrieve your order as soon as possible.
+ask_about:
+- Ask if delivery is available.
+- If delivery is not available, ask for the pickup location.
+- If the chatbot cannot provide the pickup address, ask for alternative methods to
+  place the order and get the address.
+- Provide an uninterpretable input to trigger a request for rephrasing.
+- Ask what pizza options are available.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- delivery_availability: Regarding delivery, yes, delivery is available for your order.
+- pickup_location: We are located at 23 Main Street, New York.
+- order_placement_options: Yes, if delivery is not available, you can provide a pickup
+    address for your order. Please let me know the address where you would like to
+    pick up your pizza. Thank you!
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- rephrase_request: We do not do delivery, but customers need to get the shop for
+    their orders. We are located at 23 Main Street, New York.
+errors: []
+total_cost($): 0.00891945
+---
+conversation time: 126.386386
+assistant response time:
+- 2.335843
+- 1.694313
+- 5.276014
+- 2.885185
+- 1.763271
+- 1.700716
+- 1.407805
+- 1.832864
+- 1.570352
+- 2.455969
+- 1.514144
+- 1.445175
+- 1.686121
+- 1.43246
+- 1.924298
+- 1.407407
+- 1.66601
+- 1.198626
+- 1.501284
+- 1.66205
+response time report:
+  average: 1.917995
+  max: 5.276014
+  min: 1.198626
+---
+interaction:
+- User: Is delivery available for my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: What are the pizza options available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I get a custom pizza with extra pineapple and no cheese?
+- Assistant: 'It seems that I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza? Also, please provide the toppings
+    from the available options: cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken. Thank you!'
+- User: I want a large custom pizza with extra pineapple and no cheese. Can you confirm
+    that?
+- Assistant: 'Thanks for ordering a large pizza with h, a and m!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks you prefer (coke,
+    sprite, or water)? Thank you!'
+- User: 'I just want to confirm my order; I didn''t mention drinks. Can you just confirm
+    the pizza order: a large custom pizza with extra pineapple and no cheese?'
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: 'I just want to confirm my pizza order: a large custom pizza with extra pineapple
+    and no cheese. Can you confirm that?'
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: 'I just want to confirm my pizza order: a large custom pizza with extra pineapple
+    and no cheese. Can you confirm that?'
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: 'Can you just confirm my pizza order: a large custom pizza with extra pineapple
+    and no cheese?'
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: 'Can you just confirm my pizza order: a large custom pizza with extra pineapple
+    and no cheese?'
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: 'Can you just confirm my pizza order: a large custom pizza with extra pineapple
+    and no cheese?'
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: 'Can you just confirm my pizza order: a large custom pizza with extra pineapple
+    and no cheese?'
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: 'Can you just confirm my pizza order: a large custom pizza with extra pineapple
+    and no cheese?'
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: 'Can you just confirm my pizza order: a large custom pizza with extra pineapple
+    and no cheese?'
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: Can you confirm my order for a large custom pizza with extra pineapple and
+    no cheese?
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: Can you just confirm my order for a large custom pizza with extra pineapple
+    and no cheese?
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: Can you just confirm my order for a large custom pizza with extra pineapple
+    and no cheese?
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: Can you just confirm my order for a large custom pizza with extra pineapple
+    and no cheese?
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: Can you just confirm my order for a large custom pizza with extra pineapple
+    and no cheese?
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water)? Thank you!'
+- User: I just want to confirm if delivery is available for my order.
+- Assistant: 'Your pizza order is confirmed: a large custom pizza with extra pineapple
+    and no cheese. Regarding delivery, yes, delivery is available for your order.
+    Would you like to proceed with the order or need any further assistance?'
+- User: Is there a way to get the pickup address if delivery is not available?
+- Assistant: Yes, if delivery is not available, you can provide a pickup address for
+    your order. Please let me know the address where you would like to pick up your
+    pizza. Thank you!

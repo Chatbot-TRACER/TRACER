@@ -1,0 +1,121 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You placed an order online for pickup, but you haven't received a confirmation with
+  the pickup address.
+- You need to confirm the availability of delivery options and, if not available,
+  obtain the pickup location to retrieve your order as soon as possible.
+ask_about:
+- Ask if delivery is available.
+- If delivery is not available, ask for the pickup location.
+- If the chatbot cannot provide the pickup address, ask for alternative methods to
+  place the order and get the address.
+- Provide an uninterpretable input to trigger a request for rephrasing.
+- Ask what pizza options are available.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- delivery_availability: We do not do delivery, but customers need to get the shop
+    for their orders. We are located at 23 Main Street, New York.
+- pickup_location: We are located at 23 Main Street, New York.
+- order_placement_options: I'm sorry, I did not get what you said. I can help you
+    ordering predefined or custom pizzas, and then drinks.
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- rephrase_request: I'm sorry, I did not get what you said. I can help you ordering
+    predefined or custom pizzas, and then drinks.
+errors: []
+total_cost($): 0.0066366
+---
+conversation time: 119.834077
+assistant response time:
+- 1.988385
+- 1.049004
+- 0.93642
+- 0.758434
+- 2.4235
+- 1.959946
+- 1.390039
+- 1.116239
+- 0.887956
+- 1.78098
+- 0.843457
+- 0.826123
+- 0.660467
+- 2.998579
+- 0.846194
+- 0.91328
+- 0.717076
+- 0.960183
+- 2.924994
+- 0.929207
+response time report:
+  average: 1.345523
+  max: 2.998579
+  min: 0.660467
+---
+interaction:
+- User: Is delivery available for my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: What's the pickup location for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What's the address where I can pick up my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What's the pickup address for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What pizza options are available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can you tell me if there are any delivery options available for my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: What's the pickup location for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What's the address where I can pick up my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What's the pickup address for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you have for the custom pizzas?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What's the pickup location for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What's the address where I can pick up my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What's the pickup address for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What are the drink options available?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: What's the pickup address for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What's the address where I can pick up my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What's the pickup location for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What's the address where I can pick up my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What's the pickup location for my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, delivery options, and estimated
+    time to get an order.
+- User: What alternative methods can I use to place my order and get the pickup address?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

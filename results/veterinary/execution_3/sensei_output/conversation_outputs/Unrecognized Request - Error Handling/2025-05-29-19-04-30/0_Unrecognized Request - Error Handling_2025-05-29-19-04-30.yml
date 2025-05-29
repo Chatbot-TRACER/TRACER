@@ -1,0 +1,91 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: I'm not sure. However, I can tell you that a veterinary visit
+    typically costs between $50 and $60.
+errors: []
+total_cost($): 0.003636
+---
+conversation time: 82.48867
+assistant response time:
+- 1.05402
+- 0.780094
+- 0.790579
+- 0.850119
+- 0.815004
+- 3.208485
+- 0.932989
+- 0.742663
+- 0.955569
+- 0.856232
+- 1.055684
+- 0.905849
+- 0.839391
+- 2.784808
+- 0.938087
+response time report:
+  average: 1.167304
+  max: 3.208485
+  min: 0.742663
+---
+interaction:
+- User: Walk-in ok?
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'
+- User: Grooming, when?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming times, what’s the deal?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, what's the timing?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, how long wait?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, what's that cost?
+- Assistant: I'm not sure. However, I can tell you that a veterinary visit typically
+    costs between $50 and $60. We are open on weekdays from 9 a.m. to 6 p.m., and
+    we welcome dogs, cats, and birds.
+- User: Emergency service, when's that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Emergency care, hours?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm.
+- User: Holidays, open or not?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm.
+- User: Holidays, any special hours?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm.
+- User: Holidays, what's the plan?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Holidays, what's the schedule?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm.
+- User: Hours for the walk-ins, what’s that?
+- Assistant: Our veterinary center is open every weekday from 9am to 6pm.
+- User: Cost for a checkup, what's that?
+- Assistant: I'm not sure. However, I can tell you that a visit to the vet typically
+    costs between $50 and $60.
+- User: Checkup price, what’s the deal?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

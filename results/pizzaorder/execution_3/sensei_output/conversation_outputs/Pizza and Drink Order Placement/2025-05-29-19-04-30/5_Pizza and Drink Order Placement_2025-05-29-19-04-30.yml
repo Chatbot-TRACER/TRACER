@@ -1,0 +1,161 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You are planning a casual get-together with friends at your place tonight.
+- You decided to order pizza and drinks for everyone to make it easier and more enjoyable.
+- You need to pick it up on your way home from work.
+ask_about:
+- Ask what kinds of pizzas are available.
+- Order a {{pizza_type}} pizza.
+- Select the size {{pizza_size}} for the {{pizza_type}} pizza.
+- Ask what drinks are available.
+- Order {{number_of_drinks}} {{drink_type}}.
+- drink_type: Milk
+- number_of_drinks: Two
+- pizza_size: medium
+- pizza_type: Marinera
+conversation:
+- interaction_style:
+  - single questions
+- number: 8
+- steps: 24
+data_output:
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- drink_options: 'We have the following drinks available: coke, sprite, and water.'
+- order_summary: 'Thanks for ordering a medium marinera pizza!
+
+    I have the pizza type as "Marinera," the size as "Medium," and the extra toppings
+    as olives and extra cheese. I also noted that you would like two cokes.'
+- total_cost: The cost for a medium marinera pizza and two Cokes is $20.00.
+- estimated_readiness_time: Your order will be ready in 15 minutes.
+- pickup_location: Please visit our shop at 23 Main Street, NY.
+- order_id: Your order ID is 8add07.
+errors: []
+total_cost($): 0.00940425
+---
+conversation time: 176.796279
+assistant response time:
+- 2.895211
+- 5.336848
+- 3.462276
+- 1.498938
+- 1.861832
+- 4.322402
+- 5.596023
+- 3.394366
+- 4.275236
+- 1.12389
+- 2.113054
+- 2.046188
+- 2.257029
+- 3.01237
+- 2.097725
+- 1.884618
+- 2.306791
+- 2.876832
+- 4.687291
+- 3.10236
+- 2.137452
+- 1.211961
+- 1.075317
+- 0.91264
+response time report:
+  average: 2.728693
+  max: 5.596023
+  min: 0.91264
+---
+interaction:
+- User: What kinds of pizzas are available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’ll take a Marinera pizza.
+- Assistant: It looks like I have the pizza type as "Marinera," but I still need to
+    know the pizza size. Could you please tell me if you would like a small, medium,
+    or large pizza?
+- User: Medium for the Marinera pizza.
+- Assistant: 'Thanks for ordering a medium marinera pizza!
+
+    Thank you for the details about the pizza! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks (coke, sprite, or
+    water) you prefer?'
+- User: What drinks do you have available?
+- Assistant: 'We have the following drinks available: coke, sprite, and water. How
+    many drinks would you like to order and which type do you prefer?'
+- User: I'll take two milks.
+- Assistant: I'm sorry, but we only offer coke, sprite, or water as drink options.
+    Could you please choose from those? How many would you like to order?
+- User: I'll take two cokes then.
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost for a medium marinera pizza and two Cokes is $20.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 83ca9f.'
+- User: Can I add some extra toppings to the Marinera pizza?
+- Assistant: I have the pizza type as "Marinera" and the size as "Medium." Is there
+    anything else you would like to add to your order?
+- User: Can I get olives and extra cheese as toppings on the Marinera pizza?
+- Assistant: 'Thanks for ordering a medium marinera pizza!
+
+    I have the pizza type as "Marinera," the size as "Medium," and the extra toppings
+    as olives and extra cheese. I also noted that you would like two cokes. Could
+    you please confirm the number of drinks you want to order? '
+- User: Two cokes, that's right.
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a medium marinera pizza and two Cokes is $20.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 8add07.'
+- User: Can I also get a side of garlic bread with that?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can I get a side of garlic bread with my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can I add a side of garlic bread to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you just confirm if you have garlic bread available as a side?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: Do you have garlic bread as a side option?'
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Do you have any sides like garlic bread available?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and order time.
+- User: Do you have any desserts available?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any sides like garlic bread or desserts available?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any sides like garlic bread or desserts available?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.
+- User: Do you have any promotions or deals on pizzas today?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Do you have any deals or discounts available for this order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Do you have any special offers on pizzas today?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Do you have any loyalty programs or rewards for frequent customers?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any loyalty programs or rewards for frequent customers?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any special offers or loyalty programs for regular customers?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

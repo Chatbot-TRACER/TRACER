@@ -1,0 +1,161 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You are planning a casual get-together with friends at your place tonight.
+- You decided to order pizza and drinks for everyone to make it easier and more enjoyable.
+- You need to pick it up on your way home from work.
+ask_about:
+- Ask what kinds of pizzas are available.
+- Order a {{pizza_type}} pizza.
+- Select the size {{pizza_size}} for the {{pizza_type}} pizza.
+- Ask what drinks are available.
+- Order {{number_of_drinks}} {{drink_type}}.
+- drink_type: Water
+- number_of_drinks: One
+- pizza_size: large
+- pizza_type: Margarita
+conversation:
+- interaction_style:
+  - single questions
+- number: 8
+- steps: 24
+data_output:
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- drink_options: We have coke, sprite, and water available.
+- order_summary: Your order is a large Margarita pizza and one bottle of water.
+- total_cost: The cost for a large margherita pizza and one bottle of water is $21.
+- estimated_readiness_time: Your order will be ready in 15 minutes.
+- pickup_location: Please visit our shop at 23 Main Street, NY.
+- order_id: Your order ID is 53a612.
+errors: []
+total_cost($): 0.0093867
+---
+conversation time: 177.19842
+assistant response time:
+- 2.488469
+- 4.414152
+- 3.586468
+- 1.453737
+- 5.004257
+- 3.002376
+- 2.065018
+- 2.889979
+- 2.348254
+- 2.20699
+- 11.018759
+- 2.052508
+- 2.496222
+- 2.977107
+- 2.814886
+- 2.382043
+- 2.610818
+- 1.047287
+- 1.952757
+- 1.011961
+- 2.343526
+- 3.269586
+- 4.166782
+- 3.801781
+response time report:
+  average: 3.058571
+  max: 11.018759
+  min: 1.011961
+---
+interaction:
+- User: What kinds of pizzas are available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’ll have a Margarita pizza.
+- Assistant: It looks like I have the pizza type as "Margarita," but I still need
+    to know the pizza size. Could you please tell me if you'd like a small, medium,
+    or large pizza?
+- User: Large, please.
+- Assistant: 'Thanks for ordering a large margherita pizza!
+
+    Thank you for the pizza details! Now, could you please let me know how many drinks
+    you''d like to order and what type of drinks you prefer (coke, sprite, or water)?'
+- User: What drinks do you have available?
+- Assistant: We have coke, sprite, and water available. How many drinks would you
+    like to order and which type do you prefer?
+- User: I'll take one water, thanks.
+- Assistant: 'I have received your order for one water.
+
+    The cost for a large margherita pizza and one bottle of water is $21.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 53a612.'
+- User: Can you tell me if I can add any toppings to the Margarita pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I add any toppings to the Margarita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, order pickup, and estimated time for
+    orders.
+- User: Can you find out if I can add toppings to the Margarita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, order pickup, and estimated time for
+    orders.
+- User: Can you just check if I can add toppings to the Margarita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, order pickup, and estimated
+    time for orders.
+- User: Can you at least tell me what toppings are available if I can add them?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can you just tell me what toppings come standard on the Margarita pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings come standard on the Margarita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get orders, and how
+    long it takes to get an order.
+- User: Can you just tell me what ingredients are in the standard Margarita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, order pickup, and estimated
+    time for orders.
+- User: What kind of cheese do you use on the Margarita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you just check if there’s any fresh basil on the Margarita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there any way you can find out if fresh basil is included on the Margarita
+    pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you please just tell me if the Margarita pizza has fresh basil or not?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    long it takes to get an order.
+- User: Is there anyone else I can talk to who might know if the Margarita pizza has
+    fresh basil?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can I speak to someone who knows if the Margarita pizza has fresh basil?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a manager or someone I can talk to who knows about the ingredients
+    in the Margarita pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a number I can call to speak to someone who knows about the ingredients
+    in the Margarita pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there any way to find out if the Margarita pizza includes fresh basil?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, order pickup, and estimated time for
+    orders.
+- User: Can you just tell me what the ingredients are in the Margarita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there any way you can find out the ingredients in the Margarita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.

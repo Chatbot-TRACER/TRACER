@@ -1,0 +1,60 @@
+{
+    "specification": {
+        "modules": [
+            "make_appointment",
+            "vetcen_qa",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "vetcen_qa": {
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "make_appointment",
+            "vetcen_qa",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": [
+                "07/10/2023"
+            ],
+            "time": [
+                "15:30:00"
+            ],
+            "service": [
+                "Physical examination",
+                "Vaccination"
+            ]
+        },
+        "vetcen_qa": {
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "unknown": [
+                "What vaccines do you usually recommend for puppies during their first visit?",
+                "What vaccines do you recommend for puppies during their first visit?"
+            ]
+        },
+        "top-level": {}
+    }
+}

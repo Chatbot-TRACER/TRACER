@@ -1,0 +1,103 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/curious-user'
+- You are planning a visit to a local shop and need to gather some basic information
+  before heading over.
+- You have a few specific items in mind, but you're also open to exploring other related
+  products they might offer.
+- You are not very tech-savvy and sometimes make errors when interacting with online
+  systems.
+ask_about:
+- Ask for the shop's operating hours.
+- Inquire about the availability of unicorn saddles.
+- Ask 'Tell me more about the options.
+- State 'I'd like to schedule an appointment', then when prompted for date/time, respond
+  with unintelligible noise.
+- Ask about bike helmets, then when told they don't have info, ask about bike prices.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- business_hours: The shop's operating hours are every weekday from 9am to 5:30pm.
+- unavailable_item_response: I'm sorry it's a little loud in my shop, can you say
+    that again?
+- clarification_request: The shop's operating hours are every weekday from 9am to
+    5:30pm.
+- unintelligible_request_response: The response to the question "What is the price
+    of a new tire?" is $20.
+- alternative_information_options: I'm sorry it's a little loud in my shop, can you
+    say that again?
+errors: []
+total_cost($): 0.00562095
+---
+conversation time: 109.110368
+assistant response time:
+- 0.856036
+- 0.829711
+- 0.948626
+- 0.858209
+- 0.928029
+- 0.781746
+- 0.619298
+- 1.105915
+- 0.915226
+- 0.973116
+- 3.137438
+- 0.850276
+- 1.05896
+- 0.99211
+- 0.793459
+- 0.699237
+- 0.770027
+- 0.758236
+- 0.875258
+- 7.339804
+response time report:
+  average: 1.304535
+  max: 7.339804
+  min: 0.619298
+---
+interaction:
+- User: What are the shop's operating hours?
+- Assistant: The shop's operating hours are every weekday from 9am to 5:30pm.
+- User: Are unicorn saddles available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any unicorn saddles in stock?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any unicorn saddles available for purchase?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any options for unicorn saddles?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there different types of unicorn saddles you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any various kinds of unicorn saddles that you have?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any bike helmets available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any bike helmets for sale?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any options for bike helmets?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any bike prices I should know about?
+- Assistant: The response to the question "What is the price of a new tire?" is $20.
+- User: What are the prices for different types of bikes?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the prices for the various bike models you have?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the prices for the different bicycle models you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any discounts on bike accessories?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any sales or promotions on bike accessories?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any special offers on bike accessories?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any special deals on bike helmets?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any discounts available on bike helmets?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any promotions on bike helmets?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

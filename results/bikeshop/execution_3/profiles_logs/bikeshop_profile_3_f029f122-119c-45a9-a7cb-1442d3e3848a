@@ -1,0 +1,57 @@
+{
+    "specification": {
+        "modules": [
+            "make_appointment",
+            "bike_qa",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "repair",
+                "tune-up"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a tune-up?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "make_appointment",
+            "top-level",
+            "bike_qa"
+        ],
+        "make_appointment": {
+            "date": [
+                "29/04/2024"
+            ],
+            "time": [
+                "09:30:00"
+            ],
+            "service": [
+                "repair"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a tune-up?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": [],
+            "unknown": [
+                "What types of specific maintenance services do you offer for bike repairs?",
+                "What types of emergency repair services do you provide?",
+                "What is the price for a standard tune-up?",
+                "What specific maintenance options do you provide for bike repairs?",
+                "What is the price of a new tire?",
+                "What types of specific maintenance options do you offer for bike repairs?"
+            ]
+        },
+        "top-level": {}
+    }
+}

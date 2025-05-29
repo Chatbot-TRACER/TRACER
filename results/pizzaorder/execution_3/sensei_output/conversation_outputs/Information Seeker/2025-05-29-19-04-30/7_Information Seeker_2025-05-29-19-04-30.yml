@@ -1,0 +1,95 @@
+serial: 2025-05-29-19-04-30
+language: English
+context:
+- 'personality: personalities/sarcastic-user'
+- You are planning a casual dinner with friends and want to order pizza from a local
+  pizzeria.
+- You need to gather information about the pizzeria's offerings and prices before
+  making a decision on what to order.
+- You also need to know the opening hours to ensure you can pick up the pizza at the
+  desired time.
+ask_about:
+- Ask for the opening hours of the store.
+- Ask for the list of available pizza options.
+- Select the pizza type {{pizza_type}}.
+- Ask for the pizza prices.
+- Ask for the available drinks and their prices.
+- pizza_type: Pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 8
+- steps: 18
+data_output:
+- opening_hours: Every day from 1pm to 11:30pm
+- pizza_options: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- pizza_prices: I'm sorry, I did not get what you said. Can you rephrase?
+- drinks_menu: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00427485
+---
+conversation time: 84.578783
+assistant response time:
+- 1.791851
+- 1.818888
+- 1.916453
+- 0.979518
+- 1.636519
+- 1.112214
+- 1.35989
+- 0.989765
+- 0.836997
+- 0.866704
+- 1.768303
+- 1.530733
+- 0.807682
+- 0.890197
+- 0.980127
+- 1.150061
+- 0.885463
+- 1.038072
+response time report:
+  average: 1.24219
+  max: 1.916453
+  min: 0.807682
+---
+interaction:
+- User: What are the opening hours of the pizzeria?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What pizza options do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'Can I get a Pepperoni pizza, please? '
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you tell me the prices for the pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the prices for the pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the prices for the pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What do the pizzas cost?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the prices for the pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What do the pizzas cost?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the prices for the pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the prices for the pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the prices for the pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the prices for the pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What do the pizzas cost?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you tell me what drinks you have and their prices?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drinks do you have and how much do they cost?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drinks do you have and how much do they cost?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drinks do you have and how much do they cost?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
