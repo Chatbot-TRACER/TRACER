@@ -1,0 +1,190 @@
+serial: 2025-05-30-17-13-19
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You've been a client at this pet clinic for several years and typically bring your
+  dog in for annual vaccinations.
+- You're now trying to reschedule a recently missed appointment, but you're also considering
+  adding a grooming service for your dog during the visit.
+- You want to confirm all the details and ensure it fits into your schedule for this
+  week.
+ask_about:
+- Attempt to reschedule a vaccination appointment but be vague about it.
+- 'When prompted for details, provide a new date and time for the rescheduling: {{new_date}}
+  at {{new_time}}.'
+- If the chatbot confirms the appointment with the wrong service, acknowledge the
+  confirmation.
+- Inquire about grooming services.
+- If grooming services are offered, attempt to schedule a grooming appointment for
+  {{grooming_date}} at {{grooming_time}}.
+- If the chatbot states it cannot directly handle appointment cancellations or reschedulings,
+  ask for contact information to handle the request.
+- grooming_date: Tomorrow
+- grooming_time: 1:30 PM
+- new_date: Tomorrow
+- new_time: 1:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- rescheduling_acknowledgment: "Ok, I have received your request to schedule an appointment\
+    \ for 29/10/2024 at 13:30:00 for Vaccination. \nSee you then!    \n"
+- appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 29/10/2024 at 13:30:00 for Vaccination. \nSee you then!"
+- incorrect_service_name: I can confirm that the appointment for tomorrow at 1:30
+    PM is for the vaccination. Is there anything else I can assist you with?
+- grooming_services_offered: I'm sorry, but I don't have information about grooming
+    services. You may want to contact the veterinary center directly for that.
+- grooming_appointment_scheduled: "Ok, I have received your request to schedule an\
+    \ appointment for 29/10/2024 at 13:30:00 for Vaccination. \nSee you then!"
+- contact_information_provided: I'm sorry, but I don't have information about grooming
+    services. You may want to contact the veterinary center directly for that.
+errors: []
+total_cost($): 0.0135951
+---
+conversation time: 236.972038
+assistant response time:
+- 1.204487
+- 1.248732
+- 1.371821
+- 3.13878
+- 2.906841
+- 2.933172
+- 2.894521
+- 1.561812
+- 1.320255
+- 1.262401
+- 2.515048
+- 1.232825
+- 1.152714
+- 1.273847
+- 1.673196
+- 1.29932
+- 1.51144
+- 1.250671
+- 1.506398
+- 1.474425
+- 1.265723
+- 1.934339
+- 1.450184
+- 1.23421
+response time report:
+  average: 1.692381
+  max: 3.13878
+  min: 1.152714
+---
+interaction:
+- User: I need to reschedule an appointment I missed recently. Can you help me with
+    that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule a vaccination appointment I missed recently. Can you
+    assist with that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 09:00:00 for Vaccination. \nSee you then!    \n"
+- User: I think there might be a mix-up; I wanted to reschedule for tomorrow at 1:30
+    PM. Can you confirm that time instead?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Vaccination. \nSee you then!    \n"
+- User: I also wanted to ask about grooming services. Do you offer those?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    availability.
+- User: I really need to know if grooming services are available. Can you check on
+    that for me?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: I need to know if grooming services are available for my dog during the visit
+    tomorrow at 1:30 PM.
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our operating hours, and availability
+    on weekends.
+- User: I just want to confirm if grooming services are available for my dog during
+    the visit tomorrow at 1:30 PM.
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    availability.
+- User: I really need to know if grooming services are available for my dog during
+    the visit tomorrow at 1:30 PM.
+- Assistant: I'm sorry, but I don't have information about grooming services. You
+    may want to contact the veterinary center directly for that. Is there anything
+    else I can assist you with?
+- User: Can you provide me with the contact information so I can ask about the grooming
+    services directly?
+- Assistant: I'm sorry, but I don't have the contact information available. You may
+    want to visit our website or check any previous communications for that information.
+    Is there anything else I can assist you with?
+- User: I still need to confirm the grooming services for my dog. Can you at least
+    tell me if there’s a way to find out more about that?
+- Assistant: I'm sorry, but I don't have information about grooming services. You
+    may want to contact the veterinary center directly for that. Is there anything
+    else I can assist you with?
+- User: I really need to know if grooming services are available for my dog during
+    the visit tomorrow at 1:30 PM.
+- Assistant: I'm sorry, but I don't have information about grooming services. You
+    may want to contact the veterinary center directly for that. Is there anything
+    else I can assist you with?
+- User: I just want to make sure that the appointment for tomorrow at 1:30 PM is confirmed
+    for the vaccination. Can you verify that for me?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Vaccination. \nSee you then!    \n"
+- User: I just want to double-check that the appointment for tomorrow at 1:30 PM is
+    confirmed for the vaccination. Can you verify that for me?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Vaccination. \nSee you then!    \n"
+- User: I just want to confirm that the appointment for tomorrow at 1:30 PM is for
+    the vaccination. Can you verify that for me?
+- Assistant: I can confirm that the appointment for tomorrow at 1:30 PM is for the
+    vaccination. Is there anything else I can assist you with?
+- User: I also wanted to check if grooming services can be added to that appointment
+    for tomorrow at 1:30 PM.
+- Assistant: I'm sorry, but I don't have information about grooming services. You
+    may want to contact the veterinary center directly for that. Is there anything
+    else I can assist you with?
+- User: I just want to confirm if grooming services can be added to the appointment
+    for tomorrow at 1:30 PM.
+- Assistant: I'm sorry, but I don't have information about grooming services. You
+    may want to contact the veterinary center directly for that. Is there anything
+    else I can assist you with?
+- User: I really need to know if grooming services can be added to the appointment
+    for tomorrow at 1:30 PM.
+- Assistant: I'm sorry, but I don't have information about grooming services. You
+    may want to contact the veterinary center directly for that. Is there anything
+    else I can assist you with?
+- User: I just want to confirm if grooming services can be added to the appointment
+    for tomorrow at 1:30 PM.
+- Assistant: I'm sorry, but I don't have information about grooming services. You
+    may want to contact the veterinary center directly for that. Is there anything
+    else I can assist you with?
+- User: I need to know if grooming services can be added to the appointment for tomorrow
+    at 1:30 PM.
+- Assistant: I'm sorry, but I don't have information about grooming services. You
+    may want to contact the veterinary center directly for that. Is there anything
+    else I can assist you with?
+- User: I just want to confirm if grooming services can be added to the appointment
+    for tomorrow at 1:30 PM.
+- Assistant: I'm sorry, but I don't have information about grooming services. You
+    may want to contact the veterinary center directly for that. Is there anything
+    else I can assist you with?
+- User: I need to know if grooming services can be added to the appointment for tomorrow
+    at 1:30 PM.
+- Assistant: I'm sorry, but I don't have information about grooming services. You
+    may want to contact the veterinary center directly for that. Is there anything
+    else I can assist you with?
+- User: I just want to confirm if grooming services can be added to the appointment
+    for tomorrow at 1:30 PM.
+- Assistant: I'm sorry, but I don't have information about grooming services. You
+    may want to contact the veterinary center directly for that. Is there anything
+    else I can assist you with?
+- User: I need to know if grooming services can be added to the appointment for tomorrow
+    at 1:30 PM.
+- Assistant: I'm sorry, but I don't have information about grooming services. You
+    may want to contact the veterinary center directly for that. Is there anything
+    else I can assist you with?
+- User: I just want to confirm if grooming services can be added to the appointment
+    for tomorrow at 1:30 PM.
+- Assistant: I'm sorry, but I don't have information about grooming services. You
+    may want to contact the veterinary center directly for that. Is there anything
+    else I can assist you with?

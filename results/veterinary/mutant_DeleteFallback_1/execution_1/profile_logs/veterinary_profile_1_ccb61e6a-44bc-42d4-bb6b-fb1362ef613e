@@ -1,0 +1,67 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "Can you tell me what the typical grooming services are for rabbits at your center?",
+                "What is the experience level of your staff when it comes to grooming rabbits?",
+                "Can you tell me if you have any customer reviews or testimonials regarding your grooming services for rabbits?",
+                "Can you confirm the specific grooming services you will provide for my rabbit during the appointment?",
+                "Can you tell me what specific grooming services you offer for rabbits?",
+                "Do you have any experience with grooming rabbits?",
+                "What specific grooming services do you offer for rabbits?",
+                "Can you tell me if your staff has received any specific training for handling and grooming rabbits?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "28/10/2024"
+            ],
+            "time": [
+                "10:00:00"
+            ],
+            "service": [
+                "Physical examination"
+            ]
+        },
+        "top-level": {}
+    }
+}

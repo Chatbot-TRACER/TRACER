@@ -1,0 +1,101 @@
+serial: 2025-05-30-17-13-20
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: We are open every weekday from 9am to 6pm. For emergencies outside
+    of these hours, please contact your nearest emergency veterinary clinic.
+errors: []
+total_cost($): 0.0038217
+---
+conversation time: 113.432059
+assistant response time:
+- 3.652674
+- 1.346557
+- 1.260385
+- 3.290377
+- 2.707603
+- 3.026126
+- 3.58442
+- 1.244812
+- 12.192386
+- 1.267646
+- 2.732179
+- 3.620188
+- 1.318636
+- 1.253254
+- 1.43418
+response time report:
+  average: 2.928761
+  max: 12.192386
+  min: 1.244812
+---
+interaction:
+- User: Walk-in thing? How's that work?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Grooming? What's the deal there?
+- Assistant: 'Welcome to my veterinary center. I''m the owner and I''m happy to help
+    you.
+
+    What can I do for you?'
+- User: What about the emergency hours, like if something happens?
+- Assistant: 'We are open every weekday from 9am to 6pm. For emergencies outside of
+    these hours, please contact your nearest emergency veterinary clinic. '
+- User: Holiday hours? How's that shaped up?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our regular hours,
+    and our weekend schedule.
+- User: Cost for a checkup? What’s it run?
+- Assistant: In the range of $50 to $60.
+- User: Walk-in thing? How many can come at once?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Grooming? How many pets at once for that?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our operating hours, and availability
+    on weekends.
+- User: Emergency hours? What’s the situation there for unexpected stuff?
+- Assistant: We are open every weekday from 9am to 6pm. For emergencies outside of
+    these hours, please contact your nearest emergency veterinary clinic.
+- User: Holiday hours? What’s the schedule looking like?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our regular hours,
+    and our weekend schedule.
+- User: Grooming? How many at a time for that?
+- Assistant: I currently don't have specific information about grooming appointments
+    and how many pets can be accommodated at a time. Please contact the veterinary
+    center directly for more details on grooming services.
+- User: Cost for a checkup? What’s that like?
+- Assistant: In the range of $50 to $60.
+- User: Walk-in policy? How many can show up?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Grooming? How many can be done together?
+- Assistant: I currently don't have specific information about grooming appointments
+    and how many pets can be accommodated at a time. Please contact the veterinary
+    center directly for more details on grooming services.
+- User: Emergency services? What’s the deal for unexpected visits?
+- Assistant: We are open every weekday from 9am to 6pm. For emergencies outside of
+    these hours, please contact your nearest emergency veterinary clinic.
+- User: Holiday schedule? What’s the plan for that?
+- Assistant: I currently don't have specific information about the holiday schedule.
+    Please contact the veterinary center directly for details on holiday hours.

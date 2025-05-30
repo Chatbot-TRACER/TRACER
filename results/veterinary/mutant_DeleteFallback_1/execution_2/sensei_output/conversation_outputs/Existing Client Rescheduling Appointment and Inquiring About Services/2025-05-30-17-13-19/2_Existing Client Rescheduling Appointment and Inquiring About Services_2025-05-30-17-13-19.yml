@@ -1,0 +1,191 @@
+serial: 2025-05-30-17-13-19
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You've been a client at this pet clinic for several years and typically bring your
+  dog in for annual vaccinations.
+- You're now trying to reschedule a recently missed appointment, but you're also considering
+  adding a grooming service for your dog during the visit.
+- You want to confirm all the details and ensure it fits into your schedule for this
+  week.
+ask_about:
+- Attempt to reschedule a vaccination appointment but be vague about it.
+- 'When prompted for details, provide a new date and time for the rescheduling: {{new_date}}
+  at {{new_time}}.'
+- If the chatbot confirms the appointment with the wrong service, acknowledge the
+  confirmation.
+- Inquire about grooming services.
+- If grooming services are offered, attempt to schedule a grooming appointment for
+  {{grooming_date}} at {{grooming_time}}.
+- If the chatbot states it cannot directly handle appointment cancellations or reschedulings,
+  ask for contact information to handle the request.
+- grooming_date: Friday
+- grooming_time: 3:00 PM
+- new_date: October 27th
+- new_time: 3:00 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- rescheduling_acknowledgment: I have received your request to schedule an appointment
+    for 27/10/2024 at 15:00:00 for Vaccination.
+- appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 27/10/2024 at 15:00:00 for Vaccination. \nSee you then!"
+- incorrect_service_name: "Ok, I have received your request to schedule an appointment\
+    \ for 27/10/2024 at 15:00:00 for Vaccination. \nSee you then!"
+- grooming_services_offered: we do not offer grooming services
+- grooming_appointment_scheduled: "Ok, I have received your request to schedule an\
+    \ appointment for 27/10/2024 at 15:00:00 for Vaccination. \nSee you then!"
+- contact_information_provided: I'm sorry, but I cannot provide contact information.
+    However, I can confirm that we do not offer grooming services at our veterinary
+    center.
+errors: []
+total_cost($): 0.01305645
+---
+conversation time: 185.9228
+assistant response time:
+- 3.654661
+- 6.730614
+- 2.797165
+- 3.026311
+- 1.267526
+- 1.312915
+- 2.920677
+- 1.356663
+- 1.26813
+- 1.352194
+- 1.979676
+- 1.130968
+- 1.13264
+- 1.393706
+- 1.351574
+- 1.560174
+- 1.314159
+- 1.288116
+- 1.309878
+- 1.313935
+- 1.21342
+- 1.139711
+- 1.185892
+- 1.402655
+response time report:
+  average: 1.850139
+  max: 6.730614
+  min: 1.130968
+---
+interaction:
+- User: I need to reschedule a vaccination appointment I missed recently. Can you
+    help with that?
+- Assistant: I can help you with that! However, I still need the time for your vaccination
+    appointment. Could you please provide that?
+- User: Can we just get this rescheduled? I was thinking about October 27th at 3:00
+    PM. Does that work?
+- Assistant: "Ok, I have received your request to schedule an appointment for 27/10/2024\
+    \ at 15:00:00 for Vaccination. \nSee you then!    \n"
+- User: I just want to confirm, will my dog also be able to get grooming services
+    during that visit?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. Unfortunately, we do not offer grooming services. However, I can assist you
+    with rescheduling your dog's vaccination appointment. What date and time would
+    you like to reschedule for?
+- User: I thought you offered grooming services. Can you double-check that for me?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: I really thought you had grooming services. Can you at least provide me with
+    the contact information so I can confirm?
+- Assistant: I'm sorry, but I cannot provide contact information. However, I can confirm
+    that we do not offer grooming services at our veterinary center. If you have any
+    other questions or need assistance, feel free to ask!
+- User: Is there a way to get in touch with someone who can confirm if grooming services
+    are available?
+- Assistant: I'm sorry, but I cannot provide contact information. However, I can confirm
+    that we do not offer grooming services at our veterinary center. If you have any
+    other questions or need assistance, feel free to ask!
+- User: I just want to clarify, can you tell me if there are any grooming services
+    available at your clinic?
+- Assistant: I'm sorry, but we do not offer grooming services at our veterinary center.
+    If you have any other questions or need assistance, feel free to ask!
+- User: Can you check again if there are any grooming services available? I really
+    need to know.
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there any way to confirm if grooming services are available at your clinic?
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there a possibility to get grooming services at your clinic, or should
+    I look elsewhere?
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there any chance you could check with someone who might know about grooming
+    services? I really need to find out.
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there any way to get a definitive answer about grooming services at your
+    clinic?
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there any chance you could check if there are grooming services available
+    at your clinic?
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there a way to find out if there are grooming services available at your
+    clinic?
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there a possibility for me to get grooming services at your clinic, or
+    should I look for another place?
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there any way to get a definitive answer about whether grooming services
+    are available at your clinic?
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there any chance you could check with someone who might know about grooming
+    services? I really need to find out.
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there any way to find out if grooming services are available at your clinic?
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there a possibility for me to get grooming services at your clinic, or
+    should I look for another place?
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there any chance you could check with someone who might know about grooming
+    services? I really need to find out.
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there a way to get a definitive answer about whether grooming services
+    are available at your clinic?
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there a chance I could get grooming services at your clinic, or should
+    I look for another place?
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there any way to find out if grooming services are available at your clinic?
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!
+- User: Is there a possibility for me to get grooming services at your clinic, or
+    should I look for another place?
+- Assistant: I'm sorry, but I can confirm that we do not offer grooming services at
+    our veterinary center. If you have any other questions or need assistance, feel
+    free to ask!

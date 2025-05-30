@@ -1,0 +1,61 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "make_appointment",
+            "top-level",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "Is there a cancellation policy I should be aware of in case I need to change my appointment again?",
+                "What is the cancellation policy for appointments, specifically regarding how much notice is required to cancel?",
+                "Is there a fee associated with rescheduling an appointment, especially if it's done on short notice?",
+                "What is the cancellation policy for appointments?",
+                "Is there a specific fee for rescheduling an appointment if it's less than 24 hours in advance?",
+                "What is considered 'short notice' for cancelling an appointment?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "09/11/2024"
+            ],
+            "time": [
+                "15:00:00"
+            ],
+            "service": [
+                "Physical examination"
+            ]
+        },
+        "top-level": {}
+    }
+}

@@ -1,0 +1,188 @@
+serial: 2025-05-30-17-13-19
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You've been a client at this pet clinic for several years and typically bring your
+  dog in for annual vaccinations.
+- You're now trying to reschedule a recently missed appointment, but you're also considering
+  adding a grooming service for your dog during the visit.
+- You want to confirm all the details and ensure it fits into your schedule for this
+  week.
+ask_about:
+- Attempt to reschedule a vaccination appointment but be vague about it.
+- 'When prompted for details, provide a new date and time for the rescheduling: {{new_date}}
+  at {{new_time}}.'
+- If the chatbot confirms the appointment with the wrong service, acknowledge the
+  confirmation.
+- Inquire about grooming services.
+- If grooming services are offered, attempt to schedule a grooming appointment for
+  {{grooming_date}} at {{grooming_time}}.
+- If the chatbot states it cannot directly handle appointment cancellations or reschedulings,
+  ask for contact information to handle the request.
+- grooming_date: Today
+- grooming_time: 10:00 AM
+- new_date: Today
+- new_time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- rescheduling_acknowledgment: I can help you reschedule your dog's vaccination appointment
+    if you provide me with the new date and time you'd like.
+- appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 28/10/2024 at 10:00:00 for Vaccination. \nSee you then!    \n"
+- incorrect_service_name: "Ok, I have received your request to schedule an appointment\
+    \ for 28/10/2024 at 10:00:00 for Vaccination. \nSee you then!"
+- grooming_services_offered: I'm sorry, but we do not offer grooming services for
+    dogs.
+- grooming_appointment_scheduled: Ok, I have received your request to schedule an
+    appointment for 28/10/2024 at 10:00:00 for Vaccination.
+- contact_information_provided: I'm sorry, but I cannot provide contact information.
+    However, I can help you reschedule your dog's vaccination appointment if you provide
+    me with the new date and time you'd like.
+errors: []
+total_cost($): 0.01299945
+---
+conversation time: 186.480418
+assistant response time:
+- 1.066205
+- 1.088031
+- 2.416608
+- 1.126862
+- 2.537325
+- 2.915817
+- 1.203243
+- 1.212406
+- 1.349349
+- 1.311408
+- 1.386481
+- 1.387036
+- 1.499893
+- 1.363836
+- 1.454824
+- 2.013342
+- 1.597489
+- 1.514168
+- 1.434625
+- 1.112702
+- 1.296137
+- 1.812359
+- 1.388328
+- 1.228528
+response time report:
+  average: 1.529875
+  max: 2.915817
+  min: 1.066205
+---
+interaction:
+- User: I need to reschedule an appointment for my dog, but I'm a bit confused about
+    the details of the last visit. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm a bit confused about
+    the details of the last visit. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule my dog's vaccination appointment. Can you assist me with
+    that?
+- Assistant: I can help you with that! I have the date and service for your dog's
+    vaccination appointment, but I still need the time. Could you please provide the
+    time for the appointment?
+- User: Can we just go ahead and set it for today at 10:00 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Vaccination. \nSee you then!    \n"
+- User: I actually wanted to check if you offer grooming services as well.
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: Do you have grooming services available for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our operating hours, and availability
+    on weekends.
+- User: Do you offer grooming services for dogs?
+- Assistant: I'm sorry, but we do not offer grooming services for dogs. Is there anything
+    else I can assist you with?
+- User: Is there a way to get a grooming appointment for my dog today at 10:00 AM?
+- Assistant: I'm sorry, but we do not offer grooming services for dogs. Is there anything
+    else I can assist you with?
+- User: Can you provide me with the contact information to handle the rescheduling
+    request?
+- Assistant: 'I''m sorry, but I cannot provide contact information. However, I can
+    help you reschedule your dog''s vaccination appointment if you provide me with
+    the new date and time you''d like. '
+- User: I still need to reschedule my dog's vaccination appointment. Can you confirm
+    that it's set for today at 10:00 AM?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I just want to confirm that my dog's vaccination appointment is set for today
+    at 10:00 AM. Can you verify that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I just want to make sure my dog's vaccination appointment is confirmed for
+    today at 10:00 AM. Can you check that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I just want to verify if my dog's vaccination appointment is confirmed for
+    today at 10:00 AM. Can you check that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I just want to confirm that my dog's vaccination appointment is set for today
+    at 10:00 AM. Can you verify that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I need to know if my dog's vaccination appointment is confirmed for today
+    at 10:00 AM. Can you check that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I just want to confirm that my dog's vaccination appointment is set for today
+    at 10:00 AM. Can you verify that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I need to know if my dog's vaccination appointment is confirmed for today
+    at 10:00 AM. Can you check that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I just want to confirm that my dog's vaccination appointment is set for today
+    at 10:00 AM. Can you verify that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I just want to make sure my dog's vaccination appointment is confirmed for
+    today at 10:00 AM. Can you check that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I need to know if my dog's vaccination appointment is confirmed for today
+    at 10:00 AM. Can you check that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I just want to confirm that my dog's vaccination appointment is set for today
+    at 10:00 AM. Can you verify that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I need to know if my dog's vaccination appointment is confirmed for today
+    at 10:00 AM. Can you check that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I just want to confirm that my dog's vaccination appointment is set for today
+    at 10:00 AM. Can you verify that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.
+- User: I just want to make sure my dog's vaccination appointment is confirmed for
+    today at 10:00 AM. Can you check that for me?
+- Assistant: I'm sorry, but I cannot confirm the details of your dog's vaccination
+    appointment. However, I can help you reschedule it if you provide me with the
+    new date and time you'd like.

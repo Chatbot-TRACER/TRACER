@@ -1,0 +1,64 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [
+                "What can I do to take care of my pet?"
+            ],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What specific vaccinations do you provide for rabbits?",
+                "What specific vaccinations do you recommend for rabbits?",
+                "What are the most common health issues that rabbits face?",
+                "What specific care should I provide for a rabbit with a respiratory issue?",
+                "What vaccinations do rabbits typically need?",
+                "What vaccinations do you recommend to protect rabbits from diseases?",
+                "What specific dietary needs do rabbits have?",
+                "What are the signs of RHD (Rabbit Hemorrhagic Disease) in rabbits?",
+                "Are there any preventive measures I should take to protect my rabbit from diseases like myxomatosis and RHD?",
+                "What kind of animals do you treat?",
+                "What are the common health issues that rabbits face?",
+                "Do you provide vaccinations for rabbits?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

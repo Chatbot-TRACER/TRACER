@@ -1,0 +1,169 @@
+serial: 2025-05-30-17-13-19
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You've been a client at this pet clinic for several years and typically bring your
+  dog in for annual vaccinations.
+- You're now trying to reschedule a recently missed appointment, but you're also considering
+  adding a grooming service for your dog during the visit.
+- You want to confirm all the details and ensure it fits into your schedule for this
+  week.
+ask_about:
+- Attempt to reschedule a vaccination appointment but be vague about it.
+- 'When prompted for details, provide a new date and time for the rescheduling: {{new_date}}
+  at {{new_time}}.'
+- If the chatbot confirms the appointment with the wrong service, acknowledge the
+  confirmation.
+- Inquire about grooming services.
+- If grooming services are offered, attempt to schedule a grooming appointment for
+  {{grooming_date}} at {{grooming_time}}.
+- If the chatbot states it cannot directly handle appointment cancellations or reschedulings,
+  ask for contact information to handle the request.
+- grooming_date: '2024-11-15'
+- grooming_time: 10:00 AM
+- new_date: November 1st
+- new_time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- rescheduling_acknowledgment: None
+- appointment_confirmation: null
+- incorrect_service_name: None
+- grooming_services_offered: null
+- grooming_appointment_scheduled: None
+- contact_information_provided: None
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.0111864
+---
+conversation time: 158.491069
+assistant response time:
+- 1.067919
+- 1.207982
+- 1.340898
+- 1.860924
+- 1.497797
+- 1.165188
+- 1.119319
+- 1.396837
+- 1.121983
+- 1.16325
+- 1.266088
+- 1.165058
+- 1.180236
+- 1.076244
+- 1.60182
+- 1.054193
+- 1.103432
+- 1.347232
+- 1.012743
+- 1.291387
+- 1.28503
+- 1.18121
+- 1.585374
+- 1.109679
+response time report:
+  average: 1.258409
+  max: 1.860924
+  min: 1.012743
+---
+interaction:
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I can't remember the details.
+    Can you assist with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I can't recall when it
+    was. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I can't remember the details.
+    Can you assist with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I can't remember when
+    it was. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I can't remember the details.
+    Can you assist with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I can't remember the details.
+    Can you assist with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you assist with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I can't remember the details.
+    Can you assist with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I can't remember the details.
+    Can you assist with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I can't remember when
+    it was. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I'm not sure when it was
+    supposed to be. Can you assist with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule an appointment for my dog, but I can't remember the details.
+    Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?

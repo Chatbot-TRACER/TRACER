@@ -1,0 +1,104 @@
+serial: 2025-05-30-17-13-20
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: 'You need to fulfill their essential requirements: nourishment,
+    hydration, shelter, physical activity, and affection.'
+errors: []
+total_cost($): 0.00484995
+---
+conversation time: 120.237728
+assistant response time:
+- 5.603531
+- 1.22948
+- 1.214729
+- 1.333669
+- 2.69424
+- 3.658099
+- 2.926555
+- 1.555768
+- 3.708407
+- 2.525836
+- 1.769366
+- 3.434431
+- 1.47441
+- 3.382204
+- 1.155566
+response time report:
+  average: 2.511086
+  max: 5.603531
+  min: 1.155566
+---
+interaction:
+- User: What's the deal with walking in, like, any guidelines?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: What about the fluffing and clipping, like, how does that work?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: What’s the sitch on the emergency stuff, like, if a pet needs something after
+    hours?
+- Assistant: We are open every weekday from 9am to 6pm. For emergency situations after
+    hours, I recommend contacting an emergency veterinary clinic in your area. How
+    else can I assist you?
+- User: Holiday hours or whatever, like, what's the plan?
+- Assistant: We are open every weekday from 9am to 6pm. For holiday hours, please
+    check back closer to the holiday date, as they may vary. How else can I assist
+    you?
+- User: What’s the price range for a quick checkup, like, ballpark?
+- Assistant: In the range of $50 to $60.
+- User: What’s the scoop on the drop-in thing, like, any specifics?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: What’s the deal with the fluff and stuff, like, when can I get that done?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: What's the word on the emergency vet thing, like, after hours?
+- Assistant: We are open every weekday from 9am to 6pm. For emergency situations after
+    hours, I recommend contacting an emergency veterinary clinic in your area. How
+    else can I assist you?
+- User: What about the grooming, like, when’s that happening?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our operating hours, and availability
+    on weekends.
+- User: What’s the lowdown on the furry maintenance, like, how's that work?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: What’s the sitch with the grooming, like, how's that roll?
+- Assistant: Grooming services are typically available during our regular hours, which
+    are every weekday from 9am to 6pm. You can schedule an appointment for grooming,
+    and we can discuss the specific services you need for your pet. How else can I
+    assist you?
+- User: What’s the vibe on the drop-in thing, like, any rules?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What’s the 411 on the pet spa stuff, like, how do I get that going?
+- Assistant: Grooming and spa services are typically available during our regular
+    hours, which are every weekday from 9am to 6pm. You can schedule an appointment
+    for these services, and we can discuss the specific treatments you would like
+    for your pet. How else can I assist you?
+- User: What’s the scoop on the walk-in thing, like, any do's or don'ts?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What’s the word on the holiday schedule, like, any special times?
+- Assistant: We are open every weekday from 9am to 6pm. For holiday hours, please
+    check back closer to the holiday date, as they may vary. How else can I assist
+    you?

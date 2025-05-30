@@ -1,0 +1,67 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [
+                "What can I do to take care of my pet?"
+            ],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What types of vaccinations do you offer for dogs?",
+                "What types of vaccinations do you recommend for cats?",
+                "What specific types of examinations do you offer for pets?",
+                "How much does a physical examination cost?",
+                "What should I expect during a typical veterinary visit for my pet?",
+                "What are the typical signs that my pet may need to see a veterinarian?",
+                "What are some common reasons that pets might need to see a veterinarian?",
+                "What does a typical vet visit usually involve?",
+                "What types of vaccinations do you recommend for pets?",
+                "What should I bring with me to my pet's vet appointment?",
+                "What are some common symptoms that indicate my pet is unwell?",
+                "What kind of follow-up care do you recommend after a pet receives vaccinations?",
+                "What does a physical examination include?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

@@ -1,0 +1,65 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "Do you have a rabbit groomer available for appointments?",
+                "Do you treat rabbits at your veterinary center?",
+                "Do you offer grooming services for rabbits?",
+                "Do you have any veterinarians who are experienced with rabbits?",
+                "Do you have a groomer who specializes in rabbits?",
+                "Do you have a groomer who is experienced with rabbits?",
+                "Do you have any veterinarians who are knowledgeable about rabbits?",
+                "Do you have any veterinarians who are experienced with treating rabbits?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "29/10/2024"
+            ],
+            "time": [
+                "13:30:00"
+            ],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

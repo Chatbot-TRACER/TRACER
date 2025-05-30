@@ -1,0 +1,60 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What additional services do you provide beyond vaccinations for dogs?",
+                "What kind of preventative care services do you have for dogs?",
+                "What core vaccinations does my puppy need to have?",
+                "What additional services do you offer besides vaccinations?",
+                "Are there any specific vaccinations required based on the common diseases in my area?",
+                "What about dental care services for dogs? Do you offer anything for that?",
+                "Do you offer any wellness exams or preventative care services for dogs?",
+                "What core vaccinations are typically recommended for puppies?",
+                "Are emergency services available outside of business hours?",
+                "What services do you offer at your veterinary center?",
+                "What vaccinations do you recommend for puppies in areas with high disease prevalence?",
+                "Are there any wellness exams or preventative care services specifically for puppies?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

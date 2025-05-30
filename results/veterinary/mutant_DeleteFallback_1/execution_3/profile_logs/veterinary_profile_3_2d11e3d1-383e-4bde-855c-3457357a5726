@@ -1,0 +1,72 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "top-level",
+            "make_appointment",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What vaccinations or requirements should I expect for my puppy's first visit?",
+                "What specific vaccinations or requirements will be necessary for my puppy's first visit?",
+                "Are there any specific vaccinations or requirements I should be aware of for my puppy's first visit?",
+                "What vaccinations or requirements are generally recommended for my puppy's first visit to the vet?",
+                "What services do you offer at your veterinary center?",
+                "What vaccinations or requirements are typically recommended for a puppy's first visit?",
+                "What vaccinations or requirements are generally necessary for my puppy's first visit?",
+                "Can you confirm if there are any specific vaccinations or requirements I should be aware of for my puppy's first visit?",
+                "What vaccinations or requirements should I prepare for during my puppy's first visit?",
+                "What vaccinations or requirements are usually advised for a puppy's first visit to the vet?",
+                "What specific vaccinations or requirements should I be prepared for during my puppy's first visit?",
+                "What specific vaccinations or requirements are needed for my puppy's first visit?",
+                "What specific vaccinations or requirements do I need to know for my puppy's first visit?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "30/10/2024"
+            ],
+            "time": [
+                "09:30:00"
+            ],
+            "service": [
+                "Vaccination"
+            ]
+        },
+        "top-level": {}
+    }
+}

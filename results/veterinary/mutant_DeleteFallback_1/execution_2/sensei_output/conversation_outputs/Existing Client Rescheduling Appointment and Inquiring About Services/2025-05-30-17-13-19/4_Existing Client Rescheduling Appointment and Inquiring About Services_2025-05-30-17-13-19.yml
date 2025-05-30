@@ -1,0 +1,182 @@
+serial: 2025-05-30-17-13-19
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You've been a client at this pet clinic for several years and typically bring your
+  dog in for annual vaccinations.
+- You're now trying to reschedule a recently missed appointment, but you're also considering
+  adding a grooming service for your dog during the visit.
+- You want to confirm all the details and ensure it fits into your schedule for this
+  week.
+ask_about:
+- Attempt to reschedule a vaccination appointment but be vague about it.
+- 'When prompted for details, provide a new date and time for the rescheduling: {{new_date}}
+  at {{new_time}}.'
+- If the chatbot confirms the appointment with the wrong service, acknowledge the
+  confirmation.
+- Inquire about grooming services.
+- If grooming services are offered, attempt to schedule a grooming appointment for
+  {{grooming_date}} at {{grooming_time}}.
+- If the chatbot states it cannot directly handle appointment cancellations or reschedulings,
+  ask for contact information to handle the request.
+- grooming_date: November 10
+- grooming_time: 9:30 AM
+- new_date: October 30th
+- new_time: 9:30 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- rescheduling_acknowledgment: "Ok, I have received your request to schedule an appointment\
+    \ for 30/10/2024 at 09:30:00 for Vaccination. \nSee you then!"
+- appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 30/10/2024 at 09:30:00 for Vaccination. \nSee you then!    \n"
+- incorrect_service_name: "Ok, I have received your request to schedule an appointment\
+    \ for 30/10/2024 at 09:30:00 for Vaccination. \nSee you then!    \n"
+- grooming_services_offered: I'm sorry, but we do not offer grooming services for
+    dogs at our veterinary center.
+- grooming_appointment_scheduled: "Ok, I have received your request to schedule an\
+    \ appointment for 30/10/2024 at 09:30:00 for Vaccination. \nSee you then!"
+- contact_information_provided: I'm sorry, but we do not offer grooming services for
+    dogs at our veterinary center.
+errors: []
+total_cost($): 0.0120525
+---
+conversation time: 221.492954
+assistant response time:
+- 1.74332
+- 1.410871
+- 7.085246
+- 2.999169
+- 3.008894
+- 3.213263
+- 3.442652
+- 3.779199
+- 1.600735
+- 1.49409
+- 1.332227
+- 3.797514
+- 2.984423
+- 3.824191
+- 3.384446
+- 3.87114
+- 3.381306
+- 3.224522
+- 3.93067
+- 3.200007
+- 3.775746
+- 12.049307
+- 3.561293
+- 4.527555
+response time report:
+  average: 3.609241
+  max: 12.049307
+  min: 1.332227
+---
+interaction:
+- User: I need to reschedule a vaccination appointment for my dog, but I'm not sure
+    about the details of the last one. Can you help me with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule a vaccination appointment for my dog, but I'm not sure
+    about the details of the last one. Can you help me with that?
+- Assistant: I can help you with that! However, I need the date and time for the new
+    vaccination appointment. Could you please provide those details?
+- User: Can I schedule the vaccination appointment for October 30th at 9:30 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 30/10/2024\
+    \ at 09:30:00 for Vaccination. \nSee you then!    \n"
+- User: I noticed you confirmed the vaccination appointment, but can you tell me if
+    you also offer grooming services?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: Do you have grooming services available for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Do you offer grooming services for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our opening hours, and availability
+    on weekends.
+- User: Do you have grooming services for dogs or not?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Do you offer grooming services for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Do you have a specific grooming service for dogs that you can tell me about?
+- Assistant: I'm sorry, but we do not offer grooming services for dogs at our veterinary
+    center. If you have any other questions or need assistance with something else,
+    feel free to ask!
+- User: Can you provide me with the contact information so I can confirm the grooming
+    services directly?
+- Assistant: I'm sorry, but I cannot provide contact information for grooming services,
+    as we do not offer grooming services at our veterinary center. If you have any
+    other questions or need assistance, feel free to ask!
+- User: Is there any way I can get more information about grooming services for dogs?
+- Assistant: I'm sorry, but we do not offer grooming services for dogs at our veterinary
+    center. If you have any other questions or need assistance with something else,
+    feel free to ask!
+- User: Can you tell me if there are any other services available for dogs besides
+    vaccinations?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: Are there any other services available for dogs besides vaccinations?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: Are there any wellness check-ups or health assessments available for dogs
+    besides vaccinations?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Are there any wellness check-ups or health assessments available for dogs
+    besides vaccinations?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you tell me if there are wellness check-ups or health assessments available
+    for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you confirm if there are wellness check-ups or health assessments available
+    for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Are there any wellness check-ups or health assessments available for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Is there a way to get more information about wellness check-ups or health
+    assessments for dogs?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: Can you tell me if there are any specific wellness check-ups or health assessments
+    available for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you confirm if there are any specific wellness check-ups or health assessments
+    available for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you tell me if there are any specific wellness check-ups or health assessments
+    available for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: I need to know if there are any specific wellness check-ups or health assessments
+    available for dogs.
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Is there a way to get more information about wellness check-ups or health
+    assessments for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.

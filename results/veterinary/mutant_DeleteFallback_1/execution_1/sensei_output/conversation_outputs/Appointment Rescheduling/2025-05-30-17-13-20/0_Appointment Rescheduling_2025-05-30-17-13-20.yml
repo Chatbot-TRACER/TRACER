@@ -1,0 +1,114 @@
+serial: 2025-05-30-17-13-20
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Today
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 05/12/2024 at 09:00:00 for Physical examination. \nSee you then!    \n"
+- rescheduling_prompt: Can I move it to December 5th at 9:00 AM?
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 05/12/2024 at 09:00:00 for Physical examination. \nSee you then!    \n"
+errors: []
+total_cost($): 0.00515775
+---
+conversation time: 76.781765
+assistant response time:
+- 1.38743
+- 1.410538
+- 1.322935
+- 1.167677
+- 3.296956
+- 1.296917
+- 1.361287
+- 1.170659
+- 1.159417
+- 1.126836
+- 1.133819
+- 1.089902
+- 1.210644
+- 1.442734
+- 3.221924
+response time report:
+  average: 1.519978
+  max: 3.296956
+  min: 1.089902
+---
+interaction:
+- User: I need to reschedule an appointment I have because the details are incorrect.
+    Can I update it to today at 10:00 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I actually meant to say that I need to reschedule to a different date and
+    time. Can I change it to tomorrow at 11:00 AM instead?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 11:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to change the appointment again because I realized I won't be available
+    tomorrow. Can I reschedule it to the 31st at 1:00 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 31/10/2024\
+    \ at 13:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to change the appointment again because I just realized I have a conflict.
+    Can I reschedule it to the 2nd of November at 3:00 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 02/11/2024\
+    \ at 15:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to change the appointment again because I just found out I have another
+    conflict. Can I reschedule it to the 5th of November at 4:00 PM?
+- Assistant: 'I have the date and time for your appointment, which is November 5th
+    at 4:00 PM. Could you please let me know which service you would like to schedule?
+    The options are: Physical examination, Vaccination, Dental health and cleaning,
+    or Lab or diagnostic testing.'
+- User: I want to schedule a Physical examination for November 5th at 4:00 PM. Can
+    you confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 05/11/2024\
+    \ at 16:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to reschedule that appointment again because I just realized I have
+    another commitment. Can I move it to the 7th of November at 2:00 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 07/11/2024\
+    \ at 14:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to change the appointment again because I just found out I have another
+    conflict. Can I reschedule it to the 10th of November at 9:00 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 10/11/2024\
+    \ at 09:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to reschedule that appointment again because I realized I have a conflict.
+    Can I move it to the 12th of November at 11:30 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 12/11/2024\
+    \ at 11:30:00 for Physical examination. \nSee you then!    \n"
+- User: I need to change the appointment again because I just noticed that I've got
+    something else going on. Can I reschedule it to the 15th of November at 3:30 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 15/11/2024\
+    \ at 15:30:00 for Physical examination. \nSee you then!    \n"
+- User: I need to reschedule that appointment again. Can I move it to the 20th of
+    November at 1:00 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 20/11/2024\
+    \ at 13:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to change that appointment again because I realized I've got another
+    conflict. Can I reschedule it to the 25th of November at 4:00 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 25/11/2024\
+    \ at 16:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to change that appointment again because I just found out I have a
+    conflict. Can I reschedule it to the 30th of November at 10:00 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 30/11/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to change that appointment again because something came up. Can I reschedule
+    it to December 3rd at 12:00 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 03/12/2024\
+    \ at 12:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to reschedule that appointment again because I just realized I have
+    another conflict. Can I move it to December 5th at 9:00 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 05/12/2024\
+    \ at 09:00:00 for Physical examination. \nSee you then!    \n"

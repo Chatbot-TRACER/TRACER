@@ -1,0 +1,65 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "Do you have a specific policy for treating rabbits or other small animals?",
+                "What other services do you provide for rabbits?",
+                "What are the typical vaccinations or preventative care measures you recommend for rabbits?",
+                "Are there any specific vaccinations or preventative care you recommend for rabbits?",
+                "What services do you offer for small animals like rabbits?",
+                "Are there any special requirements or preparations needed before bringing my rabbit in for a health check-up?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "03/11/2024"
+            ],
+            "time": [
+                "10:00:00"
+            ],
+            "service": [
+                "Vaccination"
+            ]
+        },
+        "top-level": {}
+    }
+}

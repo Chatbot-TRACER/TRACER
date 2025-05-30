@@ -1,0 +1,62 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [
+                "What can I do to take care of my pet?"
+            ],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What are the common symptoms of RHD in rabbits?",
+                "What kind of preventative care do you provide for rabbits?",
+                "What vaccinations do rabbits typically need?",
+                "What can I do to help prevent myxomatosis and RHD in my rabbit?",
+                "What kind of animals do you treat?",
+                "What kind of preventative care do you recommend for rabbits?",
+                "What vaccinations do you recommend for preventing diseases in rabbits?",
+                "What preventative measures can I take at home to help keep my rabbit healthy?",
+                "Is there a specific veterinary service you recommend for rabbits?",
+                "What vaccinations do you recommend for rabbits to prevent diseases?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

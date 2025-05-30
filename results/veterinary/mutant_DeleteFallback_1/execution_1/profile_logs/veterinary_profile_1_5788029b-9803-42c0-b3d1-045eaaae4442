@@ -1,0 +1,65 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [
+                "What can I do to take care of my pet?"
+            ],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What does a physical examination cost?",
+                "What are the typical costs associated with different types of examinations?",
+                "What does a typical physical examination involve for pets?",
+                "What tests or treatments are typically recommended if my pet is showing signs of illness during the physical examination?",
+                "What are the typical costs associated with vaccinations for pets?",
+                "What should I expect during the physical examination for my pet?",
+                "What types of tests or procedures might be conducted during a physical examination?",
+                "What specific tests are included in a wellness examination for pets?",
+                "What does a wellness examination include for pets?",
+                "What are the typical costs associated with spaying or neutering pets?",
+                "What does a physical examination include?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

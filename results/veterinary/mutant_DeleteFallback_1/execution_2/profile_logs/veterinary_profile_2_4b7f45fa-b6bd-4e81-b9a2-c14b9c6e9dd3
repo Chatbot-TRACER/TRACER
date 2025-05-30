@@ -1,0 +1,59 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What vaccines are considered core for dogs?",
+                "Do you have any options for puppy training classes or behavioral consultations?",
+                "Are you sure you don't offer any specific services like dental care or flea and tick prevention?",
+                "What about spaying or neutering services? Do you offer those as well?",
+                "What about wellness exams? Do you provide those as part of your services?",
+                "What additional services do you offer apart from vaccinations?",
+                "Are there any specific medications or treatments you recommend for common issues like allergies or skin problems?",
+                "What about emergency services? Are they available outside of regular business hours?",
+                "What core vaccinations do you recommend for dogs?",
+                "What services do you offer at your veterinary center?",
+                "Is there a way to get specific recommendations for the core vaccinations needed for my puppy?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

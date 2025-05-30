@@ -1,0 +1,99 @@
+serial: 2025-05-30-17-13-20
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: I'm not sure. However, I can provide information regarding vet
+    visit costs, the types of animals we accept, pet care, our operating hours, and
+    weekend availability.
+errors: []
+total_cost($): 0.00395475
+---
+conversation time: 120.380728
+assistant response time:
+- 2.41999
+- 3.40157
+- 6.151175
+- 1.229215
+- 2.329878
+- 3.076918
+- 4.575047
+- 4.075071
+- 1.34897
+- 3.373905
+- 2.681761
+- 3.697694
+- 1.399287
+- 3.85012
+- 2.997217
+response time report:
+  average: 3.107187
+  max: 6.151175
+  min: 1.229215
+---
+interaction:
+- User: Walk-in thing, how's that work?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: Grooming options, what's the deal?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our operating hours, and weekend
+    availability.
+- User: Emergency care, what’s the situation on that?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Holiday hours, what's the scoop?
+- Assistant: Every weekday from 9am to 6pm
+- User: What about checkup price, any idea?
+- Assistant: In the range of $50 to $60.
+- User: What’s the deal with the drop-in thingy, like can I just show up?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: Grooming stuff, how that go down?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our operating hours, and weekend
+    availability.
+- User: Emergency services, what's the 24/7 vibe?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Holiday schedule, what's happening there?
+- Assistant: Every weekday from 9am to 6pm
+- User: Walk-in policy, how's that play out?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Grooming services, how's that go?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our operating hours, and weekend
+    availability.
+- User: Emergency care, like 24/7 stuff, what’s it look like?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Holiday hours, any updates on that?
+- Assistant: Every weekday from 9am to 6pm
+- User: Walk-in thing, like can I just swing by?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our weekday opening
+    hours, and our hours on weekends.
+- User: Grooming options, what’s up with that?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our operating hours, and availability
+    on weekends.

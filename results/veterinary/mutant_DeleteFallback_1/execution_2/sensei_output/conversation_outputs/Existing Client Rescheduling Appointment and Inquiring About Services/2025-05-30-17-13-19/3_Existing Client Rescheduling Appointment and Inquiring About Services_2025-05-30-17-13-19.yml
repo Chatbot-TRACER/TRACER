@@ -1,0 +1,213 @@
+serial: 2025-05-30-17-13-19
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You've been a client at this pet clinic for several years and typically bring your
+  dog in for annual vaccinations.
+- You're now trying to reschedule a recently missed appointment, but you're also considering
+  adding a grooming service for your dog during the visit.
+- You want to confirm all the details and ensure it fits into your schedule for this
+  week.
+ask_about:
+- Attempt to reschedule a vaccination appointment but be vague about it.
+- 'When prompted for details, provide a new date and time for the rescheduling: {{new_date}}
+  at {{new_time}}.'
+- If the chatbot confirms the appointment with the wrong service, acknowledge the
+  confirmation.
+- Inquire about grooming services.
+- If grooming services are offered, attempt to schedule a grooming appointment for
+  {{grooming_date}} at {{grooming_time}}.
+- If the chatbot states it cannot directly handle appointment cancellations or reschedulings,
+  ask for contact information to handle the request.
+- grooming_date: Next Monday
+- grooming_time: 4:30 PM
+- new_date: October 28th
+- new_time: 4:15 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- rescheduling_acknowledgment: 'Ok, I have received your request to schedule an appointment
+    for 28/10/2024 at 16:15:00 for Vaccination.
+
+    See you then!'
+- appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 28/10/2024 at 16:15:00 for Vaccination. \nSee you then!    \n"
+- incorrect_service_name: Ok, I have received your request to schedule an appointment
+    for 28/10/2024 at 16:15:00 for Vaccination.
+- grooming_services_offered: I'm not sure. However, I can provide information regarding
+    vet visit costs, the types of animals we accept, pet care, our regular hours,
+    and weekend availability.
+- grooming_appointment_scheduled: "Ok, I have received your request to schedule an\
+    \ appointment for 28/10/2024 at 16:15:00 for Vaccination. \nSee you then!    \n"
+- contact_information_provided: I'm sorry, but I can only assist with questions related
+    to veterinary services such as appointments, costs, and care for pets. Unfortunately,
+    I cannot provide information about grooming services. Please let me know if you
+    have any other questions regarding our veterinary services!
+errors: []
+total_cost($): 0.01429215
+---
+conversation time: 245.544598
+assistant response time:
+- 1.231326
+- 1.129674
+- 11.920254
+- 2.813961
+- 3.389744
+- 3.295663
+- 3.721007
+- 1.422004
+- 1.492473
+- 1.989662
+- 1.888193
+- 1.753849
+- 1.602243
+- 1.666401
+- 1.552078
+- 1.627275
+- 8.153194
+- 1.829086
+- 1.560555
+- 1.44203
+- 2.074029
+- 1.552758
+- 1.390853
+- 1.404455
+response time report:
+  average: 2.579281
+  max: 11.920254
+  min: 1.129674
+---
+interaction:
+- User: I need to reschedule my dog's vaccination appointment. Can you help with that?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. What can I do for you?
+- User: I need to reschedule my dog's vaccination appointment for this week. Can you
+    assist with that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 31/10/2024\
+    \ at 09:00:00 for Vaccination. \nSee you then!    \n"
+- User: I think there's been a mix-up. I wanted to reschedule for October 28th at
+    4:15 PM. Can you confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 16:15:00 for Vaccination. \nSee you then!    \n"
+- User: I appreciate the confirmation for the vaccination appointment. Can you tell
+    me if you offer grooming services as well?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: Do you provide grooming services for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you confirm if grooming services for dogs are available?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: I really need to know if you offer grooming services for dogs. Can you check
+    on that?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    availability.
+- User: I need to know if you provide grooming services for dogs. Can you find that
+    out for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I really need to know if you offer grooming services for dogs. Can you check
+    on that?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I need to schedule a grooming appointment for my dog next Monday at 4:30 PM.
+    Can you help with that?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    help with grooming appointments. Please let me know if you have any other questions
+    regarding our veterinary services!
+- User: I need to confirm if grooming services for dogs are available before I schedule
+    an appointment. Can you check that for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I really need to know if you offer grooming services for dogs. Can you find
+    that out for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I need to confirm if grooming services for dogs are available before I schedule
+    an appointment. Can you check that for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I really need to know if you offer grooming services for dogs. Can you find
+    that out for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I need to confirm if grooming services for dogs are available before I schedule
+    an appointment. Can you check that for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I need to know if grooming services for dogs are available. Can you find that
+    out for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I need to know if grooming services for dogs are available. Can you check
+    that for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I need to know if grooming services for dogs are available. Can you find that
+    out for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I need to confirm if grooming services for dogs are available before I schedule
+    an appointment. Can you check that for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I need to know if grooming services for dogs are available. Can you find that
+    out for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I need to confirm if grooming services for dogs are available before I schedule
+    an appointment. Can you check that for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I need to know if grooming services for dogs are available. Can you find that
+    out for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I need to know if grooming services for dogs are available. Can you find that
+    out for me?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    provide information about grooming services. Please let me know if you have any
+    other questions regarding our veterinary services!
+- User: I need to schedule a grooming appointment for my dog next Monday at 4:30 PM.
+    Can you help with that?
+- Assistant: I'm sorry, but I can only assist with questions related to veterinary
+    services such as appointments, costs, and care for pets. Unfortunately, I cannot
+    help with grooming appointments. Please let me know if you have any other questions
+    regarding our veterinary services!

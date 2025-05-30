@@ -1,0 +1,68 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "top-level",
+            "make_appointment",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [
+                "What can I do to take care of my pet?"
+            ],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What specific guidelines or recommendations do you have for feeding my puppy?",
+                "What services do you offer at your veterinary center?",
+                "Are there any specific diet recommendations or types of food that are best for my puppy's age and breed?",
+                "Are there any specific vaccinations that are required or recommended for my puppy?",
+                "What specific health checks or exams are typically included in a standard veterinary visit?",
+                "Are there any additional fees for vaccinations or other services?",
+                "What types of vaccinations are typically recommended for puppies?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "30/10/2024"
+            ],
+            "time": [
+                "15:30:00"
+            ],
+            "service": [
+                "Vaccination"
+            ]
+        },
+        "top-level": {}
+    }
+}

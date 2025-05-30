@@ -1,0 +1,60 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [
+                "What can I do to take care of my pet?"
+            ],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What are the vaccination requirements or recommendations for my kitten based on its age?",
+                "Are there any specific vaccination requirements or recommendations based on my kitten's age or breed?",
+                "Are there any specific vaccination packages or bundles that you offer for kittens?",
+                "What are the specific vaccination packages or bundles available for kittens at your clinic?",
+                "Are there any additional fees for the initial check-up or consultation when getting my kitten vaccinated?",
+                "Are there any local organizations or shelters that offer low-cost vaccination services for kittens?",
+                "Are there any discounts available for multiple vaccinations or for adopting a kitten?",
+                "Are there any vaccination clinics or events in the area where I can get my kitten vaccinated at a lower cost?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}
