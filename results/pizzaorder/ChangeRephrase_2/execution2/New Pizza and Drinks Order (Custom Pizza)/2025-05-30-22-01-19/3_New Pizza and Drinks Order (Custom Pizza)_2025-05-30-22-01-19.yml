@@ -1,0 +1,116 @@
+serial: 2025-05-30-22-01-19
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - corn
+- topping2:
+  - corn
+- topping3:
+  - corn
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: corn, corn, corn'
+errors: []
+---
+conversation time: 108.056469
+assistant response time:
+- 2.585025
+- 2.283049
+- 3.953918
+- 1.695891
+- 1.646954
+- 5.157139
+- 3.069789
+- 4.010551
+- 2.815487
+- 1.941721
+- 1.829749
+- 2.010857
+- 0.844795
+- 0.83296
+- 1.17581
+- 2.015368
+response time report:
+  average: 2.366816
+  max: 5.157139
+  min: 0.83296
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to order an extra large custom pizza, please. Can I add corn as a
+    topping?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?
+- User: I'd like to confirm my order for an extra large pizza with corn, corn, and
+    corn. Can I go ahead and do that?
+- Assistant: 'Unfortunately, we only offer small, medium, or large pizzas at Fast
+    Pizza. Could you please choose one of those sizes for your pizza? '
+- User: I'd like to stick with the extra large pizza, but just to clarify, can I still
+    have the corn topping?
+- Assistant: 'Unfortunately, we only offer small, medium, or large pizza sizes at
+    Fast Pizza. Could you please choose one of those sizes for your order? '
+- User: I'd like to confirm my order for a large pizza with corn, corn, and corn.
+    Can I do that?
+- Assistant: 'Thanks for ordering a large pizza with c, o, r and n!
+
+    I see that you''ve confirmed your pizza order, but I still need to know how many
+    drinks you''d like to order and what type of drinks you prefer. Could you please
+    provide the number of drinks and the type (coke, sprite, or water)?'
+- User: I'd like to order three drinks, please. Can I get two cokes and one water?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The price of a large pizza with c, o, r and n, and 3 coke is 25.0$
+
+    Your order will be ready for pickup in 15 minutes at our shop located at 23 Main
+    Street, NY. Your order ID is 11fa4e.'
+- User: Could you please confirm the total amount for the order, including the drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I'd like to know if there's any discount or special offer available for my
+    order today?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: 'User: Well, could you please tell me the opening hours for your pizza shop?'
+- Assistant: Every day from 1pm to 11:30pm
+- User: What types of beverages do you offer besides Coke, Sprite, and water?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: 'User: Are there any other drinks or beverages available on your menu besides
+    Coke, Sprite, and water?'
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: 'User: Can I order a dessert to go with my pizza and drinks?'
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could I please order a dessert to go with my pizza and drinks?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: 'User: Can I add a dessert to my order along with the pizza and drinks?'
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me more about the types of pizzas you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)

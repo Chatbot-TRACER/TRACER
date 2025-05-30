@@ -1,0 +1,145 @@
+serial: 2025-05-30-22-01-19
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - pepperoni
+- topping2:
+  - pepperoni
+- topping3:
+  - pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepperoni, pepperoni,
+    pepperoni'
+errors: []
+---
+conversation time: 120.083413
+assistant response time:
+- 1.935264
+- 1.970082
+- 2.182259
+- 2.512655
+- 3.151212
+- 2.773012
+- 3.940372
+- 4.882002
+- 2.54461
+- 2.935165
+- 3.044263
+- 2.557739
+- 2.964179
+- 3.219157
+- 3.4819
+- 4.685253
+response time report:
+  average: 3.048695
+  max: 4.882002
+  min: 1.935264
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to order a large pizza with pepperoni, pepperoni, and pepperoni.
+    Can you confirm my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you please confirm my order for a large pizza with three layers of pepperoni?
+- Assistant: I see that you have ordered three layers of pepperoni, but I still need
+    to confirm the pizza size. Could you please confirm that you would like a large
+    pizza?
+- User: Yes, I would like to confirm that I want a large pizza with three layers of
+    pepperoni. Can you also tell me what drinks you have available?
+- Assistant: 'Thanks for ordering a large pizza with pepperoni, pepperoni and pepperoni!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order? Also, please specify the type of drink (coke,
+    sprite, or water).'
+- User: I’d like to order two drinks, please. Can I get one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The price of a large pizza with pepperoni, pepperoni and pepperoni, and 2 coke
+    is 23.0$
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 3917a5.'
+- User: Could you please confirm the total price for my order?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me how much I would be charged if I added an extra layer
+    of pepperoni to my pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: If I add an extra layer of pepperoni to my large pizza, how much would that
+    increase the total price?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me the price of a large pizza with four layers of pepperoni?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me how much a large pizza with four layers of pepperoni
+    would cost?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you clarify what the additional cost would be for adding a fourth layer
+    of pepperoni to my large pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me how much a large pizza with a fourth layer of pepperoni
+    would cost in total, including the extra charge?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please let me know the price of a large pizza with three layers
+    of pepperoni?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me how much a large pizza with three layers of pepperoni
+    costs?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the total price for a large pizza with three layers
+    of pepperoni?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.

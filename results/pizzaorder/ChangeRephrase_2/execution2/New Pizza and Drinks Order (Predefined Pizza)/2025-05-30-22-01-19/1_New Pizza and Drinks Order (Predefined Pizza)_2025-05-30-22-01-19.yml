@@ -1,0 +1,126 @@
+serial: 2025-05-30-22-01-19
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: 'Order: 1 large Hawaiian pizza, 2 Cokes.
+
+    Total cost: $25.00
+
+    Estimated readiness time: 15 minutes
+
+    Pickup location: 23 Main Street, NY
+
+    Order ID: 5ec436'
+- delivery_information: Delivery is not available. Please visit our shop at 23 Main
+    Street, NY.
+errors: []
+---
+conversation time: 176.768004
+assistant response time:
+- 5.310207
+- 2.698224
+- 5.68849
+- 2.103057
+- 1.366624
+- 1.14478
+- 2.301111
+- 2.281426
+- 2.014245
+- 2.223723
+- 0.995946
+- 3.008691
+- 2.113693
+- 2.363172
+- 3.324847
+- 1.63484
+response time report:
+  average: 2.535817
+  max: 5.68849
+  min: 0.995946
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. What is the total
+    cost?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    I see that you''ve mentioned wanting two Cokes, but I need to confirm the number
+    of drinks and the type of drinks. Could you please specify how many drinks you
+    would like to order and ensure the drink type is either coke, sprite, or water?
+    Thank you!'
+- User: I would like to order two Cokes, please. What is the estimated time for pickup?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 5ec436.'
+- User: Can you confirm that delivery is not available?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there anything else you would like to add to your order, or do you have
+    any special instructions for the pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please clarify if there are any special instructions you'd like
+    to add for your pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please clarify if I can add any special instructions for my pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, order pickup, and estimated time for
+    orders.
+- User: Can you tell me what special instructions I can add for my Hawaiian pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: I understand the pizza options, but could you please let me know if
+    there are specific customizations I can make for the Hawaiian pizza, such as extra
+    toppings or crust options?'
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Could you please specify if you offer any extra toppings for the Hawaiian
+    pizza, such as extra cheese or additional pineapple?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there a specific type of extra topping you are interested in for your Hawaiian
+    pizza, such as extra cheese or additional pineapple?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please let me know if extra cheese or additional pineapple is available
+    as an extra topping for the Hawaiian pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Could you please confirm if extra cheese or additional pineapple can be added
+    as toppings for my Hawaiian pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Could you please confirm if I can add extra cheese or additional pineapple
+    as toppings for my Hawaiian pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you please tell me the prices for extra cheese and additional pineapple
+    as toppings for my Hawaiian pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please let me know if there are any other beverages available besides
+    Coke, or are there any special promotions on drinks?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.

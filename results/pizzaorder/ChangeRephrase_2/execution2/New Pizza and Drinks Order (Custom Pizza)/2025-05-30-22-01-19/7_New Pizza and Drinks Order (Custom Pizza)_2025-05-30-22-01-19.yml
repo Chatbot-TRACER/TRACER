@@ -1,0 +1,142 @@
+serial: 2025-05-30-22-01-19
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - pepper
+- topping2:
+  - pepper
+- topping3:
+  - pepper
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepper, pepper, pepper'
+errors: []
+---
+conversation time: 110.427463
+assistant response time:
+- 2.185576
+- 5.241951
+- 8.738282
+- 2.144867
+- 1.892486
+- 2.890619
+- 3.261305
+- 1.226966
+- 1.297929
+- 1.007395
+- 3.814383
+- 2.801418
+- 2.95928
+- 5.451871
+- 2.651927
+- 2.506587
+response time report:
+  average: 3.129552
+  max: 8.738282
+  min: 1.007395
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to order an extra large pizza. Can I customize the toppings?
+- Assistant: It looks like I need some additional information to complete your order.
+    Could you please provide the pizza size (small, medium, or large) and the toppings
+    you'd like (cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken)?
+    Thank you!
+- User: I'd like to confirm my order for an extra large pizza with pepper, pepper,
+    and pepper.
+- Assistant: 'I''m sorry, but we only offer small, medium, or large pizza sizes. Could
+    you please choose one of those sizes? Also, please select from the available toppings:
+    cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken. Thank
+    you!'
+- User: I'd like to order an extra large pizza with just pepper. Can I go ahead with
+    that?
+- Assistant: Unfortunately, we only offer pizza sizes of small, medium, or large.
+    Could you please choose one of those sizes and let me know your preferred toppings?
+    Thank you!
+- User: I'd like to go with a large pizza then. Can I still have just pepper as the
+    topping?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    Thank you for your order! Could you please let me know how many drinks you would
+    like to order? Also, please specify the type of drink (coke, sprite, or water).
+    Thank you!'
+- User: I'd like to order two drinks, please. Can I have one coke and one sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The price of a large pizza with p, e, p, p, e and r, and 2 coke is 24.5$
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is ea7f10.'
+- User: Could you please confirm if I can substitute one of the drinks for water instead
+    of having both Cokes?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I'd like to know if I can replace one of the drinks with water instead of
+    having two Cokes.
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I'd like to confirm if I can swap one of the Cokes for a water instead.
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could I just go ahead and order one Coke and one water instead of the two
+    Cokes?
+- Assistant: Thank you for your patience! I still need to confirm the pizza size and
+    the toppings for your order. Could you please provide the pizza size (small, medium,
+    or large) and the toppings you'd like (cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, chicken)? Thank you!
+- User: I'd like to confirm my order for a large pizza with just pepper, one Coke,
+    and one water instead of two Cokes. Can you finalize that?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    Thank you for your order! I have noted that you would like one Coke and one water.
+    Just to confirm, could you please let me know the total number of drinks you would
+    like to order? Thank you!'
+- User: I'd like to confirm that I'm ordering one Coke and one water. Can you finalize
+    that for me?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The price of a large pizza with p, e, p, p, e and r, and 2 coke is 24.5$
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 09f5e3.'
+- User: I'd like to confirm that my order is for a large pizza with just pepper, one
+    Coke, and one water. Can we finalize that?
+- Assistant: Thank you for your order details! I see that you've provided the toppings
+    as pepper. However, I still need to confirm the pizza size. Could you please specify
+    the pizza size (small, medium, or large)? Thank you!
+- User: I'd like to confirm my order for a large pizza with just pepper, one Coke,
+    and one water. Can we finalize that?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    Thank you for your order! I see that you would like one Coke and one water. Just
+    to confirm, could you please let me know the total number of drinks you would
+    like to order? Thank you!'
+- User: I'd like to confirm that I want one Coke and one water, along with my large
+    pizza with just pepper. Can we finalize that now?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The price of a large pizza with p, e, p, p, e and r, and 2 coke is 24.5$
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 31ea21.'
