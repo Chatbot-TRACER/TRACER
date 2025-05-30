@@ -1,0 +1,93 @@
+serial: 2025-05-30-18-29-11
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00340695
+---
+conversation time: 66.77146
+assistant response time:
+- 0.817683
+- 0.80944
+- 0.841125
+- 0.68591
+- 0.827584
+- 0.566142
+- 1.489248
+- 0.68415
+- 0.641811
+- 8.812001
+- 0.748655
+- 0.745051
+- 0.872816
+- 1.088477
+- 0.69736
+response time report:
+  average: 1.355163
+  max: 8.812001
+  min: 0.566142
+---
+interaction:
+- User: What's the deal with dropping off pets, like, any rules?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the scoop on the groom stuff, like, any specifics?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What about the emergency stuff, like, do you have a plan for that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the holiday hours looking like, any special days off?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the price for a checkup, like, ballpark figure?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the sitch with the drop-off pet rules, anything I should know?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the vibe on the grooming, like, any details?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the status on the emergency care, like, any info on that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the holiday schedule look like, any days closed or special hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the cost range for a checkup, like, a rough idea?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the drop-off rules, like, anything important?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the deal with grooming, like, specifics I should know?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the emergency plan, like, any details on that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the holiday hours, like, any closures or special times?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the checkup price range, like, just a ballpark?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

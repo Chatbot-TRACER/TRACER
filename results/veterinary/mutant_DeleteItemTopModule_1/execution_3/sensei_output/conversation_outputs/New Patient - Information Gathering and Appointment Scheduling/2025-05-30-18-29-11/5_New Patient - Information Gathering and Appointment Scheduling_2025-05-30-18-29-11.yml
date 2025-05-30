@@ -1,0 +1,138 @@
+serial: 2025-05-30-18-29-11
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to establish him with a reputable veterinary
+  center for his healthcare needs.
+- You want to find a vet that offers comprehensive services and has appointment times
+  that fit your busy schedule.
+ask_about:
+- Inquire about the services offered at the veterinary center.
+- Ask about the veterinary center's policy on accepting certain animal types as patients.
+- Ask what the approximate cost range is for a standard veterinary visit.
+- Inquire about the available times for an appointment.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- date: November 10
+- time: 9:30 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- services_offered: null
+- animal_acceptance_policy: null
+- standard_visit_cost_range: I'm sorry, but I did not understand the last sentence,
+    can you say that again?
+- appointment_availability_info: Our opening hours are every weekday from 9am to 6pm.
+- appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 10/11/2024 at 09:30:00 for Vaccination. \nSee you then!    \n"
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.0060654
+---
+conversation time: 98.687825
+assistant response time:
+- 0.822785
+- 0.574212
+- 0.66618
+- 0.679028
+- 0.685214
+- 1.239391
+- 0.739176
+- 0.711322
+- 0.875105
+- 0.569966
+- 0.744614
+- 0.689144
+- 0.735379
+- 0.869712
+- 0.636315
+- 1.103138
+- 0.984057
+- 0.804901
+- 0.828883
+- 0.736067
+response time report:
+  average: 0.784729
+  max: 1.239391
+  min: 0.569966
+---
+interaction:
+- User: What services do you offer at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of services can I expect at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of services can I find at your veterinary center for my puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is your policy on accepting different types of animals as patients?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is your policy on the types of animals you accept as patients?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of animals are you able to treat at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is the approximate cost range for a standard veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is the typical cost range for a standard visit to your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the available times for scheduling an appointment?
+- Assistant: Our opening hours are every weekday from 9am to 6pm.
+- User: What appointment times do you have available on weekdays?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific appointment slots do you have available during the weekdays?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: What appointment slots can I book during the weekdays?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are your available appointment times for weekdays?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific days and times can I schedule an appointment during the weekdays?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific times can I book an appointment during the weekdays?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: Can I schedule a vaccination appointment for my puppy on November 10 at 9:30
+    AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 10/11/2024\
+    \ at 09:30:00 for Vaccination. \nSee you then!    \n"
+- User: Can you confirm if the appointment for my puppy's vaccination on November
+    10 at 9:30 AM is successfully scheduled?
+- Assistant: "Ok, I have received your request to schedule an appointment for 10/11/2024\
+    \ at 09:30:00 for Vaccination. \nSee you then!    \n"
+- User: Can you let me know if my appointment for my puppy's vaccination on November
+    10 at 9:30 AM is confirmed?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: Is my appointment for my puppy's vaccination on November 10 at 9:30 AM confirmed?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: Is my appointment for my puppy's vaccination on November 10 at 9:30 AM scheduled?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'

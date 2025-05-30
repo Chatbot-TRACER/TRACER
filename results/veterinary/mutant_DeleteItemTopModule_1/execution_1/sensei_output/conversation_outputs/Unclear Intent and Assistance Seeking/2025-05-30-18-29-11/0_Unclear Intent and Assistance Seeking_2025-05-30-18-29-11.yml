@@ -1,0 +1,133 @@
+serial: 2025-05-30-18-29-11
+language: English
+context:
+- 'personality: personalities/conversational-user'
+- You're feeling unwell but aren't sure what kind of medical attention you need.
+- You're exploring the services offered by this clinic to determine the best course
+  of action.
+- You're also concerned about the potential costs associated with different types
+  of examinations.
+ask_about:
+- I'm not sure what I need, can you tell me what services you offer?
+- What kind of appointments are available?
+- What does a physical examination include?
+- How much does a physical examination cost?
+- If you don't know, can you find out the cost of a physical examination for me?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 22
+data_output:
+- service_options: I'm sorry, but I did not understand the last sentence, can you
+    say that again?
+- appointment_types: null
+- physical_examination_description: None
+- cost_inquiry_response: I'm sorry, but I did not understand the last sentence, can
+    you say that again?
+- recommendation: None
+- assistance_options: None
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0063699
+---
+conversation time: 95.808503
+assistant response time:
+- 0.692703
+- 0.673611
+- 0.850729
+- 0.626612
+- 0.760801
+- 0.83452
+- 0.664196
+- 0.697985
+- 0.594476
+- 0.58908
+- 2.903833
+- 0.695559
+- 0.620615
+- 0.556089
+- 0.571466
+- 0.562671
+- 0.820815
+- 0.885814
+- 2.294159
+- 1.834102
+- 0.711514
+- 0.613605
+response time report:
+  average: 0.911588
+  max: 2.903833
+  min: 0.556089
+---
+interaction:
+- User: I'm not sure what I need, can you tell me what services you offer?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of services do you provide at this clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of appointments are available at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What does a physical examination include?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: How much does a physical examination cost?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: If you don't know, can you find out the cost of a physical examination for
+    me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What other types of medical services do you offer besides physical examinations?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What other types of medical services are available at your clinic besides
+    physical examinations?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific medical services can I get at your clinic aside from physical
+    examinations?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you provide information on any urgent care services available at your
+    clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of urgent care services are available at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me what kinds of appointments I can schedule at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you explain what types of specialists are available at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of specialists can I see at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of treatments do you offer at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of services can I request at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you list the different types of treatments available at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific health services can I receive at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of diagnostic tests do you offer at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of diagnostic tests can I get at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of examinations are available at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kinds of evaluations can I undergo at your clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

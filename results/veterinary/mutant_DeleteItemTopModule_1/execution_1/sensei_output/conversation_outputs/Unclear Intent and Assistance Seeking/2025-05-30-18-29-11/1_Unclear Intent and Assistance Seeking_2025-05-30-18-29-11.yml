@@ -1,0 +1,128 @@
+serial: 2025-05-30-18-29-11
+language: English
+context:
+- 'personality: personalities/conversational-user'
+- You're feeling unwell but aren't sure what kind of medical attention you need.
+- You're exploring the services offered by this clinic to determine the best course
+  of action.
+- You're also concerned about the potential costs associated with different types
+  of examinations.
+ask_about:
+- I'm not sure what I need, can you tell me what services you offer?
+- What kind of appointments are available?
+- What does a physical examination include?
+- How much does a physical examination cost?
+- If you don't know, can you find out the cost of a physical examination for me?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 22
+data_output:
+- service_options: I'm sorry, but I did not understand the last sentence, can you
+    say that again?
+- appointment_types: null
+- physical_examination_description: What does a physical examination include?
+- cost_inquiry_response: I'm sorry, but I did not understand the last sentence, can
+    you say that again?
+- recommendation: Our operating hours are every weekday from 9am to 6pm.
+- assistance_options: Our operating hours are every weekday from 9am to 6pm.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00638025
+---
+conversation time: 95.600725
+assistant response time:
+- 0.579742
+- 0.699644
+- 0.85957
+- 0.911179
+- 0.900933
+- 0.717095
+- 0.858213
+- 0.66092
+- 0.71061
+- 0.719126
+- 0.850261
+- 0.866877
+- 1.052397
+- 0.608908
+- 0.821143
+- 0.914281
+- 0.85655
+- 0.683597
+- 1.031841
+- 0.645675
+- 0.605297
+- 0.62815
+response time report:
+  average: 0.781
+  max: 1.052397
+  min: 0.579742
+---
+interaction:
+- User: I'm not sure what I need, can you tell me what services you offer?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you provide a list of the services available at this clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you give me an overview of the types of appointments that are available?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What does a physical examination include?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the components of a physical examination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: How much does a physical examination cost?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me if there are any specific types of tests or screenings included
+    in a physical examination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific tests or evaluations are part of a physical examination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific assessments or tests are performed during a physical examination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are there any walk-in services available at this clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of appointments can I schedule at this clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of services are available for patients at this clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the operating hours of this clinic?
+- Assistant: Our operating hours are every weekday from 9am to 6pm.
+- User: What types of services are available for patients at this clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of appointments can I schedule at this clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the available appointment options I can choose from at this clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the clinic's operating hours?
+- Assistant: Our operating hours are every weekday from 9am to 6pm.
+- User: What types of services are available for patients at this clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of services do you offer to patients at this clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of services can I access at this clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the procedures for making an appointment at this clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What steps do I need to follow to schedule an appointment at this clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

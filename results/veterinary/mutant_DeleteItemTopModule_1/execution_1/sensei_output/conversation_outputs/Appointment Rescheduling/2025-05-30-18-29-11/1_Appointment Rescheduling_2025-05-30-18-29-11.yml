@@ -1,0 +1,110 @@
+serial: 2025-05-30-18-29-11
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Tomorrow
+- time: 1:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 29/10/2024 at 13:30:00 for Physical examination. \nSee you then!"
+- rescheduling_prompt: tomorrow at 1:30 PM
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 29/10/2024 at 13:30:00 for Physical examination. \nSee you then!"
+errors: []
+total_cost($): 0.0041829
+---
+conversation time: 79.333257
+assistant response time:
+- 0.676254
+- 2.74568
+- 1.59856
+- 1.052307
+- 2.197354
+- 1.737471
+- 0.840853
+- 0.746988
+- 0.886424
+- 2.992138
+- 0.64647
+- 0.802629
+- 1.06433
+- 0.648326
+- 0.827654
+response time report:
+  average: 1.297562
+  max: 2.992138
+  min: 0.64647
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I provide the correct appointment details, including the new date of tomorrow
+    and the time of 1:30 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to give the correct appointment details, which are tomorrow at 1:30
+    PM.
+- Assistant: 'Thank you for providing the date and time for the appointment. Could
+    you please let me know which service you would like to book? The options are:
+    Physical examination, Vaccination, Dental health and cleaning, or Lab or diagnostic
+    testing.'
+- User: I want to schedule a physical examination for that time. Can you confirm if
+    that's available?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: I actually meant to say tomorrow. Can you confirm if a physical examination
+    is available for tomorrow at 1:30 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: Can you confirm if a physical examination is available for tomorrow at 1:30
+    PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: Is the appointment for tomorrow at 1:30 PM available for a physical examination?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: Is there a different time tomorrow for the physical examination that I could
+    check?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me if there are other available times for a physical examination
+    tomorrow?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you provide me with other available time slots for a physical examination
+    tomorrow?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are there any other time slots available for a physical examination tomorrow?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are there any other available times for a physical examination tomorrow?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are there any other available times for a physical examination tomorrow?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me if there are any available times for a physical examination
+    tomorrow?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you give me a list of available times for a physical examination tomorrow?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Why can't you provide me with a list of available times for a physical examination
+    tomorrow?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

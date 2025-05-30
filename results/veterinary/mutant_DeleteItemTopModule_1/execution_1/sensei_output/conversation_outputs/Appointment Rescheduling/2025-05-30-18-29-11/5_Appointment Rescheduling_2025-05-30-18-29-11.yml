@@ -1,0 +1,112 @@
+serial: 2025-05-30-18-29-11
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: '2023-11-17'
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: Ok, I have received your request to schedule an appointment
+    for 17/11/2023 at 10:00:00 for Physical examination.
+- rescheduling_prompt: November 17, 2023, at 10:00 AM
+- new_appointment_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00418065
+---
+conversation time: 72.93854
+assistant response time:
+- 0.899397
+- 1.04561
+- 0.568077
+- 0.796268
+- 0.551982
+- 0.830152
+- 1.990327
+- 0.735349
+- 0.764848
+- 0.848354
+- 1.037997
+- 0.710636
+- 0.963539
+- 0.747357
+- 0.741752
+response time report:
+  average: 0.882109
+  max: 1.990327
+  min: 0.551982
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can you help me update it?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to provide the correct appointment details, including the new date
+    of November 17, 2023, at 10:00 AM. Can you help me with that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 17/11/2023\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: Actually, I need to clarify that the appointment type is not a physical examination.
+    Can you update it to a consultation instead?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to clarify that the appointment type should be updated to a consultation
+    instead of a physical examination. Can you do that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to specify that the appointment type is a consultation, not a physical
+    examination. Can you update that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to make sure the appointment is updated to a consultation instead of
+    a physical examination. Can you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to ensure that the appointment type is updated to a consultation instead
+    of a physical examination. Can you assist with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to make sure that the appointment type is set to a consultation instead
+    of a physical examination. Can you help me change that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to ensure that my appointment type is a consultation. Can you assist
+    me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to confirm that my appointment type should be a consultation. Can you
+    help me change it?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to confirm that I want my appointment type changed to a consultation.
+    Can you assist me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to make sure my appointment type is a consultation. Can you help me
+    change it?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to ensure that my appointment type is changed to a consultation. Can
+    you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to verify that my appointment type is changed to a consultation. Can
+    you assist with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to double-check if the appointment type can be switched to a consultation
+    instead of a physical examination. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

@@ -1,0 +1,93 @@
+serial: 2025-05-30-18-29-11
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: I'm sorry, but I did not understand the last sentence, can you
+    say that again?
+errors: []
+total_cost($): 0.0030561
+---
+conversation time: 62.991868
+assistant response time:
+- 0.728715
+- 0.640037
+- 1.311573
+- 0.629539
+- 0.700903
+- 0.746211
+- 0.820385
+- 0.722945
+- 0.818994
+- 1.013648
+- 0.850493
+- 0.702513
+- 0.785597
+- 0.729917
+- 0.72571
+response time report:
+  average: 0.795145
+  max: 1.311573
+  min: 0.629539
+---
+interaction:
+- User: What's the deal with just walking in for stuff?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the scoop on grooming?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the 24/7 thing for emergencies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: 'User: How about the holiday hours?'
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the price for a quick check-up?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the walk-in thing?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the deal with the grooming stuff?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the emergency service hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: 'User: What''s up with the holiday schedule?'
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the quick check-up cost?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the walk-in situation like?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the grooming deal?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the emergency hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the holiday hours like?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the cost for a check-up?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
