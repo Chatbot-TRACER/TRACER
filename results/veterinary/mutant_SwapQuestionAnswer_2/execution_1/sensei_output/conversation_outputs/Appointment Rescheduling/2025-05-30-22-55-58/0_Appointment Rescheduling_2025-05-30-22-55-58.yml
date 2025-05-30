@@ -1,0 +1,112 @@
+serial: 2025-05-30-22-55-58
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Today
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: Ok, I have received your request to schedule an appointment
+    for 27/10/2024 at 10:00:00 for Physical examination.
+- rescheduling_prompt: I have received your request to schedule an appointment for
+    27/10/2024 at 10:00:00 for Physical examination.
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 27/10/2024 at 10:00:00 for Physical examination. \nSee you then!    \n"
+errors: []
+total_cost($): 0.0045357
+---
+conversation time: 95.999015
+assistant response time:
+- 0.892536
+- 0.650567
+- 2.543208
+- 1.035318
+- 1.132385
+- 1.050763
+- 0.723245
+- 0.865641
+- 0.699493
+- 0.693418
+- 0.703435
+- 1.049531
+- 0.93577
+- 0.560544
+- 0.91606
+response time report:
+  average: 0.96346
+  max: 2.543208
+  min: 0.560544
+---
+interaction:
+- User: I need to reschedule an appointment I have because the details are incorrect.
+    Can you help me update it?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change the appointment I booked earlier because the details aren't
+    right. Can you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to provide the correct appointment details, including the new date,
+    which is today, and the time, which is 10:00 AM. Can you help me with that?
+- Assistant: 'I have the date and time for your appointment, but I still need to know
+    which service you would like to book: Physical examination, Vaccination, Dental
+    health and cleaning, or Lab or diagnostic testing. Please let me know!'
+- User: I would like to book a Physical examination for today at 10:00 AM. Can you
+    confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I think there's been a mistake with the date you mentioned. Today is actually
+    the 27th of October. Can we set the appointment for today, the 27th, at 10:00
+    AM instead?
+- Assistant: "Ok, I have received your request to schedule an appointment for 27/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I also need to confirm the location for the appointment. Can you let me know
+    where it will be held?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me where the appointment will be held?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Where will the appointment for the Physical examination be held?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is the appointment going to be at the same location as my previous one?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is the Physical examination appointment today at 10:00 AM going to take place
+    at the same location as my last appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is the appointment for the Physical examination today at 10:00 AM scheduled
+    at the same location where my last appointment was held?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there a way to find out the location of my appointment for the Physical
+    examination today at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you help me find out where my appointment for the Physical examination
+    today at 10:00 AM will be held?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Where is my Physical examination appointment today at 10:00 AM going to take
+    place?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you please tell me if there’s a customer service number I can call to
+    confirm the location of my appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

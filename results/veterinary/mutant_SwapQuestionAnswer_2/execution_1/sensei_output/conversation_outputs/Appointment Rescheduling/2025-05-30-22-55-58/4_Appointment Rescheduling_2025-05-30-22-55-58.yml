@@ -1,0 +1,111 @@
+serial: 2025-05-30-22-55-58
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Next Wednesday
+- time: 11:15 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: Ok, I have received your request to schedule an appointment
+    for 30/10/2024 at 11:15:00 for Physical examination.
+- rescheduling_prompt: next Wednesday at 11:15 AM
+- new_appointment_confirmation: 'Ok, I have received your request to schedule an appointment
+    for 30/10/2024 at 11:15:00 for Physical examination.
+
+    See you then!'
+errors: []
+total_cost($): 0.00470475
+---
+conversation time: 82.550438
+assistant response time:
+- 0.692493
+- 2.738728
+- 1.364769
+- 2.372016
+- 1.221783
+- 1.210997
+- 1.110903
+- 1.048259
+- 3.518718
+- 1.079348
+- 1.015057
+- 0.663768
+- 0.928187
+- 0.944881
+- 0.777303
+response time report:
+  average: 1.379147
+  max: 3.518718
+  min: 0.663768
+---
+interaction:
+- User: I need to reschedule an appointment I have because the details are incorrect.
+    Can you help me update it to next Wednesday at 11:15 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to update my appointment to next Wednesday at 11:15 AM because the
+    current details are wrong. Can you assist with that?
+- Assistant: 'I can help you with that! However, I still need to know which service
+    you would like to update your appointment for. Could you please provide that information?
+    The options are: Physical examination, Vaccination, Dental health and cleaning,
+    or Lab or diagnostic testing.'
+- User: I need to update my appointment for a physical examination. Can we proceed
+    with that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 06/11/2024\
+    \ at 11:15:00 for Physical examination. \nSee you then!    \n"
+- User: Actually, I meant to say next Wednesday, not in June. Can we change that to
+    next Wednesday at 11:15 AM for the physical examination?
+- Assistant: "Ok, I have received your request to schedule an appointment for 06/11/2024\
+    \ at 11:15:00 for Physical examination. \nSee you then!    \n"
+- User: I want to clarify that I need the appointment for next Wednesday at 11:15
+    AM, not in June. Can you confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 06/11/2024\
+    \ at 11:15:00 for Physical examination. \nSee you then!    \n"
+- User: I need to make sure we can get the appointment updated correctly. Can you
+    confirm the date for next Wednesday?
+- Assistant: Next Wednesday is November 6th, 2024. Would you like me to proceed with
+    updating your appointment to that date and time for the physical examination?
+- User: No, I need the appointment for October 30th, 2024 at 11:15 AM for the physical
+    examination. Can you update that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 30/10/2024\
+    \ at 11:15:00 for Physical examination. \nSee you then!    \n"
+- User: Can you confirm if the appointment for October 30th at 11:15 AM for the physical
+    examination is accurate?
+- Assistant: Yes, the appointment for October 30th, 2024, at 11:15 AM for the physical
+    examination is accurate.
+- User: I actually just realized that I need to check if there's a cancellation policy
+    for this appointment. Could you let me know what it is?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What are the cancellation policies for my appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the cancellation policies for my appointment on October 30th at 11:15
+    AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the cancellation policies for my appointment scheduled on October
+    30th at 11:15 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there another topic you can provide information about, like your opening
+    hours or weekend schedule?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What are your weekend hours?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What are your weekend hours?
+- Assistant: Every weekday from 9am to 6pm.

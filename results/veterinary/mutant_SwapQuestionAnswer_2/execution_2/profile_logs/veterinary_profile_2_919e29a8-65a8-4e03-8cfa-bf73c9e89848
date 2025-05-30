@@ -1,0 +1,59 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "make_appointment",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "top-level",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What is the vaccination schedule for myxomatosis and RHD in rabbits?",
+                "What are the usual signs that a rabbit has myxomatosis?",
+                "How often do you recommend vaccinating rabbits against myxomatosis and RHD?",
+                "What are the common health issues that rabbits face?",
+                "What are the typical symptoms of myxomatosis in rabbits?",
+                "What kind of animals do you treat at your clinic?",
+                "What vaccinations do you recommend for preventing RHD in rabbits?",
+                "What do you recommend for the prevention of myxomatosis in rabbits?",
+                "What are the common signs that indicate a rabbit might have myxomatosis?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

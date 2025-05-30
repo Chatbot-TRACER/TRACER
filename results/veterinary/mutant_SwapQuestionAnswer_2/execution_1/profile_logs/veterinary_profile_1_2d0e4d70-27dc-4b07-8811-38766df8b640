@@ -1,0 +1,62 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "Are there any specific grooming services you offer for rabbits?",
+                "Can you provide me with information about the grooming services available for rabbits?",
+                "Do you offer any grooming services for rabbits?",
+                "Do you treat rabbits at your veterinary center?",
+                "Do you have any grooming services specifically for rabbits?",
+                "Could you please share more about the grooming services available for rabbits at your center?",
+                "What about the typical price range for a veterinary visit for rabbits?",
+                "Can you confirm if you have grooming services specifically for rabbits?",
+                "Do you have a specific veterinary service for rabbits?",
+                "Do you have a specific policy or procedure for treating rabbits?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

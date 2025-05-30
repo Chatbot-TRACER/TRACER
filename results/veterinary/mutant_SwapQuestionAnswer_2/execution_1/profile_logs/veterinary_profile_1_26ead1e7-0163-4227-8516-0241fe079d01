@@ -1,0 +1,66 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What are the common health issues you check for during wellness exams for dogs?",
+                "What kinds of animals do you accept?",
+                "What common health issues do you typically check for during wellness exams for birds?",
+                "What does a physical exam at your clinic entail?",
+                "What types of services do you have for wellness checks or preventative care?",
+                "What common health issues do you typically check for during wellness exams for cats?",
+                "How much does a physical examination cost?",
+                "What are the typical health screenings you perform during wellness exams for dogs?",
+                "What specific vaccinations do you offer during wellness checks?",
+                "What specific vaccinations are recommended for dogs during wellness checks at your clinic?",
+                "What typical health screenings do you perform during wellness exams for cats?",
+                "What types of vaccinations are recommended for cats during wellness checks at your clinic?",
+                "What types of vaccinations do you recommend for birds during wellness checks at your clinic?",
+                "Are there any specific services for wellness checks or preventative care?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

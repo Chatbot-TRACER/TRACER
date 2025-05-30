@@ -1,0 +1,93 @@
+serial: 2025-05-30-22-55-58
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: 'You need to fulfill their essential requirements: nourishment,
+    hydration, shelter, physical activity, and affection.'
+errors: []
+total_cost($): 0.0031929
+---
+conversation time: 74.558448
+assistant response time:
+- 0.708086
+- 0.603788
+- 0.685921
+- 0.983565
+- 2.553885
+- 1.68151
+- 0.788281
+- 1.492866
+- 0.973387
+- 3.098909
+- 0.850062
+- 0.832524
+- 0.644997
+- 0.795069
+- 3.120672
+response time report:
+  average: 1.320901
+  max: 3.120672
+  min: 0.603788
+---
+interaction:
+- User: What’s the deal with just showing up?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the scoop on grooming stuff?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the 24/7 thing for emergencies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the holiday hours vibe?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the checkup price range looking like?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: What’s the walk-in setup like?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the grooming situation?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the emergency care availability?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the deal with holiday times?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the checkup price situation?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: What’s the walk-in arrangement?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the grooming deal?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the 24-hour emergency care setup?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What about the holiday schedule, what's the gist?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the checkup cost usually at?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'

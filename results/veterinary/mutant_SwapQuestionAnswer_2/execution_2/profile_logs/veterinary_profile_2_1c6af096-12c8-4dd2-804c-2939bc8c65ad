@@ -1,0 +1,60 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "make_appointment",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "top-level",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "Are there specific vaccinations you recommend for rabbits to protect them from diseases?",
+                "What vaccinations are specifically recommended for rabbits?",
+                "What symptoms should I look out for that would suggest my rabbit might have rabbit hemorrhagic disease (RHD)?",
+                "What are the common diseases that rabbits can get?",
+                "What are the common vaccinations that a rabbit should receive?",
+                "What specific vaccinations are available for protecting rabbits from diseases?",
+                "What vaccinations do you recommend for rabbits?",
+                "What kind of animals do you treat at your clinic?",
+                "What vaccinations are usually required for rabbits?",
+                "What are the signs that a rabbit has myxomatosis?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

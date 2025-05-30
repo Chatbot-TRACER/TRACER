@@ -1,0 +1,89 @@
+serial: 2025-05-30-22-55-58
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: Every weekday from 9am to 6pm
+errors: []
+total_cost($): 0.00295605
+---
+conversation time: 78.164131
+assistant response time:
+- 1.206818
+- 0.888012
+- 0.875151
+- 0.710022
+- 0.794007
+- 0.704545
+- 0.654152
+- 1.101438
+- 0.831144
+- 1.107812
+- 0.722971
+- 0.774746
+- 5.532794
+- 3.99171
+- 3.075329
+response time report:
+  average: 1.531376
+  max: 5.532794
+  min: 0.654152
+---
+interaction:
+- User: Walk-in? What's the deal?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Walk-in? How's that work?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming? What do you have?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming? What’s included?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming? What's on the list?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming? What’s the scoop?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Emergency stuff? What's the lowdown?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Emergency? Got any info?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Emergency services? What's the sitch?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Holiday hours? What's the word?
+- Assistant: Every weekday from 9am to 6pm
+- User: Holiday schedule? What’s the plan?
+- Assistant: Every weekday from 9am to 6pm
+- User: Holiday schedule? What’s happening?
+- Assistant: Every weekday from 9am to 6pm
+- User: Checkup? What’s the cost?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: Checkup? What’s it run?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: Checkup? What's it go for?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
