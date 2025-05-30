@@ -1,0 +1,121 @@
+serial: 2025-05-30-20-26-03
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - anchovies
+- topping2:
+  - pineapple
+- topping3:
+  - Pineapple
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: cheese'
+errors: []
+---
+conversation time: 103.252338
+assistant response time:
+- 4.647466
+- 2.112333
+- 1.955786
+- 3.394714
+- 1.28512
+- 1.756078
+- 1.398119
+- 2.341325
+- 1.543993
+- 2.84329
+- 3.255259
+- 6.951224
+- 2.416746
+- 0.938296
+- 1.776909
+- 0.875902
+response time report:
+  average: 2.468285
+  max: 6.951224
+  min: 0.875902
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to order a medium custom pizza with anchovies, pineapple, and pineapple.
+    Can you confirm that order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you please confirm my order for a medium custom pizza with anchovies
+    and pineapple?
+- Assistant: It looks like I need to confirm the toppings for your pizza. Could you
+    please provide the toppings again? Remember, you can choose from cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, or chicken. Thank you!
+- User: Could you please confirm my order for a medium custom pizza with anchovies
+    and pineapple?
+- Assistant: 'It seems that the toppings you mentioned, anchovies and pineapple, are
+    not available. Please choose from the following options: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, or chicken. Thank you!'
+- User: Could you please check if anchovies and pineapple are available as toppings
+    for my pizza?
+- Assistant: 'Unfortunately, anchovies and pineapple are not available as toppings
+    for your pizza. Please choose from the following options: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, or chicken. Thank you!'
+- User: Are there any other toppings you'd like to consider for your medium pizza?
+- Assistant: 'Please choose from the following available toppings for your medium
+    pizza: cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken.
+    Thank you!'
+- User: Could you please confirm if I can use both anchovies and pineapple on my medium
+    pizza, or should I choose different toppings?
+- Assistant: 'Unfortunately, anchovies and pineapple are not available as toppings
+    for your pizza. Please choose from the following options: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, or chicken. Thank you!'
+- User: Can you please let me know if I can order a medium pizza with just pineapple?
+- Assistant: 'Unfortunately, pineapple is not an available topping for your pizza.
+    Please choose from the following options: cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken. Thank you!'
+- User: Could you please confirm if I can order a medium pizza with just cheese?
+- Assistant: 'Thanks for ordering a medium pizza with c, h, e, e, s and e!
+
+    It seems that I still need to collect some information for your order. Could you
+    please let me know how many drinks you would like to order? Additionally, please
+    specify the type of drink you want from the following options: coke, sprite, or
+    water. Thank you!'
+- User: Could you please confirm how many drinks I should order and what type of drink
+    options do you have?
+- Assistant: 'I see that I still need to know the type of drink you would like to
+    order. Please choose from the following options: coke, sprite, or water. Thank
+    you!'
+- User: Could you please let me know how many drinks I should order for my pizza night?
+- Assistant: 'Got it! I''ve received your order for 0 Coke.
+
+    The price of a medium pizza with c, h, e, e, s and e, and 0 coke is 16.5$
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 0c307a.'
+- User: Could you please confirm if I can add a drink to my order, and what drink
+    options do you have available?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please tell me how many drinks I should order for my pizza night?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please let me know what drink options I have available for my order?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please tell me how many drinks I should order for my pizza night?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

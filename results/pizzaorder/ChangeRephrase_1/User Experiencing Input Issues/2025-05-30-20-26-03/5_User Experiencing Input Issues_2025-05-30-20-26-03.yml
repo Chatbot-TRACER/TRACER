@@ -1,0 +1,131 @@
+serial: 2025-05-30-20-26-03
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - BBQ Chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: You can choose from a variety of toppings including pepperoni,
+    mushrooms, onions, sausage, bacon, extra cheese, black olives, green peppers,
+    pineapple, and BBQ chicken. You can have up to 5 toppings on your custom pizza.
+    There is no specific limit on how many of each topping you can put on your pizza,
+    as long as you stay within the total of 5 toppings.
+errors: []
+---
+conversation time: 107.360786
+assistant response time:
+- 1.074737
+- 1.145135
+- 1.810378
+- 1.99765
+- 5.024765
+- 1.462031
+- 2.58431
+- 1.576145
+- 1.418385
+- 1.169795
+- 1.622558
+- 1.012477
+- 1.202268
+- 1.069559
+- 1.542152
+- 1.424333
+- 1.267111
+response time report:
+  average: 1.670811
+  max: 5.024765
+  min: 1.012477
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: "Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order\
+    \ pizzas and drinks. \nWhat can I do for you?"
+- User: What types of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a BBQ Chicken pizza. Can you confirm if that's on your menu?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I see. So, BBQ Chicken isn't on the menu? What if I want to create a custom
+    pizza with BBQ Chicken? Would that work?
+- Assistant: It looks like I have the topping information, which is chicken, but I
+    still need to know the pizza size. Could you please let me know if you would like
+    a small, medium, or large pizza?
+- User: What sizes do you have available for the pizzas?
+- Assistant: 'We have three sizes available for our pizzas: small, medium, and large.
+    Could you please let me know which size you would like for your pizza?'
+- User: Could I get a large custom pizza with BBQ Chicken and whatever else you recommend?
+- Assistant: 'Thanks for ordering a large pizza with c, h, i, c, k, e and n!
+
+    Thank you for your order! I still need to know how many drinks you would like
+    to order. Could you please provide the number of drinks? Also, please let me know
+    if you would like coke, sprite, or water.'
+- User: I didn't mention drinks yet. Can you just confirm the toppings I can add to
+    my custom pizza?
+- Assistant: 'The toppings you can add to your custom pizza include BBQ Chicken, but
+    you can also choose from a variety of other toppings like pepperoni, mushrooms,
+    onions, and bell peppers. If you have any specific toppings in mind, feel free
+    to let me know! Also, I still need to know how many drinks you would like to order
+    and your choice of drink: coke, sprite, or water.'
+- User: Can you give me a complete list of all the toppings I can choose from for
+    my custom pizza?
+- Assistant: I can help you with that! For your custom pizza, you can choose from
+    a variety of toppings including pepperoni, mushrooms, onions, sausage, bacon,
+    extra cheese, black olives, green peppers, pineapple, and BBQ chicken. If you
+    have any specific preferences or want to add more toppings, just let me know!
+- User: What about adding jalapeños or spinach? Are those options available for my
+    custom pizza?
+- Assistant: Unfortunately, jalapeños and spinach are not listed as available toppings
+    for your custom pizza. However, you can choose from other toppings. Would you
+    like to proceed with your order or ask for more options?
+- User: Can I add any other toppings like feta cheese or garlic?
+- Assistant: The available toppings for your custom pizza include BBQ Chicken, jalapeños,
+    spinach, and many others. However, feta cheese and garlic are not listed as options.
+    If you have any other toppings in mind, feel free to ask! Also, I still need to
+    know how many drinks you would like to order and your choice of drink (coke, sprite,
+    or water).
+- User: 'User: Can you confirm if I can add onions or black olives to my custom pizza?'
+- Assistant: For your custom pizza, you can add onions and black olives as toppings.
+    If you have any other questions or if you're ready to order drinks, just let me
+    know!
+- User: Can I get both onions and black olives on my pizza, then?
+- Assistant: Yes, you can add both onions and black olives to your custom pizza. Now,
+    could you please let me know how many drinks you would like to order and if you
+    prefer coke, sprite, or water?
+- User: I'm still not ready to discuss drinks yet. Can you remind me of the total
+    number of toppings I can have on my custom pizza?
+- Assistant: You can have up to 5 toppings on your custom pizza. If you have any more
+    questions or if you're ready to discuss drinks, just let me know!
+- User: Can I add all 5 toppings by choosing BBQ Chicken, onions, black olives, pepperoni,
+    and mushrooms?
+- Assistant: 'Yes, you can add all 5 toppings by choosing BBQ Chicken, onions, black
+    olives, pepperoni, and mushrooms. Your custom pizza will be ready with those toppings!
+    Now, how many drinks would you like to order, and what type would you prefer:
+    coke, sprite, or water?'
+- User: I'm not ready to discuss drinks yet. Can you confirm if there's a limit on
+    how many of each topping I can put on my pizza?
+- Assistant: There is no specific limit on how many of each topping you can put on
+    your pizza, as long as you stay within the total of 5 toppings. If you have any
+    more questions or if you're ready to discuss drinks, just let me know!
+- User: Can I use more than 5 toppings if I want to order multiple pizzas?
+- Assistant: Yes, you can order multiple pizzas, and each pizza can have up to 5 toppings.
+    If you have any more questions or if you're ready to discuss drinks, just let
+    me know!

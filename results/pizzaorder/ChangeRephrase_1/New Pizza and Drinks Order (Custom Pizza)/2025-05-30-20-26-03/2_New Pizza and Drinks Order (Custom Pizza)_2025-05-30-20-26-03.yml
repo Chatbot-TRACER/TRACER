@@ -1,0 +1,118 @@
+serial: 2025-05-30-20-26-03
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - chicken
+- topping2:
+  - chicken
+- topping3:
+  - chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: chicken, chicken,
+    chicken'
+errors: []
+---
+conversation time: 97.085974
+assistant response time:
+- 1.779657
+- 1.877021
+- 1.888033
+- 0.775675
+- 0.974543
+- 0.749032
+- 0.671528
+- 0.7735
+- 10.318251
+- 2.254249
+- 2.322739
+- 0.976038
+- 3.109882
+- 3.977922
+- 3.194218
+- 2.631589
+response time report:
+  average: 2.392117
+  max: 10.318251
+  min: 0.671528
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. Can you let me know what toppings I can choose
+    from?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings can I choose for my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What options do I have for toppings on my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What options do I have for toppings on my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are available for my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings can I choose for my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I order a small pizza with just chicken as the topping?
+- Assistant: 'It looks like I still need to know the size of the pizza. Could you
+    please confirm that you would like a small pizza? '
+- User: I want a small pizza with chicken, chicken, and chicken. Can you confirm my
+    order?
+- Assistant: 'Thanks for ordering a small pizza with c, h, i, c, k, e and n!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks you prefer (coke,
+    sprite, or water)?'
+- User: I’d like to order two drinks, please. Can I get one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The price of a small pizza with c, h, i, c, k, e and n, and 2 coke is 15.0$
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 907608.'
+- User: Could you please confirm the total price of my order, including the drinks?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me the total cost of my order, including the drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you tell me the total cost of my order for a small custom pizza with
+    three chicken toppings and two drinks, one Coke and one Sprite?
+- Assistant: I see that you've provided the toppings, but I still need to confirm
+    the size of the pizza. Could you please confirm that you would like a small pizza?
+- User: I want a small pizza with three chicken toppings and two drinks, one Coke
+    and one Sprite. Can you tell me the total cost of that?
+- Assistant: 'Thanks for ordering a small pizza with c, h, i, c, k, e and n!
+
+    Thank you for your order details! I see that you would like two drinks, but I
+    need to confirm the specific types of drinks. Could you please let me know how
+    many of each drink you would like? You can choose from coke, sprite, or water.'
+- User: 'I’d like to order two drinks, please. Can I get one Coke and one Sprite? '
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The price of a small pizza with c, h, i, c, k, e and n, and 2 coke is 15.0$
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is dd4579.'

@@ -1,0 +1,113 @@
+serial: 2025-05-30-20-26-03
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Margherita
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+errors: []
+---
+conversation time: 119.959147
+assistant response time:
+- 1.770937
+- 1.236725
+- 1.738845
+- 2.321035
+- 1.837364
+- 2.62812
+- 2.392377
+- 2.017422
+- 2.732202
+- 4.046793
+- 2.00853
+- 3.037918
+- 3.905842
+- 1.641531
+- 1.793294
+- 1.682193
+- 2.79417
+response time report:
+  average: 2.328546
+  max: 4.046793
+  min: 1.236725
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kinds of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Margherita pizza, but can you confirm if it's the classic version
+    with just tomatoes and mozzarella?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is the Margherita pizza you offer the classic version with just tomatoes and
+    mozzarella, or does it have other toppings?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is the Margherita pizza made with fresh basil, or is that not included?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you tell me if the Margherita pizza has fresh basil on it?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there a way to customize the Margherita pizza if I want to add fresh basil?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you tell me the prices of the pizzas you offer?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What are the prices for the custom pizzas if I want to choose my own ingredients?
+- Assistant: Custom pizzas with up to three ingredients are the same prices as predefined
+    ones. Each additional ingredient has an increment of 50 cents.
+- User: If I want to add four ingredients to a custom pizza, what would the price
+    be for a medium size?
+- Assistant: Custom pizzas with up to three ingredients are the same prices as predefined
+    ones. Each additional ingredient has an increment of 50 cents.
+- User: If I choose a medium custom pizza with four ingredients, can you break down
+    the cost for me?
+- Assistant: Custom pizzas with up to three ingredients are the same prices as predefined
+    ones. Each additional ingredient has an increment of 50 cents.
+- User: If I order a medium custom pizza with four ingredients, would that make it
+    $15 for the base price plus $0.50 for the fourth ingredient?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas, prices of beverages, how to get the order,
+    and how much time it takes to get an order.
+- User: Can you tell me the prices for drinks that you offer?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: What about other drinks? Do you have anything else besides Sprite, Coke, and
+    water?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: 'User: Are there any other drink options available that you haven''t mentioned?'
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Is there a way to get a discount if I order multiple pizzas at once?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.

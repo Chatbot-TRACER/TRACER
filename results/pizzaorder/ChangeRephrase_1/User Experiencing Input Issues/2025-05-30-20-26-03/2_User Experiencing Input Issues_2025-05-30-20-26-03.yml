@@ -1,0 +1,144 @@
+serial: 2025-05-30-20-26-03
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Vegetarian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I see that you would like a Vegetarian pizza, but I still
+    need to know the pizza size. Could you please tell me if you would like a small,
+    medium, or large pizza?
+- pizza_type_response: We have Vegetarian pizza.
+- custom_pizza_response: The price range for a large Vegetarian pizza typically falls
+    between $12 to $15, depending on the specific toppings and any additional customizations
+    you choose.
+errors: []
+---
+conversation time: 124.950484
+assistant response time:
+- 4.246904
+- 2.807085
+- 3.000203
+- 2.165138
+- 1.545332
+- 1.769687
+- 6.104162
+- 2.022613
+- 1.644854
+- 1.584395
+- 9.777822
+- 1.955286
+- 1.400479
+- 2.09054
+- 1.738363
+- 1.659255
+- 1.733441
+response time report:
+  average: 2.77915
+  max: 9.777822
+  min: 1.400479
+---
+interaction:
+- User: I'd like to order a Vegetarian pizza, can you help me with that?
+- Assistant: I see that you would like a Vegetarian pizza, but I still need to know
+    the pizza size. Could you please tell me if you would like a small, medium, or
+    large pizza?
+- User: I want a large pizza, but can you also tell me what toppings come on the Vegetarian
+    pizza?
+- Assistant: 'Thanks for ordering a large vegetarian pizza!
+
+    I have noted that you would like a large Vegetarian pizza. Now, could you please
+    let me know how many drinks you would like to order and what type of drinks (coke,
+    sprite, or water) you prefer?'
+- User: I didn't ask for drinks yet! Can you just tell me what toppings are included
+    on the Vegetarian pizza?
+- Assistant: The Vegetarian pizza typically comes with a variety of fresh vegetables
+    such as bell peppers, onions, mushrooms, olives, and tomatoes. If you have any
+    specific preferences or additional toppings in mind, feel free to let me know!
+    Also, when you're ready, I can help you with your drink order.
+- User: What if I want to add extra toppings to my Vegetarian pizza? Can I customize
+    it or is it fixed?
+- Assistant: 'You can definitely customize your Vegetarian pizza by adding extra toppings!
+    Just let me know what additional toppings you would like, and I''ll make sure
+    to include them in your order. '
+- User: Can I add extra cheese and jalapeños to my Vegetarian pizza?
+- Assistant: Yes, you can add extra cheese and jalapeños to your Vegetarian pizza!
+    I will include those extra toppings in your order. Now, could you please let me
+    know how many drinks you would like to order and what type of drinks (coke, sprite,
+    or water) you prefer?
+- User: I'm not ready to order drinks yet! Can you confirm if my Vegetarian pizza
+    with extra cheese and jalapeños is all set?
+- Assistant: 'Yes, your order for a large Vegetarian pizza with extra cheese and jalapeños
+    is all set! Whenever you''re ready to order drinks, just let me know. '
+- User: Could you tell me how long it will take for my pizza to be delivered?
+- Assistant: The delivery time for your pizza typically takes about 30 to 45 minutes,
+    depending on the current order volume. Your Vegetarian pizza with extra cheese
+    and jalapeños will be prepared and delivered as soon as possible. If you have
+    any other questions or need assistance with your drink order later, feel free
+    to ask!
+- User: Is there any way to track my pizza delivery once it's on the way?
+- Assistant: Yes, you can track your pizza delivery once it's on the way! We provide
+    a tracking feature that allows you to see the status of your order in real-time.
+    If you have any other questions or need further assistance, feel free to ask!
+- User: How can I track my pizza delivery? Do I need an app for that?
+- Assistant: You can track your pizza delivery through our Fast Pizza app, which provides
+    real-time updates on your order status. If you haven't downloaded it yet, you
+    can find it in your app store. If you have any other questions or need assistance
+    with your order, feel free to ask!
+- User: I'm a bit skeptical about needing an app just for tracking. Is there another
+    way to track my delivery, like through a website or SMS updates?
+- Assistant: You can track your pizza delivery through our website or receive SMS
+    updates without needing an app. Just provide your phone number when you place
+    your order, and you'll get notifications about your delivery status. If you have
+    any other questions or if you're ready to order drinks, feel free to let me know!
+- User: What if I prefer not to provide my phone number? Can I still get updates about
+    my delivery?
+- Assistant: You can still receive updates about your delivery without providing your
+    phone number. Many pizza shops offer tracking through their website or app, which
+    may not require a phone number. You can check the order status online or receive
+    updates via email if you provide that instead. If you have any other questions
+    or need assistance with your order, feel free to ask!
+- User: If I decide to provide my email for updates, will I get real-time notifications
+    about my pizza delivery?
+- Assistant: Yes, if you provide your email for updates, you should receive real-time
+    notifications about your pizza delivery, depending on the system used by the pizza
+    shop. If you have any other questions or need assistance with your order, feel
+    free to ask!
+- User: What if I want to change my order later? Can I do that easily?
+- Assistant: Yes, you can change your order later, but it depends on how far along
+    your order is in the preparation process. If your pizza hasn't been made yet,
+    we can easily modify your order. However, if it's already in the oven or out for
+    delivery, changes may not be possible. If you have any specific changes in mind,
+    just let me know, and I'll assist you with that! Also, when you're ready to order
+    drinks, feel free to ask.
+- User: Can I change the size of my Vegetarian pizza from large to medium if I decide
+    I want a smaller portion?
+- Assistant: Yes, you can change the size of your Vegetarian pizza from large to medium
+    if you decide you want a smaller portion. Just let me know when you're ready to
+    make that change, and I'll update your order accordingly. If you have any other
+    questions or need assistance, feel free to ask!
+- User: Could you remind me what the base price is for a large Vegetarian pizza?
+- Assistant: The base price for a large Vegetarian pizza may vary depending on the
+    location and any ongoing promotions. It's best to check the menu or contact the
+    shop directly for the most accurate pricing. If you have any other questions or
+    need assistance with your order, feel free to ask!
+- User: Can you give me an estimate of the price range for a large Vegetarian pizza?
+- Assistant: The price range for a large Vegetarian pizza typically falls between
+    $12 to $15, depending on the specific toppings and any additional customizations
+    you choose. If you have any other questions or need further assistance, feel free
+    to ask!

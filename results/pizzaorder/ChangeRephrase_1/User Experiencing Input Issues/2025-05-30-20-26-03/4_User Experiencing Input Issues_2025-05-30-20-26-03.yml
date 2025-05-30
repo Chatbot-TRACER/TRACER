@@ -1,0 +1,126 @@
+serial: 2025-05-30-20-26-03
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that!
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: For a custom pizza, you can choose from a variety of toppings
+    such as pepperoni, mushrooms, bell peppers, onions, olives, extra cheese, and
+    more.
+errors: []
+---
+conversation time: 109.426998
+assistant response time:
+- 1.120945
+- 1.421649
+- 2.588459
+- 1.699553
+- 2.606732
+- 2.590661
+- 1.773669
+- 1.695944
+- 1.666652
+- 2.342001
+- 1.285346
+- 1.963357
+- 2.006517
+- 1.540166
+- 1.242934
+- 1.623839
+- 1.640317
+response time report:
+  average: 1.812278
+  max: 2.606732
+  min: 1.120945
+---
+interaction:
+- User: I'm trying to order a pizza. Can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kinds of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Hawaiian pizza, please. Can you confirm that it's available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to order a Hawaiian pizza. Is that available?
+- Assistant: I can help you with that! Could you please let me know the size of the
+    Hawaiian pizza you would like to order? The options are small, medium, or large.
+- User: I want a large Hawaiian pizza. Can you confirm the price for that?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    I can help you with the pizza order! Could you please let me know how many drinks
+    you would like to order and what type of drinks you prefer? The options for drinks
+    are coke, sprite, or water.'
+- User: I didn't ask for drinks yet. Can you just tell me the price for a large Hawaiian
+    pizza?
+- Assistant: I can help you with the pizza order! However, I don't have the price
+    information for the large Hawaiian pizza. Please check with the shop for the current
+    price. Would you like to proceed with ordering drinks now?
+- User: I just want to know the price for a large Hawaiian pizza. Can you find that
+    out for me?
+- Assistant: I'm here to help with your pizza order, but I don't have the pricing
+    information for the pizzas. You might want to check with the shop directly for
+    the price of a large Hawaiian pizza. If you decide to order drinks later, just
+    let me know!
+- User: Is there a specific way I can get the price for a large Hawaiian pizza, like
+    calling the shop directly?
+- Assistant: I'm not able to provide pricing information for the pizzas. You can call
+    the shop directly to get the price for a large Hawaiian pizza. If you decide to
+    order drinks later, just let me know!
+- User: Can you tell me if there's a specific number I should call to get the price
+    for a large Hawaiian pizza?
+- Assistant: I'm unable to provide specific contact information for the shop. You
+    might want to check their website or look for their contact number online. If
+    you decide to order drinks later, just let me know!
+- User: Is there any way I can get a price estimate for a large Hawaiian pizza without
+    calling the shop?
+- Assistant: I'm unable to provide pricing information for the pizzas, including estimates.
+    You might want to check the shop's website for any pricing details. If you decide
+    to order drinks later, just let me know!
+- User: Could you at least tell me what ingredients are on a Hawaiian pizza?
+- Assistant: A Hawaiian pizza typically includes ingredients such as ham, pineapple,
+    mozzarella cheese, and tomato sauce. If you have any other questions or if you'd
+    like to order drinks, just let me know!
+- User: 'User: Can you confirm if there are any additional toppings that I can add
+    to a Hawaiian pizza?'
+- Assistant: I'm unable to provide information about additional toppings for a Hawaiian
+    pizza. You might want to check with the shop directly for that information. If
+    you decide to order drinks later, just let me know!
+- User: Is there a way to customize the toppings on my Hawaiian pizza, or is it just
+    the standard ingredients?
+- Assistant: You can customize your Hawaiian pizza by adding additional toppings.
+    Common options include extra cheese, mushrooms, bell peppers, or onions. If you
+    have specific toppings in mind, just let me know! If you'd like to order drinks
+    as well, feel free to mention that.
+- User: Can I add extra cheese to my Hawaiian pizza?
+- Assistant: Yes, you can add extra cheese to your Hawaiian pizza! If you'd like to
+    proceed with your order or if you want to add drinks, just let me know!
+- User: I want to order a custom pizza. Can you help me with that?
+- Assistant: I can help you with your custom pizza order! Please let me know what
+    specific toppings you would like to add to your Hawaiian pizza, and if you also
+    want to order drinks, please specify the number and type of drinks (coke, sprite,
+    or water).
+- User: I want to order a custom pizza. What toppings can I choose for that?
+- Assistant: For a custom pizza, you can choose from a variety of toppings such as
+    pepperoni, mushrooms, bell peppers, onions, olives, extra cheese, and more. If
+    you have specific toppings in mind, just let me know! Also, if you'd like to order
+    drinks, please tell me how many and what type you prefer.

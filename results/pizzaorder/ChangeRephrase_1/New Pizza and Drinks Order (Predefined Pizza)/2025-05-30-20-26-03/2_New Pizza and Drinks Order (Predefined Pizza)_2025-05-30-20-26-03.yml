@@ -1,0 +1,121 @@
+serial: 2025-05-30-20-26-03
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: 'Order Summary:
+
+    - Pizza Type: Large Hawaiian
+
+    - Drinks: 2 Cokes
+
+    - Total Cost: $25.00
+
+    - Estimated Readiness Time: 15 minutes
+
+    - Pickup Location: 23 Main Street, NY
+
+    - Order ID: 692d8f'
+- delivery_information: 'Delivery is not available. Pickup location: 23 Main Street,
+    New York.'
+errors: []
+---
+conversation time: 130.998757
+assistant response time:
+- 3.822575
+- 2.653222
+- 11.859573
+- 2.411977
+- 0.819277
+- 2.086546
+- 1.664908
+- 2.590961
+- 2.188727
+- 2.621868
+- 1.718419
+- 1.651677
+- 0.869028
+- 0.835226
+- 2.287389
+- 0.818295
+response time report:
+  average: 2.556229
+  max: 11.859573
+  min: 0.818295
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. What is the total
+    cost, the estimated time for pickup, and the pickup location?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for your order! I see that you would like two Cokes, but I still need
+    to confirm the number of drinks. Could you please tell me how many drinks you
+    would like to order? '
+- User: I would like to order two Cokes, as mentioned earlier. Can you provide the
+    total cost, estimated pickup time, and location?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 692d8f.'
+- User: Thank you for the details. Can you confirm that delivery is not available?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Could you tell me if there are any special promotions or discounts available
+    for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you let me know if there are any current promotions or discounts applicable
+    to my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get your order, and
+    how long it takes to get an order.
+- User: Could you please provide me with the opening hours of your shop?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What types of pizzas do you serve?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: Are there any vegetarian options available on the menu besides the
+    Vegetarian pizza?'
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Are any of your pizzas gluten-free?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me the prices of the beverages you offer?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Are there any other beverages available besides Coke and Sprite?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: 'User: Can you tell me if you have any desserts available on the menu?'
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please let me know if you have any sides available to go with my
+    pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you provide me with information on any sides that are available to order
+    with my pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me if you have any sauces or dips available to accompany
+    my pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

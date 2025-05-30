@@ -1,0 +1,118 @@
+serial: 2025-05-30-20-26-03
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - pepper
+- topping2:
+  - pepper
+- topping3:
+  - pepper
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepper, null, null'
+errors: []
+---
+conversation time: 88.733904
+assistant response time:
+- 2.072305
+- 1.859907
+- 3.340472
+- 1.834501
+- 1.322493
+- 2.717895
+- 1.514827
+- 3.842934
+- 3.746658
+- 2.718217
+- 1.956306
+- 2.130649
+- 2.21543
+- 1.812138
+- 0.746362
+- 0.723835
+response time report:
+  average: 2.159683
+  max: 3.842934
+  min: 0.723835
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to order an extra large pizza. Can I get that with just pepper, please?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?
+- User: I'd like to confirm my order for an extra large pizza with just pepper, please.
+- Assistant: Unfortunately, we only offer small, medium, or large pizzas at Fast Pizza.
+    Could you please choose one of those sizes for your pizza with pepper?
+- User: I'd really like to confirm my order for an extra large pizza with just pepper,
+    please. Is that possible?
+- Assistant: Unfortunately, we only offer small, medium, or large pizzas at Fast Pizza.
+    Could you please choose one of those sizes for your pizza with pepper?
+- User: Could you please let me know if you'd like to add any other toppings to your
+    order besides just pepper?
+- Assistant: Unfortunately, we only offer small, medium, or large pizza sizes. Could
+    you please choose one of those sizes for your order?
+- User: I understand that, but I really want to go with an extra large pizza. Can
+    you tell me what other sizes you have available?
+- Assistant: 'I''m sorry, but we only offer small, medium, and large pizza sizes at
+    Fast Pizza. Unfortunately, we do not have an extra large option. Could you please
+    choose one of the available sizes: small, medium, or large?'
+- User: Could you please confirm if I can get a large pizza with just pepper, then?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    I still need to know how many drinks you would like to order. Could you please
+    provide the number of drinks? Additionally, please let me know what type of drinks
+    you would like (coke, sprite, or water).'
+- User: I’d like to order two drinks, please. Can I have one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The price of a large pizza with p, e, p, p, e and r, and 2 coke is 24.5$
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 6bb296.'
+- User: Could you please confirm if the price of the large pizza with just pepper
+    and two drinks is final, or are there any additional fees I should be aware of?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please let me know if there are any discounts or promotions currently
+    available for my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please let me know what the prices are for the different types of
+    drinks?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please tell me if there are any options for toppings that I can
+    choose from besides pepper?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: Can you tell me more about the Custom pizza options? What toppings
+    can I choose from?'
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you provide more details about the toppings available for a Custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you list the available toppings for a Custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
