@@ -1,0 +1,155 @@
+serial: 2025-05-30-22-01-19
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - olives
+- topping2:
+  - olives
+- topping3:
+  - olives
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: null
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: olives, olives, olives'
+errors:
+- 1001: 1 goals left to complete.
+---
+conversation time: 130.676079
+assistant response time:
+- 3.225416
+- 3.116861
+- 4.174156
+- 2.4436
+- 3.111244
+- 2.850152
+- 2.966122
+- 4.406346
+- 2.765995
+- 2.554849
+- 3.852828
+- 9.284431
+- 3.862416
+- 4.102018
+- 4.300549
+- 2.893595
+response time report:
+  average: 3.744411
+  max: 9.284431
+  min: 2.4436
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want a small pizza with olives, olives, and olives. Can you confirm that
+    order?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?
+- User: I already said I want a small pizza! Can you confirm my order for a small
+    pizza with olives, olives, and olives?
+- Assistant: 'Thanks for ordering a small pizza with o, l, i, v, e and s!
+
+    I have your order for a small pizza with olives. Could you please let me know
+    how many drinks you would like to order and what type of drinks (coke, sprite,
+    or water)?'
+- User: I’d like to order two drinks, please. Can I get one Coke and one water?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The price of a small pizza with o, l, i, v, e and s, and 2 coke is 14.5$
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is fb12e8.'
+- User: Could you confirm the price for my order with the correct drinks? I wanted
+    one Coke and one water, not two Cokes.
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please clarify the total price for my order of a small pizza with
+    olives, one Coke, and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the total cost for a small custom pizza with three
+    olives, one Coke, and one water?
+- Assistant: Thank you for your order! However, I still need to confirm the pizza
+    size. Could you please let me know if you would like a small, medium, or large
+    pizza?
+- User: I already specified that I want a small pizza! Can you please tell me the
+    total cost for my order of a small custom pizza with three olives, one Coke, and
+    one water?
+- Assistant: 'Thanks for ordering a small pizza with olives, olives and olives!
+
+    I see that you''ve mentioned drinks, but I need to confirm the number of drinks
+    and their types. Could you please tell me how many drinks you would like to order
+    and ensure they are either coke, sprite, or water?'
+- User: I already said I'd like one Coke and one water. Can you just confirm the total
+    cost for my order of a small custom pizza with three olives, one Coke, and one
+    water?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The price of a small pizza with olives, olives and olives, and 2 coke is 13.0$
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 98eae2.'
+- User: Could you please clarify the total cost for my order of a small custom pizza
+    with three olives, one Coke, and one water?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you just tell me the pricing for a small custom pizza with three olives,
+    one Coke, and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please confirm the total price for my order of a small custom pizza
+    with three olives, one Coke, and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please provide the total cost for a small custom pizza with three
+    olives, one Coke, and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please confirm the total price for my small custom pizza with three
+    olives, one Coke, and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please just give me the total cost for my small custom pizza with
+    three olives, one Coke, and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.

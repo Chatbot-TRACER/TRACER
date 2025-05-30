@@ -1,0 +1,120 @@
+serial: 2025-05-30-22-04-04
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - olives
+- topping2:
+  - olives
+- topping3:
+  - olives
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: olives, olives, olives'
+errors: []
+---
+conversation time: 118.788782
+assistant response time:
+- 2.10554
+- 2.004171
+- 1.835063
+- 2.410851
+- 2.237695
+- 9.306774
+- 0.871279
+- 0.908522
+- 2.564372
+- 3.25841
+- 1.768816
+- 2.00911
+- 3.545983
+- 2.942037
+- 0.851954
+- 0.889741
+response time report:
+  average: 2.469394
+  max: 9.306774
+  min: 0.851954
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. Can I get a small pizza with olives, olives,
+    and olives?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I please confirm my order for a small pizza topped with just olives?
+- Assistant: 'It looks like I still need to confirm the pizza size for your order.
+    Could you please confirm that you would like a small pizza? '
+- User: Yes, I would like to confirm my order for a small pizza with just olives.
+    What's the next step?
+- Assistant: 'Thanks for ordering a small pizza with o, l, i, v, e and s!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order? Also, please specify the type of drink (coke,
+    sprite, or water).'
+- User: I would like to order two drinks, please. Can I get one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a pizza topped with olives and two Cokes is $14.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is c34220.'
+- User: Could you please let me know if I need to provide any special instructions
+    for the pickup?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if there are any special instructions I need to provide
+    for the pickup?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me if there are any specific instructions for picking up my
+    order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a specific time I should arrive for the pickup, or is it ready whenever
+    I get there?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a specific time I should wait for before picking up my order?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: How can I check if my order is ready when I arrive?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Can you tell me if I need to bring anything with me for the pickup, like a
+    receipt or order confirmation?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, order pickup, and estimated time for
+    orders.
+- User: Do I need to bring anything with me, like a receipt or order confirmation,
+    for the pickup?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    and prices of pizzas, prices of beverages, order pickup location, and estimated
+    time for orders.
+- User: Is there a way to contact the store if I have questions when I arrive for
+    my pickup?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: 'User: Is there a phone number I can call if I have questions about my order
+    when I arrive for pickup?'
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

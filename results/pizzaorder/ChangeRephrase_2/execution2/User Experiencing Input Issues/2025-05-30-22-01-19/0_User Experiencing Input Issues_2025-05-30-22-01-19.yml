@@ -1,0 +1,90 @@
+serial: 2025-05-30-22-01-19
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Margherita
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I'm sorry, I did not get what you said. Can you rephrase?
+- pizza_type_response: null
+- custom_pizza_response: I'm sorry, I did not get what you said. Can you rephrase?
+errors:
+- 1001: 1 goals left to complete.
+---
+conversation time: 78.948761
+assistant response time:
+- 1.71173
+- 0.710376
+- 0.695156
+- 0.770084
+- 0.974307
+- 1.599389
+- 0.706294
+- 0.748083
+- 0.942452
+- 1.295723
+- 0.934238
+- 0.984031
+- 0.895856
+- 0.990635
+- 0.694476
+- 1.185398
+- 0.705363
+response time report:
+  average: 0.973152
+  max: 1.71173
+  min: 0.694476
+---
+interaction:
+- User: I'd like to order a Margherita pizza, but can you confirm the size options
+    you have?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you tell me what size options are available for the Margherita pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the different sizes for the Margherita pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What about the toppings? Are there any additional toppings I can add to a
+    Margherita pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any extra toppings I can choose for a Margherita pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you list the extra toppings I can choose for a Margherita pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What kind of pizzas do you have?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What types of pizzas are available on your menu?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What varieties of pizza do you offer on your menu?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What about the crust options for the pizzas? Do you have thin crust or thick
+    crust?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What crust options are available for the pizzas? Do you have thin crust or
+    thick crust?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What types of crusts can I choose from for the pizzas, like thin crust or
+    thick crust?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any deals or promotions going on for pizzas right now?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any current deals or promotions for pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: 'User: Are there any special offers or discounts available for pizza orders?'
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any limited-time offers or discounts on pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

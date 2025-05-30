@@ -1,0 +1,149 @@
+serial: 2025-05-30-22-04-04
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - bacon
+- topping2:
+  - bacon
+- topping3:
+  - bacon
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, big
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: bacon, bacon, bacon'
+errors: []
+---
+conversation time: 131.553344
+assistant response time:
+- 2.109816
+- 2.179353
+- 2.534876
+- 2.849446
+- 2.747185
+- 4.015852
+- 3.318049
+- 2.751503
+- 2.695835
+- 2.687102
+- 2.777009
+- 4.475542
+- 3.841054
+- 7.111968
+- 2.884086
+- 3.167999
+response time report:
+  average: 3.259167
+  max: 7.111968
+  min: 2.109816
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want a large pizza with bacon, bacon, and bacon. Can I confirm that order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I would like to confirm my order for a large pizza topped with bacon, bacon,
+    and bacon.
+- Assistant: 'It looks like I still need to confirm the pizza size for your order.
+    Could you please confirm that you would like a large pizza? '
+- User: Yes, I would like to confirm that I want a large pizza. Can you also tell
+    me what drinks you have available for pickup?
+- Assistant: 'Thanks for ordering a large pizza with b, a, c, o and n!
+
+    I can help you with that! Could you please let me know how many drinks you would
+    like to order and what type of drinks you prefer? The options are coke, sprite,
+    or water.'
+- User: I would like to order three drinks. Can I get two cokes and one sprite, please?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a pizza topped with b, a, c, o, and n, along with three cokes, is
+    $25.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 2b7857.'
+- User: Could you please confirm the price for the large pizza with bacon, bacon,
+    and bacon, along with two cokes and one sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I think there’s been a mix-up. Can you confirm the total price for my large
+    pizza with bacon, bacon, and bacon, plus two cokes and one sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please clarify the total price for a large custom pizza with three
+    bacons, along with two cokes and one sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the total price for a large custom pizza with three
+    bacons, two cokes, and one sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me how much an additional bacon topping costs on my
+    large custom pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you clarify how much a large custom pizza with three bacons would cost
+    in total?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the total cost for a large custom pizza with three
+    bacons, two cokes, and one sprite?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please just tell me how much a large custom pizza with three bacons
+    costs?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the total cost for a large custom pizza with three
+    bacons?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me if there are any special deals or discounts available
+    for my order?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.

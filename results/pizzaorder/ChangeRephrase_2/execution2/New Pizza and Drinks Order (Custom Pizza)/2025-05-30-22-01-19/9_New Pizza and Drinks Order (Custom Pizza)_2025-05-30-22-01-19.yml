@@ -1,0 +1,90 @@
+serial: 2025-05-30-22-01-19
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - anchovies
+- topping2:
+  - pineapple
+- topping3:
+  - Pineapple
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: null
+- custom_pizza_order_confirmation: None
+errors:
+- 1001: 1 goals left to complete.
+---
+conversation time: 74.069873
+assistant response time:
+- 2.27695
+- 2.352499
+- 2.369941
+- 1.066113
+- 1.082002
+- 0.78303
+- 1.011716
+- 2.827497
+- 1.142493
+- 1.045612
+- 0.789938
+- 0.743002
+- 0.988772
+- 0.893519
+- 0.979862
+- 1.015093
+response time report:
+  average: 1.335502
+  max: 2.827497
+  min: 0.743002
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. Can you tell me what toppings I can choose
+    from?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are available for my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings can I pick for my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What kinds of cheeses do you offer for my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What types of cheeses can I choose for my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What varieties of cheese do you have available for my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you tell me if you have any gluten-free crust options for my pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any gluten-free crust options available for my pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you offer gluten-free crusts for the pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drinks do you have available for order with the pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What beverages can I order along with my pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What types of drinks do you have that I can order with my pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What sizes of drinks do you have available for order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What sizes of beverages do you offer for my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
