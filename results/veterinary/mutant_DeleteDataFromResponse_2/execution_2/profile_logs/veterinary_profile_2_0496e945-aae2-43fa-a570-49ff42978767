@@ -1,0 +1,59 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What kind of preventative care do you recommend for rabbits?",
+                "Can you tell me if you provide vaccinations for rabbits?",
+                "Do you provide care for small animals like rabbits or guinea pigs?",
+                "Do you offer vaccinations specifically for rabbits?",
+                "What kind of animals do you treat?",
+                "What other types of animals do you treat besides dogs, cats, and birds?",
+                "What vaccinations do you recommend for rabbits?",
+                "What other types of animals do you care for besides dogs, cats, and birds?",
+                "Are there any specific rabbit health issues I should be aware of?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

@@ -1,0 +1,106 @@
+serial: 2025-05-30-14-29-58
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Next Wednesday
+- time: 11:15 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 06/11/2024 at  for Vaccination. \nSee you then!    \n"
+- rescheduling_prompt: next Wednesday at 11:15 AM
+- new_appointment_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00399315
+---
+conversation time: 85.064131
+assistant response time:
+- 1.32814
+- 7.974667
+- 0.910268
+- 1.142075
+- 3.695561
+- 1.229089
+- 1.337074
+- 1.289816
+- 0.896079
+- 0.76941
+- 1.260178
+- 0.871201
+- 1.9158
+- 0.811678
+- 1.093987
+response time report:
+  average: 1.768334
+  max: 7.974667
+  min: 0.76941
+---
+interaction:
+- User: I need to reschedule an appointment I have because the details are incorrect.
+    Can I set it for next Wednesday at 11:15 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to update the appointment I have to next Wednesday at 11:15 AM. Can
+    you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to change my appointment to next Wednesday at 11:15 AM. Can you assist
+    me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my appointment to next Wednesday at 11:15 AM. Can you help
+    me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to reschedule my appointment for next Wednesday at 11:15 AM. Can you
+    assist with that?
+- Assistant: I can help you with that! However, I still need to know which service
+    you would like to schedule for your appointment. Could you please provide that
+    information?
+- User: I need to reschedule a previous appointment, but I forgot to mention the service
+    I need. Can you help me with that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 06/11/2024\
+    \ at  for Vaccination. \nSee you then!    \n"
+- User: I need to clarify the details of the appointment. Can you confirm that it’s
+    for a vaccination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you confirm if my appointment is scheduled for a vaccination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is my appointment confirmed for a vaccination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is my appointment for a vaccination scheduled correctly?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is the appointment I have set for a vaccination scheduled properly?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is my scheduled appointment for a vaccination set up correctly?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is my appointment for a vaccination confirmed for next Wednesday at 11:15
+    AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is my vaccination appointment set for next Wednesday at 11:15 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is my appointment for a vaccination on next Wednesday at 11:15 AM confirmed?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

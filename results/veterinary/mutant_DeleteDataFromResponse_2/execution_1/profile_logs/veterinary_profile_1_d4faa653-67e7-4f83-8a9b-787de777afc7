@@ -1,0 +1,68 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "make_appointment",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "top-level",
+            "make_appointment",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What services do you offer for rabbits?",
+                "Do you have a veterinarian on staff who has experience treating rabbits?",
+                "Do you have a specific veterinarian who treats rabbits?",
+                "Do you have any specific services available for rabbits, like grooming or health check-ups?",
+                "Do you treat rabbits at your veterinary center, and if so, do you offer grooming services for them?",
+                "Can you tell me if you provide any health check-up services for rabbits?",
+                "Do you provide any health check-up services for rabbits?",
+                "Do you offer grooming services for rabbits?",
+                "Do you offer grooming services specifically for rabbits?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "29/10/2024"
+            ],
+            "time": [
+                "13:30:00"
+            ],
+            "service": [
+                "Physical examination"
+            ]
+        },
+        "top-level": {}
+    }
+}

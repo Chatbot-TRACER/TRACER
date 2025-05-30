@@ -1,0 +1,114 @@
+serial: 2025-05-30-14-29-58
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Today
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 28/10/2024 at  for Dental health and cleaning.\nSee you then!    \n"
+- rescheduling_prompt: I want to confirm that my dental health and cleaning appointment
+    is supposed to be today at 10:00 AM. Can you verify this for me?
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 28/10/2024 at  for Dental health and cleaning. \nSee you then!    \n"
+errors: []
+total_cost($): 0.00456825
+---
+conversation time: 79.859089
+assistant response time:
+- 2.991067
+- 0.772583
+- 0.713729
+- 0.911609
+- 0.793739
+- 0.801569
+- 2.101394
+- 0.925874
+- 1.127746
+- 1.325076
+- 1.134678
+- 1.184495
+- 1.082684
+- 1.477579
+- 1.339352
+response time report:
+  average: 1.245544
+  max: 2.991067
+  min: 0.713729
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I provide the correct appointment details, including the new date and time,
+    which is today at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to provide the updated details for my appointment, specifically that
+    it should be rescheduled for today at 10:00 AM. Can you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to correct the appointment time to today at 10:00 AM. Can you assist
+    me with this?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I have the details for my appointment that need to be updated. Can you confirm
+    if you can reschedule it to today at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my appointment to today at 10:00 AM. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to update my appointment to be today at 10:00 AM. Can you assist me
+    with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule my appointment. Can you update it to today at 10:00 AM?
+- Assistant: 'I have the date and time for your appointment, but I still need to know
+    which service you would like to schedule: Physical examination, Vaccination, Dental
+    health and cleaning, or Lab or diagnostic testing. Could you please provide that
+    information?'
+- User: I want to reschedule my appointment for a dental health and cleaning service
+    at today at 10:00 AM. Can you confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at  for Dental health and cleaning. \nSee you then!    \n"
+- User: I meant to say I need to reschedule my dental health and cleaning appointment
+    to today at 10:00 AM. Can you confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at  for Dental health and cleaning. \nSee you then!    \n"
+- User: I need to clarify that my dental health and cleaning appointment should be
+    set for today at 10:00 AM. Can you confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at  for Dental health and cleaning. \nSee you then!    \n"
+- User: I need to correct the appointment again. Can you make sure it’s for today
+    at 10:00 AM for dental health and cleaning?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at  for Dental health and cleaning. \nSee you then!    \n"
+- User: I need to make sure my dental health and cleaning appointment is updated to
+    today at 10:00 AM. Can you confirm this time?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at  for Dental health and cleaning. \nSee you then!    \n"
+- User: I need to emphasize that my dental health and cleaning appointment needs to
+    be changed to today at 10:00 AM. Can you confirm this?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at  for Dental health and cleaning. \nSee you then!    \n"
+- User: I need to insist that my dental health and cleaning appointment should be
+    today at 10:00 AM. Can you confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at  for Dental health and cleaning. \nSee you then!    \n"
+- User: I want to confirm that my dental health and cleaning appointment is supposed
+    to be today at 10:00 AM. Can you verify this for me?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at  for Dental health and cleaning. \nSee you then!    \n"

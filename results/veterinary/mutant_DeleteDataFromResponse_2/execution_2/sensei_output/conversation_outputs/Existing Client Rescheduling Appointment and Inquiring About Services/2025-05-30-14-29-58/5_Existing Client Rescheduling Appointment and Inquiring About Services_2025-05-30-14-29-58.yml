@@ -1,0 +1,161 @@
+serial: 2025-05-30-14-29-58
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You've been a client at this pet clinic for several years and typically bring your
+  dog in for annual vaccinations.
+- You're now trying to reschedule a recently missed appointment, but you're also considering
+  adding a grooming service for your dog during the visit.
+- You want to confirm all the details and ensure it fits into your schedule for this
+  week.
+ask_about:
+- Attempt to reschedule a vaccination appointment but be vague about it.
+- 'When prompted for details, provide a new date and time for the rescheduling: {{new_date}}
+  at {{new_time}}.'
+- If the chatbot confirms the appointment with the wrong service, acknowledge the
+  confirmation.
+- Inquire about grooming services.
+- If grooming services are offered, attempt to schedule a grooming appointment for
+  {{grooming_date}} at {{grooming_time}}.
+- If the chatbot states it cannot directly handle appointment cancellations or reschedulings,
+  ask for contact information to handle the request.
+- grooming_date: '2024-11-15'
+- grooming_time: 10:00 AM
+- new_date: November 1st
+- new_time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- rescheduling_acknowledgment: I'm sorry, but I did not understand the last sentence,
+    can you say that again?
+- appointment_confirmation: None
+- incorrect_service_name: null
+- grooming_services_offered: I'm sorry, but I did not understand the last sentence,
+    can you say that again?
+- grooming_appointment_scheduled: null
+- contact_information_provided: I'm sorry, but I did not understand the last sentence,
+    can you say that again?
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.00915375
+---
+conversation time: 117.62897
+assistant response time:
+- 0.742865
+- 1.129791
+- 0.836463
+- 0.864433
+- 0.916733
+- 0.840399
+- 0.883018
+- 0.825929
+- 1.178249
+- 1.139743
+- 0.849909
+- 0.885101
+- 0.781994
+- 0.784418
+- 0.859391
+- 0.884046
+- 0.710939
+- 0.807657
+- 1.066111
+- 0.976202
+- 0.816849
+- 1.495981
+- 0.84686
+- 0.891049
+response time report:
+  average: 0.917255
+  max: 1.495981
+  min: 0.710939
+---
+interaction:
+- User: I need to reschedule an appointment I missed recently. Can you help me with
+    that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I missed an appointment recently and need to reschedule it. Can you assist
+    with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change a recent appointment I couldn't make. Can you assist with
+    that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change a recent appointment I couldn't make. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to adjust a recent appointment I wasn't able to attend. Can you help
+    me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to adjust a recent appointment I wasn't able to attend. Can you help
+    me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule a vaccination appointment I missed recently. Can you
+    help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule a vaccination appointment I missed recently. Can you
+    help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change a vaccination appointment I couldn't make. Can you assist
+    with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to adjust a vaccination appointment I missed. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule a vaccination appointment I missed. Can you assist with
+    that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule a vaccination appointment I missed. Can you help with
+    that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you help me with a vaccination appointment I missed?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you assist me with rescheduling a vaccination appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule a vaccination appointment I missed. Can you help with
+    that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you help me with a vaccination appointment I missed?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule a vaccination appointment I missed. Can you assist with
+    that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule a vaccination appointment I missed. Can you help with
+    that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me about the grooming services you offer?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you provide information about the grooming services available?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me what grooming services you have available?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you let me know what grooming services you offer?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you provide details on the grooming services you have available?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me what grooming services you have available?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

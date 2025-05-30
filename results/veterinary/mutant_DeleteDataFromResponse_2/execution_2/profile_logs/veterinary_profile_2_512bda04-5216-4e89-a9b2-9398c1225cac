@@ -1,0 +1,67 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What are the specific vaccinations you offer for dogs?",
+                "What kind of services can I expect at your veterinary center?",
+                "What are the veterinary services available for pets at your center?",
+                "What types of services do you offer at the veterinary center?",
+                "What types of vaccinations do you offer for dogs?",
+                "What types of services do you offer for pets at your veterinary center?",
+                "What kinds of vaccinations do you provide for dogs?",
+                "What kinds of services do you offer at your veterinary center?",
+                "What types of animals do you treat at your veterinary center?",
+                "What services are available at your veterinary center?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "03/11/2024"
+            ],
+            "time": [
+                "16:00:00"
+            ],
+            "service": [
+                "Vaccination"
+            ]
+        },
+        "top-level": {}
+    }
+}

@@ -1,0 +1,114 @@
+serial: 2025-05-30-14-29-58
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: '2023-11-17'
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: I can confirm your appointment for November 17, 2023, at 10:00
+    AM
+- rescheduling_prompt: November 17, 2023, at 10:00 AM
+- new_appointment_confirmation: I can confirm your appointment for November 17, 2023,
+    at 10:00 AM.
+errors: []
+total_cost($): 0.0044073
+---
+conversation time: 82.027426
+assistant response time:
+- 0.888476
+- 0.767004
+- 0.816353
+- 12.833803
+- 1.328369
+- 0.770528
+- 0.803893
+- 1.100326
+- 0.770395
+- 0.947274
+- 1.302176
+- 0.86638
+- 0.746048
+- 0.765528
+- 0.891464
+response time report:
+  average: 1.706534
+  max: 12.833803
+  min: 0.746048
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I provide the correct appointment details now?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to provide the updated appointment details, including the new date
+    of 2023-11-17 and the time of 10:00 AM.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to update my appointment with the new date of November 17, 2023, at
+    10:00 AM. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule my appointment to November 17, 2023, at 10:00 AM. Can
+    you confirm that?
+- Assistant: I can confirm your appointment for November 17, 2023, at 10:00 AM, but
+    I still need to know which service you would like to schedule. Please let me know
+    if it's a Physical examination, Vaccination, Dental health and cleaning, or Lab
+    or diagnostic testing.
+- User: I want to schedule a Physical examination for the appointment on November
+    17, 2023, at 10:00 AM. Can you confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 17/11/2023\
+    \ at  for Physical examination. \nSee you then!    \n"
+- User: Can I provide my contact information to receive a confirmation for the updated
+    appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to provide my contact information so I can receive a confirmation for
+    the updated appointment.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to give you my contact information to receive a confirmation for my
+    updated appointment.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you take my contact information so I can receive a confirmation for my
+    appointment on November 17, 2023?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to provide my contact information so I can receive a confirmation for
+    my appointment on November 17, 2023. Can you take that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to give my contact information to get a confirmation for my appointment
+    on November 17, 2023. Can you accept that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I would like to provide my email address and phone number to get a confirmation
+    for my appointment on November 17, 2023. Can you accept that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to give you my email address and phone number so I can receive a confirmation
+    for my appointment on November 17, 2023. Can you take that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to provide my email address and phone number to receive a confirmation
+    for my appointment on November 17, 2023. Can you take that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to share my email address and phone number to receive a confirmation
+    for my appointment on November 17, 2023. Can I do that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
