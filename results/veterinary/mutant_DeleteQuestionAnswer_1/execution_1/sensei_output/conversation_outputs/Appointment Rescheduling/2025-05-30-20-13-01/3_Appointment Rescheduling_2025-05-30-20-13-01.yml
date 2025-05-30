@@ -1,0 +1,114 @@
+serial: 2025-05-30-20-13-01
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: November 12
+- time: 4:45 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 12/11/2024 at 16:45:00 for Physical examination. \nSee you then!    \n"
+- rescheduling_prompt: I want to provide the correct appointment details, including
+    the new date of November 12 and time of 4:45 PM.
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 12/11/2024 at 16:45:00 for Physical examination. \nSee you then!    \n"
+errors: []
+total_cost($): 0.0045234
+---
+conversation time: 74.19586
+assistant response time:
+- 0.628754
+- 2.466133
+- 1.274533
+- 0.716124
+- 0.56272
+- 0.613322
+- 1.817585
+- 1.173076
+- 1.487954
+- 1.193703
+- 0.883875
+- 1.066848
+- 0.888491
+- 0.991686
+- 1.063008
+response time report:
+  average: 1.121854
+  max: 2.466133
+  min: 0.56272
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I provide the correct appointment details?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to provide the correct appointment details, including the new date
+    of November 12 and time of 4:45 PM. Can you help me with that?
+- Assistant: 'I have the date and time for your appointment, but I still need to know
+    which service you would like to book: Physical examination, Vaccination, Dental
+    health and cleaning, or Lab or diagnostic testing. Please let me know!'
+- User: I want to reschedule the appointment for a physical examination. Can you update
+    that for me?
+- Assistant: "Ok, I have received your request to schedule an appointment for 12/11/2024\
+    \ at 16:45:00 for Physical examination. \nSee you then!    \n"
+- User: I actually meant to say November 12, not December. Can you correct that for
+    me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I meant to say that I want to reschedule for November 12, not December. Can
+    you fix that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need you to change the appointment to November 12 instead of December. Can
+    you correct that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to confirm that the appointment is for November 12 at 4:45 PM, not
+    December. Can you make that adjustment?
+- Assistant: "Ok, I have received your request to schedule an appointment for 12/11/2024\
+    \ at 16:45:00 for Physical examination. \nSee you then!    \n"
+- User: I want to clarify that the appointment must be on November 12, not December.
+    Can you update it accordingly?
+- Assistant: "Ok, I have received your request to schedule an appointment for 12/11/2024\
+    \ at 16:45:00 for Physical examination. \nSee you then!    \n"
+- User: I need to make sure the appointment is for November 12 at 4:45 PM. Can you
+    confirm that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to confirm my appointment is set for November 12 at 4:45 PM for a physical
+    examination. Can you verify that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 12/11/2024\
+    \ at 16:45:00 for Physical examination. \nSee you then!    \n"
+- User: I need to double-check that the appointment is correctly scheduled for November
+    12 at 4:45 PM and not December. Can you confirm that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to make sure my appointment is correctly scheduled for November 12
+    at 4:45 PM and not December. Can you verify that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need you to confirm that my appointment is on November 12 at 4:45 PM for
+    a physical examination, not December. Can you verify that for me?
+- Assistant: "Ok, I have received your request to schedule an appointment for 12/11/2024\
+    \ at 16:45:00 for Physical examination. \nSee you then!    \n"
+- User: I need you to understand that my appointment is for November 12 at 4:45 PM
+    and not in December. Can you please confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 12/11/2024\
+    \ at 16:45:00 for Physical examination. \nSee you then!    \n"
+- User: I need to clarify that the appointment should be for November 12 at 4:45 PM,
+    not December. Can you confirm that for me?
+- Assistant: "Ok, I have received your request to schedule an appointment for 12/11/2024\
+    \ at 16:45:00 for Physical examination. \nSee you then!    \n"

@@ -1,0 +1,61 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [
+                "What can I do to take care of my pet?"
+            ],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What services do you offer for cats?",
+                "What kind of appointments do you offer specifically for cat vaccinations?",
+                "What kind of health checks do you recommend for cats?",
+                "What specific services do you have for cat health checks?",
+                "What specific dietary requirements should I consider for my cat?",
+                "What types of preventative care do you offer for cats?",
+                "What vaccinations are recommended for cats?",
+                "What specific vaccinations do you provide for cats?",
+                "What types of treatments are available for sick cats?",
+                "What vaccinations are necessary for kittens?",
+                "What are the recommended vaccines for adult cats?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

@@ -1,0 +1,120 @@
+serial: 2025-05-30-20-13-01
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to establish him with a reputable veterinary
+  center for his healthcare needs.
+- You want to find a vet that offers comprehensive services and has appointment times
+  that fit your busy schedule.
+ask_about:
+- Inquire about the services offered at the veterinary center.
+- Ask about the veterinary center's policy on accepting certain animal types as patients.
+- Ask what the approximate cost range is for a standard veterinary visit.
+- Inquire about the available times for an appointment.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- date: Saturday
+- time: 3:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- services_offered: We specialize in dogs, cats, and birds. For inquiries about other
+    animals, please reach out to us first.
+- animal_acceptance_policy: We specialize in dogs, cats, and birds. For inquiries
+    about other animals, please reach out to us beforehand.
+- standard_visit_cost_range: null
+- appointment_availability_info: Every weekday from 9am to 6pm.
+- appointment_confirmation: null
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.00618105
+---
+conversation time: 124.689242
+assistant response time:
+- 3.134095
+- 2.778384
+- 0.604762
+- 0.569631
+- 0.616262
+- 0.889333
+- 0.864738
+- 3.525766
+- 0.978809
+- 1.088934
+- 0.5605
+- 0.808642
+- 0.870965
+- 1.001926
+- 3.446933
+- 3.19256
+- 3.044691
+- 0.974801
+- 0.611287
+- 1.689309
+response time report:
+  average: 1.562616
+  max: 3.525765
+  min: 0.5605
+---
+interaction:
+- User: What services do you offer at the veterinary center?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: What is your policy on accepting certain types of animals as patients?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: What is the approximate cost range for a standard veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is the typical cost range for a standard veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the typical fees I can expect for a routine veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the typical fees I can expect for a routine veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the typical fees I can expect for a routine veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What would be the usual charges for a regular veterinary consultation?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: What are your available times for an appointment?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you available for appointments on Saturdays?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are you open for appointments on Saturdays?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are you open for appointments on Saturdays?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What times are you open on Saturdays for appointments?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are your hours for Saturday appointments?
+- Assistant: Every weekday from 9am to 6pm
+- User: Do you have any available appointment times for a vaccination on Saturday?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our weekday hours, and our weekend schedule.
+- User: Can you tell me if you have any available appointment times for a vaccination
+    on Saturday?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our weekday hours, and our weekend schedule.
+- User: Can you confirm if you have any available appointment times for vaccinations
+    on Saturday?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our weekday hours, and our weekend schedule.
+- User: What are your hours for Saturday appointments?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you available for appointments on Saturday?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are you open for appointments on Saturdays?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

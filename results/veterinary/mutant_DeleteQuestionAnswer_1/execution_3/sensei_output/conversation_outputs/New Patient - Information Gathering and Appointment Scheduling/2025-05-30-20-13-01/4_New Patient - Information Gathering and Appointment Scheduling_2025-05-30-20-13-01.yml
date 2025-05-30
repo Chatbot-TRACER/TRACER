@@ -1,0 +1,119 @@
+serial: 2025-05-30-20-13-01
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to establish him with a reputable veterinary
+  center for his healthcare needs.
+- You want to find a vet that offers comprehensive services and has appointment times
+  that fit your busy schedule.
+ask_about:
+- Inquire about the services offered at the veterinary center.
+- Ask about the veterinary center's policy on accepting certain animal types as patients.
+- Ask what the approximate cost range is for a standard veterinary visit.
+- Inquire about the available times for an appointment.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- date: Next Monday
+- time: 5:00 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- services_offered: We specialize in dogs, cats, and birds.
+- animal_acceptance_policy: We specialize in dogs, cats, and birds. For inquiries
+    about other animals, please reach out to us beforehand.
+- standard_visit_cost_range: null
+- appointment_availability_info: Every weekday from 9am to 6pm.
+- appointment_confirmation: null
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.00610635
+---
+conversation time: 103.491185
+assistant response time:
+- 3.227701
+- 2.951612
+- 0.781196
+- 0.666788
+- 0.866091
+- 0.766725
+- 1.231133
+- 0.739927
+- 0.696757
+- 0.861284
+- 0.929268
+- 1.329887
+- 0.867905
+- 0.667013
+- 0.876389
+- 0.933246
+- 1.456984
+- 0.982538
+- 1.093543
+- 0.795698
+response time report:
+  average: 1.136084
+  max: 3.227701
+  min: 0.666788
+---
+interaction:
+- User: What services do you offer at your veterinary center?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: What is your policy on accepting certain animal types as patients?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: What is the approximate cost range for a standard veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is the typical cost range for a standard veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the typical fees for a standard veterinary appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the typical fees for a standard veterinary appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the typical fees for a standard veterinary appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the typical fees for a standard veterinary appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the typical fees for a standard veterinary appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the typical fees for a standard veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the typical fees for a standard veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the typical fees for a standard veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is the typical cost range for a standard veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is the typical cost range for a standard veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the available times for an appointment?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are there any weekend appointment times available?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are there any specific days during the week when you have more availability
+    for appointments?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are there specific days of the week when you have more appointment availability?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What days of the week do you have the most appointment availability?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What days do you have the most open appointment slots?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

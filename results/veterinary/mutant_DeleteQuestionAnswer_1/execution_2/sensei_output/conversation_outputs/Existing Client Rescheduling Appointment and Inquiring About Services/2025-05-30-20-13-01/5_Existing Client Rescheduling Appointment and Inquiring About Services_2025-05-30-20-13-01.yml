@@ -1,0 +1,159 @@
+serial: 2025-05-30-20-13-01
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You've been a client at this pet clinic for several years and typically bring your
+  dog in for annual vaccinations.
+- You're now trying to reschedule a recently missed appointment, but you're also considering
+  adding a grooming service for your dog during the visit.
+- You want to confirm all the details and ensure it fits into your schedule for this
+  week.
+ask_about:
+- Attempt to reschedule a vaccination appointment but be vague about it.
+- 'When prompted for details, provide a new date and time for the rescheduling: {{new_date}}
+  at {{new_time}}.'
+- If the chatbot confirms the appointment with the wrong service, acknowledge the
+  confirmation.
+- Inquire about grooming services.
+- If grooming services are offered, attempt to schedule a grooming appointment for
+  {{grooming_date}} at {{grooming_time}}.
+- If the chatbot states it cannot directly handle appointment cancellations or reschedulings,
+  ask for contact information to handle the request.
+- grooming_date: '2024-11-15'
+- grooming_time: 10:00 AM
+- new_date: November 1st
+- new_time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- rescheduling_acknowledgment: "Ok, I have received your request to schedule an appointment\
+    \ for 01/11/2024 at 10:00:00 for Vaccination. \nSee you then!    \n"
+- appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 01/11/2024 at 10:00:00 for Vaccination. \nSee you then!    \n"
+- incorrect_service_name: "Ok, I have received your request to schedule an appointment\
+    \ for 01/11/2024 at 10:00:00 for Vaccination. \nSee you then!    \n"
+- grooming_services_offered: I'm not sure. However, I can provide information about
+    the types of animals we accept, pet care tips, our opening hours, and our weekend
+    schedule.
+- grooming_appointment_scheduled: "Ok, I have received your request to schedule an\
+    \ appointment for 01/11/2024 at 10:00:00 for Vaccination. \nSee you then!"
+- contact_information_provided: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.01083705
+---
+conversation time: 198.809506
+assistant response time:
+- 1.47237
+- 0.882464
+- 0.738905
+- 1.206293
+- 0.778345
+- 0.712183
+- 1.391019
+- 1.45479
+- 3.028298
+- 3.140318
+- 5.924179
+- 0.685128
+- 0.938804
+- 3.487565
+- 3.467633
+- 3.130492
+- 3.683043
+- 1.233155
+- 1.249439
+- 0.896602
+- 1.152434
+- 0.70426
+- 0.917099
+- 0.789884
+response time report:
+  average: 1.794362
+  max: 5.924179
+  min: 0.685128
+---
+interaction:
+- User: I need to reschedule an appointment for my dog’s vaccinations. Can you help
+    with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change the date for my dog's vaccination appointment. Can you assist
+    with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to adjust the date for my dog's vaccination appointment. Can you help
+    me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule my dog's vaccination appointment. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my dog's vaccination appointment. Can you assist with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to modify the date for my dog's vaccination appointment. Can you help
+    with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule my dog's vaccination appointment for this week. Can you
+    help with that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 30/10/2024\
+    \ at 10:00:00 for Vaccination. \nSee you then!    \n"
+- User: That's not quite right. I wanted to reschedule for November 1st at 10:00 AM.
+    Can you confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 01/11/2024\
+    \ at 10:00:00 for Vaccination. \nSee you then!    \n"
+- User: Can you tell me if you offer grooming services for dogs?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: Do you have grooming services available for dogs?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Do you offer grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have grooming services available for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have grooming services for dogs?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: I just want to know if you offer grooming services for dogs.
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Do you have grooming services for dogs?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Do you offer grooming services for dogs?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: I just need to know if you provide grooming services for dogs.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have grooming services available for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there someone I can talk to about grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have a contact number for someone I can speak to about grooming services
+    for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have a phone number I can call to ask about grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I just want to know if there's a phone number I can call to ask about grooming
+    services for dogs.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

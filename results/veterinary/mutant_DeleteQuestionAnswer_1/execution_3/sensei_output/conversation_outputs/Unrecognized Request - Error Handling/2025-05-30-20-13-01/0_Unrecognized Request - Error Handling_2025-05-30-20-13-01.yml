@@ -1,0 +1,90 @@
+serial: 2025-05-30-20-13-01
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: Every weekday from 9am to 6pm.
+errors: []
+total_cost($): 0.00324435
+---
+conversation time: 86.403601
+assistant response time:
+- 0.931497
+- 0.648839
+- 1.657392
+- 0.898352
+- 1.145118
+- 0.777705
+- 0.654688
+- 6.091844
+- 0.899214
+- 0.687728
+- 0.68619
+- 9.132755
+- 0.653105
+- 3.321409
+- 0.646147
+response time report:
+  average: 1.922132
+  max: 9.132755
+  min: 0.646147
+---
+interaction:
+- User: What's the deal with just showing up for services?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What about the fluff and stuff for the pets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the 24/7 situation for emergencies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the holiday thing for the pets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the checkup price vibe?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the drop-in rule for when I need to pop by?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the groom time like, any special cuts?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the emergency care hours if needed?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What’s the holiday availability for the furry ones?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the vibe for checkup costs around here?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the drop-in thing for quick visits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What about the fluff services for the pets?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: What’s the emergency hours if something comes up?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What’s the holiday schedule for the pets when they need care?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: What's the quick checkup price around here?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

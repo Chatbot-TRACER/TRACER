@@ -1,0 +1,62 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [
+                "What can I do to take care of my pet?"
+            ],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "Can you confirm if you offer vaccinations specifically for rabbits?",
+                "Can you tell me if you have experience treating rabbits and providing vaccinations for them?",
+                "What kind of animals do you treat?",
+                "Can you tell me if you treat other small mammals besides rabbits?",
+                "What are the common health concerns for rabbits that I should be aware of?",
+                "What vaccinations do rabbits typically need?",
+                "What should I do if my rabbit shows signs of illness?",
+                "Are you able to provide information on common rabbit diseases and their prevention?",
+                "What kind of vaccinations do you recommend for rabbits?",
+                "What vaccinations are recommended for rabbits?",
+                "Do you offer vaccinations for rabbits?",
+                "Can you tell me if you provide vaccinations for rabbits?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

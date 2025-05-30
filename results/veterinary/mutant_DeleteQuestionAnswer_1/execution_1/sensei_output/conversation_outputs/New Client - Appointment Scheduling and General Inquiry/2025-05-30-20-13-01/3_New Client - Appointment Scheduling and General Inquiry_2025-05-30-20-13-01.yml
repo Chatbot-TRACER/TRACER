@@ -1,0 +1,117 @@
+serial: 2025-05-30-20-13-01
+language: English
+context:
+- You recently moved to the area and are looking for a reputable veterinary center
+  for your pets.
+- You have a rabbit that requires regular grooming and you'd like to establish care
+  with a local vet.
+- Before committing, you want to gather some preliminary information about their services
+  and pricing.
+ask_about:
+- Inquire about the types of animals the veterinary center treats.
+- If the veterinary center treats rabbits, ask to schedule a grooming appointment
+  for a rabbit.
+- Provide the date {{date}} and time {{time}} for the grooming appointment.
+- Ask about the typical price range for a veterinary visit.
+- Ask about available services and information.
+- date: Next Monday
+- time: 4:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 18
+data_output:
+- animal_acceptance_response: I'm not sure. However, I can provide information about
+    the types of animals we accept, pet care tips, our opening hours, and our weekend
+    schedule.
+- grooming_appointment_confirmation: null
+- veterinary_visit_price_range: null
+- available_services_and_information: We specialize in dogs, cats, and birds. For
+    inquiries about other animals, please reach out to us beforehand. However, I can
+    provide information about the types of animals we accept, pet care tips, our opening
+    hours, and our weekend schedule.
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.0054933
+---
+conversation time: 125.411324
+assistant response time:
+- 3.015381
+- 4.162465
+- 2.744483
+- 7.009713
+- 4.687094
+- 3.158095
+- 3.332003
+- 3.277197
+- 3.040719
+- 3.59057
+- 3.260323
+- 3.68217
+- 2.612038
+- 2.695926
+- 3.35118
+- 1.084507
+- 1.141827
+- 0.590284
+response time report:
+  average: 3.135331
+  max: 7.009713
+  min: 0.590284
+---
+interaction:
+- User: What types of animals does your veterinary center treat?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: Do you treat rabbits at your veterinary center?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: Can you confirm if you treat rabbits at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Do you treat rabbits at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Do you treat rabbits at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Do you treat rabbits at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Do you treat rabbits at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Do you treat rabbits at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Do you treat rabbits at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Do you treat rabbits at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Do you treat rabbits at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Do you treat rabbits at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Can you please confirm if your veterinary center treats rabbits?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Can you please confirm if your veterinary center treats rabbits?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Can you please check again if your veterinary center treats rabbits?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: Do you provide grooming services for rabbits at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you offer grooming services for rabbits at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide grooming services for rabbits at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

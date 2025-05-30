@@ -1,0 +1,111 @@
+serial: 2025-05-30-20-13-01
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Next Wednesday
+- time: 11:15 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 06/11/2024 at 11:15:00 for Physical examination. \nSee you then!    \n"
+- rescheduling_prompt: 'I can help you with that! However, I still need to know which
+    service you would like to book for your appointment. Could you please provide
+    that information? The options are: Physical examination, Vaccination, Dental health
+    and cleaning, or Lab or diagnostic testing.'
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 06/11/2024 at 11:15:00 for Physical examination. \nSee you then!"
+errors: []
+total_cost($): 0.004167
+---
+conversation time: 75.206757
+assistant response time:
+- 6.027781
+- 2.454991
+- 1.18908
+- 0.959025
+- 0.97481
+- 0.576549
+- 0.707031
+- 0.681183
+- 0.54961
+- 0.678335
+- 1.142188
+- 0.756928
+- 0.760753
+- 0.951604
+- 0.936965
+response time report:
+  average: 1.289788
+  max: 6.027781
+  min: 0.54961
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect,
+    and I'd like to update them. Can I change it to next Wednesday at 11:15 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to update my appointment to next Wednesday at 11:15 AM because the
+    details I provided earlier were incorrect. Can you help me with that?
+- Assistant: 'I can help you with that! However, I still need to know which service
+    you would like to book for your appointment. Could you please provide that information?
+    The options are: Physical examination, Vaccination, Dental health and cleaning,
+    or Lab or diagnostic testing.'
+- User: Can I just book a physical examination for next Wednesday at 11:15 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 06/11/2024\
+    \ at 11:15:00 for Physical examination. \nSee you then!    \n"
+- User: Can I also confirm if I need to provide any additional information, like my
+    insurance details or anything else, for the appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do I need to provide any additional information, such as my insurance details,
+    for the appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do I need to bring any extra information, like my insurance details, for the
+    appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do I need to bring my insurance details or any other important information
+    for the appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do I need to bring any specific information, like my insurance details, to
+    the appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do I need to bring any specific information, like my insurance details, for
+    the appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do I need to bring my insurance information for the physical examination appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do I need to provide my insurance information for the physical examination
+    appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do I need to provide my insurance information for the appointment I scheduled?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do I need to provide my insurance information for the appointment I booked?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do I need to provide my insurance details for the appointment I scheduled?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do I need to provide my insurance details for the appointment I scheduled?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

@@ -1,0 +1,95 @@
+serial: 2025-05-30-20-13-01
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: I'm sorry, but I did not understand the last sentence, can you
+    say that again?
+errors: []
+total_cost($): 0.00346155
+---
+conversation time: 78.705753
+assistant response time:
+- 3.629999
+- 0.634403
+- 0.779699
+- 0.910343
+- 1.175642
+- 0.877919
+- 0.733464
+- 0.99297
+- 0.731197
+- 0.795483
+- 0.838318
+- 0.829505
+- 0.693242
+- 0.68429
+- 0.650684
+response time report:
+  average: 0.997143
+  max: 3.629999
+  min: 0.634403
+---
+interaction:
+- User: What’s the deal with walk-ins?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: What about the furry spa stuff, you know, like the fluff and shine?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: How about the quick pampering, you know, the fluff and shine?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the thing with the quick fix for emergencies, like after hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the scoop on the holiday hours, you know, when you’re open or not?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the price for a paw check, like a quick visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the rate for a quick look-over, you know, for a pet?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the sitch with the drop-in times, you know, like when can I just show
+    up?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the word on the fluff sessions, you know, the pampering for pets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the buzz on the urgent care, you know, after hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the word on the holiday hours, like when you’re open?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the lowdown on the holiday schedule, you know, when you’re around or
+    not?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the scoop on the quick check, you know, for a pet's health?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the deal with the quick stop, you know, for a pet's check-in?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the sitch with the drop by for a pet's quick look?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

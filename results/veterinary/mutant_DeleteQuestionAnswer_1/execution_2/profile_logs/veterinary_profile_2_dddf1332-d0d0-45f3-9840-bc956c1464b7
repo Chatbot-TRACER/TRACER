@@ -1,0 +1,53 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "Do you have any dental care services specifically for dogs at your veterinary center?",
+                "Can you confirm whether your clinic provides dental cleaning services for dogs?",
+                "Is there a dental cleaning service available for pets at your clinic?",
+                "Do you provide any dental care services specifically for dogs at your veterinary center?",
+                "Do you have a dental cleaning service for dogs at your veterinary clinic?",
+                "Do you offer dental cleaning services for dogs at your veterinary center?",
+                "Is there a way to find out if your veterinary center offers dental services for dogs?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

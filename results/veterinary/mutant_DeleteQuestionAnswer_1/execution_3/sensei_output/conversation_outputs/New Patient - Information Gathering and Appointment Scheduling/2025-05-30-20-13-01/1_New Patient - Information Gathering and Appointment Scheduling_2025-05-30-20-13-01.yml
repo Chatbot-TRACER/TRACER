@@ -1,0 +1,146 @@
+serial: 2025-05-30-20-13-01
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to establish him with a reputable veterinary
+  center for his healthcare needs.
+- You want to find a vet that offers comprehensive services and has appointment times
+  that fit your busy schedule.
+ask_about:
+- Inquire about the services offered at the veterinary center.
+- Ask about the veterinary center's policy on accepting certain animal types as patients.
+- Ask what the approximate cost range is for a standard veterinary visit.
+- Inquire about the available times for an appointment.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- date: Tomorrow
+- time: 11:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- services_offered: We specialize in dogs, cats, and birds. For inquiries about other
+    animals, please reach out to us first.
+- animal_acceptance_policy: We specialize in dogs, cats, and birds. For inquiries
+    about other animals, please reach out to us first.
+- standard_visit_cost_range: null
+- appointment_availability_info: Every weekday from 9am to 6pm.
+- appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 29/10/2024 at 11:00:00 for Vaccination. \nSee you then!    \n"
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00685125
+---
+conversation time: 145.62437
+assistant response time:
+- 3.095963
+- 3.066189
+- 0.981431
+- 0.648243
+- 0.666603
+- 0.833057
+- 0.855948
+- 3.14714
+- 0.611437
+- 0.754515
+- 1.097011
+- 0.849419
+- 0.730429
+- 0.649793
+- 3.043927
+- 1.095291
+- 0.748931
+- 0.693167
+- 3.265043
+- 3.201985
+response time report:
+  average: 1.501776
+  max: 3.265042
+  min: 0.611437
+---
+interaction:
+- User: What services do you offer at the veterinary center?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: What is your policy on accepting different types of pets as patients?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: What is the approximate cost range for a standard veterinary visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is the typical cost range for a standard visit to the vet?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What would be the average cost for a regular visit to the veterinary clinic?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the available times for scheduling an appointment?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Can I schedule a vaccination appointment for my dog tomorrow at 11:00 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 11:00:00 for Vaccination. \nSee you then!    \n"
+- User: Could you confirm if there are any additional fees for vaccinations or follow-up
+    visits?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Are there any additional fees for vaccinations or follow-up visits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are there any extra charges associated with vaccinations or follow-up appointments?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: Are there any extra fees related to vaccinations or follow-up visits?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: Are there any extra charges for vaccinations or follow-up appointments?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: Are there any additional costs for vaccinations or follow-up visits?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: What are the extra charges for vaccinations or follow-up visits?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: What types of vaccinations do you recommend for a new puppy?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: What types of vaccinations do you recommend for a new puppy?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: What vaccinations do you recommend for a new puppy?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: What vaccinations do you suggest for a puppy that just got adopted?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: What vaccinations should I consider for my newly adopted puppy?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: What vaccinations do you think are necessary for my newly adopted puppy?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.

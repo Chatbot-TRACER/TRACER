@@ -1,0 +1,111 @@
+serial: 2025-05-30-20-13-01
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Tomorrow
+- time: 1:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 29/10/2024 at 13:30:00 for Dental health and cleaning. \nSee you then! \
+    \   \n"
+- rescheduling_prompt: I want to provide the correct appointment details, including
+    the new date and time for tomorrow at 1:30 PM.
+- new_appointment_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0041874
+---
+conversation time: 67.488548
+assistant response time:
+- 0.674561
+- 2.210177
+- 1.617464
+- 2.721406
+- 0.72903
+- 0.72126
+- 0.574925
+- 0.845618
+- 0.785306
+- 0.696322
+- 0.631194
+- 0.64774
+- 0.595519
+- 2.716325
+- 1.77683
+response time report:
+  average: 1.196245
+  max: 2.721406
+  min: 0.574925
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to provide the correct appointment details, including the new date
+    and time for tomorrow at 1:30 PM. Can you help me update that?
+- Assistant: 'I have the date and time for your appointment, but I still need to know
+    which service you would like to book: Physical examination, Vaccination, Dental
+    health and cleaning, or Lab or diagnostic testing. Please let me know!'
+- User: I was originally booked for a dental health appointment. Can we update it
+    to tomorrow at 1:30 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Dental health and cleaning. \nSee you then!    \n"
+- User: I just realized I actually need to change the appointment to tomorrow at 1:30
+    PM, but can you confirm if I still have that appointment type as dental health?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: I need to confirm if my appointment type is still dental health for tomorrow
+    at 1:30 PM. Can you check that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you verify if my appointment type is still dental health for tomorrow
+    at 1:30 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you check if my appointment for tomorrow at 1:30 PM is still for dental
+    health?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is my appointment for tomorrow at 1:30 PM still scheduled for dental health?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is my appointment time for tomorrow at 1:30 PM still for dental health?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is my appointment for tomorrow at 1:30 PM still set for dental health?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there any other appointment type available that I could switch to if dental
+    health is not confirmed?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me what other appointment types are available if my dental health
+    appointment is not confirmed?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What other appointment types can I choose from if my dental health appointment
+    isn't confirmed?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What other appointment types do you have available besides dental health?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: What are the available appointment types for tomorrow if dental health isn't
+    confirmed?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

@@ -1,0 +1,104 @@
+serial: 2025-05-30-20-13-01
+language: English
+context:
+- 'personality: personalities/sarcastic-user'
+- You recently adopted a puppy and want to ensure it receives the necessary healthcare.
+- You are particularly concerned about protecting your dog from common and potentially
+  dangerous diseases prevalent in your area.
+- You want to find a reliable veterinary center that offers comprehensive vaccination
+  services and is available in case of emergencies.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask about the core vaccinations needed for dogs.
+- Inquire if emergency services are available outside of business hours.
+- Ask what the business hours are.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 16
+data_output:
+- services_offered: We specialize in dogs, cats, and birds. For inquiries about other
+    animals, please reach out to us first.
+- core_vaccinations_list: None
+- emergency_services_availability: I'm sorry, but I did not understand the last sentence,
+    can you say that again?
+- business_hours: Our business hours are every weekday from 9am to 6pm.
+errors: []
+total_cost($): 0.0040161
+---
+conversation time: 78.245802
+assistant response time:
+- 3.777117
+- 0.744534
+- 0.88872
+- 0.668423
+- 0.983671
+- 1.388595
+- 0.90066
+- 0.596716
+- 0.792294
+- 0.815103
+- 0.920788
+- 0.669829
+- 0.819808
+- 3.747182
+- 5.251387
+- 4.111259
+response time report:
+  average: 1.692255
+  max: 5.251387
+  min: 0.596716
+---
+interaction:
+- User: What services do you offer at your veterinary center?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: What core vaccinations should I make sure my puppy gets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the essential vaccinations I should ensure my puppy receives?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are essential for my puppy to stay healthy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What emergency services do you have available if my puppy needs help outside
+    of regular hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are your business hours?
+- Assistant: Our business hours are every weekday from 9am to 6pm.
+- User: Are you open on weekends, or just during the week?
+- Assistant: We are open every weekday from 9am to 6pm. We are not open on weekends.
+- User: Is there any way to reach you for emergencies outside of those hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there a way to contact you for emergencies when you're not open?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there a contact method for emergencies when the clinic is closed?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What if I just show up with my puppy during an emergency? Will someone be
+    there to help?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: If I just show up with my puppy during an emergency, will there be someone
+    available to help?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: If I bring my puppy in for an emergency when you're closed, will there be
+    someone there to assist?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you offer any additional services like grooming or training classes?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Do you offer grooming or training classes for dogs at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
+- User: Are there any other services you provide beyond vaccinations, like grooming
+    or training?
+- Assistant: I'm not sure. However, I can provide information about the types of animals
+    we accept, pet care tips, our opening hours, and our weekend schedule.
