@@ -1,0 +1,139 @@
+serial: 2025-05-30-15-24-57
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to ensure it receives the necessary vaccinations
+  to stay healthy.
+- As a first-time dog owner, you're also keen to learn more about the veterinary center
+  and responsible pet care practices.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask what types of animals the veterinary center treats.
+- Confirm if the veterinary center treats dogs.
+- Ask about the types of vaccinations offered for dogs.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- Ask about the business hours of operation.
+- date: Thursday
+- time: 11:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- available_veterinary_services: We specialize in dogs, cats, and birds. For inquiries
+    about other animals, please reach out to us beforehand.
+- treatable_animals: We specialize in dogs, cats, and birds.
+- treatable_animal_confirmation: We specialize in dogs, cats, and birds. For inquiries
+    about other animals, please reach out to us beforehand.
+- vaccination_information: null
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 31/10/2024 at 11:00:00 for Vaccination. \nSee you then!    \n"
+- business_hours: Every weekday from 9am to 6pm.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00907665
+---
+conversation time: 184.059688
+assistant response time:
+- 8.371108
+- 2.398158
+- 3.583288
+- 3.509112
+- 0.883304
+- 0.888497
+- 4.136617
+- 1.326397
+- 0.911752
+- 13.320191
+- 3.314398
+- 2.356813
+- 3.16595
+- 3.3402
+- 2.599992
+- 1.166896
+- 0.914683
+- 1.066722
+- 2.707578
+- 0.972889
+- 0.907791
+- 1.288157
+- 0.840588
+- 1.284594
+response time report:
+  average: 2.718986
+  max: 13.320191
+  min: 0.840588
+---
+interaction:
+- User: What types of animals does the veterinary center treat?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: Do you treat dogs at your veterinary center?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: What types of vaccinations do you offer for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you tell me about the services offered by the veterinary center?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What are your business hours of operation?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Can you tell me what types of vaccinations you offer for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of vaccinations are available for dogs at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you help me schedule a vaccination appointment for my dog on Thursday
+    at 11:00 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 31/10/2024\
+    \ at 11:00:00 for Vaccination. \nSee you then!    \n"
+- User: What types of vaccinations do you offer for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of vaccinations can my dog receive at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What services do you offer at the veterinary center?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you provide information about the cost of a vet visit?
+- Assistant: In the range of $50 to $60.
+- User: What types of vaccinations can I expect for my puppy during the first visit?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you tell me more about the services you offer at the veterinary center?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What type of pet care tips do you recommend for first-time dog owners?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: What are your weekend hours of operation?
+- Assistant: Every weekday from 9am to 6pm
+- User: 'User: Are you open on weekends?'
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you open on weekends?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you available for vaccinations on Saturdays?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you available for vaccinations on Saturdays?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are vaccinations available on Saturdays?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are vaccinations available on Saturdays?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are there any vaccination options for my dog on weekends?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are there options for scheduling vaccinations for dogs outside of regular
+    business hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

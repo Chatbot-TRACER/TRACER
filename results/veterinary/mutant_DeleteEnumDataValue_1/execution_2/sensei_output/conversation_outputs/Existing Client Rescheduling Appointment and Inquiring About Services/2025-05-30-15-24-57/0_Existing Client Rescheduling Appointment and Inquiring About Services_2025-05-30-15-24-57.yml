@@ -1,0 +1,173 @@
+serial: 2025-05-30-15-24-57
+language: English
+context:
+- 'personality: personalities/rude-user'
+- You've been a client at this pet clinic for several years and typically bring your
+  dog in for annual vaccinations.
+- You're now trying to reschedule a recently missed appointment, but you're also considering
+  adding a grooming service for your dog during the visit.
+- You want to confirm all the details and ensure it fits into your schedule for this
+  week.
+ask_about:
+- Attempt to reschedule a vaccination appointment but be vague about it.
+- 'When prompted for details, provide a new date and time for the rescheduling: {{new_date}}
+  at {{new_time}}.'
+- If the chatbot confirms the appointment with the wrong service, acknowledge the
+  confirmation.
+- Inquire about grooming services.
+- If grooming services are offered, attempt to schedule a grooming appointment for
+  {{grooming_date}} at {{grooming_time}}.
+- If the chatbot states it cannot directly handle appointment cancellations or reschedulings,
+  ask for contact information to handle the request.
+- grooming_date: Today
+- grooming_time: 10:00 AM
+- new_date: Today
+- new_time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- rescheduling_acknowledgment: "Ok, I have received your request to schedule an appointment\
+    \ for 28/10/2024 at 10:00:00 for Vaccination. \nSee you then!"
+- appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 28/10/2024 at 10:00:00 for Vaccination. \nSee you then!    \n"
+- incorrect_service_name: Ok, I have received your request to schedule an appointment
+    for 28/10/2024 at 10:00:00 for Vaccination.
+- grooming_services_offered: I'm not sure. However, I can provide information regarding
+    vet visit costs, the types of animals we accept, pet care, our opening hours,
+    and availability on weekends.
+- grooming_appointment_scheduled: "Ok, I have received your request to schedule an\
+    \ appointment for 28/10/2024 at 10:00:00 for Vaccination. \nSee you then!"
+- contact_information_provided: I'm not sure. However, I can provide information regarding
+    vet visit costs, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+errors: []
+total_cost($): 0.01066635
+---
+conversation time: 179.764563
+assistant response time:
+- 0.819769
+- 0.806616
+- 0.812894
+- 0.745061
+- 1.320428
+- 0.939266
+- 1.131785
+- 1.00793
+- 3.087382
+- 3.304749
+- 1.04035
+- 1.264045
+- 0.807842
+- 3.245505
+- 3.404829
+- 3.450614
+- 3.633757
+- 4.491429
+- 3.239731
+- 4.689664
+- 3.982313
+- 3.958305
+- 3.287693
+- 3.779454
+response time report:
+  average: 2.427142
+  max: 4.689664
+  min: 0.745061
+---
+interaction:
+- User: I need to reschedule a vaccination appointment for my dog. Can you help with
+    that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change the date for my dog's vaccination appointment. Can you assist
+    me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to adjust my dog's vaccination appointment. Can you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule my dog's vaccination appointment. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my dog's vaccination appointment. Can you assist with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to adjust the timing of my dog's vaccination appointment. Can you help
+    me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule my dog's vaccination appointment for this week. Can you
+    help with that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 31/10/2024\
+    \ at 10:00:00 for Vaccination. \nSee you then!    \n"
+- User: I actually meant to reschedule for today at 10:00 AM. Can you confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Vaccination. \nSee you then!    \n"
+- User: Can you tell me if you offer grooming services for dogs?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: Do you have grooming services available for dogs?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: Do you provide grooming services specifically for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you offer grooming services for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have grooming services available for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide grooming services for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our opening hours, and availability
+    on weekends.
+- User: Do you have any information on whether grooming services are available for
+    dogs?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our opening hours, and availability
+    on weekends.
+- User: I need to know if you offer grooming services for dogs.
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: I really need to know if you have grooming services for dogs. Can you check
+    on that?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our operating hours, and availability
+    on weekends.
+- User: Do you have grooming services for dogs or not?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: I need to confirm if grooming services for dogs are available. Can you check
+    that for me?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our opening hours, and availability
+    on weekends.
+- User: I need to know if you have grooming services for dogs. Can you check that?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: I need to confirm if grooming services for dogs are available. Can you check
+    that for me?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Is there any way you can find out if grooming services for dogs are available?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: I need to know if grooming services for dogs are available. Can you check
+    that for me?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    availability.
+- User: I need to confirm if grooming services for dogs are available. Can you check
+    that for me?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.

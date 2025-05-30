@@ -1,0 +1,118 @@
+serial: 2025-05-30-15-24-57
+language: English
+context:
+- You recently adopted a rabbit and want to ensure it receives the necessary preventative
+  care.
+- You are particularly concerned about common rabbit diseases like myxomatosis and
+  RHD, as you've heard they can be fatal.
+- You want to find a local vet that can provide vaccinations and advice on rabbit
+  health, but you are also curious if they treat other types of pets.
+ask_about:
+- Ask what kind of animals they treat.
+- Inquire if they treat rabbits.
+- Ask what vaccinations rabbits typically need.
+- Ask for the symptoms of myxomatosis in rabbits.
+- Ask if they care for birds.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 18
+data_output:
+- treats_rabbits: We specialize in dogs, cats, and birds. For inquiries about other
+    animals, please reach out to us beforehand.
+- rabbit_vaccinations_info: null
+- myxomatosis_symptoms: I'm not sure. However, I can provide information regarding
+    the cost of a vet visit, the types of animals we accept, pet care tips, our opening
+    hours, and our weekend schedule.
+- cares_for_birds: We specialize in dogs, cats, and birds. For inquiries about other
+    animals, please reach out to us beforehand.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00527265
+---
+conversation time: 119.618608
+assistant response time:
+- 3.288819
+- 2.799764
+- 0.73621
+- 0.761515
+- 0.946984
+- 5.257345
+- 1.397119
+- 0.7441
+- 0.840953
+- 3.437081
+- 0.762016
+- 1.111896
+- 3.719462
+- 3.055104
+- 2.831209
+- 2.435468
+- 3.75297
+- 2.996032
+response time report:
+  average: 2.27078
+  max: 5.257345
+  min: 0.73621
+---
+interaction:
+- User: What kind of animals do you treat?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: Do you treat rabbits as well?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: What vaccinations do rabbits typically need?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are generally required for rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are usually necessary for rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the typical vaccinations needed for rabbits?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    availability.
+- User: What are the symptoms of myxomatosis in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the signs that indicate a rabbit may have myxomatosis?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the symptoms that suggest a rabbit might have myxomatosis?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are required for rabbits?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our operating hours, and availability
+    on weekends.
+- User: Are there specific signs that a rabbit might have RHD?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the signs that a rabbit may have RHD?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the symptoms that indicate a rabbit might have RHD?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Do you care for birds?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: Can you tell me if you have a vaccination schedule for rabbits?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    availability.
+- User: Can you provide information on your vet visit costs?
+- Assistant: In the range of $50 to $60.
+- User: What are the typical symptoms of myxomatosis in rabbits?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What specific vaccinations do you recommend for rabbits?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our operating hours, and weekend
+    availability.

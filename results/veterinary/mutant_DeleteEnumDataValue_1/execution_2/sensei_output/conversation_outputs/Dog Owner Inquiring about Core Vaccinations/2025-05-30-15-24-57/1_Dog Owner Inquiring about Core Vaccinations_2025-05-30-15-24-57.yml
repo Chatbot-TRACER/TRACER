@@ -1,0 +1,101 @@
+serial: 2025-05-30-15-24-57
+language: English
+context:
+- 'personality: personalities/sarcastic-user'
+- You recently adopted a puppy and want to ensure it receives the necessary healthcare.
+- You are particularly concerned about protecting your dog from common and potentially
+  dangerous diseases prevalent in your area.
+- You want to find a reliable veterinary center that offers comprehensive vaccination
+  services and is available in case of emergencies.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask about the core vaccinations needed for dogs.
+- Inquire if emergency services are available outside of business hours.
+- Ask what the business hours are.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 16
+data_output:
+- services_offered: I'm not sure. However, I can provide information regarding the
+    cost of a vet visit, the types of animals we accept, pet care tips, our opening
+    hours, and our weekend schedule.
+- core_vaccinations_list: None
+- emergency_services_availability: null
+- business_hours: Every weekday from 9am to 6pm.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0036297
+---
+conversation time: 65.861616
+assistant response time:
+- 3.258081
+- 1.227425
+- 1.436506
+- 1.007146
+- 4.73955
+- 4.530919
+- 1.475645
+- 1.496273
+- 1.214397
+- 1.92703
+- 1.752052
+- 1.426594
+- 1.514095
+- 0.999828
+- 1.104815
+- 1.089637
+response time report:
+  average: 1.887499
+  max: 4.73955
+  min: 0.999828
+---
+interaction:
+- User: What services do you offer at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What are the core vaccinations that my dog needs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are essential for my dog to have?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the must-have vaccinations for my dog?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What core vaccinations should I make sure my puppy receives?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What essential vaccinations should I ensure my puppy gets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are important for my puppy to receive?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What emergency services do you have available outside of business hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide emergency services for pets after regular business hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are your emergency services available for pets outside of regular business
+    hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are your business hours?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you open on weekends, or just during the weekdays?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you open on weekends, or just during the weekdays?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you open on Saturdays or Sundays, or is it strictly a Monday to Friday
+    operation?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you completely closed on weekends, or is there any chance of weekend hours?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Is there any chance I can get a hold of someone for emergencies on weekends,
+    or are we just out of luck?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

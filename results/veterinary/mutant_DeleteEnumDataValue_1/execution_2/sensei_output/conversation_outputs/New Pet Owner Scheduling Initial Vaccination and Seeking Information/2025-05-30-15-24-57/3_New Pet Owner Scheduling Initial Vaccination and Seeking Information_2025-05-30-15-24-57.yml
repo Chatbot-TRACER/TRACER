@@ -1,0 +1,145 @@
+serial: 2025-05-30-15-24-57
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to ensure it receives the necessary vaccinations
+  to stay healthy.
+- As a first-time dog owner, you're also keen to learn more about the veterinary center
+  and responsible pet care practices.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask what types of animals the veterinary center treats.
+- Confirm if the veterinary center treats dogs.
+- Ask about the types of vaccinations offered for dogs.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- Ask about the business hours of operation.
+- date: October 27
+- time: 2:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- available_veterinary_services: We specialize in dogs, cats, and birds. For inquiries
+    about other animals, please reach out to us first.
+- treatable_animals: We specialize in dogs, cats, and birds.
+- treatable_animal_confirmation: We specialize in dogs, cats, and birds. For inquiries
+    about other animals, please reach out to us first.
+- vaccination_information: null
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 27/10/2024 at 14:30:00 for Vaccination. \nSee you then!    \n"
+- business_hours: Our business hours of operation are every weekday from 9am to 6pm.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0096537
+---
+conversation time: 166.727071
+assistant response time:
+- 2.978333
+- 2.668939
+- 3.440964
+- 2.919318
+- 1.728799
+- 1.295741
+- 3.170615
+- 0.801013
+- 1.207143
+- 0.957021
+- 2.216704
+- 3.502356
+- 2.709301
+- 0.956804
+- 1.032747
+- 1.08123
+- 2.943718
+- 3.112803
+- 2.339936
+- 3.824548
+- 1.25149
+- 0.920094
+- 1.180773
+- 1.096856
+response time report:
+  average: 2.055718
+  max: 3.824548
+  min: 0.801013
+---
+interaction:
+- User: What types of animals does your veterinary center treat?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: Do you offer vaccinations for dogs?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: What types of vaccinations do you offer for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you tell me about the services offered by the veterinary center?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: What are your business hours of operation?
+- Assistant: Our business hours of operation are every weekday from 9am to 6pm.
+- User: Can I schedule a vaccination appointment for my dog on October 27 at 2:30
+    PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 27/10/2024\
+    \ at 14:30:00 for Vaccination. \nSee you then!    \n"
+- User: Can you tell me more about the types of vaccinations your clinic offers for
+    dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What are the specific benefits of the vaccinations you provide for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the specific advantages of the vaccinations you offer for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific benefits do the vaccinations you provide for dogs offer?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is the cost of a vaccination appointment for dogs at your center?
+- Assistant: In the range of $50 to $60.
+- User: What types of vaccinations are included in that cost for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you explain what pet care tips you offer for new dog owners?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: What are some recommended dietary options for my new puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are some suggested dietary choices for my new puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are some appropriate food options for my new puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What age should my puppy be to start vaccinations?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What is the recommended vaccination schedule for puppies?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What is the cost of a vet visit at your center?
+- Assistant: In the range of $50 to $60.
+- User: What are the typical signs of illness that I should look out for in my puppy?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What should I do if my puppy shows signs of illness?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What steps should I take if I notice my puppy exhibiting symptoms of illness?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What steps should I follow if I see my puppy showing symptoms of being unwell?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I do if my puppy becomes unwell?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

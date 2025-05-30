@@ -1,0 +1,69 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "vetcen_qa",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [
+                "What can I do to take care of my pet?"
+            ],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What are the essential vaccinations my puppy should receive in the first few months?",
+                "What vaccinations should I prioritize for my puppy during its first year?",
+                "What vaccinations are offered for dogs?",
+                "What types of vaccinations are available for dogs?",
+                "What vaccinations do puppies need during their first year?",
+                "What specific vaccinations are recommended for puppies?",
+                "What essential vaccinations should I make sure my puppy receives during its first year?",
+                "What types of vaccinations do you offer for dogs?",
+                "What services do you offer at your veterinary center?",
+                "What specific vaccinations should I prioritize for my puppy?",
+                "What specific vaccinations are essential for my puppy's health?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "03/11/2024"
+            ],
+            "time": [
+                "16:00:00"
+            ],
+            "service": [
+                "Vaccination"
+            ]
+        },
+        "top-level": {}
+    }
+}

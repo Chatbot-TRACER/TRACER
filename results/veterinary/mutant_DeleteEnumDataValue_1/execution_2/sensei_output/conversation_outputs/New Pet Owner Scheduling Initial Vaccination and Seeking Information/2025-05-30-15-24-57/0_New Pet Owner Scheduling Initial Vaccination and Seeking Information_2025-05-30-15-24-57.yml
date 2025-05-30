@@ -1,0 +1,147 @@
+serial: 2025-05-30-15-24-57
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to ensure it receives the necessary vaccinations
+  to stay healthy.
+- As a first-time dog owner, you're also keen to learn more about the veterinary center
+  and responsible pet care practices.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask what types of animals the veterinary center treats.
+- Confirm if the veterinary center treats dogs.
+- Ask about the types of vaccinations offered for dogs.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- Ask about the business hours of operation.
+- date: Tomorrow
+- time: 9:30 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- available_veterinary_services: We specialize in dogs, cats, and birds. For inquiries
+    about other animals, please reach out to us beforehand.
+- treatable_animals: We specialize in dogs, cats, and birds.
+- treatable_animal_confirmation: We specialize in dogs, cats, and birds.
+- vaccination_information: null
+- appointment_details: 'Ok, I have received your request to schedule an appointment
+    for 29/10/2024 at 09:30:00 for Vaccination.
+
+    See you then!'
+- business_hours: Every weekday from 9am to 6pm.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0091698
+---
+conversation time: 195.746603
+assistant response time:
+- 3.093727
+- 2.700471
+- 2.832644
+- 3.727237
+- 1.263232
+- 0.862787
+- 11.471943
+- 1.311945
+- 3.708404
+- 5.777465
+- 2.423668
+- 0.853955
+- 0.79502
+- 0.768293
+- 0.806147
+- 0.917389
+- 0.954002
+- 0.812162
+- 0.635318
+- 0.811575
+- 6.453807
+- 0.810149
+- 0.827341
+- 1.043219
+response time report:
+  average: 2.319245
+  max: 11.471943
+  min: 0.635318
+---
+interaction:
+- User: What types of animals does your veterinary center treat?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: Do you treat dogs at your veterinary center?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: What types of vaccinations do you offer for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you tell me about the services offered by your veterinary center?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What are your business hours of operation?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Can you let me know what types of vaccinations you offer specifically for
+    dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific vaccinations do you provide for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can I schedule a vaccination appointment for my dog tomorrow at 9:30 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 09:30:00 for Vaccination. \nSee you then!    \n"
+- User: What are the specific types of vaccinations that will be given during my dog's
+    appointment?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you tell me more about the cost of a vet visit?
+- Assistant: In the range of $50 to $60.
+- User: What pet care tips can you provide for a first-time dog owner?
+- Assistant: 'You need to fulfill their essential requirements: nourishment, hydration,
+    shelter, physical activity, and affection.'
+- User: Are there any specific pet care products or brands you recommend for a new
+    puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific pet care products or brands do you recommend for a new puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific pet care products or brands would you suggest for a first-time
+    puppy owner?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of food should I be feeding my puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of food should I provide for my puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kinds of food should I be providing for my puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the best types of food for a growing puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the best types of food that I should provide for my growing puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of food is best for a growing puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific type of food should I provide for my growing puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of food should I feed my puppy for proper growth and development?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the best food options for a puppy's growth and development?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of treats are safe and suitable for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

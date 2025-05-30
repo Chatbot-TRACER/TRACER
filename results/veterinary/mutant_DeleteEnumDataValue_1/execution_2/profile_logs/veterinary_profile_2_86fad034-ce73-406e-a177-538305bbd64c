@@ -1,0 +1,60 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "vetcen_qa",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What about the symptoms of rabbit hemorrhagic disease (RHD)?",
+                "Is there a specific vaccination schedule I should know about for my rabbit?",
+                "What vaccinations are usually recommended for rabbits?",
+                "Can you provide details about the vaccination schedule for rabbits?",
+                "What kind of animals do you treat?",
+                "What are the common health issues I should be aware of for rabbits?",
+                "What vaccinations are typically recommended for rabbits?",
+                "What are the signs that suggest a rabbit could be suffering from myxomatosis?",
+                "Are there specific vaccinations that are essential for rabbit health?",
+                "Are there any common vaccination schedules for rabbits that I should be aware of?",
+                "What types of vaccinations do rabbits typically require?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

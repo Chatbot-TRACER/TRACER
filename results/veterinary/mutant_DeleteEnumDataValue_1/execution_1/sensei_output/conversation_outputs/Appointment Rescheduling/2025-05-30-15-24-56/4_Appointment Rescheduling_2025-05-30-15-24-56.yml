@@ -1,0 +1,115 @@
+serial: 2025-05-30-15-24-56
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Next Wednesday
+- time: 11:15 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: Ok, I have received your request to schedule an appointment
+    for 06/11/2024 at 11:15:00 for Dental health and cleaning.
+- rescheduling_prompt: next Wednesday at 11:15 AM
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 06/11/2024 at 11:15:00 for Dental health and cleaning. \nSee you then! \
+    \   \n"
+errors: []
+total_cost($): 0.0044001
+---
+conversation time: 80.988129
+assistant response time:
+- 0.823022
+- 3.540447
+- 1.800538
+- 0.843547
+- 0.743892
+- 3.215417
+- 10.081857
+- 0.820546
+- 1.09426
+- 0.795994
+- 0.950665
+- 0.86491
+- 0.812715
+- 1.086359
+- 0.644717
+response time report:
+  average: 1.874592
+  max: 10.081857
+  min: 0.644717
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I provide the correct appointment details?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to update my appointment details. The new date should be next Wednesday
+    at 11:15 AM. Can you help me with that?
+- Assistant: 'I can help you with that! However, I still need to know which service
+    you would like to update your appointment for. Please choose from the following
+    options: Vaccination, Dental health and cleaning, or Lab or diagnostic testing.'
+- User: I need to update my appointment for a dental health and cleaning service.
+- Assistant: "Ok, I have received your request to schedule an appointment for 06/11/2024\
+    \ at 11:15:00 for Dental health and cleaning. \nSee you then!    \n"
+- User: I think there’s been a mistake. I wanted to reschedule my appointment to next
+    Wednesday, not in June. Can you correct that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I wanted to change my appointment to next Wednesday, not in June. Can you
+    fix that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my appointment to next Wednesday at 11:15 AM, not June. Can
+    you do that?
+- Assistant: 'I have the date and time for your appointment, but I still need to confirm
+    the service you would like to update your appointment for. Please choose from
+    the following options: Vaccination, Dental health and cleaning, or Lab or diagnostic
+    testing.'
+- User: I want to reschedule my appointment for dental health and cleaning service
+    to next Wednesday at 11:15 AM. Can you confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 06/11/2024\
+    \ at 11:15:00 for Dental health and cleaning. \nSee you then!    \n"
+- User: I need to check if my appointment was updated correctly for next Wednesday
+    at 11:15 AM. Can you confirm that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to confirm if my appointment has been updated to next Wednesday at
+    11:15 AM. Can you check that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to know if my appointment has been successfully changed to next Wednesday
+    at 11:15 AM. Can you verify that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I just want to find out if my appointment is confirmed for next Wednesday
+    at 11:15 AM. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to verify if my appointment is set for next Wednesday at 11:15 AM.
+    Can you check that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to see if my appointment is officially updated for next Wednesday at
+    11:15 AM. Can you check on that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to see if my appointment is correctly scheduled for next Wednesday
+    at 11:15 AM. Can you look into that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is my appointment for next Wednesday at 11:15 AM properly updated? Can you
+    check that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

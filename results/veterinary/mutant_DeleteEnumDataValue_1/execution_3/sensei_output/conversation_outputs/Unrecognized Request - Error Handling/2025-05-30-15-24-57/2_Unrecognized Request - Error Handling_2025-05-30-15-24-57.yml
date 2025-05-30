@@ -1,0 +1,92 @@
+serial: 2025-05-30-15-24-57
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: We are open every weekday from 9am to 6pm.
+errors: []
+total_cost($): 0.0033057
+---
+conversation time: 55.631898
+assistant response time:
+- 0.795896
+- 0.836342
+- 0.802396
+- 1.281959
+- 2.666731
+- 0.729567
+- 0.658962
+- 0.872212
+- 0.788523
+- 1.353708
+- 0.970833
+- 1.367783
+- 0.971637
+- 0.996102
+- 0.886116
+response time report:
+  average: 1.065251
+  max: 2.666731
+  min: 0.658962
+---
+interaction:
+- User: What's the deal with dropping by for services?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the scoop on grooming options?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the situation with urgent care stuff?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the holiday hours or something?
+- Assistant: We are open every weekday from 9am to 6pm.
+- User: What about the checkup price range or whatever?
+- Assistant: In the range of $50 to $60.
+- User: What's the thing for dropping in for services?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the drop-in thing for services or whatever?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the drop-by deal for grooming or something?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the 24/7 help situation or whatever?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the holiday schedule or whatever?
+- Assistant: We are open every weekday from 9am to 6pm.
+- User: What's the deal with the grooming options or something?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the walk-in thing for, like, services?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What about the grooming thing, like, options or whatever?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the drop-in thing for checkups, like, how does that work?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the 24/7 emergency help or something?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'

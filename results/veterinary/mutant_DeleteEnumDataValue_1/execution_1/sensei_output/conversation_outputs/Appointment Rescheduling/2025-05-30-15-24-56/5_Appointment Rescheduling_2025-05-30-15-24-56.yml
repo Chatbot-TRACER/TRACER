@@ -1,0 +1,109 @@
+serial: 2025-05-30-15-24-56
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: '2023-11-17'
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 17/11/2023 at 10:00:00 for Vaccination. \nSee you then!    \n"
+- rescheduling_prompt: November 17, 2023, at 10:00 AM
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 17/11/2023 at 10:00:00 for Vaccination. \nSee you then!    \n"
+errors: []
+total_cost($): 0.00435135
+---
+conversation time: 80.584153
+assistant response time:
+- 0.749773
+- 0.762469
+- 0.919005
+- 0.883122
+- 0.949032
+- 0.798057
+- 1.207088
+- 0.877239
+- 0.941506
+- 1.124785
+- 1.101538
+- 0.799302
+- 1.012219
+- 0.887442
+- 0.733438
+response time report:
+  average: 0.916401
+  max: 1.207088
+  min: 0.733438
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I provide the correct appointment details, including the new date of 2023-11-17
+    and time of 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to provide the correct details for my appointment, specifically changing
+    the date to November 17, 2023, at 10:00 AM. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my appointment details to November 17, 2023, at 10:00 AM.
+    Can you assist me with this?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to update my appointment to November 17, 2023, at 10:00 AM. Is that
+    possible?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to change my appointment to November 17, 2023, at 10:00 AM. Can you
+    help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change the date and time of my appointment to November 17, 2023,
+    at 10:00 AM. Can you assist me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to reschedule my appointment for November 17, 2023, at 10:00 AM. Is
+    that possible?
+- Assistant: "Ok, I have received your request to schedule an appointment for 17/11/2023\
+    \ at 10:00:00 for Vaccination. \nSee you then!    \n"
+- User: Can you confirm if there’s any confirmation number I need to refer to for
+    my appointment on November 17, 2023?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there a confirmation number I should reference for my appointment on November
+    17, 2023?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Will I receive a confirmation number for my appointment on November 17, 2023?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you send out reminders for appointments, like the one on November 17, 2023?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Will I get a reminder for my appointment on November 17, 2023?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Will I receive a reminder for my appointment on November 17, 2023?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I do if I don't receive a confirmation or reminder for my appointment
+    on November 17, 2023?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I do if I don't get a confirmation or reminder for my appointment
+    on November 17, 2023?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

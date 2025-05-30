@@ -1,0 +1,89 @@
+serial: 2025-05-30-15-24-57
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: In the range of $50 to $60.
+errors: []
+total_cost($): 0.00325875
+---
+conversation time: 65.440072
+assistant response time:
+- 1.07752
+- 0.792255
+- 0.788906
+- 0.848932
+- 2.097804
+- 1.164675
+- 0.847331
+- 0.821062
+- 0.929152
+- 2.816439
+- 0.960896
+- 1.02231
+- 1.525571
+- 0.982869
+- 2.107917
+response time report:
+  average: 1.252242
+  max: 2.816439
+  min: 0.788906
+---
+interaction:
+- User: What’s the deal with the drop-in thing for pets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the scoop on grooming stuff for the pets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the sitch with the 24/7 pet emergencies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What about the holiday hours for the pets, any special days?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the cost for a checkup, like a ballpark?
+- Assistant: In the range of $50 to $60.
+- User: What’s the drop-off vibe for pups?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the grooming scene like for the pets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the emergency pet help situation, like round-the-clock?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the holiday plan for pet care, any changes?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the checkup price, like a rough idea?
+- Assistant: In the range of $50 to $60.
+- User: What's the drop-in deal for the furry ones?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the grooming vibe for the furry friends?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the emergency pet service thing, like around the clock?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the holiday thing for pet care, any changes?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the checkup range, like a ballpark figure?
+- Assistant: In the range of $50 to $60.
