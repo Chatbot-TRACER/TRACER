@@ -1,0 +1,110 @@
+serial: 2025-05-30-13-36-24
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: '2023-11-17'
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: 'I have the date and time for your appointment, but I still
+    need to know which service you would like to book: Physical examination, Vaccination,
+    Dental health and cleaning, or Lab or diagnostic testing. Could you please provide
+    that information?'
+- rescheduling_prompt: I need to provide the correct appointment details, including
+    the new date of 2023-11-17 and the time 10:00 AM.
+- new_appointment_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0042081
+---
+conversation time: 71.921798
+assistant response time:
+- 0.818979
+- 0.732663
+- 2.640439
+- 0.925747
+- 0.997235
+- 5.190913
+- 0.8293
+- 0.812272
+- 0.935942
+- 0.801045
+- 0.818802
+- 0.86977
+- 0.834155
+- 1.085952
+- 0.941464
+response time report:
+  average: 1.282311
+  max: 5.190913
+  min: 0.732663
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to update my appointment because the details I provided earlier are
+    wrong. Could you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to provide the correct appointment details, including the new date
+    of 2023-11-17 and the time 10:00 AM. Can you assist with that?
+- Assistant: 'I have the date and time for your appointment, but I still need to know
+    which service you would like to book: Physical examination, Vaccination, Dental
+    health and cleaning, or Lab or diagnostic testing. Could you please provide that
+    information?'
+- User: I would like to book a physical examination.
+- Assistant: "Ok, I have received your request to schedule an appointment for  at\
+    \ 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I actually need to double-check the appointment time. Can you confirm that
+    my new appointment is for 2023-11-17 at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you confirm that my appointment is scheduled for 2023-11-17 at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you please verify if my appointment is set for 2023-11-17 at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me if my appointment is confirmed for 2023-11-17 at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you check if my appointment is set for 2023-11-17 at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you please confirm if my appointment is scheduled for 2023-11-17 at 10:00
+    AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there a way to get help with the appointment confirmation for 2023-11-17
+    at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you provide details about whether my appointment is confirmed for 2023-11-17
+    at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you clarify if I have my appointment confirmed for 2023-11-17 at 10:00
+    AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me what time my appointment is?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you check the time of my appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

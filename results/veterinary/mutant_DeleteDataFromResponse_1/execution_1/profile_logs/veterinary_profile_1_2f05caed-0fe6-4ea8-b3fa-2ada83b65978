@@ -1,0 +1,61 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "Do you offer any dental care services for pets?",
+                "Can you tell me if there are any specific services for urgent care or emergencies?",
+                "What does a physical examination include?",
+                "How much does a physical examination cost?",
+                "Can you provide details on the types of vaccinations that you offer for pets?",
+                "What types of dental care services do you offer for pets?",
+                "Are there any preventative care services available for pets?",
+                "What kind of preventive care services do you have for pets?",
+                "What other types of examinations do you offer?",
+                "Do you have any services for behavioral consultations or issues with pets?",
+                "Is there a way to find out if you have any specialized services for certain conditions or health issues?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

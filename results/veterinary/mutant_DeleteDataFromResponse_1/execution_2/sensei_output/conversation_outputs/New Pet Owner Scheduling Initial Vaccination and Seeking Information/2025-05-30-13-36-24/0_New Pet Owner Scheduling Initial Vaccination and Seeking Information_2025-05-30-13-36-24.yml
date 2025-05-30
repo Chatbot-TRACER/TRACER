@@ -1,0 +1,147 @@
+serial: 2025-05-30-13-36-24
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to ensure it receives the necessary vaccinations
+  to stay healthy.
+- As a first-time dog owner, you're also keen to learn more about the veterinary center
+  and responsible pet care practices.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask what types of animals the veterinary center treats.
+- Confirm if the veterinary center treats dogs.
+- Ask about the types of vaccinations offered for dogs.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- Ask about the business hours of operation.
+- date: Tomorrow
+- time: 9:30 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- available_veterinary_services: I'm not sure. However, I can provide information
+    regarding the cost of a vet visit, the types of animals we accept, pet care tips,
+    our opening hours, and our weekend schedule.
+- treatable_animals: We specialize in dogs, cats, and birds.
+- treatable_animal_confirmation: We do treat dogs at our veterinary center.
+- vaccination_information: null
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for  at 09:30:00 for Vaccination. \nSee you then!    \n"
+- business_hours: Our business hours of operation are every weekday from 9am to 6pm.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00908205
+---
+conversation time: 171.835625
+assistant response time:
+- 3.390746
+- 2.778434
+- 1.506474
+- 3.562878
+- 0.881974
+- 3.604799
+- 1.523038
+- 0.917287
+- 1.218872
+- 0.948771
+- 1.470082
+- 0.949498
+- 3.589752
+- 0.848633
+- 1.31875
+- 1.239007
+- 1.120156
+- 1.633337
+- 0.986305
+- 0.957277
+- 3.692245
+- 1.199139
+- 0.965877
+- 5.59253
+response time report:
+  average: 1.912327
+  max: 5.59253
+  min: 0.848633
+---
+interaction:
+- User: What services do you offer at the veterinary center?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What types of animals does your veterinary center treat?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: Do you treat dogs at your veterinary center?
+- Assistant: Welcome to my veterinary center. I'm the owner and I'm happy to help
+    you. We do treat dogs at our veterinary center. What can I do for you?
+- User: What types of vaccinations do you offer for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Could you please tell me about the types of vaccinations you offer for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you share what types of vaccinations are available for dogs at your veterinary
+    center?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you provide a list of the vaccinations available for dogs at your veterinary
+    center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are available for dogs at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations do you provide for dogs at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are your business hours of operation?
+- Assistant: Our business hours of operation are every weekday from 9am to 6pm.
+- User: Can I schedule a vaccination appointment for my dog tomorrow at 9:30 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for  at\
+    \ 09:30:00 for Vaccination. \nSee you then!    \n"
+- User: What vaccinations do you provide for dogs at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of vaccinations are offered for dogs at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are available for dogs at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me about the vaccinations that are available for dogs at your
+    veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccines do you offer for dogs at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What dog vaccines do you provide at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations do you have for dogs at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccine options are available for dogs at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of vaccinations can I get for my dog at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of dog vaccines do you offer at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: What vaccination options do you have for dogs at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccines can I get for my dog at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kinds of vaccinations are available for dogs at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.

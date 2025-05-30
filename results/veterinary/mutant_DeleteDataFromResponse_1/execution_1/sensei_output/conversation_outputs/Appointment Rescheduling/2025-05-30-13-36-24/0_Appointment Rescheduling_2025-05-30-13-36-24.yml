@@ -1,0 +1,114 @@
+serial: 2025-05-30-13-36-24
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Today
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: Ok, I have received your request to schedule an appointment
+    for  at 10:00:00 for Physical examination.
+- rescheduling_prompt: today at 10:00 AM
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for  at 10:00:00 for Physical examination. \nSee you then!    \n"
+errors: []
+total_cost($): 0.00408705
+---
+conversation time: 71.776799
+assistant response time:
+- 1.213422
+- 0.886838
+- 0.801359
+- 1.476558
+- 2.759936
+- 1.552921
+- 0.898397
+- 1.159985
+- 0.961708
+- 0.854104
+- 1.198865
+- 7.772413
+- 1.125731
+- 0.808655
+- 0.88852
+response time report:
+  average: 1.62396
+  max: 7.772413
+  min: 0.801359
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I update it to today at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to update my appointment details to reflect today at 10:00 AM. Can
+    you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my appointment to today at 10:00 AM. Can you assist with
+    that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my appointment from its original date to today at 10:00 AM.
+    Is that possible?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to change my appointment to today at 10:00 AM. Can you assist me with
+    that?
+- Assistant: 'I can help you with that! However, I still need to know which service
+    you would like to change your appointment to. Please choose from the following
+    options: Physical examination, Vaccination, Dental health and cleaning, or Lab
+    or diagnostic testing.'
+- User: I need to change my appointment to today at 10:00 AM for a physical examination.
+    Can you help with that?
+- Assistant: "Ok, I have received your request to schedule an appointment for  at\
+    \ 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I actually need to confirm if my original appointment has been canceled since
+    I want to make sure there aren’t any overlaps. Can you check that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to confirm whether my original appointment has been canceled to avoid
+    any overlaps. Can you check that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to verify if my original appointment has been canceled to prevent any
+    scheduling conflicts. Can you check that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to confirm if my original appointment was canceled to avoid any scheduling
+    conflicts. Can you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to check if my original appointment was canceled to ensure there are
+    no scheduling conflicts. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to find out if my original appointment was canceled to make sure there
+    are no scheduling conflicts. Can you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to know if my original appointment was canceled to avoid scheduling
+    conflicts. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to confirm if my original appointment has been canceled to prevent
+    overlaps. Can you check that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to verify if my original appointment was canceled to avoid scheduling
+    overlaps. Can you check that for me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

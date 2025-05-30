@@ -1,0 +1,61 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What are the typical services included in a physical examination?",
+                "What does a physical examination include?",
+                "How much does a physical examination cost?",
+                "What types of services do you provide for pets?",
+                "What are the specific types of examinations you offer?",
+                "Can you tell me if there are different types of physical examinations available?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "28/10/2024"
+            ],
+            "time": [],
+            "service": [
+                "Physical examination"
+            ]
+        },
+        "top-level": {}
+    }
+}

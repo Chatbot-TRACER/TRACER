@@ -1,0 +1,93 @@
+serial: 2025-05-30-13-36-24
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: I'm sorry, but I did not understand the last sentence, can you
+    say that again?
+errors: []
+total_cost($): 0.0030483
+---
+conversation time: 59.940389
+assistant response time:
+- 0.866335
+- 0.97935
+- 0.817899
+- 0.765058
+- 0.78708
+- 0.862489
+- 0.956453
+- 0.889512
+- 0.901123
+- 0.821754
+- 0.755773
+- 0.949997
+- 0.828096
+- 0.962572
+- 0.767894
+response time report:
+  average: 0.860759
+  max: 0.97935
+  min: 0.755773
+---
+interaction:
+- User: Walk-in thing? How's that work?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Walk-in thing, what's the deal?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming stuff, what's the setup?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, what's the plan for that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, like what's the deal there?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, like how that works?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, what’s the scoop on that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, what's the process for that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, what’s the routine there?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, what’s the setup for that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, what’s the way that goes?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, what's the thing there?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, what’s the arrangement for that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, what's the deal with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming, what's the situation with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
