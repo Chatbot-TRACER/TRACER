@@ -1,0 +1,137 @@
+serial: 2025-05-30-18-37-18
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - corn
+- topping2:
+  - corn
+- topping3:
+  - corn
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: corn, ham'
+errors: []
+---
+conversation time: 120.135926
+assistant response time:
+- 2.011428
+- 2.194856
+- 5.583765
+- 1.744437
+- 1.676589
+- 1.788013
+- 3.619353
+- 3.705484
+- 3.902381
+- 3.812842
+- 3.874542
+- 3.720867
+- 2.248389
+- 1.893006
+- 3.318413
+- 3.378136
+response time report:
+  average: 3.029531
+  max: 5.583765
+  min: 1.676589
+---
+interaction:
+- User: I'd like to order a custom pizza. What size options do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to go with an extra-large custom pizza. Can I choose any toppings
+    I want?
+- Assistant: 'It seems that the pizza size and toppings you provided are not valid.
+    Could you please specify a pizza size (small, medium, or large) and choose from
+    the following toppings: cheese, mushrooms, pepper, ham, bacon, pepperoni, olives,
+    corn, or chicken? Thank you!'
+- User: I want to confirm my order for an extra-large pizza with corn, corn, and corn.
+    Is that possible?
+- Assistant: 'Unfortunately, we only offer pizza sizes of small, medium, or large.
+    Could you please specify a valid size and choose from the following toppings:
+    cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken? Thank
+    you!'
+- User: I understand. So, if I wanted to get an extra-large pizza, what toppings could
+    I choose from?
+- Assistant: 'Unfortunately, we only offer small, medium, or large pizza sizes at
+    Fast Pizza. You can choose from the following toppings: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, or chicken. Please let me know your preferred
+    size and toppings!'
+- User: I see. So, if I want a large pizza, can I still choose corn as a topping along
+    with other options?
+- Assistant: 'Yes, you can choose corn as a topping for a large pizza along with other
+    options. Please let me know the size (small, medium, or large) and the toppings
+    you would like to include from the following: cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, corn, or chicken.'
+- User: I would like to order a large pizza with corn and maybe some ham. Can I add
+    a drink to my order as well?
+- Assistant: 'Thank you for your order of a large pizza! Could you please specify
+    the toppings you would like? You can choose from the following options: cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Thank you!'
+- User: I'd like to confirm my order for a large pizza with corn and ham. What drink
+    options do you have available?
+- Assistant: 'Thank you for confirming your order for a large pizza! However, I still
+    need to know your choice of toppings. You can choose from the following options:
+    cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Please
+    let me know your selection. Thank you!'
+- User: I would like to confirm my order for a large pizza with corn and ham. Now,
+    can you tell me what drink options are available?
+- Assistant: 'Thank you for confirming your order for a large pizza! However, I still
+    need to know your choice of toppings. You can choose from the following options:
+    cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Please
+    let me know your selection. Thank you!'
+- User: I understand that my order is for a large pizza with corn and ham. Now, can
+    you please tell me what drink options are available?
+- Assistant: 'Thank you for confirming your order for a large pizza! However, I still
+    need to know your choice of toppings. You can choose from the following options:
+    cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Please
+    let me know your selection. Thank you!'
+- User: Could you please let me know what drink options are available?
+- Assistant: 'Thank you for your order of a large pizza! However, I still need to
+    know your choice of toppings. You can choose from the following options: cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Please let
+    me know your selection. Thank you!'
+- User: Could you please tell me what drink options are available?
+- Assistant: 'Thank you for your order of a large pizza! However, I still need to
+    know your choice of toppings. You can choose from the following options: cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Please let
+    me know your selection. Thank you!'
+- User: What drink options do you have available?
+- Assistant: 'Thank you for your order of a large pizza! However, I still need to
+    know your choice of toppings. You can choose from the following options: cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Please let
+    me know your selection. Thank you!'
+- User: What drink options do you have available?
+- Assistant: 'Thank you for your order of a large pizza! However, I still need to
+    know your choice of toppings. You can choose from the following options: cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Please let
+    me know your selection. Thank you!'
+- User: What drink options do you have available?
+- Assistant: 'Thank you for your order of a large pizza! However, I still need to
+    know your choice of toppings. You can choose from the following options: cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Please let
+    me know your selection. Thank you!'
+- User: What drink options do you have available?
+- Assistant: 'Thank you for your order of a large pizza! However, I still need to
+    know your choice of toppings. You can choose from the following options: cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Please let
+    me know your selection. Thank you!'

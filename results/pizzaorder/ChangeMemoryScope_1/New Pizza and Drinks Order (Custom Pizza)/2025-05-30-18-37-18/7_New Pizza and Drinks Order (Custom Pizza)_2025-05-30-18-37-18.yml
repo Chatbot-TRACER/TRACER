@@ -1,0 +1,124 @@
+serial: 2025-05-30-18-37-18
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - pepper
+- topping2:
+  - pepper
+- topping3:
+  - pepper
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepperoni, mushrooms,
+    olives'
+errors: []
+---
+conversation time: 98.810361
+assistant response time:
+- 2.147732
+- 1.95139
+- 1.244385
+- 1.855085
+- 2.936574
+- 1.194619
+- 1.760487
+- 1.19206
+- 3.888781
+- 3.56248
+- 3.554555
+- 3.592627
+- 3.781247
+- 4.255097
+- 3.610072
+- 3.654028
+response time report:
+  average: 2.761326
+  max: 4.255097
+  min: 1.19206
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. What toppings do you recommend?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I’d like to create a custom pizza. What toppings do you suggest?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'm interested in creating a custom pizza. What toppings do you recommend?
+- Assistant: It looks like I still need to know the size of the pizza you'd like to
+    order. Could you please tell me if you want a small, medium, or large pizza?
+- User: I'd like an extra large pizza, please. Now, what toppings do you suggest for
+    a crowd-pleaser?
+- Assistant: We only offer small, medium, or large pizzas. Could you please choose
+    one of those sizes for your custom pizza?
+- User: I'd like an extra large pizza with pepper, pepper, and pepper. Can you confirm
+    my order?
+- Assistant: We only offer small, medium, or large pizzas. Could you please choose
+    one of those sizes for your custom pizza? Also, please note that we can only accept
+    specific toppings. The available toppings are cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, corn, and chicken. Please let me know your choice of
+    toppings.
+- User: I'd like an extra large pizza with pepperoni, mushrooms, and olives. Can you
+    confirm my order?
+- Assistant: We only offer small, medium, or large pizzas. Could you please choose
+    one of those sizes for your custom pizza?
+- User: I’d like a large pizza with pepperoni, mushrooms, and olives. Can you confirm
+    my order?
+- Assistant: I have noted that you'd like a large pizza. Could you please tell me
+    which toppings you would like? Your options are cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, corn, or chicken.
+- User: I'd like a large pizza with pepperoni, mushrooms, and olives. Can you confirm
+    my order?
+- Assistant: I have noted that you'd like a large pizza. Could you please confirm
+    your toppings? Your options are cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken.
+- User: I’d like a large pizza with pepperoni, mushrooms, and olives. Can you confirm
+    my order?
+- Assistant: I have noted that you'd like a large pizza. Could you please confirm
+    your toppings? Your options are cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken.
+- User: I’d like a large pizza with pepperoni, mushrooms, and olives. Can you confirm
+    my order?
+- Assistant: I have noted that you'd like a large pizza. Could you please confirm
+    your toppings? Your options are cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken.
+- User: I'd like a large pizza with pepperoni, mushrooms, and olives. Can you confirm
+    my order now?
+- Assistant: I have noted that you'd like a large pizza. Could you please tell me
+    which toppings you would like? Your options are cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, corn, or chicken.
+- User: I'd like a large pizza with pepperoni, mushrooms, and olives. Can you confirm
+    my order now?
+- Assistant: I have noted that you'd like a large pizza. Could you please confirm
+    your toppings? Your options are cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken.
+- User: I'd like a large pizza with pepperoni, mushrooms, and olives. Can you confirm
+    my order?
+- Assistant: I have noted that you'd like a large pizza. Could you please confirm
+    your toppings? Your options are cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken.
+- User: I'd like a large pizza with pepperoni, mushrooms, and olives. Can you confirm
+    my order now?
+- Assistant: I have noted that you'd like a large pizza. Could you please confirm
+    your toppings? Your options are cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken.

@@ -1,0 +1,96 @@
+serial: 2025-05-30-18-37-18
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients).
+- custom_pizza_response: 'The options you have for toppings on a custom pizza are:
+    cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken.'
+errors: []
+---
+conversation time: 115.62992
+assistant response time:
+- 1.752246
+- 1.35121
+- 2.723492
+- 1.859043
+- 0.953311
+- 0.832443
+- 3.342919
+- 1.097269
+- 0.705254
+- 1.065328
+- 0.997249
+- 0.77756
+- 1.897771
+- 0.781132
+- 0.76687
+- 6.112827
+- 2.146001
+response time report:
+  average: 1.715407
+  max: 6.112827
+  min: 0.705254
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: "Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order\
+    \ pizzas and drinks. \nWhat can I do for you?"
+- User: What kinds of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like a Hawaiian pizza, but can you confirm what toppings come with that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are included on the Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings come with the Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are on the Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the ingredients on the Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings should I expect on a Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What do you mean by "rephrase"? Can you just tell me what toppings are on
+    the Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are included on the Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings should I expect on the Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What if I just want to know if there are any additional toppings I can add
+    to the Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any extra toppings I can add to the Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any additional toppings that can be added to the Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: If I wanted to order a custom pizza instead, what options do I have for toppings?
+- Assistant: 'I see that you haven''t provided the pizza size yet. Could you please
+    let me know if you would like a small, medium, or large pizza? Additionally, please
+    specify your choice of toppings from the following options: cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, or chicken.'
+- User: Can you tell me again what options I have for toppings on a custom pizza?
+- Assistant: 'The options you have for toppings on a custom pizza are: cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, or chicken. Please let me know your
+    choice of toppings, and also specify if you would like a small, medium, or large
+    pizza.'

@@ -1,0 +1,120 @@
+serial: 2025-05-30-18-37-18
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Meat Lovers
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you ordering predefined or custom pizzas, and then
+    drinks.
+- pizza_type_response: None
+- custom_pizza_response: null
+errors:
+- 1001: 1 goals left to complete.
+---
+conversation time: 126.757794
+assistant response time:
+- 1.236035
+- 1.566944
+- 2.736271
+- 2.469134
+- 2.125931
+- 2.290636
+- 3.237084
+- 1.147369
+- 4.99771
+- 5.541237
+- 3.163903
+- 3.183897
+- 2.120964
+- 3.575344
+- 2.822267
+- 4.938853
+- 3.445734
+response time report:
+  average: 2.97643
+  max: 5.541237
+  min: 1.147369
+---
+interaction:
+- User: Can you help me with ordering a pizza?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What types of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Meat Lovers pizza, please. Can you confirm if that's on your menu?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: It seems like there's a misunderstanding. Can you tell me again if you have
+    a Meat Lovers pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Could you please check again if you offer a Meat Lovers pizza? It seems like
+    I'm not getting a clear answer.
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Are you sure you don't have a Meat Lovers pizza? Can you just double-check?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there any chance you could add a Meat Lovers pizza to the menu? It seems
+    to be missing.
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you just confirm if there's any way to customize a pizza to include
+    Meat Lovers toppings?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I choose specific toppings for the custom pizza, or are there limitations
+    on what I can add?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    long it takes to get an order.
+- User: Can you tell me what toppings I can choose from for a custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: Are there any meats available for the custom pizza, or is it just vegetables?'
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.
+- User: Are there any specific meats I can choose for the custom pizza, like pepperoni
+    or sausage?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there a way to find out what specific toppings are available for the custom
+    pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there a list of toppings you can provide for the custom pizza, or is it
+    just up to my imagination?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you tell me what the prices are for the different types of pizzas?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: 'User: Can you tell me how much a Meat Lovers pizza would cost if I decide
+    to customize it?'
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
