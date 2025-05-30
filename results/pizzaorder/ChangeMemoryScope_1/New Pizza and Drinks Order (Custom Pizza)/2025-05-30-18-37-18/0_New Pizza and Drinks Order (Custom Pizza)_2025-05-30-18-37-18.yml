@@ -1,0 +1,141 @@
+serial: 2025-05-30-18-37-18
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - bacon
+- topping2:
+  - bacon
+- topping3:
+  - bacon
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: bacon, bacon, bacon'
+errors: []
+---
+conversation time: 106.849383
+assistant response time:
+- 2.282457
+- 1.872465
+- 3.896259
+- 3.037736
+- 3.401938
+- 4.094137
+- 4.385863
+- 4.393886
+- 4.289843
+- 2.611357
+- 2.586108
+- 0.980768
+- 2.769522
+- 1.752007
+- 2.318754
+- 1.909147
+response time report:
+  average: 2.91139
+  max: 4.393886
+  min: 0.980768
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Could I get a large custom pizza, please?
+- Assistant: 'It looks like I have the pizza size as large, but I still need to know
+    your choice of toppings. Please let me know which toppings you would like from
+    the following options: cheese, mushrooms, pepper, ham, bacon, pepperoni, olives,
+    corn, chicken.'
+- User: I'd like a large pizza with bacon, bacon, and bacon, please.
+- Assistant: 'Thanks for ordering a large pizza with b, a, c, o and n!
+
+    Thank you for your order! I have your large pizza with bacon. Now, could you please
+    let me know how many drinks you would like to order and your choice of drink (coke,
+    sprite, or water)?'
+- User: I'd like to order three drinks, please. Could I get two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza topped with b, a, c, o, and n, along with 3 Cokes, is
+    $25.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is a799cc.'
+- User: Could you confirm my order for a large pizza with bacon, bacon, and bacon,
+    along with two Cokes and one Sprite?
+- Assistant: I see that you've provided the toppings, but I still need to confirm
+    the pizza size. Could you please let me know the size of the pizza you would like?
+    The options are small, medium, or large.
+- User: I already ordered a large pizza with bacon, bacon, and bacon. Can you just
+    confirm that for me along with two Cokes and one Sprite?
+- Assistant: 'Thanks for ordering a large pizza with b, a, c, o and n!
+
+    Thank you for your patience! I have your large pizza with bacon confirmed. Now,
+    could you please let me know the number of drinks you would like to order and
+    your choice of drinks (coke, sprite, or water)? I see you mentioned two Cokes
+    and one Sprite, but I need to confirm the total number of drinks and ensure the
+    drink names are in the correct format.'
+- User: I'd like to confirm my order for a large pizza with bacon, bacon, and bacon,
+    along with two Cokes and one Sprite. Can you just finalize that for me?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza topped with b, a, c, o, and n, along with 3 Cokes, is
+    $25.50.
+
+    Your order will be ready for pickup in 15 minutes at our shop located at 23 Main
+    Street, NY. Your order ID is 83f58a.'
+- User: Could you tell me the total cost of my order with the large pizza and drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you break down the price of my large pizza with bacon, bacon, and bacon,
+    along with two Cokes and one Sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please break down the cost for my large custom pizza with bacon,
+    bacon, and bacon, along with two Cokes and one Sprite? I'm trying to understand
+    how it all adds up.
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you tell me how many additional toppings I have on my large custom pizza
+    with bacon, bacon, and bacon?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me how many extra toppings are included on my large custom
+    pizza with three bacon toppings?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you tell me how many toppings I can have on my custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: So, how many toppings can I choose for my custom pizza?'
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: Can I add more than three toppings to my custom pizza?'
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)

@@ -1,0 +1,66 @@
+serial: 2025-05-30-18-37-18
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: null
+- delivery_information: Delivery is not available. You can only pick up your order.
+errors:
+- 500: Chatbot internal error
+- 1001: 1 goals left to complete.
+---
+conversation time: 38.837522
+assistant response time:
+- 5.079843
+- 4.388313
+- 1.802185
+- 1.610545
+- 2.45998
+- 2.442065
+response time report:
+  average: 2.963821
+  max: 5.079843
+  min: 1.610545
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. What is the total
+    cost?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    It looks like I still need some information to complete your order. Could you
+    please tell me how many drinks you would like to order (num_drinks) and what type
+    of drink you prefer (coke, sprite, or water)?'
+- User: Can you confirm that delivery is not available?
+- Assistant: Yes, delivery is not available at Fast Pizza. You can only pick up your
+    order. Would you like to proceed with your drink order?
+- User: What is the estimated time for pickup?
+- Assistant: I don't have the exact estimated time for pickup, but it typically takes
+    around 15-30 minutes. Would you like to proceed with your drink order? If so,
+    please let me know how many drinks you would like and what type of drink you prefer
+    (coke, sprite, or water).
+- User: Could you please confirm the total cost for the large Hawaiian pizza and two
+    Cokes?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    I still need to know how many drinks you would like to order (num_drinks) and
+    what type of drink you prefer (coke, sprite, or water). Could you please provide
+    that information?'
+- User: Could you please provide the total cost for the large Hawaiian pizza and two
+    Cokes?
+- Assistant: 'Error: 500 Internal Server Error: Error executing the engine: Data is
+    missing the property pizza_size'

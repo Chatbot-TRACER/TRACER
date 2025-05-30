@@ -1,0 +1,114 @@
+serial: 2025-05-30-18-37-18
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - pepperoni
+- topping2:
+  - pepperoni
+- topping3:
+  - pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepperoni, pepperoni,
+    pepperoni, extra cheese'
+errors: []
+---
+conversation time: 90.971924
+assistant response time:
+- 2.469677
+- 2.689107
+- 1.870015
+- 3.204443
+- 2.958372
+- 3.385076
+- 2.108188
+- 0.826533
+- 0.740258
+- 1.295718
+- 1.0243
+- 1.343184
+- 0.842717
+- 0.915509
+- 0.880843
+- 1.259584
+response time report:
+  average: 1.738345
+  max: 3.385076
+  min: 0.740258
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a large pizza with pepperoni, pepperoni, and pepperoni. Can
+    you confirm my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I would like to confirm my order for a large pizza with pepperoni, pepperoni,
+    and pepperoni. Can you please do that?
+- Assistant: 'It looks like I still need the pizza size for your order. Could you
+    please confirm that you would like a large pizza? '
+- User: Yes, I would like to confirm that I want a large pizza. Now, can you make
+    sure it has extra cheese too?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e, r, o, n and i!
+
+    Thank you for confirming your order for a large pizza with extra cheese. Could
+    you please let me know how many drinks you would like to order and what type of
+    drinks (coke, sprite, or water)? '
+- User: I would like to order three drinks, please. Can I have two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza topped with pepperoni and three Cokes is $27.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is b1e5af.'
+- User: Could you please remind me what time I should pick up my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: What type of drinks did I order again? I think I wanted two Cokes and one
+    Sprite.
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I just want to confirm the drinks I ordered. Did I place an order for two
+    Cokes and one Sprite?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I just want to verify my drink order. Did I order two Cokes and one Sprite?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if you have any dessert options available?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you let me know if there are any dessert options available?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a dessert menu that I can look at?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What types of desserts do you offer?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if you have any dessert options available?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What types of desserts do you have?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
