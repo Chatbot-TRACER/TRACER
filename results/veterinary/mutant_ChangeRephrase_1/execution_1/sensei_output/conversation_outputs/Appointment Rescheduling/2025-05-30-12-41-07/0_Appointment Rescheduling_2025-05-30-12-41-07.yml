@@ -1,0 +1,120 @@
+serial: 2025-05-30-12-41-07
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Today
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 28/10/2024 at 10:00:00 for Physical examination. \nSee you then!    \n"
+- rescheduling_prompt: I have received your request to schedule an appointment for
+    28/10/2024 at 10:00:00 for Physical examination.
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 28/10/2024 at 10:00:00 for Physical examination. \nSee you then!    \n"
+errors: []
+total_cost($): 0.00438825
+---
+conversation time: 81.622872
+assistant response time:
+- 0.849798
+- 0.977574
+- 0.839931
+- 0.738874
+- 1.199065
+- 0.851093
+- 0.800942
+- 2.87658
+- 1.871661
+- 1.347096
+- 1.244876
+- 3.333859
+- 1.222688
+- 4.583023
+- 1.651764
+response time report:
+  average: 1.625921
+  max: 4.583023
+  min: 0.738874
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Could we change it to today at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to update my appointment details to be for today at 10:00 AM. Can you
+    help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my appointment to today at 10:00 AM. Can you help me with
+    that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule my appointment to today at 10:00 AM. Can you assist with
+    that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to change my appointment to today at 10:00 AM. Can you assist me with
+    that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to update my appointment to today at 10:00 AM. Can you help me with
+    that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you help me change my appointment to today at 10:00 AM, please?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you assist me in rescheduling my appointment to be today at 10:00 AM?
+- Assistant: 'I have the date and time for your appointment, but I still need to know
+    which service you would like to schedule. Please choose from the following options:
+    Physical examination, Vaccination, Dental health and cleaning, or Lab or diagnostic
+    testing.'
+- User: I just need to reschedule to today at 10:00 AM; I'm not sure which service
+    I originally selected. Can we just move it without that information?
+- Assistant: 'I understand that you want to reschedule your appointment to today at
+    10:00 AM, but I need to know which service you would like to select. Please choose
+    from the following options: Physical examination, Vaccination, Dental health and
+    cleaning, or Lab or diagnostic testing.'
+- User: I really just want to change the date and time to today at 10:00 AM. Is there
+    any way to do that without specifying the service?
+- Assistant: 'I understand your desire to reschedule without specifying the service,
+    but unfortunately, I need to know which service you would like to select in order
+    to proceed with the appointment. Please choose from the following options: Physical
+    examination, Vaccination, Dental health and cleaning, or Lab or diagnostic testing.'
+- User: Could I just have the same service I originally booked? I just need to change
+    the time to today at 10:00 AM.
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I actually wanted to change the appointment to today at 10:00 AM, not in the
+    future. Can we do that?
+- Assistant: 'I have the date and time for your appointment, but I still need to know
+    which service you would like to schedule. Please choose from the following options:
+    Physical examination, Vaccination, Dental health and cleaning, or Lab or diagnostic
+    testing.'
+- User: I understand, but I really just need to change the date and time to today
+    at 10:00 AM. Can we use the same service as before without specifying it?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to clarify that I want to reschedule my appointment to today at 10:00
+    AM, but I'm not sure which service I originally booked. Can we just use the same
+    service as before?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: I just need to change the appointment to today at 10:00 AM—can we proceed
+    with the same service I booked before?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"

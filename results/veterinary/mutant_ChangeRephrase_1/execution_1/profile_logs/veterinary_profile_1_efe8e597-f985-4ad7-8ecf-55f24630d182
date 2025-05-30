@@ -1,0 +1,63 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What kind of appointments are available for dogs, cats, and birds?",
+                "What are the types of examinations available for dogs, cats, and birds?",
+                "What kind of treatments or procedures do you provide for dogs, cats, and birds?",
+                "What types of vaccinations do you recommend for dogs, cats, and birds?",
+                "How much does a physical examination cost for dogs, cats, and birds?",
+                "What kind of treatments do you provide for dogs, cats, and birds?",
+                "What are the different types of vaccinations available for dogs, cats, and birds?",
+                "What services do you offer for dogs, cats, and birds?",
+                "What does a physical examination typically cover for dogs, cats, and birds?",
+                "What does a physical examination involve for dogs, cats, and birds?",
+                "What are the different types of examinations available for dogs, cats, and birds?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

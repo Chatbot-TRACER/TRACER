@@ -1,0 +1,156 @@
+serial: 2025-05-30-12-41-07
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to ensure it receives the necessary vaccinations
+  to stay healthy.
+- As a first-time dog owner, you're also keen to learn more about the veterinary center
+  and responsible pet care practices.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask what types of animals the veterinary center treats.
+- Confirm if the veterinary center treats dogs.
+- Ask about the types of vaccinations offered for dogs.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- Ask about the business hours of operation.
+- date: Tomorrow
+- time: 9:30 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- available_veterinary_services: We are specialized in dogs, cats and birds. For other
+    animals, please consult first.
+- treatable_animals: We are specialized in dogs, cats and birds.
+- treatable_animal_confirmation: We are specialized in dogs, cats and birds. For other
+    animals, please consult first.
+- vaccination_information: null
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 29/10/2024 at 09:30:00 for Vaccination. \nSee you then!    \n"
+- business_hours: Every weekday from 9am to 6pm.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00947235
+---
+conversation time: 160.963981
+assistant response time:
+- 2.422954
+- 2.246853
+- 2.081145
+- 1.06353
+- 3.465305
+- 1.07472
+- 1.258775
+- 2.660426
+- 0.861853
+- 0.848175
+- 2.196373
+- 1.585071
+- 3.266414
+- 2.661638
+- 2.369268
+- 3.402386
+- 2.730534
+- 2.432478
+- 2.165823
+- 3.601144
+- 1.931917
+- 2.14368
+- 1.052156
+- 1.047491
+response time report:
+  average: 2.107087
+  max: 3.601144
+  min: 0.848175
+---
+interaction:
+- User: What types of animals do you treat at your veterinary center?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: Do you provide vaccination services for dogs?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: What types of vaccinations do you offer for dogs?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: Can you tell me about the types of vaccinations you offer for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of vaccinations are available for dogs at your veterinary center?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: Are you open tomorrow?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Can you book a vaccination appointment for my dog tomorrow at 9:30 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 09:30:00 for Vaccination. \nSee you then!    \n"
+- User: What services do you offer at your veterinary center?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What are the business hours of operation for your veterinary center?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What services do you offer at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of services are available at your veterinary center?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What are the costs associated with a vet visit?
+- Assistant: Between $50 and $60
+- User: What vaccinations will my dog need as part of the first appointment?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: Are the vaccinations given during the first appointment the same for all puppies?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What types of vaccinations are typically recommended for puppies during their
+    first appointment?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What vaccinations will my dog need at the first appointment?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What types of vaccinations are generally recommended for puppies during their
+    first appointment?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What vaccinations does your veterinary center typically recommend for puppies
+    during their first visit?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What are the different types of vaccines my puppy might need?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What are the different types of vaccines that your veterinary center recommends
+    for puppies?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: Can you provide information on how to take care of my puppy after the vaccination?
+- Assistant: 'You should meet their basic needs: food, water, shelter, exercise, and
+    love.'
+- User: What specific care should I provide for my puppy after their first vaccination
+    appointment?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, general pet care, our opening hours, and weekend
+    availability.
+- User: What should I specifically watch for in my puppy's behavior after their first
+    vaccination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific behaviors should I monitor in my puppy after the first vaccination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

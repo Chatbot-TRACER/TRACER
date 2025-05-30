@@ -1,0 +1,59 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "How much does a physical examination cost?",
+                "What types of vaccinations do you offer for pets?",
+                "What other services do you provide besides vaccinations?",
+                "What other types of examinations or treatments do you offer?",
+                "What other services do you provide apart from physical examinations?",
+                "What are the costs associated with vaccinations for pets?",
+                "What kinds of appointments can I book with you?",
+                "What does a physical examination include?",
+                "What services do you provide for vaccinations?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

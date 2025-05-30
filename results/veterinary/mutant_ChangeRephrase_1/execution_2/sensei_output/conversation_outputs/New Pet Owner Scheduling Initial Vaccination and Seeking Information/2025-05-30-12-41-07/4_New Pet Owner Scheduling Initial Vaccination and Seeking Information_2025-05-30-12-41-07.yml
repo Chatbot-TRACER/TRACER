@@ -1,0 +1,143 @@
+serial: 2025-05-30-12-41-07
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to ensure it receives the necessary vaccinations
+  to stay healthy.
+- As a first-time dog owner, you're also keen to learn more about the veterinary center
+  and responsible pet care practices.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask what types of animals the veterinary center treats.
+- Confirm if the veterinary center treats dogs.
+- Ask about the types of vaccinations offered for dogs.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- Ask about the business hours of operation.
+- date: November 3
+- time: 4:00 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- available_veterinary_services: I do not know. I can answer questions about the cost
+    of a vet visit, the types of animals we accept, how to take care of your pet,
+    our opening hours, and our weekend schedule.
+- treatable_animals: We are specialized in dogs, cats and birds.
+- treatable_animal_confirmation: We are specialized in dogs, cats and birds.
+- vaccination_information: null
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 03/11/2024 at 16:00:00 for Vaccination. \nSee you then!    \n"
+- business_hours: Every weekday from 9am to 6pm.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00895335
+---
+conversation time: 147.290442
+assistant response time:
+- 1.899851
+- 1.969654
+- 1.570136
+- 0.819929
+- 2.197775
+- 1.086994
+- 1.438367
+- 2.120895
+- 0.881706
+- 0.774391
+- 1.125681
+- 0.858643
+- 0.82394
+- 0.879722
+- 1.152798
+- 0.862477
+- 0.690961
+- 0.840507
+- 0.72776
+- 0.729768
+- 1.154131
+- 0.780091
+- 0.860248
+- 0.927091
+response time report:
+  average: 1.132229
+  max: 2.197775
+  min: 0.690961
+---
+interaction:
+- User: What services do you offer at the veterinary center?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What types of animals do you treat at the veterinary center?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: Do you treat dogs at your veterinary center?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: What types of vaccinations do you offer for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kinds of vaccinations are available for dogs?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: Can you tell me the business hours of operation?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you available to schedule a vaccination appointment for my dog on November
+    3 at 4:00 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 03/11/2024\
+    \ at 16:00:00 for Vaccination. \nSee you then!    \n"
+- User: Can you provide me with more information on responsible pet care practices?
+- Assistant: 'You should meet their basic needs: food, water, shelter, exercise, and
+    love.'
+- User: What are some common dietary requirements for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the dietary needs that I should be aware of for my puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What specific dietary needs should I consider for my puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I look for in a high-quality puppy food?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I look for when choosing a high-quality food for my puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I consider when selecting a high-quality food for my puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the key ingredients to look for in a puppy food?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What key ingredients should I look for in puppy food?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the essential ingredients to choose in puppy food?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the essential nutrients that I should look for in puppy food?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What essential nutrients should I consider when selecting puppy food?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What essential nutrients should I keep in mind when selecting food for my
+    puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the recommended types of protein for puppy food?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of protein are recommended for puppy food?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What proteins should I consider for puppy food?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of protein sources are beneficial in puppy food?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

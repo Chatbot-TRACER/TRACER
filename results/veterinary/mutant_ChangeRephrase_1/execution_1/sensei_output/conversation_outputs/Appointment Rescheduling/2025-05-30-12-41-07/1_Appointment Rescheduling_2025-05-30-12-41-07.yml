@@ -1,0 +1,111 @@
+serial: 2025-05-30-12-41-07
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Tomorrow
+- time: 1:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 29/10/2024 at 13:30:00 for Physical examination. \nSee you then!    \n"
+- rescheduling_prompt: tomorrow at 1:30 PM
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 29/10/2024 at 13:30:00 for Physical examination. \nSee you then!    \n"
+errors: []
+total_cost($): 0.004668
+---
+conversation time: 72.452717
+assistant response time:
+- 0.991857
+- 1.259891
+- 1.646811
+- 1.168071
+- 1.215003
+- 1.516816
+- 1.121131
+- 1.460668
+- 1.132568
+- 1.364826
+- 1.459974
+- 1.301113
+- 1.140221
+- 1.380108
+- 1.375345
+response time report:
+  average: 1.302293
+  max: 1.646811
+  min: 0.991857
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I provide the correct details now?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to provide the correct appointment details, including the new date
+    for tomorrow at 1:30 PM.
+- Assistant: Please provide the service for the appointment so I can help you reschedule
+    it. The available services are Physical examination, Vaccination, Dental health
+    and cleaning, or Lab or diagnostic testing.
+- User: Can I reschedule the appointment for a physical examination?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: I actually meant tomorrow, so can we change that to tomorrow at 1:30 PM instead?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: I meant to say tomorrow, can we change that to tomorrow at 1:30 PM for the
+    physical examination?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: I need to make sure it’s scheduled for tomorrow at 1:30 PM for the physical
+    examination. Can we fix that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: I keep saying tomorrow at 1:30 PM for the physical examination. Can you confirm
+    that date and time?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: I need to confirm that my appointment is actually set for tomorrow at 1:30
+    PM for the physical examination. Can you update that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: I need to confirm that the appointment is set for tomorrow at 1:30 PM for
+    the physical examination, not the previous date. Can you please update that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: I keep saying tomorrow at 1:30 PM for the physical examination. Why is it
+    not updating?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: I need to ensure that my appointment is set for tomorrow at 1:30 PM for the
+    physical examination. Can you confirm that it's updated properly?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: I’m trying to make sure my appointment is actually set for tomorrow at 1:30
+    PM for the physical examination. Can you fix that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: I really need to ensure my appointment is scheduled for tomorrow at 1:30 PM
+    for the physical examination. Can we double-check that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: I just want to confirm that the appointment is set for tomorrow at 1:30 PM
+    for the physical examination, not the previous date. Can you update that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: Why can't you confirm that my appointment is set for tomorrow at 1:30 PM for
+    the physical examination?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"

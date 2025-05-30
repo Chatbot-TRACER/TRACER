@@ -1,0 +1,90 @@
+serial: 2025-05-30-12-41-07
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: Between $50 and $60
+errors: []
+total_cost($): 0.0034869
+---
+conversation time: 75.749741
+assistant response time:
+- 0.773505
+- 0.851226
+- 0.919364
+- 0.825428
+- 1.709333
+- 2.048609
+- 0.768254
+- 4.85632
+- 1.161496
+- 0.995777
+- 0.608799
+- 1.03333
+- 0.867464
+- 0.94653
+- 0.8832
+response time report:
+  average: 1.283242
+  max: 4.85632
+  min: 0.608799
+---
+interaction:
+- User: What’s the deal with drop-ins for pets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the sitch with grooming for furballs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the scoop on emergencies, like 24/7 stuff?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What about the days off for holidays, any special times?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the price for a quick checkup, any idea?
+- Assistant: Between $50 and $60
+- User: What about the drop-in hours, like when they happen?
+- Assistant: Weekdays from 9am to 6pm
+- User: What’s the deal with the fluff care, how often?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the frequency for emergency visits, you know, 24/7 or whatever?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the timing for the holiday breaks, any info?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What about the drop-in thing, is there a limit or something?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the situation with the fluff trimming, how often's it done?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the status on emergency care, like all hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What about the holiday hours, any specifics on when?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the lowdown on the drop-in times, any limits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the update on the fluff services, like how often do they happen?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

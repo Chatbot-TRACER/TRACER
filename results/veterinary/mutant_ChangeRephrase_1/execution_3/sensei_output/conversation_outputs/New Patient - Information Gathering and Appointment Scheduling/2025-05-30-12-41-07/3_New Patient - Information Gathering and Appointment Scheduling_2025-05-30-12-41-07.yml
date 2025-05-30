@@ -1,0 +1,128 @@
+serial: 2025-05-30-12-41-07
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to establish him with a reputable veterinary
+  center for his healthcare needs.
+- You want to find a vet that offers comprehensive services and has appointment times
+  that fit your busy schedule.
+ask_about:
+- Inquire about the services offered at the veterinary center.
+- Ask about the veterinary center's policy on accepting certain animal types as patients.
+- Ask what the approximate cost range is for a standard veterinary visit.
+- Inquire about the available times for an appointment.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- date: Saturday
+- time: 3:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- services_offered: We are specialized in dogs, cats and birds. For other animals,
+    please consult first.
+- animal_acceptance_policy: We are specialized in dogs, cats and birds. For other
+    animals, please consult first.
+- standard_visit_cost_range: Between $50 and $60
+- appointment_availability_info: Every weekday from 9am to 6pm.
+- appointment_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0061719
+---
+conversation time: 123.119854
+assistant response time:
+- 2.043336
+- 1.774564
+- 2.409428
+- 1.342883
+- 1.339718
+- 1.399789
+- 1.22675
+- 1.401514
+- 0.839725
+- 0.750745
+- 2.13787
+- 0.880703
+- 0.811328
+- 4.587201
+- 2.065876
+- 2.805823
+- 2.510801
+- 0.873711
+- 1.746649
+- 2.328661
+response time report:
+  average: 1.763853
+  max: 4.587201
+  min: 0.750745
+---
+interaction:
+- User: What services do you offer at your veterinary center?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: What is your policy on accepting certain types of animals as patients?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: What is the approximate cost range for a standard veterinary visit?
+- Assistant: Between $50 and $60
+- User: What available times do you have for an appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What appointment times do you have available?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What times do you have available for scheduling an appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What days and times do you typically have open for appointments?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you available for appointments on weekends?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are your appointment slots available on weekends?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are there any appointment slots open on the weekends?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are there any specific vaccines that are recommended for my puppy at his first
+    visit?
+- Assistant: 'You should meet their basic needs: food, water, shelter, exercise, and
+    love.'
+- User: What vaccines do you recommend for puppies during their initial visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccines should I consider for my puppy's first visit to the vet?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are typically recommended for puppies during their first
+    veterinary visit?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What vaccinations are recommended for puppies during their initial visit?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What vaccinations do you typically recommend for puppies during their first
+    veterinary visit?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What vaccinations are generally suggested for puppies' first veterinary visits?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What vaccinations do you recommend for puppies during their first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccines should I consider for my puppy's first visit to the vet?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are typically recommended for puppies during their first
+    veterinary visit?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.

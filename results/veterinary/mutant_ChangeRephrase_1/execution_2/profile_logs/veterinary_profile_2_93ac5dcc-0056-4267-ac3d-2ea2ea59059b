@@ -1,0 +1,69 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "make_appointment",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "make_appointment",
+            "top-level",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [
+                "What can I do to take care of my pet?"
+            ],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What types of services do you offer specifically for dogs?",
+                "What types of vaccinations do you recommend for puppies?",
+                "What are the necessary vaccinations for a puppy's first appointment?",
+                "What types of vaccinations do you offer for dogs?",
+                "What services does your veterinary center offer?",
+                "What types of pet care services do you provide?",
+                "What other types of animals do you treat at the veterinary center?",
+                "What vaccinations should I ensure my puppy receives during its first appointment?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "31/10/2024"
+            ],
+            "time": [
+                "11:00:00"
+            ],
+            "service": [
+                "Vaccination"
+            ]
+        },
+        "top-level": {}
+    }
+}

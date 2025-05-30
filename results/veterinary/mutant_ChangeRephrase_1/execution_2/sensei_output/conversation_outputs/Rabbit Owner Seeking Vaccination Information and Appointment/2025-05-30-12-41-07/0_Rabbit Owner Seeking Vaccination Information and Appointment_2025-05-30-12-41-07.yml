@@ -1,0 +1,112 @@
+serial: 2025-05-30-12-41-07
+language: English
+context:
+- You recently adopted a rabbit and want to ensure it receives the necessary preventative
+  care.
+- You are particularly concerned about common rabbit diseases like myxomatosis and
+  RHD, as you've heard they can be fatal.
+- You want to find a local vet that can provide vaccinations and advice on rabbit
+  health, but you are also curious if they treat other types of pets.
+ask_about:
+- Ask what kind of animals they treat.
+- Inquire if they treat rabbits.
+- Ask what vaccinations rabbits typically need.
+- Ask for the symptoms of myxomatosis in rabbits.
+- Ask if they care for birds.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 18
+data_output:
+- treats_rabbits: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- rabbit_vaccinations_info: null
+- myxomatosis_symptoms: null
+- cares_for_birds: We are specialized in dogs, cats and birds. For other animals,
+    please consult first.
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.0050142
+---
+conversation time: 96.12782
+assistant response time:
+- 2.035183
+- 2.710658
+- 0.802767
+- 0.981891
+- 5.866882
+- 0.782216
+- 0.996799
+- 1.00558
+- 1.766243
+- 2.078295
+- 0.928349
+- 1.172423
+- 2.516024
+- 1.246228
+- 1.225032
+- 2.215069
+- 1.131216
+- 0.88588
+response time report:
+  average: 1.685929
+  max: 5.866882
+  min: 0.782216
+---
+interaction:
+- User: What kind of animals do you treat?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: Do you treat rabbits as well?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: What vaccinations do rabbits typically need?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are usually recommended for rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccines are generally advised for rabbits?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What are the symptoms of myxomatosis in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the signs that a rabbit has myxomatosis?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the symptoms that indicate a rabbit might have myxomatosis?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are you able to care for birds as well?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: What specific vaccines do you recommend for rabbits?
+- Assistant: I do not know. I can answer questions about vet visit costs, types of
+    animals accepted, pet care, our opening hours, and weekend availability.
+- User: What are the typical symptoms of RHD in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the common signs that a rabbit might have RHD?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the usual symptoms that indicate a rabbit may have RHD?
+- Assistant: I do not know. I can answer questions about vet visit costs, types of
+    animals accepted, pet care, our opening hours, and weekend availability.
+- User: Can you tell me what the typical symptoms of myxomatosis are in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the common signs that indicate a rabbit might have myxomatosis?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccines do rabbits usually need?
+- Assistant: I do not know. I can answer questions about vet visit costs, types of
+    animals we accept, pet care, our opening hours, and weekend availability.
+- User: Are you able to provide information on the symptoms of myxomatosis in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the symptoms that indicate a rabbit might have myxomatosis?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

@@ -1,0 +1,93 @@
+serial: 2025-05-30-12-41-07
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: Between $50 and $60
+errors: []
+total_cost($): 0.0033975
+---
+conversation time: 69.033118
+assistant response time:
+- 1.087451
+- 0.849995
+- 0.730903
+- 0.843411
+- 2.19307
+- 0.890615
+- 1.026729
+- 0.789034
+- 1.329077
+- 1.372465
+- 0.910312
+- 1.439929
+- 0.970907
+- 1.110804
+- 0.944736
+response time report:
+  average: 1.099295
+  max: 2.19307
+  min: 0.730903
+---
+interaction:
+- User: What’s the deal with dropping off pets for stuff, like, no appointment or
+    whatever?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the situation with grooming, like, when can I just show up?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the 24/7 help for emergencies, like, if something pops up?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What about holidays, like, when's the off time or special hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the fee for a checkup, like, rough idea?
+- Assistant: Between $50 and $60
+- User: What’s the deal with dropping off pets for stuff, like, no appointment or
+    whatever?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the scoop on grooming, like, can I just swing by?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the emergency help like, you know, if things go sideways?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the holiday hours, like, any special days or times?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the grooming thing, like, can I just pop in anytime?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the 24-hour thing for emergencies, like, if something urgent happens?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the drop-off situation, like, no prior heads-up needed?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the grooming setup, like, can I just walk in?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the deal with emergencies, like, if something happens at odd hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the holiday schedule, like, any special closures or times?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

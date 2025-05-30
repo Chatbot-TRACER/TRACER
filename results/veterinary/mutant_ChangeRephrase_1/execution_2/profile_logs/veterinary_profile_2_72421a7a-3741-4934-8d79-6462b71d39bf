@@ -1,0 +1,57 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "make_appointment",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "top-level",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [
+                "What can I do to take care of my pet?"
+            ],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What vaccinations do rabbits typically need?",
+                "Can you tell me if you offer vaccinations for rabbits?",
+                "What specific vaccinations do you recommend for rabbits?",
+                "What vaccinations do you offer for rabbits?",
+                "Do you have any resources or information on the specific vaccinations that rabbits need?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

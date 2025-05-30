@@ -1,0 +1,138 @@
+serial: 2025-05-30-12-41-07
+language: English
+context:
+- 'personality: personalities/conversational-user'
+- You're feeling unwell but aren't sure what kind of medical attention you need.
+- You're exploring the services offered by this clinic to determine the best course
+  of action.
+- You're also concerned about the potential costs associated with different types
+  of examinations.
+ask_about:
+- I'm not sure what I need, can you tell me what services you offer?
+- What kind of appointments are available?
+- What does a physical examination include?
+- How much does a physical examination cost?
+- If you don't know, can you find out the cost of a physical examination for me?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 22
+data_output:
+- service_options: We are specialized in dogs, cats and birds. For other animals,
+    please consult first.
+- appointment_types: null
+- physical_examination_description: I'm sorry, but I did not understand the last sentence,
+    can you say that again?
+- cost_inquiry_response: I do not know. I can answer questions about the cost of a
+    vet visit, the types of animals we accept, how to take care of your pet, our opening
+    hours, and our weekend schedule.
+- recommendation: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- assistance_options: We are specialized in dogs, cats and birds. For other animals,
+    please consult first.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00742575
+---
+conversation time: 117.223368
+assistant response time:
+- 2.4357
+- 1.203911
+- 1.335363
+- 2.235212
+- 0.820849
+- 2.123367
+- 2.590089
+- 2.418967
+- 4.806359
+- 2.176441
+- 1.943136
+- 2.079719
+- 1.767438
+- 3.065974
+- 2.376343
+- 0.872596
+- 1.16424
+- 0.743831
+- 0.948517
+- 0.966679
+- 0.96779
+- 1.06441
+response time report:
+  average: 1.823042
+  max: 4.806359
+  min: 0.743831
+---
+interaction:
+- User: I'm not sure what I need, can you tell me what services you offer?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: What kind of appointments are available?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of appointments can I schedule with you?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kinds of appointments can I book with you?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend availability.
+- User: What does a physical examination include?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is included in a physical examination?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: How much does a physical examination cost?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: If you don't know, can you find out the cost of a physical examination for
+    me?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What other services do you provide apart from physical examinations?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What other types of examinations or treatments do you offer?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What services do you provide for vaccinations?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What types of vaccinations do you offer for pets?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What can you tell me about the types of animals you accept for treatment?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: What are the costs associated with vaccinations for pets?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What other services do you provide besides vaccinations?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What are the hours of operation for your clinic?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What are your weekend hours?
+- Assistant: Every weekday from 9am to 6pm
+- User: What are your hours of operation on weekends?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What are your hours of operation on Saturday and Sunday?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What are your hours of operation on Saturday?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What are your hours of operation on Sunday?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What should I do if I need help after hours or on weekends?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

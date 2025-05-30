@@ -1,0 +1,102 @@
+serial: 2025-05-30-12-41-07
+language: English
+context:
+- 'personality: personalities/sarcastic-user'
+- You recently adopted a puppy and want to ensure it receives the necessary healthcare.
+- You are particularly concerned about protecting your dog from common and potentially
+  dangerous diseases prevalent in your area.
+- You want to find a reliable veterinary center that offers comprehensive vaccination
+  services and is available in case of emergencies.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask about the core vaccinations needed for dogs.
+- Inquire if emergency services are available outside of business hours.
+- Ask what the business hours are.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 16
+data_output:
+- services_offered: I do not know. I can answer questions about the cost of a vet
+    visit, the types of animals we accept, how to take care of your pet, our opening
+    hours, and our weekend schedule.
+- core_vaccinations_list: None
+- emergency_services_availability: I'm sorry, but I did not understand the last sentence,
+    can you say that again?
+- business_hours: Every weekday from 9am to 6pm.
+errors: []
+total_cost($): 0.003672
+---
+conversation time: 66.836749
+assistant response time:
+- 2.25095
+- 0.766799
+- 0.812255
+- 0.846331
+- 1.311524
+- 0.866648
+- 0.937051
+- 1.058941
+- 0.779333
+- 1.284999
+- 0.871312
+- 1.026701
+- 0.818787
+- 0.896453
+- 2.309092
+- 0.874442
+response time report:
+  average: 1.106976
+  max: 2.309092
+  min: 0.766799
+---
+interaction:
+- User: What services do you offer at your veterinary center?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What core vaccinations do you recommend for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the essential vaccinations that you recommend for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What essential vaccinations do you suggest for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the core vaccinations needed for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations should I ensure my dog receives to keep it healthy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations should I make sure my dog gets to stay healthy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What emergency services do you have available outside of business hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of emergency services do you provide after hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are your business hours?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you open on weekends?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you available for emergencies during the weekend?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What emergency services do you provide on weekends?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations should I ensure my dog receives to keep it healthy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are there any specific vaccination schedules I should follow for my puppy?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What vaccination schedule should I follow for my puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

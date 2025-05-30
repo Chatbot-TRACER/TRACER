@@ -1,0 +1,56 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "Are there any additional vaccinations that might be recommended based on my kitten's lifestyle or health status?",
+                "Are there any specific vaccinations that are recommended for indoor cats versus outdoor cats?",
+                "What are the additional vaccinations that might be recommended based on my kitten's lifestyle or health status?",
+                "What should I consider when choosing a veterinary clinic for my kitten's vaccinations?",
+                "What are the common vaccinations that kittens need?",
+                "What vaccinations are specifically recommended for kittens?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

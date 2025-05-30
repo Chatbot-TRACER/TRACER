@@ -1,0 +1,53 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "make_appointment",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "top-level",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What specific vaccinations are included in the puppy vaccination package at your veterinary center?",
+                "What specific vaccinations does your veterinary center include in the puppy vaccination package?",
+                "What core vaccinations are typically recommended for puppies to protect them from common diseases?",
+                "What services do you offer at your veterinary center?",
+                "What essential vaccinations should I get for my puppy to ensure it's protected against common diseases?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

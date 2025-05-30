@@ -1,0 +1,110 @@
+serial: 2025-05-30-12-41-07
+language: English
+context:
+- You recently adopted a rabbit and want to ensure it receives the necessary preventative
+  care.
+- You are particularly concerned about common rabbit diseases like myxomatosis and
+  RHD, as you've heard they can be fatal.
+- You want to find a local vet that can provide vaccinations and advice on rabbit
+  health, but you are also curious if they treat other types of pets.
+ask_about:
+- Ask what kind of animals they treat.
+- Inquire if they treat rabbits.
+- Ask what vaccinations rabbits typically need.
+- Ask for the symptoms of myxomatosis in rabbits.
+- Ask if they care for birds.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 18
+data_output:
+- treats_rabbits: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- rabbit_vaccinations_info: I do not know. I can answer questions about vet visit
+    costs, types of animals accepted, pet care, our opening hours, and weekend hours.
+- myxomatosis_symptoms: What are the common symptoms of myxomatosis in rabbits?
+- cares_for_birds: We are specialized in dogs, cats and birds.
+errors: []
+total_cost($): 0.00511755
+---
+conversation time: 96.098149
+assistant response time:
+- 1.867647
+- 1.989338
+- 0.804439
+- 2.383385
+- 0.938536
+- 0.929174
+- 0.952237
+- 2.206484
+- 0.755553
+- 0.758803
+- 1.233496
+- 3.033647
+- 2.18464
+- 0.888996
+- 1.137241
+- 1.854742
+- 1.178583
+- 1.073958
+response time report:
+  average: 1.453938
+  max: 3.033647
+  min: 0.755553
+---
+interaction:
+- User: What kind of animals do you treat?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: Do you treat rabbits?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: What vaccinations do rabbits typically need?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are usually required for rabbits?
+- Assistant: I do not know. I can answer questions about vet visit costs, types of
+    animals accepted, pet care, our opening hours, and weekend availability.
+- User: What are the symptoms of myxomatosis in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the signs to look out for that indicate a rabbit might have myxomatosis?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the signs to look out for that indicate a rabbit might have myxomatosis?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the common symptoms of myxomatosis in rabbits?
+- Assistant: I do not know. I can answer questions about vet visit costs, types of
+    animals accepted, pet care, our opening hours, and weekend hours.
+- User: What about RHD, what are the symptoms of that in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the symptoms of RHD in rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the common signs that a rabbit might have RHD?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What other types of pets do you treat besides dogs, cats, and birds?
+- Assistant: We are specialized in dogs, cats and birds. For other animals, please
+    consult first.
+- User: Do you have any information on how I can schedule a vaccination appointment
+    for my rabbit?
+- Assistant: I do not know. I can answer questions about the cost of a vet visit,
+    the types of animals we accept, how to take care of your pet, our opening hours,
+    and our weekend schedule.
+- User: What are your opening hours?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you open on weekends?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Do you have any advice on how to care for my rabbit's health?
+- Assistant: 'You should meet their basic needs: food, water, shelter, exercise, and
+    love.'
+- User: What kind of food is best for rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What type of food is most suitable for rabbits?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
