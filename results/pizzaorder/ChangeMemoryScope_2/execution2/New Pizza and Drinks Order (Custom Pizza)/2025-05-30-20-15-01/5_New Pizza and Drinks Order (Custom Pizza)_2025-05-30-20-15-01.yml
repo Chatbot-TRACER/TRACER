@@ -1,0 +1,97 @@
+serial: 2025-05-30-20-15-01
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - mushrooms
+- topping2:
+  - mushrooms
+- topping3:
+  - mushrooms
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: medium
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: mushrooms, None,
+    None'
+errors:
+- 500: Chatbot internal error
+---
+conversation time: 56.956765
+assistant response time:
+- 1.795926
+- 2.863363
+- 1.041522
+- 1.212201
+- 1.127259
+- 1.756937
+- 1.862632
+- 1.851022
+- 1.915284
+- 3.545778
+- 2.565735
+- 2.753486
+response time report:
+  average: 2.024262
+  max: 3.545778
+  min: 1.041522
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. What toppings do you recommend for a crowd-pleaser?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I want to create a custom pizza. What toppings do you think would be good
+    for a crowd-pleaser?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you suggest for a custom pizza that would be popular among
+    my friends?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me what toppings are available for the custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can you list the toppings available for the custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings can I choose from for my custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings can I choose for my custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    long it takes to get an order.
+- User: What toppings do you recommend for a medium custom pizza?
+- Assistant: It looks like I have the pizza size as medium, but I still need to know
+    your choice of toppings. Could you please let me know which toppings you would
+    like? You can choose from cheese, mushrooms, pepper, ham, bacon, pepperoni, olives,
+    corn, or chicken.
+- User: I think I’d like to go with mushrooms, but how many can I put on it? Can I
+    just load it up?
+- Assistant: 'Thanks for ordering a medium pizza with m, u, s, h, r, o, o, m and s!
+
+    It looks like I still need some information to complete your order. Could you
+    please tell me how many drinks you would like to order (num_drinks) and what type
+    of drink you prefer (coke, sprite, or water)?'
+- User: I would like to order two drinks. Can I have one Coke and one Sprite, please?
+- Assistant: 'Error: 500 Internal Server Error: Error executing the engine: Data is
+    missing the property pizza_size'

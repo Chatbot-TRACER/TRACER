@@ -1,0 +1,69 @@
+serial: 2025-05-30-20-15-01
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - pepper
+- topping2:
+  - pepper
+- topping3:
+  - pepper
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepper, pepper, pepper'
+errors:
+- 500: Chatbot internal error
+---
+conversation time: 28.480451
+assistant response time:
+- 2.599418
+- 2.435104
+- 3.733502
+- 1.330169
+- 2.686131
+- 1.784353
+response time report:
+  average: 2.428112
+  max: 3.733502
+  min: 1.330169
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want an extra large pizza with pepper, pepper, and pepper. Can you confirm
+    that order for me?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?
+- User: I'd like to confirm my order for an extra large pizza with pepper, pepper,
+    and pepper. Is that all set?
+- Assistant: Unfortunately, we only offer small, medium, or large pizzas. Could you
+    please choose one of those sizes for your order?
+- User: I'd like to confirm my order for a large pizza with pepper, pepper, and pepper.
+    Is that all set?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    It looks like I still need some information to complete your order. Could you
+    please tell me how many drinks you would like to order (num_drinks) and what type
+    of drink you prefer (coke, sprite, or water)?'
+- User: I’d like to order two drinks, please. Can I have one coke and one sprite?
+- Assistant: 'Error: 500 Internal Server Error: Error executing the engine: Data is
+    missing the property pizza_size'

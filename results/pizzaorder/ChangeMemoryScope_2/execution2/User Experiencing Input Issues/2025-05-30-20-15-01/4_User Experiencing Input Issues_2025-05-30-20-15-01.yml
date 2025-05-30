@@ -1,0 +1,125 @@
+serial: 2025-05-30-20-15-01
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that! For a custom pizza, please let me
+    know the size (small, medium, or large) and the toppings you would like to add.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: 'I understand that you''d like a large custom pizza with
+    pepperoni and extra cheese, but unfortunately, we only offer predefined pizza
+    types. Please choose from the following options: margarita, carbonara, marinera,
+    hawaiian, four cheese, or vegetarian.'
+errors: []
+---
+conversation time: 119.402444
+assistant response time:
+- 1.372817
+- 1.175756
+- 3.768151
+- 4.062965
+- 2.263842
+- 1.557647
+- 1.366358
+- 2.071058
+- 1.427994
+- 1.24276
+- 1.49761
+- 3.111168
+- 1.575342
+- 1.616063
+- 2.635968
+- 1.531469
+- 1.949708
+response time report:
+  average: 2.013333
+  max: 4.062964
+  min: 1.175756
+---
+interaction:
+- User: Can you help me with my pizza order? I want to order a pizza.
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What types of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like a Hawaiian pizza, but can you make sure it has extra cheese?
+- Assistant: 'It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza? '
+- User: Can I get a large Hawaiian pizza with extra cheese, please?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for your order! Now, could you please let me know how many drinks you
+    would like to order? '
+- User: I didn't mention drinks yet. Can I just have the pizza for now?
+- Assistant: I have noted your order for a large Hawaiian pizza with extra cheese.
+    If you decide to order drinks later, just let me know!
+- User: Can you confirm the total cost for the large Hawaiian pizza with extra cheese?
+- Assistant: I currently don't have the pricing information for the large Hawaiian
+    pizza with extra cheese. Please check with the shop directly for the total cost.
+    If you would like to order drinks or anything else, just let me know!
+- User: Can you tell me what the estimated delivery time is for my large Hawaiian
+    pizza with extra cheese?
+- Assistant: The estimated delivery time for your large Hawaiian pizza with extra
+    cheese is typically around 30 to 45 minutes. If you have any other questions or
+    need to place an order for drinks, feel free to ask!
+- User: What if I want to order a custom pizza instead? Can you help me with that?
+- Assistant: 'I can help you with that! For a custom pizza, please let me know the
+    size (small, medium, or large) and the toppings you would like to add. '
+- User: Could you remind me what sizes are available for the custom pizza?
+- Assistant: 'For a custom pizza, you can choose from the following sizes: small,
+    medium, or large. Let me know if you need help with anything else!'
+- User: What toppings can I choose for my custom pizza?
+- Assistant: For a custom pizza, you can choose from a variety of toppings such as
+    pepperoni, mushrooms, onions, sausage, bacon, extra cheese, black olives, green
+    peppers, and pineapple. Let me know which toppings you would like to add!
+- User: Can I get a large custom pizza with pepperoni and extra cheese?
+- Assistant: I still need to know the type of pizza you'd like. Could you please let
+    me know if you would like a margarita, carbonara, marinera, hawaiian, four cheese,
+    or vegetarian pizza?
+- User: I just said I want a large custom pizza with pepperoni and extra cheese. Can
+    you please confirm that?
+- Assistant: 'I understand that you want a large pizza, but unfortunately, we don''t
+    have a custom pizza option. Please choose from one of our predefined types: margarita,
+    carbonara, marinera, hawaiian, four cheese, or vegetarian.'
+- User: I really want to order a large custom pizza with pepperoni and extra cheese.
+    Are you sure I can't get that?
+- Assistant: 'I understand that you''d like a large custom pizza with pepperoni and
+    extra cheese, but unfortunately, we only offer predefined pizza types. Please
+    choose from the following options: margarita, carbonara, marinera, hawaiian, four
+    cheese, or vegetarian. '
+- User: 'User: Can I at least get a large Hawaiian pizza with pepperoni added to it?'
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    I see that you''ve ordered a large Hawaiian pizza with pepperoni and extra cheese.
+    Now, could you please let me know how many drinks you would like to order and
+    what type of drinks you prefer? You can choose from coke, sprite, or water.'
+- User: I didn't mention drinks yet. Can you just confirm my order for the large Hawaiian
+    pizza with pepperoni and extra cheese?
+- Assistant: Your order is confirmed for a large Hawaiian pizza with pepperoni and
+    extra cheese. If you would like to add drinks, please let me know how many and
+    what type you prefer (coke, sprite, or water).
+- User: Can you tell me the estimated delivery time for my large Hawaiian pizza with
+    pepperoni and extra cheese?
+- Assistant: The estimated delivery time for your large Hawaiian pizza with pepperoni
+    and extra cheese is typically around 30 to 45 minutes, depending on the current
+    order volume. If you have any other questions or would like to place an order
+    for drinks, feel free to ask!

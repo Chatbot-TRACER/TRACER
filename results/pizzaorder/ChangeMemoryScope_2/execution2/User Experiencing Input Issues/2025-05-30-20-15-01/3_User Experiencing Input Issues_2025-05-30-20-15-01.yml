@@ -1,0 +1,89 @@
+serial: 2025-05-30-20-15-01
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Meat Lovers
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that! What type of pizza would you like
+    to order? You can choose from our predefined options or create a custom pizza.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: I'm sorry, I did not get what you said. Can you rephrase?
+errors: []
+---
+conversation time: 101.41772
+assistant response time:
+- 1.202246
+- 1.184332
+- 2.239167
+- 1.844393
+- 0.71888
+- 0.683775
+- 0.661037
+- 0.665093
+- 2.599801
+- 0.739673
+- 0.718934
+- 0.679317
+- 0.842977
+- 0.92676
+- 0.692432
+- 0.725267
+- 0.748394
+response time report:
+  average: 1.051322
+  max: 2.599801
+  min: 0.661037
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: I can help you with that! What type of pizza would you like to order?
+    You can choose from our predefined options or create a custom pizza.
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Meat Lovers pizza. Can you confirm that's available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to know if a Meat Lovers pizza is available. Can you confirm that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Is a Meat Lovers pizza available for order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you just tell me if the Meat Lovers pizza is on your menu?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Is the Meat Lovers pizza part of your menu options?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Is the Meat Lovers pizza an option on your menu?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you tell me what ingredients are on the Meat Lovers pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are included on the Meat Lovers pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: 'User: Can you list the toppings that come with a Meat Lovers pizza?'
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are on the Meat Lovers pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are you able to tell me what toppings are included in the Meat Lovers pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you let me know what toppings come with the Meat Lovers pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you tell me if there are any special deals or discounts available for
+    pizza orders?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any special offers or discounts on pizza orders right now?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

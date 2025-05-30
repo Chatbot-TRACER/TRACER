@@ -1,0 +1,127 @@
+serial: 2025-05-30-20-15-01
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - BBQ Chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you order pizzas and drinks.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients).
+- custom_pizza_response: Unfortunately, I can only assist with ordering predefined
+    pizzas and drinks at the moment. Custom pizzas with your choice of ingredients
+    are not available.
+errors: []
+---
+conversation time: 121.822329
+assistant response time:
+- 1.019344
+- 1.350545
+- 2.595438
+- 1.976648
+- 1.911267
+- 2.199357
+- 0.978899
+- 3.107074
+- 3.010956
+- 2.202754
+- 1.18613
+- 2.576903
+- 1.632625
+- 1.982284
+- 1.719171
+- 1.898169
+- 2.879899
+response time report:
+  average: 2.01338
+  max: 3.107074
+  min: 0.978899
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kinds of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a BBQ Chicken pizza. Can you confirm that you have that available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I think there might be a misunderstanding. Can you check if you actually have
+    BBQ Chicken pizza on the menu?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there any way you can add BBQ Chicken as a custom topping on one of those
+    pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you add BBQ Chicken as a custom topping on one of those pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you include BBQ Chicken as a custom topping for one of the pizzas?
+- Assistant: I see that you've chosen chicken as a topping. Could you please let me
+    know the size of the pizza you would like? It can be small, medium, or large.
+- User: I'd like a medium pizza, but can I choose other toppings too?
+- Assistant: 'Thanks for ordering a medium pizza with c, h, i, c, k, e and n!
+
+    It looks like I still need some information to complete your order. Could you
+    please tell me how many drinks you would like to order (num_drinks) and what type
+    of drink you prefer (coke, sprite, or water)?'
+- User: I want to add extra toppings, can I do that?
+- Assistant: Unfortunately, I can only assist with ordering pizzas and drinks at Fast
+    Pizza. If you'd like to proceed with your drink order, please let me know how
+    many drinks you would like and what type of drink you prefer (coke, sprite, or
+    water).
+- User: Can I add extra toppings to my medium pizza, or is that not possible?
+- Assistant: Unfortunately, I can only assist with ordering predefined pizzas and
+    drinks at the moment. Extra toppings are not an option. Would you like to proceed
+    with your medium pizza order or drinks?
+- User: Is there a way to choose more than one topping for my medium pizza, or is
+    it limited to just one?
+- Assistant: Unfortunately, I can only assist with ordering predefined pizzas and
+    drinks at the moment. Extra toppings are not an option, and you cannot choose
+    more than one topping for your pizza. Would you like to proceed with your medium
+    pizza order or drinks?
+- User: 'User: So, if I can’t add extra toppings, can I still get a custom pizza with
+    my choice of ingredients?'
+- Assistant: Unfortunately, I can only assist with ordering predefined pizzas and
+    drinks at the moment. Custom pizzas with your choice of ingredients are not available.
+    Would you like to proceed with ordering a predefined pizza or drinks?
+- User: Is there a way to customize my pizza by choosing different ingredients, or
+    are the options really just limited to what you listed?
+- Assistant: Unfortunately, I can only assist with ordering predefined pizzas and
+    drinks at the moment. Customizing pizzas with different ingredients is not available.
+    Would you like to proceed with ordering a predefined pizza or drinks?
+- User: I'm a bit confused. If I can't customize my pizza, how do I select the toppings
+    for a custom pizza?
+- Assistant: I understand the confusion. Unfortunately, I can only assist with ordering
+    predefined pizzas, which come with specific toppings. Custom pizzas with your
+    choice of ingredients are not available. Would you like to proceed with ordering
+    a predefined pizza or drinks? If you want drinks, please let me know how many
+    and what type you prefer (coke, sprite, or water).
+- User: So, to clarify, I can't customize my pizza at all? What's the point of the
+    custom option if there are no choices available?
+- Assistant: I understand your confusion. Unfortunately, at Fast Pizza, we only offer
+    predefined pizzas with fixed toppings and do not allow for customization. If you'd
+    like, I can help you order one of our predefined pizzas or drinks. Please let
+    me know how many drinks you would like and what type (coke, sprite, or water).
+- User: Is there any way to clarify what toppings come with the predefined pizzas,
+    or can I only see the names without the details?
+- Assistant: 'I can only assist with ordering predefined pizzas and drinks, and I
+    don''t have the details about the toppings for each predefined pizza. However,
+    I can help you choose from the available options: margarita, carbonara, marinera,
+    hawaiian, four cheese, and vegetarian. Would you like to proceed with ordering
+    a pizza or drinks?'

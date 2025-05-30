@@ -1,0 +1,127 @@
+serial: 2025-05-30-20-15-01
+language: English
+context:
+- You are planning a casual pizza night with friends and want to explore options from
+  a local pizza shop you haven't tried before.
+- Before placing an order, you want to gather some general information about their
+  menu, services, and pricing.
+ask_about:
+- Ask what types of questions the chatbot can answer.
+- Ask what the daily opening hours are.
+- Ask about the estimated order time, without specifying the number of pizzas.
+- Ask what drink options are available and their prices.
+- Ask about the pricing for a custom pizza.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- available_information: I can answer questions about our opening hours, types of
+    pizza, prices of pizzas, prices of beverages, how to get the order, and how much
+    time it takes to get an order.
+- opening_hours: Every day from 1pm to 11:30pm
+- estimated_order_time: It depends on the number of pizzas of the order, typically
+    around 15 minutes per pizza, but depends on how busy we are.
+- drink_options_and_prices: Sprite and Coke are 1.50$. Water is 1$.
+- custom_pizza_pricing: Margarita pizzas are 10$ for small, 15$ for medium and 20$
+    for big. The other predefined pizzas, except for carbonara are 2$ more for each
+    size. Carbonara is 2.5$ more for each size. Custom pizzas with up to three ingredients
+    are the same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+errors: []
+---
+conversation time: 165.694842
+assistant response time:
+- 0.885743
+- 0.773777
+- 3.783754
+- 2.921109
+- 1.877084
+- 3.485896
+- 0.95127
+- 0.936318
+- 1.127494
+- 1.193948
+- 1.046729
+- 1.201223
+- 2.179861
+- 1.92123
+- 2.40468
+- 1.774074
+- 2.193597
+- 4.110486
+- 0.819794
+- 1.072523
+- 2.098247
+response time report:
+  average: 1.845658
+  max: 4.110486
+  min: 0.773777
+---
+interaction:
+- User: What types of questions can you answer?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What are your daily opening hours?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What is the estimated order time for a pizza?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: What drink options do you have available, and what are their prices?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: What is the pricing for a custom pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What are the available payment methods for placing an order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What payment methods can I use to place an order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What payment options do you accept for orders?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you recommend for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you suggest for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you recommend for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you have available for a custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: Can you tell me more about the Vegetarian pizza? What toppings does
+    it include?'
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings are included in the Vegetarian pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings are included in the Vegetarian pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings are included in the Vegetarian pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What types of cheese do you use on your pizzas?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What types of sauces do you offer for your pizzas?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What types of sauces are available for your pizzas?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What types of sauces do you have for your pizzas?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizzas, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
