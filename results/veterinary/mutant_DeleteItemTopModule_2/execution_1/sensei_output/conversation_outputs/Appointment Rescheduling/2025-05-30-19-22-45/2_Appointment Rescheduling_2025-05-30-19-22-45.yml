@@ -1,0 +1,105 @@
+serial: 2025-05-30-19-22-45
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: November 9
+- time: 3:00 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: I'm sorry, but I did not understand the last sentence, can
+    you say that again?
+- rescheduling_prompt: I need to reschedule my appointment for November 9 at 3:00
+    PM.
+- new_appointment_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0038601
+---
+conversation time: 82.097885
+assistant response time:
+- 1.057655
+- 0.683707
+- 0.910872
+- 0.824596
+- 0.85944
+- 0.689402
+- 0.653643
+- 0.918767
+- 0.684233
+- 0.839376
+- 0.967168
+- 0.619921
+- 0.990363
+- 0.676329
+- 1.550623
+response time report:
+  average: 0.861739
+  max: 1.550623
+  min: 0.619921
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can you help me update it?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to provide the correct appointment details, including the new date
+    of November 9 and a time of 3:00 PM. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to update my appointment details with the correct date and time, specifically
+    for November 9 at 3:00 PM. Can you assist me with this?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my appointment to November 9 at 3:00 PM. Can you help me
+    with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to reschedule my appointment to November 9 at 3:00 PM. Can you help
+    me do that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule my appointment for November 9 at 3:00 PM. Can you assist
+    with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you please confirm if the original appointment was for a different date
+    or time?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Was the original appointment scheduled for a date and time that you remember?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What was the original date and time of my appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me what other available dates you have for rescheduling my appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What other dates do you have available for me to reschedule my appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Could you provide me with the available dates for rescheduling my appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What if I just want to cancel my appointment instead?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you assist me with canceling my appointment instead?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you help me with canceling my appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

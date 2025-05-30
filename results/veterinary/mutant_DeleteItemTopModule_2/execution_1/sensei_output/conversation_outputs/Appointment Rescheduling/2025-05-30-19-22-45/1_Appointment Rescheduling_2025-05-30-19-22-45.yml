@@ -1,0 +1,104 @@
+serial: 2025-05-30-19-22-45
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Tomorrow
+- time: 1:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: The new date and time should be tomorrow at 1:30 PM.
+- rescheduling_prompt: the new date and time should be tomorrow at 1:30 PM.
+- new_appointment_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00350475
+---
+conversation time: 55.376067
+assistant response time:
+- 2.169913
+- 0.686316
+- 0.585888
+- 0.617425
+- 0.732051
+- 0.615829
+- 0.679534
+- 0.829178
+- 0.726679
+- 0.687088
+- 0.684651
+- 0.773454
+- 0.694366
+- 1.403301
+- 0.622139
+response time report:
+  average: 0.833854
+  max: 2.169913
+  min: 0.585888
+---
+interaction:
+- User: I need to reschedule an appointment I have because the details are incorrect.
+    Can you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to update my appointment details because the original information is
+    wrong. The new date and time should be tomorrow at 1:30 PM.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change the date and time of my appointment to tomorrow at 1:30 PM
+    since the details I provided earlier were wrong.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I also want to know if there are any available slots after 2 PM tomorrow,
+    just in case.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are there any available time slots after 2 PM tomorrow?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you let me know if there are any open slots available after 2 PM tomorrow?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me if I can book an appointment for tomorrow after 2 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you confirm if there are any appointment slots available tomorrow after
+    2 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is it possible for you to tell me if there are any appointment slots available
+    tomorrow after 2 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you help me check if there are any appointments available tomorrow at
+    3 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you verify if there is an appointment slot available for me tomorrow at
+    3 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you check if I can schedule an appointment for tomorrow at 3 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me if I can schedule an appointment for tomorrow at 3 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you confirm whether I can book an appointment for tomorrow at 3 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you check if an appointment slot is open for tomorrow at 3 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

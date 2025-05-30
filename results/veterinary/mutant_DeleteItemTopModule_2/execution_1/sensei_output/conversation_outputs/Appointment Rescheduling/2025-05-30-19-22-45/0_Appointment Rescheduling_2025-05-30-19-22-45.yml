@@ -1,0 +1,107 @@
+serial: 2025-05-30-19-22-45
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Today
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: I'm sorry, but I did not understand the last sentence, can
+    you say that again?
+- rescheduling_prompt: today at 10:00 AM
+- new_appointment_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00393615
+---
+conversation time: 71.583608
+assistant response time:
+- 0.862826
+- 0.988122
+- 0.698757
+- 0.915187
+- 0.783795
+- 0.77965
+- 0.743627
+- 0.862517
+- 0.847067
+- 0.867097
+- 0.92538
+- 1.319315
+- 3.979111
+- 0.728994
+- 1.073248
+response time report:
+  average: 1.091646
+  max: 3.979111
+  min: 0.698757
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I provide the correct appointment details, including the new date, which is
+    today at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to update my appointment details to reflect the new date and time,
+    which is today at 10:00 AM. Can you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my appointment to the new date and time, which is today at
+    10:00 AM. Can you assist with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you confirm if the appointment is still on the same day, or do I need
+    to choose another day for the reschedule?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is my appointment still scheduled for the same day, or do I need to select
+    a different day to reschedule?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is my appointment still on for today, or do I need to pick a different day
+    to reschedule?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me what time my appointment is currently scheduled for?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What time is my appointment currently set for?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What time is my appointment scheduled for right now?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are my options to reschedule if I can’t get today at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What alternative times do I have to reschedule my appointment if today at
+    10:00 AM isn't available?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What other time slots do you have available for rescheduling my appointment
+    if I can't get today at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: If I want to reschedule my appointment, what other dates and times are available?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you tell me what the options are for rescheduling my appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the options I have if I want to reschedule my appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
