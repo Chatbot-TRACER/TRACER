@@ -1,0 +1,58 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "make_appointment",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What are the routine assessments that typically happen during a physical examination?",
+                "What are the common evaluations included in a physical examination?",
+                "What specific tests might be conducted during a physical examination?",
+                "Are there any specific tests commonly performed during a physical examination that I should be aware of?",
+                "What types of routine checks can I expect during a physical examination?",
+                "What specific tests are usually included in a physical examination?",
+                "What types of routine assessments are commonly included in a physical examination?",
+                "What types of tests are typically performed during a physical examination?",
+                "What are the routine checks performed during a physical examination?",
+                "Are there any additional costs for tests or procedures that might be needed during the physical examination?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

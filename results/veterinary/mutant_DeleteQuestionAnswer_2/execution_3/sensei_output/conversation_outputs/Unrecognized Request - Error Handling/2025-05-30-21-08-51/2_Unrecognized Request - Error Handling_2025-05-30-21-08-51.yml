@@ -1,0 +1,91 @@
+serial: 2025-05-30-21-08-51
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: In the range of $50 to $60.
+errors: []
+total_cost($): 0.0034617
+---
+conversation time: 77.440044
+assistant response time:
+- 0.731063
+- 1.877766
+- 0.751426
+- 1.022187
+- 2.306733
+- 0.794331
+- 1.086521
+- 1.017689
+- 1.246866
+- 1.145951
+- 3.456049
+- 2.929103
+- 1.071116
+- 3.020447
+- 3.764832
+response time report:
+  average: 1.748138
+  max: 3.764832
+  min: 0.731063
+---
+interaction:
+- User: What’s the deal with the dropping in thing?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the scoop on grooming, like when can I get that done?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: 'User: What’s the 24/7 emergency thing, like are you open all the time?'
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the holiday hours, like any special days off or something?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the checkup money situation, like how much we talking?
+- Assistant: In the range of $50 to $60.
+- User: What's the deal with the not-so-regular days, any changes?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the drop-in policy, like can I just show up or what?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the grooming thing, like how does it work here?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the 24/7 service, like is someone always around for pets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the holiday thing, like are there specific days off or changes?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the checkup costs, like what’s the price range?
+- Assistant: In the range of $50 to $60.
+- User: What’s the drop-in thing, can I just walk in anytime?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, pet care tips, our operating hours, and our weekend schedule.
+- User: What’s the grooming thing, like how does that work here?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the deal with the emergency service, like is it always available or
+    what?
+- Assistant: I'm not sure. However, I can provide information about the cost of a
+    vet visit, pet care tips, our operating hours, and our weekend schedule.
+- User: What’s the holiday hours, like when's the place open or closed?
+- Assistant: I'm not sure. However, I can provide information about the cost of a
+    vet visit, pet care tips, our regular hours, and our weekend hours.

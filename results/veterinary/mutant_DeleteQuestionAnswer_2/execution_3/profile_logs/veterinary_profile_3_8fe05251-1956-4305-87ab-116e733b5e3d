@@ -1,0 +1,51 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "vetcen_qa",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "top-level",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What\u2019s the drop-in thing, can I just walk in anytime?",
+                "What\u2019s the deal with the emergency service, like is it always available or what?",
+                "What are the holiday hours, like when's the place open or closed?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

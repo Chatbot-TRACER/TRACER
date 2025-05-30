@@ -1,0 +1,90 @@
+serial: 2025-05-30-21-08-51
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: In the range of $50 to $60.
+errors: []
+total_cost($): 0.0030858
+---
+conversation time: 67.475409
+assistant response time:
+- 1.109715
+- 0.941745
+- 0.847654
+- 0.87947
+- 0.687414
+- 2.844258
+- 1.0538
+- 0.92948
+- 4.013783
+- 0.712898
+- 3.098571
+- 0.724767
+- 0.836569
+- 1.039798
+- 1.050343
+response time report:
+  average: 1.384684
+  max: 4.013783
+  min: 0.687414
+---
+interaction:
+- User: 'What''s the deal with just walking in? '
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the scoop on just showing up?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the sitch on grooming stuff?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the 411 on emergency stuff, like 24 hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the holiday plan for care?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the price for a checkup, roughly?
+- Assistant: In the range of $50 to $60.
+- User: What’s the vibe on just dropping by?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the lowdown on grooming options?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the deal with emergency hours?
+- Assistant: I'm not sure. However, I can provide information about the cost of a
+    vet visit, pet care tips, our weekday hours, and our weekend schedule.
+- User: What’s the story on holiday hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the info on the checkup price?
+- Assistant: In the range of $50 to $60.
+- User: What's the scoop on just popping in?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the update on grooming services available?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the 411 on the holiday schedule?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the word on emergency services, like all night?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

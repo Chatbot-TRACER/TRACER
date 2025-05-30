@@ -1,0 +1,101 @@
+serial: 2025-05-30-21-08-51
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Tomorrow
+- time: 1:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 29/10/2024 at 13:30:00 for Physical examination. \nSee you then!    \n"
+- rescheduling_prompt: tomorrow at 1:30 PM
+- new_appointment_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0036198
+---
+conversation time: 77.130789
+assistant response time:
+- 1.028505
+- 0.845163
+- 1.41258
+- 0.703248
+- 1.067642
+- 0.765718
+- 1.582349
+- 0.856651
+- 0.756944
+- 0.683199
+- 0.713185
+- 0.627362
+- 0.660288
+- 3.767795
+- 4.230553
+response time report:
+  average: 1.313412
+  max: 4.230553
+  min: 0.627362
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I change it to tomorrow at 1:30 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can I update my appointment to be tomorrow at 1:30 PM instead?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to provide the correct appointment details. Can I set it for tomorrow
+    at 1:30 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 29/10/2024\
+    \ at 13:30:00 for Physical examination. \nSee you then!    \n"
+- User: I think there's been some confusion. I actually need to confirm if that appointment
+    is correct and if I can provide any further details. Can you tell me what the
+    appointment is for?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is the appointment booked for?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What kind of appointment did I initially book?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What type of appointment did I initially schedule?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What was the appointment I scheduled earlier?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What type of appointment did I have scheduled before?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What was the reason for my initial appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What was the purpose of my original appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What was the reason for my appointment that I scheduled earlier?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What information do you have on the appointment I scheduled earlier?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What details do you have about my previous appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What can you tell me about the appointment I booked previously?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

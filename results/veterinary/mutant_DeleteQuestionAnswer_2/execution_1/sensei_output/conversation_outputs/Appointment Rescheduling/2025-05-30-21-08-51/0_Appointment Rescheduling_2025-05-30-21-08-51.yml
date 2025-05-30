@@ -1,0 +1,113 @@
+serial: 2025-05-30-21-08-51
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Today
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: I'm sorry, but I did not understand the last sentence, can
+    you say that again?
+- rescheduling_prompt: I'm sorry, but I did not understand the last sentence, can
+    you say that again?
+- new_appointment_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0039486
+---
+conversation time: 64.475082
+assistant response time:
+- 0.859545
+- 0.679151
+- 0.695769
+- 1.328729
+- 0.619982
+- 0.867439
+- 0.753488
+- 0.7017
+- 1.065157
+- 0.663981
+- 0.77374
+- 0.792283
+- 0.753953
+- 0.902367
+- 0.786634
+response time report:
+  average: 0.816261
+  max: 1.328729
+  min: 0.619982
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I provide the correct appointment details, including the new date and time?
+    It's for today at 10:00 AM.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to update my appointment details for today at 10:00 AM.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to provide the correct appointment details for today at 10:00 AM. Can
+    you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to reschedule my appointment for today at 10:00 AM because the details
+    are wrong. What do I need to do?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my appointment because the details are incorrect. What steps
+    should I follow for the rescheduling?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to know how to reschedule my appointment since the details are not
+    correct. What do I do next?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to know what steps to take to update my appointment for today at 10:00
+    AM.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to know how I can update my appointment details for today at 10:00
+    AM.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to find out how to change my appointment details for today at 10:00
+    AM. Can you assist me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need help with rescheduling my appointment for today at 10:00 AM because
+    the details are wrong. Can you guide me on what to do?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need assistance in changing my appointment for today at 10:00 AM since the
+    details are incorrect. What should I do?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to know the process for changing my appointment for today at 10:00
+    AM because the details are wrong. Can you help me?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you let me know what information you need from me to reschedule my appointment
+    for today at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What do I need to provide to reschedule my appointment for today at 10:00
+    AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What information do you require from me to change my appointment set for today
+    at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

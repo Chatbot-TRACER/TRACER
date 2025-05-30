@@ -1,0 +1,59 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "vetcen_qa",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "top-level",
+            "vetcen_qa",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "Are there any specific vaccination requirements or paperwork I need to bring for my dog\u2019s appointment?",
+                "What are the available times for an appointment?",
+                "Are there any additional fees or requirements for the vaccination appointment?",
+                "What specific vaccinations does your veterinary center recommend for puppies?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "29/10/2024"
+            ],
+            "time": [
+                "11:00:00"
+            ],
+            "service": [
+                "Vaccination"
+            ]
+        },
+        "top-level": {}
+    }
+}

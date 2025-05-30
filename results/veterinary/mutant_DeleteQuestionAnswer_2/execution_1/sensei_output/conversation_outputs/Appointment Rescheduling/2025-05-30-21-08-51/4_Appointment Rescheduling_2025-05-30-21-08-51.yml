@@ -1,0 +1,114 @@
+serial: 2025-05-30-21-08-51
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Next Wednesday
+- time: 11:15 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: I'm sorry, but I did not understand the last sentence, can
+    you say that again?
+- rescheduling_prompt: next Wednesday at 11:15 AM
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 06/11/2024 at 11:15:00 for Physical examination. \nSee you then!    \n"
+errors: []
+total_cost($): 0.0045612
+---
+conversation time: 93.452476
+assistant response time:
+- 0.964752
+- 2.643226
+- 1.310088
+- 1.156346
+- 1.192767
+- 0.689273
+- 0.845748
+- 0.943799
+- 0.76231
+- 0.688106
+- 3.546024
+- 5.352214
+- 2.947811
+- 1.024735
+- 1.041614
+response time report:
+  average: 1.67392
+  max: 5.352214
+  min: 0.688106
+---
+interaction:
+- User: I need to reschedule an appointment I have, because the details are incorrect.
+    Can we set the new date to next Wednesday at 11:15 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to update my appointment to next Wednesday at 11:15 AM because the
+    previous details were incorrect. Can we do that?
+- Assistant: 'I have the date and time for your appointment, but I still need to know
+    which service you would like to schedule: Physical examination, Vaccination, Dental
+    health and cleaning, or Lab or diagnostic testing. Could you please provide that
+    information?'
+- User: I’d like to schedule a physical examination for next Wednesday at 11:15 AM.
+    Can you confirm that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 06/11/2024\
+    \ at 11:15:00 for Physical examination. \nSee you then!    \n"
+- User: Can I get a confirmation for the appointment on 06/11/2024 at 11:15 AM for
+    the physical examination?
+- Assistant: "Ok, I have received your request to schedule an appointment for 06/11/2024\
+    \ at 11:15:00 for Physical examination. \nSee you then!    \n"
+- User: Could you send me the confirmation details again for the appointment on 06/11/2024
+    at 11:15 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you resend the confirmation details for my appointment on 06/11/2024 at
+    11:15 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you provide the confirmation details for my appointment on 06/11/2024
+    at 11:15 AM again?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Could you please let me know why you're having trouble understanding my request
+    for confirmation details?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me why you can't provide the confirmation details for my appointment
+    again?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you explain why I'm unable to receive the confirmation details for my
+    appointment again?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you confirm if my appointment for 06/11/2024 at 11:15 AM is registered
+    in your system?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, pet care tips, our operating hours, and our weekend schedule.
+- User: Is there a way for you to check if my appointment for 06/11/2024 at 11:15
+    AM is actually in your system?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, pet care tips, our operating hours, and our weekend schedule.
+- User: Can you tell me how I can verify if my appointment for 06/11/2024 at 11:15
+    AM is confirmed in your system?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: How can I find out if my appointment for 06/11/2024 at 11:15 AM is confirmed
+    in your system?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What steps do I need to take to verify if my appointment for 06/11/2024 at
+    11:15 AM is confirmed in your system?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

@@ -1,0 +1,57 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "make_appointment",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What kind of preventive health services do you offer for adults?",
+                "What can I do to get specific details about the services you provide for adults?",
+                "Can you find out if you offer any specialized medical services for adults?",
+                "How much does a physical examination cost?",
+                "What other examinations or services can I get at your clinic?",
+                "What types of medical examinations do you provide for adults?",
+                "Can you tell me if there are any preventive health services available for adults at your clinic?",
+                "Can you tell me if you offer any diagnostic tests or screenings for adults?",
+                "What are the typical diagnostic tests or screenings that you offer for adults?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

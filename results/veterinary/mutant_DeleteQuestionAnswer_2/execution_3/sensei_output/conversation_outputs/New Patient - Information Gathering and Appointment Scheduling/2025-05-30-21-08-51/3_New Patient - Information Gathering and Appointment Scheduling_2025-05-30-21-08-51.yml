@@ -1,0 +1,125 @@
+serial: 2025-05-30-21-08-51
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to establish him with a reputable veterinary
+  center for his healthcare needs.
+- You want to find a vet that offers comprehensive services and has appointment times
+  that fit your busy schedule.
+ask_about:
+- Inquire about the services offered at the veterinary center.
+- Ask about the veterinary center's policy on accepting certain animal types as patients.
+- Ask what the approximate cost range is for a standard veterinary visit.
+- Inquire about the available times for an appointment.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- date: Saturday
+- time: 3:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- services_offered: null
+- animal_acceptance_policy: null
+- standard_visit_cost_range: In the range of $50 to $60.
+- appointment_availability_info: 'Appointment availability: Every weekday from 9am
+    to 6pm.
+
+    Cost range for a standard veterinary visit: $50 to $60.'
+- appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 30/10/2024 at 15:30:00 for Vaccination. \nSee you then!    \n"
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.0060468
+---
+conversation time: 135.675252
+assistant response time:
+- 0.713832
+- 1.743967
+- 0.70129
+- 2.617973
+- 1.027748
+- 1.187774
+- 0.763311
+- 1.91527
+- 0.967101
+- 1.163196
+- 0.728666
+- 0.640621
+- 0.763887
+- 0.830971
+- 0.935142
+- 0.647636
+- 0.677108
+- 0.888687
+- 2.03904
+- 0.746035
+response time report:
+  average: 1.084962
+  max: 2.617973
+  min: 0.640621
+---
+interaction:
+- User: What services do you offer at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of animals do you accept as patients at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What types of animals are you able to treat at your veterinary center?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me what the approximate cost range is for a standard veterinary
+    visit?
+- Assistant: In the range of $50 to $60.
+- User: What are the available times for an appointment?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you available for appointments on weekends?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are appointments available on weekends?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can I schedule a vaccination appointment for my dog on Saturday at 3:30 PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 30/10/2024\
+    \ at 15:30:00 for Vaccination. \nSee you then!    \n"
+- User: Can you confirm if there's a cancellation policy for appointments?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is your cancellation policy for appointments?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What happens if I need to cancel an appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What is your policy if I need to cancel an appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are your policies regarding appointment cancellations?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the procedures in place if I need to cancel an appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are your policies regarding missed appointments?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are your policies if I miss an appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I do if I need to reschedule or miss an appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the steps I should take if I need to reschedule an appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What steps do I need to follow to reschedule an appointment?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: What should I do if I need to cancel or reschedule an appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
