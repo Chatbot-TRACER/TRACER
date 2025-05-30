@@ -1,0 +1,139 @@
+serial: 2025-05-30-22-04-04
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - anchovies
+- topping2:
+  - pineapple
+- topping3:
+  - Pineapple
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: medium
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: anchovies, pineapple,
+    mushrooms'
+errors: []
+---
+conversation time: 106.483426
+assistant response time:
+- 2.423422
+- 1.892083
+- 2.523873
+- 5.058619
+- 2.777498
+- 3.489848
+- 3.018218
+- 2.709267
+- 2.311593
+- 5.628514
+- 2.683423
+- 2.298529
+- 1.641762
+- 2.250406
+- 2.328427
+- 2.628472
+response time report:
+  average: 2.853997
+  max: 5.628514
+  min: 1.641762
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a medium pizza with anchovies, pineapple, and pineapple. Can
+    you confirm that for me?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you please confirm my order for a medium pizza with anchovies, pineapple,
+    and pineapple?
+- Assistant: 'It looks like there is an issue with your order. The toppings you mentioned
+    include anchovies and pineapple, but we only offer the following toppings: cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, and chicken. Could you
+    please provide a valid topping? Additionally, I can confirm that your pizza size
+    is medium. Thank you!'
+- User: I'd like to replace one of the pineapples with some mushrooms. Can you confirm
+    my order for a medium pizza with anchovies, pineapple, and mushrooms?
+- Assistant: 'Thanks for ordering a medium pizza with m, u, s, h, r, o, o, m and s!
+
+    Thank you for your order! Could you please let me know how many drinks you would
+    like to order? Additionally, please specify the type of drink (coke, sprite, or
+    water). Thank you!'
+- User: I would like to order two drinks, please. Can I have one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a pizza topped with mushrooms and two Cokes is $21.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is bc8ea9.'
+- User: Could you confirm the total cost for my pizza and drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you clarify the total cost for my custom pizza with anchovies, pineapple,
+    and mushrooms, along with the two drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you help me break down the cost of my medium custom pizza with anchovies,
+    pineapple, and mushrooms? Also, don’t forget to include the drinks!
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me the price of the custom pizza with anchovies, pineapple,
+    and mushrooms? And how much are the drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me how much a medium custom pizza with anchovies, pineapple,
+    and mushrooms would cost? And also, how much are the drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you break down the costs for a medium custom pizza with anchovies, pineapple,
+    and mushrooms, along with the prices for a Coke and a Sprite?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas, prices of beverages, how to get the order,
+    and how much time it takes to get an order.
+- User: Could you please tell me how much each drink costs?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please tell me the total cost for my medium custom pizza with anchovies,
+    pineapple, and mushrooms, along with one Coke and one Sprite?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please confirm the price of the medium custom pizza with anchovies,
+    pineapple, and mushrooms? And don't forget the drinks too!
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas, prices of beverages, how to get the order,
+    and how much time it takes to get an order.
+- User: Could you please tell me the total price for a medium custom pizza with anchovies,
+    pineapple, and mushrooms, along with one Coke and one Sprite?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.

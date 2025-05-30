@@ -1,0 +1,120 @@
+serial: 2025-05-30-22-04-04
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - mushrooms
+- topping2:
+  - mushrooms
+- topping3:
+  - mushrooms
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: mushrooms, mushrooms,
+    mushrooms'
+errors: []
+---
+conversation time: 96.072192
+assistant response time:
+- 2.052907
+- 2.628417
+- 1.98346
+- 3.395033
+- 2.794439
+- 3.192361
+- 1.014878
+- 0.835044
+- 0.859646
+- 1.54888
+- 1.506936
+- 0.759379
+- 4.36737
+- 3.413499
+- 2.149831
+- 1.968823
+response time report:
+  average: 2.154431
+  max: 4.36737
+  min: 0.759379
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I get a medium pizza with mushrooms, mushrooms, and mushrooms?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you confirm my order for a medium pizza with mushrooms, mushrooms, and
+    mushrooms?
+- Assistant: It looks like I have the toppings, but I still need to confirm the pizza
+    size. Could you please let me know the size of your pizza? It can be small, medium,
+    or large.
+- User: I already said I want a medium pizza with mushrooms, mushrooms, and mushrooms!
+    Can you just confirm that order for me?
+- Assistant: 'Thanks for ordering a medium pizza with m, u, s, h, r, o, o, m and s!
+
+    Thank you for your patience! I have your pizza order confirmed as a medium pizza
+    with mushrooms. Now, could you please let me know how many drinks you would like
+    to order and what type of drinks? You can choose from coke, sprite, or water.'
+- User: I'll take two drinks, please. Can I get one coke and one sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a pizza topped with mushrooms and two Cokes is $21.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 7568a1.'
+- User: Could you double-check that my drink order is correct? I wanted one Coke and
+    one Sprite, not two Cokes.
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you confirm my drink order? I wanted one Coke and one Sprite, not two
+    Cokes.
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please verify my drink order? I wanted one Coke and one Sprite,
+    not two Cokes.
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I just want to confirm my drink order. I requested one Coke and one Sprite.
+    Can you check if that's correct?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I’d like to make sure my drink order is correct. Can you confirm that I ordered
+    one Coke and one Sprite?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I just want to clarify my drink order. Can you confirm that I ordered one
+    Coke and one Sprite?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if there are any special promotions or deals available
+    for custom pizzas today?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there any special promotion or deal for custom pizzas today?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What types of beverages do you offer for the drinks?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you tell me the prices of the beverages you offer?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.

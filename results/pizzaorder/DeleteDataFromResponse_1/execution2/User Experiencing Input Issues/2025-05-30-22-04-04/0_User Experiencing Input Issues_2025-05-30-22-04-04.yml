@@ -1,0 +1,140 @@
+serial: 2025-05-30-22-04-04
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Margherita
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I understand that you want to order a large Margherita pizza
+    with extra cheese for now. Whenever you're ready to order drinks, just let me
+    know!
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: Your large Margherita pizza with extra cheese, pepperoni,
+    and mushrooms will be ready for pickup shortly.
+errors: []
+---
+conversation time: 106.193755
+assistant response time:
+- 1.54901
+- 1.062745
+- 3.122874
+- 3.845173
+- 2.427287
+- 1.405866
+- 1.54439
+- 1.75839
+- 2.115926
+- 1.770356
+- 1.973127
+- 1.530934
+- 1.574933
+- 1.321954
+- 2.355992
+- 3.019665
+- 1.365732
+response time report:
+  average: 1.984961
+  max: 3.845173
+  min: 1.062744
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like a Margherita pizza, but can you make sure it’s extra cheesy?
+- Assistant: It looks like I still need some information to complete your order. Could
+    you please provide the pizza size (small, medium, or large) and confirm the pizza
+    type (margarita, carbonara, marinera, hawaiian, four cheese, vegetarian)? Thank
+    you!
+- User: Can I get a large Margherita pizza, and don't forget the extra cheese?
+- Assistant: 'Thanks for ordering a large margarita pizza!
+
+    Thank you for your order! I still need to know how many drinks you would like
+    to order and what type of drinks you prefer (coke, sprite, or water). Could you
+    please provide that information? '
+- User: Can I just get a large Margherita pizza with extra cheese for now? I'm not
+    sure about the drinks yet.
+- Assistant: 'I understand that you want to order a large Margherita pizza with extra
+    cheese for now. Whenever you''re ready to order drinks, just let me know! '
+- User: Could you confirm the total price for the large Margherita pizza with extra
+    cheese?
+- Assistant: I can help you with the total price for the large Margherita pizza with
+    extra cheese. However, I don't have the pricing information available. Please
+    check with the Fast Pizza shop for the total price. If you decide on drinks later,
+    just let me know!
+- User: Can you tell me the price range for a large Margherita pizza with extra cheese?
+- Assistant: The price range for a large Margherita pizza with extra cheese typically
+    falls between $12 to $15, depending on the location and any ongoing promotions.
+    If you have any other questions or if you're ready to order drinks, just let me
+    know!
+- User: Is there a possibility of adding any toppings to the Margherita pizza, or
+    is it just the standard cheese and basil?
+- Assistant: 'The Margherita pizza typically comes with standard toppings of cheese
+    and basil. However, you can add extra toppings if you''d like! Please let me know
+    if you''re interested in any specific toppings. Additionally, I still need to
+    know how many drinks you would like to order and what type of drinks you prefer
+    (coke, sprite, or water) when you''re ready. '
+- User: Can I add toppings like pepperoni or mushrooms to my large Margherita pizza?
+- Assistant: A Margherita pizza typically comes with just cheese and basil, but you
+    can definitely add toppings like pepperoni or mushrooms for an additional charge.
+    Would you like to add any of those toppings to your pizza? Also, please let me
+    know if you would like to order any drinks and what type you prefer (coke, sprite,
+    or water).
+- User: Could you tell me how much extra it would cost to add pepperoni or mushrooms
+    to my large Margherita pizza?
+- Assistant: I can help you with your pizza order, but I don't have the information
+    about the extra costs for toppings like pepperoni or mushrooms. Please check with
+    the pizza shop directly for pricing details on those toppings. If you have any
+    other questions or need assistance with your order, feel free to ask!
+- User: Is it possible to order my large Margherita pizza with extra cheese and add
+    both pepperoni and mushrooms at the same time?
+- Assistant: Yes, you can order your large Margherita pizza with extra cheese and
+    add both pepperoni and mushrooms at the same time. Would you like to proceed with
+    this order? If so, please let me know how many drinks you would like and what
+    type of drinks you prefer (coke, sprite, or water).
+- User: Can I just confirm that I want a large Margherita pizza with extra cheese,
+    plus both pepperoni and mushrooms?
+- Assistant: Your order is confirmed! You have a large Margherita pizza with extra
+    cheese, pepperoni, and mushrooms. Now, could you please let me know how many drinks
+    you would like to order and what type of drinks you prefer (coke, sprite, or water)?
+- User: I’m not sure about the drinks yet. Can you just confirm my pizza order one
+    more time? I want to make sure it's correct.
+- Assistant: Your order is confirmed! You have a large Margherita pizza with extra
+    cheese, plus both pepperoni and mushrooms. If you decide on drinks later, feel
+    free to let me know. Enjoy your meal!
+- User: Can you tell me if my large Margherita pizza with extra cheese, pepperoni,
+    and mushrooms will be ready for pickup or delivery?
+- Assistant: Your order for a large Margherita pizza with extra cheese, pepperoni,
+    and mushrooms is confirmed. It will be ready for pickup or delivery based on your
+    preference. Please let me know if you would like to specify pickup or delivery,
+    and if you need any drinks as well!
+- User: Could I just get my large Margherita pizza with extra cheese, pepperoni, and
+    mushrooms for pickup, please?
+- Assistant: 'Thank you for your order of a large Margherita pizza with extra cheese,
+    pepperoni, and mushrooms for pickup! I still need to know what type of drinks
+    you would like (coke, sprite, or water) and how many drinks you would like to
+    order. Could you please provide that information? '
+- User: I'm just focusing on my pizza for now. Can you confirm the pickup time for
+    my large Margherita pizza with extra cheese, pepperoni, and mushrooms?
+- Assistant: Your large Margherita pizza with extra cheese, pepperoni, and mushrooms
+    will be ready for pickup shortly. If you decide on drinks later, feel free to
+    let me know. Enjoy your pizza!

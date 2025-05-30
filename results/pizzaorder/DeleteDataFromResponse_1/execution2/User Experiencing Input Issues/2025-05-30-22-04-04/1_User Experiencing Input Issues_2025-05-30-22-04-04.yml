@@ -1,0 +1,135 @@
+serial: 2025-05-30-22-04-04
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: 'Got it! I''ve received your order for one Coke.
+
+    The cost of a pizza topped with pepperoni and mushrooms, along with one Coke,
+    is $21.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 841eac.'
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: I have noted that you want a large custom pizza with pepperoni
+    and mushrooms and one Coke.
+errors: []
+---
+conversation time: 118.216798
+assistant response time:
+- 1.039465
+- 0.984562
+- 2.492117
+- 2.060626
+- 0.846833
+- 0.981158
+- 2.863872
+- 3.784292
+- 8.560403
+- 2.311718
+- 3.414423
+- 1.865233
+- 2.211436
+- 4.10421
+- 2.65954
+- 4.073639
+- 2.555117
+response time report:
+  average: 2.753449
+  max: 8.560403
+  min: 0.846833
+---
+interaction:
+- User: Can you help me with my pizza order?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What types of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like a Pepperoni pizza, but make sure you got that right this time!
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a Pepperoni pizza. Can you confirm that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I’m trying to place an order for a Pepperoni pizza. Can you confirm that you
+    understood?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a custom pizza. Can you help me with that?
+- Assistant: 'Sure! I can help you with that. Could you please tell me the size of
+    the pizza you would like? It can be small, medium, or large. Also, let me know
+    your choice of toppings from the following options: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, or chicken.'
+- User: I want a large custom pizza with pepperoni and mushrooms. Did you get that?
+- Assistant: I have noted that you want a large pizza. However, I still need to know
+    your choice of toppings. You can choose from cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken. Please let me know your selection!
+- User: I want a large custom pizza with pepperoni and mushrooms. Can you confirm
+    that you understood?
+- Assistant: I have noted that you want a large pizza, but I still need to confirm
+    your choice of toppings. You mentioned pepperoni and mushrooms, but please note
+    that the available toppings are cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken. Could you please confirm your toppings selection?
+- User: I want a large custom pizza with pepperoni and mushrooms. Are you sure you
+    heard that correctly this time?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e, r, o, n and i!
+
+    I have noted that you want a large custom pizza with pepperoni and mushrooms.
+    Now, could you please let me know how many drinks you would like to order and
+    your choice of drink from the following options: coke, sprite, or water?'
+- User: I want to order a drink. Can I just have a Coke, please? Did you get that?
+- Assistant: 'Got it! I''ve received your order for one Coke.
+
+    The cost of a pizza topped with pepperoni and one Coke is $24.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 13a306.'
+- User: I just want to double-check, did you get my order for a large custom pizza
+    with pepperoni and mushrooms along with one Coke?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I just want to confirm one more time, can you repeat my order? I want a large
+    custom pizza with pepperoni and mushrooms, plus one Coke. Did you get that?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a large custom pizza with pepperoni and mushrooms, plus one
+    Coke. Can you confirm that you understood?
+- Assistant: I see that you've provided the toppings as pepperoni and mushrooms, but
+    I still need to know the size of the pizza. Could you please confirm if you would
+    like a small, medium, or large pizza?
+- User: I want to order a large custom pizza with pepperoni and mushrooms, plus one
+    Coke. Are you able to process that?
+- Assistant: 'Thanks for ordering a large pizza with pepperoni and mushrooms!
+
+    I have noted that you want a large custom pizza with pepperoni and mushrooms.
+    However, I still need to confirm the number of drinks you would like to order.
+    Could you please let me know how many Cokes you would like? '
+- User: I want to order a large custom pizza with pepperoni and mushrooms, plus just
+    one Coke. Can you confirm that you got everything?
+- Assistant: 'Got it! I''ve received your order for one Coke.
+
+    The cost of a pizza topped with pepperoni and mushrooms, along with one Coke,
+    is $21.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 841eac.'
+- User: I just want to make sure, did you get my order for a large custom pizza with
+    pepperoni and mushrooms and one Coke? Can you repeat that back to me?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)

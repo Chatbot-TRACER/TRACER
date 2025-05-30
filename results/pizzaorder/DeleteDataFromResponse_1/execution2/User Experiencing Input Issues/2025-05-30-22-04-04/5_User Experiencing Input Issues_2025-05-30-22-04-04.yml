@@ -1,0 +1,94 @@
+serial: 2025-05-30-22-04-04
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - BBQ Chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: To order a custom pizza, please let me know what toppings
+    you would like on it. After that, we can also choose drinks if you'd like!
+errors: []
+---
+conversation time: 101.306594
+assistant response time:
+- 1.320431
+- 0.904007
+- 2.193619
+- 1.805002
+- 0.76021
+- 1.01664
+- 0.754957
+- 1.396667
+- 0.814335
+- 1.233788
+- 0.99596
+- 1.321786
+- 0.897654
+- 0.942299
+- 1.173815
+- 1.375008
+- 0.9581
+response time report:
+  average: 1.168486
+  max: 2.193619
+  min: 0.754957
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like a BBQ Chicken pizza, please. Can you make sure to get that right?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to order a BBQ Chicken pizza, can you confirm that you got it?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a BBQ Chicken pizza. Can you confirm that you understood me
+    this time?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a BBQ Chicken pizza. Are you able to take that order now?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a BBQ Chicken pizza. Can you please confirm if you understood
+    that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a BBQ Chicken pizza. Could you please let me know if you received
+    that correctly?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a custom pizza instead. How do I do that?
+- Assistant: To order a custom pizza, please let me know what toppings you would like
+    on it. After that, we can also choose drinks if you'd like!
+- User: I want to order a custom pizza. Can you tell me what toppings are available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings can I choose for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are available for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a custom pizza. Can I get a list of toppings, please?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a custom pizza. Can you please provide the list of toppings
+    available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a custom pizza. Can you tell me what toppings I can choose
+    from?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I get a list of toppings for a custom pizza, please?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

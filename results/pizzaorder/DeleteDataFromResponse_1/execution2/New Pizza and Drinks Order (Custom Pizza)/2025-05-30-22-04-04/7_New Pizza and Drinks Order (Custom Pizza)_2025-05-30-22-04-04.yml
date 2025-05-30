@@ -1,0 +1,130 @@
+serial: 2025-05-30-22-04-04
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - pepper
+- topping2:
+  - pepper
+- topping3:
+  - pepper
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepperoni, mushrooms,
+    olives'
+errors: []
+---
+conversation time: 102.061279
+assistant response time:
+- 2.431088
+- 2.561829
+- 2.084177
+- 1.512074
+- 1.402347
+- 2.541619
+- 2.416174
+- 1.523128
+- 1.980615
+- 2.71296
+- 3.832991
+- 5.335984
+- 2.73891
+- 3.186289
+- 3.995687
+- 1.807415
+response time report:
+  average: 2.628955
+  max: 5.335984
+  min: 1.402347
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want an extra-large pizza. Can I get that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I’d like to order an extra-large pizza, please.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order an extra-large pizza. Can I get that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order an extra-large pizza with pepperoni. Can you confirm that?
+- Assistant: I see that you've chosen pepperoni as a topping, but I need to know the
+    size of the pizza. Could you please specify if you would like a small, medium,
+    or large pizza?
+- User: I want to confirm my order for an extra-large pizza with pepperoni. Can you
+    help me with that?
+- Assistant: I can only accept small, medium, or large pizza sizes. Could you please
+    specify one of those sizes for your pizza?
+- User: I want to order an extra-large pizza with pepperoni. Can you confirm that?
+- Assistant: I can only accept small, medium, or large pizza sizes. Could you please
+    specify one of those sizes for your pizza?
+- User: I’d like to add extra toppings to my extra-large pizza. Can I choose additional
+    toppings like mushrooms and olives?
+- Assistant: I can only accept orders for small, medium, or large pizzas, not extra-large.
+    Please let me know if you would like a small, medium, or large pizza with your
+    pepperoni topping, and I can help you with that.
+- User: I want to confirm my order for a large pizza with pepperoni and would like
+    to add extra toppings like mushrooms and olives. Is that possible?
+- Assistant: 'Thanks for ordering a large pizza with pepperoni, mushrooms and olives!
+
+    I see that you''ve confirmed your order for a large pizza with pepperoni and extra
+    toppings. However, I still need to know how many drinks you would like to order
+    and what type of drinks you prefer. Could you please provide that information?
+    The options for drinks are coke, sprite, or water.'
+- User: I’d like to order two drinks, please. Can I have one coke and one sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost for a pizza topped with pepperoni, mushrooms, and olives, along with
+    two Cokes, is $23.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is c21b87.'
+- User: I’d like to confirm my order for a large pizza with pepperoni, mushrooms,
+    and olives, along with one coke and one sprite. Is that correct?
+- Assistant: I see that you've provided the toppings, but I still need to know the
+    size of the pizza. Could you please confirm if you would like a small, medium,
+    or large pizza?
+- User: I want to confirm my order for a large pizza with pepperoni, mushrooms, and
+    olives, along with one coke and one sprite. Can you confirm that for me?
+- Assistant: 'Thanks for ordering a large pizza with pepperoni, mushrooms and olives!
+
+    Thank you for your order details! I see that you would like one coke and one sprite.
+    Just to confirm, could you please tell me how many drinks you would like to order
+    in total? '
+- User: I want to confirm my order for a large pizza with pepperoni, mushrooms, and
+    olives, along with one coke and one sprite. Can you confirm that?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost for a pizza topped with pepperoni, mushrooms, and olives, along with
+    two Cokes, is $23.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 355ad0.'
+- User: I want to confirm my order for a large pizza with pepperoni, mushrooms, and
+    olives, along with one coke and one sprite. Is that correct?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: I want to confirm my order for a large pizza with pepperoni, mushrooms, and
+    olives, along with one coke and one sprite. Can you confirm that?
+- Assistant: Your order is confirmed! You have a large pizza with pepperoni, mushrooms,
+    and olives, along with one coke and one sprite. Is there anything else I can help
+    you with?

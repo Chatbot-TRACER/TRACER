@@ -1,0 +1,114 @@
+serial: 2025-05-30-22-04-04
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - chicken
+- topping2:
+  - chicken
+- topping3:
+  - chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: chicken, null, null'
+errors: []
+---
+conversation time: 99.789341
+assistant response time:
+- 1.993618
+- 2.096751
+- 2.04991
+- 2.750507
+- 2.96041
+- 4.536051
+- 3.66625
+- 3.758895
+- 4.444783
+- 1.696777
+- 1.650868
+- 0.753486
+- 0.796038
+- 0.716
+- 0.882428
+- 0.716334
+response time report:
+  average: 2.216819
+  max: 4.536051
+  min: 0.716
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to order a small pizza, please. Can I add chicken to it?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to order a small pizza and add chicken as a topping. Can I do that?
+- Assistant: I see that you've chosen chicken as a topping. Could you please confirm
+    the size of the pizza you'd like? It can be small, medium, or large.
+- User: I'd like to confirm my order for a small pizza with chicken. Can I add anything
+    else to it?
+- Assistant: 'Thanks for ordering a small pizza with c, h, i, c, k, e and n!
+
+    Thank you for confirming your order for a small pizza with chicken. Would you
+    like to add any drinks to your order? If so, please let me know how many drinks
+    you''d like to order and the type of drink (coke, sprite, or water).'
+- User: Could I please order two drinks, one coke and one sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a pizza topped with chicken and two Cokes is $15.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 522555.'
+- User: Could you please confirm the total cost for my small pizza with chicken and
+    two drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me how much extra it would cost to add another topping
+    to my small pizza with chicken?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please clarify if I add another topping, would it be 50 cents extra
+    for the small pizza with chicken?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me what other toppings I could add to my small pizza
+    with chicken?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: 'User: What other toppings can I add to my small pizza with chicken?'
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings can I choose to add to my small pizza with chicken?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings do you have that I can choose to add to my small pizza with
+    chicken?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are available that I could add to my small pizza with chicken?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings can I add to my small pizza with chicken?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings do you have besides chicken that I could put on my small pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

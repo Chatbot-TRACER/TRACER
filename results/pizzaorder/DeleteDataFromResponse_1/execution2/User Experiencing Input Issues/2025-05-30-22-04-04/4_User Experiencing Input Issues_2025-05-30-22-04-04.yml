@@ -1,0 +1,122 @@
+serial: 2025-05-30-22-04-04
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: Your order for a large Hawaiian pizza with extra cheese and
+    pepperoni has been noted.
+errors: []
+---
+conversation time: 104.57673
+assistant response time:
+- 1.087485
+- 1.168324
+- 2.394624
+- 3.605114
+- 2.533253
+- 1.413788
+- 1.181503
+- 1.939344
+- 1.386265
+- 1.725661
+- 1.375408
+- 1.235928
+- 1.846842
+- 1.016951
+- 1.177183
+- 1.441443
+- 0.929594
+response time report:
+  average: 1.615218
+  max: 3.605114
+  min: 0.929594
+---
+interaction:
+- User: Can you help me with ordering a pizza?
+- Assistant: "Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order\
+    \ pizzas and drinks. \nWhat can I do for you?"
+- User: What types of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like to order a Hawaiian pizza, please. Can you confirm the toppings for
+    that?
+- Assistant: It looks like I have the pizza type as Hawaiian, but I still need to
+    know the pizza size. Could you please let me know if you would like a small, medium,
+    or large pizza?
+- User: Can I get a large Hawaiian pizza, please?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for your order of a large Hawaiian pizza! Now, could you please let
+    me know how many drinks you would like to order and what type of drinks (coke,
+    sprite, or water) you prefer?'
+- User: Can I just order the pizza for now, or do I have to pick a drink too?
+- Assistant: You can order just the pizza if you prefer. Would you like to proceed
+    with just the large Hawaiian pizza, or would you like to add drinks later?
+- User: I just want to stick with the large Hawaiian pizza for now. Can you confirm
+    my order?
+- Assistant: Your order is confirmed! You have a large Hawaiian pizza. If you decide
+    to add drinks later, feel free to let me know. Enjoy your meal!
+- User: Can I get a confirmation on the total price for the large Hawaiian pizza?
+- Assistant: I can confirm your order of a large Hawaiian pizza. However, I don't
+    have the total price information. Please check with the shop for the pricing details.
+    If you decide to add drinks later, just let me know!
+- User: Could you tell me what the price is for just the large Hawaiian pizza?
+- Assistant: I can’t provide the price for the large Hawaiian pizza, but I can help
+    you with your order. Would you like to add drinks to your order, or do you want
+    to proceed with just the pizza?
+- User: Why can't you just tell me the price for the large Hawaiian pizza?
+- Assistant: I understand your frustration, but I don't have access to pricing information.
+    I recommend checking the menu or contacting the shop directly for the price of
+    the large Hawaiian pizza. If you decide to add drinks later, just let me know!
+- User: Could you at least tell me if there are any deals or promotions on the Hawaiian
+    pizza right now?
+- Assistant: I currently don't have information on deals or promotions for the Hawaiian
+    pizza. However, I recommend checking our website or contacting the shop directly
+    for the latest offers. If you decide to add drinks to your order later, just let
+    me know!
+- User: Is there a way to customize the toppings on the Hawaiian pizza, or is it fixed?
+- Assistant: The Hawaiian pizza typically comes with ham and pineapple as its standard
+    toppings. However, you can customize it by adding or removing toppings if you'd
+    like. Please let me know if you want to make any changes or if you have any other
+    questions!
+- User: Can I add extra cheese to my Hawaiian pizza?
+- Assistant: 'Yes, you can add extra cheese to your Hawaiian pizza! Would you like
+    to proceed with that customization? If so, I can confirm your order of a large
+    Hawaiian pizza with extra cheese. '
+- User: Yes, I’d like to proceed with the large Hawaiian pizza with extra cheese.
+    Can you confirm that for me?
+- Assistant: Your order for a large Hawaiian pizza with extra cheese is confirmed!
+    If you would like to add drinks later, just let me know. Enjoy your pizza!
+- User: Could you tell me if I can add any other toppings besides extra cheese to
+    my Hawaiian pizza?
+- Assistant: The Hawaiian pizza typically comes with ham and pineapple, but you can
+    customize it with additional toppings like mushrooms, onions, or peppers if you'd
+    like. Would you like to add any other toppings besides extra cheese?
+- User: Can I add pepperoni to my large Hawaiian pizza with extra cheese?
+- Assistant: Yes, you can add pepperoni to your large Hawaiian pizza with extra cheese.
+    Your order is confirmed as a large Hawaiian pizza with extra cheese and pepperoni.
+    Would you like to add any drinks to your order?
+- User: Can I just get the large Hawaiian pizza with extra cheese and pepperoni for
+    now, without adding any drinks?
+- Assistant: 'Your order for a large Hawaiian pizza with extra cheese and pepperoni
+    has been noted. If you decide to add drinks later, just let me know! '
