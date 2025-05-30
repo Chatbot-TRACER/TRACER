@@ -1,0 +1,91 @@
+serial: 2025-05-30-22-00-55
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: In the range of $50 to $60.
+errors: []
+total_cost($): 0.0029643
+---
+conversation time: 58.045546
+assistant response time:
+- 0.909549
+- 0.796044
+- 1.185483
+- 0.840032
+- 0.677519
+- 0.875486
+- 0.843607
+- 1.109193
+- 0.961533
+- 0.672787
+- 0.743602
+- 1.268889
+- 0.788082
+- 0.908119
+- 2.177267
+response time report:
+  average: 0.983812
+  max: 2.177267
+  min: 0.672787
+---
+interaction:
+- User: Walk-in thing? How's that work?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Walk-in rules? What’s the deal?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Walk-in setup? What’s the scoop?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming stuff? What's available?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming options? What’s the info?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming details? What’s the score?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming list? What’s on it?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming services? What's the rundown?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Emergency care? Got any of that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Emergency stuff? What's the 24/7 situation?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Emergency services? What’s the arrangement?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Holiday hours? What's the plan?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Holiday schedule? What’s the deal?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Holiday times? What's up with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Checkup cost? What are we looking at?
+- Assistant: In the range of $50 to $60.

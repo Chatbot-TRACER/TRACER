@@ -1,0 +1,88 @@
+serial: 2025-05-30-22-00-55
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: Every weekday from 9am to 6pm.
+errors: []
+total_cost($): 0.00318645
+---
+conversation time: 70.812449
+assistant response time:
+- 3.481815
+- 0.913413
+- 0.716259
+- 0.673377
+- 0.691259
+- 0.745277
+- 2.279147
+- 2.458663
+- 0.680973
+- 0.86619
+- 0.678684
+- 1.82565
+- 0.987779
+- 0.915465
+- 2.866073
+response time report:
+  average: 1.385334
+  max: 3.481815
+  min: 0.673377
+---
+interaction:
+- User: Walk-in? How's that work?
+- Assistant: I'm not sure. However, I can provide information regarding the costs
+    of vet visits, the types of animals we accept, pet care, our regular hours, and
+    weekend availability.
+- User: Grooming? Like, what’s the deal?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming? What's the situation there?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming? What's the vibe?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Emergency services? What’s the setup?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Holiday hours? What’s the plan?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Cost for a checkup? What's it run?
+- Assistant: In the range of $50 to $60.
+- User: Walk-in? What's the way?
+- Assistant: In the range of $50 to $60.
+- User: Grooming? What’s going on there?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming? How’s it look?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming? What's the scoop?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Emergency services? What’s the deal?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Emergency services? What's the picture?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Holiday hours? What’s the story?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Cost for a checkup? What’s the ballpark?
+- Assistant: In the range of $50 to $60.

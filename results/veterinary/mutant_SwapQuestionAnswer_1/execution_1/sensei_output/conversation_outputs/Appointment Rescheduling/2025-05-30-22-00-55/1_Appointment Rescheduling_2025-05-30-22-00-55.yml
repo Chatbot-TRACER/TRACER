@@ -1,0 +1,110 @@
+serial: 2025-05-30-22-00-55
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Tomorrow
+- time: 1:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: None
+- rescheduling_prompt: tomorrow at 1:30 PM
+- new_appointment_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0040236
+---
+conversation time: 66.129164
+assistant response time:
+- 1.271684
+- 0.791875
+- 0.894471
+- 1.167294
+- 1.034494
+- 0.990823
+- 0.748758
+- 2.275428
+- 0.765707
+- 1.022017
+- 0.965217
+- 0.729689
+- 0.757788
+- 0.823716
+- 0.751201
+response time report:
+  average: 0.999344
+  max: 2.275428
+  min: 0.729689
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I update it to tomorrow at 1:30 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can I change my appointment to tomorrow at 1:30 PM since the details are incorrect?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my appointment to tomorrow at 1:30 PM because the original
+    details were wrong. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to confirm that I need to reschedule my appointment for tomorrow at
+    1:30 PM. How can I do that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need assistance to confirm my appointment change to tomorrow at 1:30 PM
+    because the previous details were incorrect. How can I proceed?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule my appointment to tomorrow at 1:30 PM since the original
+    details were incorrect. What steps do I need to take?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me if there's a specific process I need to follow to update my
+    appointment to tomorrow at 1:30 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I do to change my appointment to tomorrow at 1:30 PM since the
+    initial details were wrong?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you explain the process for changing my appointment to tomorrow at 1:30
+    PM since the details I provided earlier are incorrect?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there a form or specific contact I need to use to change my appointment
+    to tomorrow at 1:30 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What steps do I need to take to change my appointment to tomorrow at 1:30
+    PM since the original details were incorrect?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you guide me on how to update my appointment to tomorrow at 1:30 PM because
+    the original details were wrong?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there a way to reach someone directly to assist with rescheduling my appointment
+    to tomorrow at 1:30 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: How do I get in touch with someone to help me change my appointment to tomorrow
+    at 1:30 PM since the original details were incorrect?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you let me know how I can contact someone to change my appointment to
+    tomorrow at 1:30 PM since the original details were incorrect?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

@@ -1,0 +1,64 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What types of vaccinations do you offer for dogs?",
+                "What vaccinations are typically given to puppies?",
+                "What vaccinations do you typically administer to puppies?",
+                "What vaccinations are usually administered to puppies at your veterinary center?",
+                "What vaccinations are typically required for puppies?",
+                "What vaccinations are most often given to puppies at your veterinary center?",
+                "What are the vaccination protocols for puppies at your veterinary center?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "31/10/2024"
+            ],
+            "time": [
+                "13:00:00"
+            ],
+            "service": [
+                "Vaccination"
+            ]
+        },
+        "top-level": {}
+    }
+}

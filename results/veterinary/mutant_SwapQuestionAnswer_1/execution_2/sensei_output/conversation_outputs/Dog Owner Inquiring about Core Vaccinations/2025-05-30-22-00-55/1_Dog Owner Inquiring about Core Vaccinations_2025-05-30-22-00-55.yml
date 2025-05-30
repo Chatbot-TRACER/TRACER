@@ -1,0 +1,104 @@
+serial: 2025-05-30-22-00-55
+language: English
+context:
+- 'personality: personalities/sarcastic-user'
+- You recently adopted a puppy and want to ensure it receives the necessary healthcare.
+- You are particularly concerned about protecting your dog from common and potentially
+  dangerous diseases prevalent in your area.
+- You want to find a reliable veterinary center that offers comprehensive vaccination
+  services and is available in case of emergencies.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask about the core vaccinations needed for dogs.
+- Inquire if emergency services are available outside of business hours.
+- Ask what the business hours are.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 16
+data_output:
+- services_offered: I'm not sure. However, I can provide information regarding the
+    cost of a vet visit, the types of animals we accept, pet care tips, our opening
+    hours, and our weekend schedule.
+- core_vaccinations_list: null
+- emergency_services_availability: I'm sorry, but I did not understand the last sentence,
+    can you say that again?
+- business_hours: Every weekday from 9am to 6pm.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0036738
+---
+conversation time: 70.964756
+assistant response time:
+- 3.347785
+- 1.071142
+- 0.896866
+- 0.912114
+- 1.186131
+- 3.595698
+- 1.842282
+- 0.768033
+- 1.125122
+- 1.183881
+- 0.845279
+- 1.167774
+- 0.630689
+- 1.138844
+- 2.993282
+- 3.398535
+response time report:
+  average: 1.631466
+  max: 3.595698
+  min: 0.630689
+---
+interaction:
+- User: What services do you offer at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Do you provide core vaccinations for dogs, and if so, what are they?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What core vaccinations do you provide for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the core vaccinations that you offer for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What core vaccinations do you recommend for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations do you consider essential for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Are emergency services available outside of business hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there an option for emergency services if my dog needs help outside of
+    regular business hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are your business hours?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you open on weekends?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you open on weekends?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are your services available on weekends?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Are you open for services on weekends?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What hours are you open for appointments during the week?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are there any specific vaccination packages or plans available for puppies?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    availability.
+- User: Do you offer any specific vaccination packages or plans for puppies?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.

@@ -1,0 +1,109 @@
+serial: 2025-05-30-22-00-55
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Today
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: I'm sorry, but I did not understand the last sentence, can
+    you say that again?
+- rescheduling_prompt: I'm sorry, but I did not understand the last sentence, can
+    you say that again?
+- new_appointment_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00375045
+---
+conversation time: 69.055612
+assistant response time:
+- 0.961756
+- 0.865968
+- 0.966883
+- 1.166021
+- 1.252706
+- 1.119963
+- 0.751505
+- 0.941443
+- 0.65215
+- 0.726945
+- 2.290396
+- 1.058921
+- 0.749517
+- 0.862379
+- 0.681673
+response time report:
+  average: 1.003215
+  max: 2.290396
+  min: 0.65215
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    What do I need to do to provide the correct appointment details, including the
+    new date and time?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to provide the correct appointment details, including the new date
+    and time.
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to provide the updated details for my appointment, specifically the
+    new date and time. How do I do that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to change my appointment to today at 10:00 AM. How can I do that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to know how to change my appointment to today at 10:00 AM. What should
+    I do?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need assistance with changing my appointment to today at 10:00 AM. What
+    steps should I follow?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me if there's a way to check my current appointment details before
+    I try to reschedule?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: How can I check my current appointment details before I attempt to reschedule
+    it?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there a way for me to verify the details of my existing appointment before
+    I go ahead and reschedule it?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me where I might find my existing appointment details?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: How can I find the details of my current appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the process for locating the details of my current appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there a specific website or app I should use to check my current appointment
+    details?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: How do I access the website or app to check my current appointment details?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What steps do I need to take to access the website or app for checking my
+    current appointment details?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

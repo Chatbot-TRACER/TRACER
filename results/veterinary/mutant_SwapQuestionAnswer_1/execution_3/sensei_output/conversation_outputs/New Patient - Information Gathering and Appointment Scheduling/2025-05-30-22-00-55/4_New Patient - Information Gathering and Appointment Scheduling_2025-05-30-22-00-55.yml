@@ -1,0 +1,122 @@
+serial: 2025-05-30-22-00-55
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to establish him with a reputable veterinary
+  center for his healthcare needs.
+- You want to find a vet that offers comprehensive services and has appointment times
+  that fit your busy schedule.
+ask_about:
+- Inquire about the services offered at the veterinary center.
+- Ask about the veterinary center's policy on accepting certain animal types as patients.
+- Ask what the approximate cost range is for a standard veterinary visit.
+- Inquire about the available times for an appointment.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- date: Next Monday
+- time: 5:00 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- services_offered: null
+- animal_acceptance_policy: null
+- standard_visit_cost_range: In the range of $50 to $60.
+- appointment_availability_info: Every weekday from 9am to 6pm.
+- appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 04/11/2024 at 17:00:00 for Vaccination. \nSee you then!    \n"
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.00620565
+---
+conversation time: 172.597243
+assistant response time:
+- 2.431519
+- 3.887427
+- 2.776627
+- 0.942201
+- 1.204877
+- 0.906635
+- 1.051026
+- 1.286362
+- 0.740309
+- 1.170749
+- 0.678672
+- 2.432017
+- 0.725813
+- 0.711254
+- 0.789907
+- 1.273459
+- 0.791653
+- 0.901158
+- 0.827658
+- 0.874631
+response time report:
+  average: 1.320197
+  max: 3.887427
+  min: 0.678672
+---
+interaction:
+- User: What services do you offer at the veterinary center?
+- Assistant: In the range of $50 to $60.
+- User: What types of animals do you accept as patients at your veterinary center?
+- Assistant: In the range of $50 to $60.
+- User: What is the approximate cost range for a standard veterinary visit?
+- Assistant: In the range of $50 to $60.
+- User: What are the available times for an appointment?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Can I schedule a vaccination appointment for my dog on next Monday at 5:00
+    PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 04/11/2024\
+    \ at 17:00:00 for Vaccination. \nSee you then!    \n"
+- User: Can you tell me if you offer any wellness plans or packages for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have any wellness plans or packages specifically designed for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide any wellness plans or packages that are tailored for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have any wellness plans or packages for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you offer any wellness plans or packages for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have any wellness plans or packages that cater specifically to puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide any preventative care services such as vaccinations or flea
+    and tick treatments for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you offer preventative care services like vaccinations or flea and tick
+    treatments for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide preventative care services such as vaccinations or flea and
+    tick treatments for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have any information on the types of training or behavior classes you
+    might offer for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you offer any training or behavior classes specifically for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide any training or behavior classes specifically designed for
+    puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you have any grooming services available for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you offer any grooming services for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Do you provide any grooming services for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

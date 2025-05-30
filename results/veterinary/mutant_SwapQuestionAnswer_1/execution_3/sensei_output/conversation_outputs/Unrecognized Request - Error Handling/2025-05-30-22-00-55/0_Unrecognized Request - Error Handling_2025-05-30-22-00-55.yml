@@ -1,0 +1,86 @@
+serial: 2025-05-30-22-00-55
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: Every weekday from 9am to 6pm.
+errors: []
+total_cost($): 0.00340905
+---
+conversation time: 86.968543
+assistant response time:
+- 0.895027
+- 1.052883
+- 1.060497
+- 0.762951
+- 5.078754
+- 3.192242
+- 0.80289
+- 0.830012
+- 0.916255
+- 2.11582
+- 0.864279
+- 6.031645
+- 1.452056
+- 0.806153
+- 2.430915
+response time report:
+  average: 1.886158
+  max: 6.031645
+  min: 0.762951
+---
+interaction:
+- User: What's the deal with walking in for stuff?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the grooming situation like, you know, for fur and stuff?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What about those emergencies, like if something goes wrong, you know?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the holiday hours, you know, when things are closed or open?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What’s the checkup price range, like ballpark or whatever?
+- Assistant: In the range of $50 to $60.
+- User: What's the scoop on walk-ins, you know, for random stuff?
+- Assistant: In the range of $50 to $60.
+- User: What's the grooming deal, you know, for cleaning up the fluff?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the 24-hour thing for emergencies, like if something pops up?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the holiday schedule, like when’s the place open or closed?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What's the checkup price, you know, just a rough idea?
+- Assistant: In the range of $50 to $60.
+- User: What's the walk-in thing, you know, for just showing up?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the grooming thing, you know, for cleaning up pets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the deal with those emergency services, you know, if something pops
+    up?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the holiday hours, you know, when it's open or not?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What’s the checkup cost, you know, just an idea or whatever?
+- Assistant: In the range of $50 to $60.

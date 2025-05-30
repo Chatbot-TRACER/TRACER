@@ -1,0 +1,111 @@
+serial: 2025-05-30-22-00-55
+language: English
+context:
+- 'personality: personalities/sarcastic-user'
+- You recently adopted a puppy and want to ensure it receives the necessary healthcare.
+- You are particularly concerned about protecting your dog from common and potentially
+  dangerous diseases prevalent in your area.
+- You want to find a reliable veterinary center that offers comprehensive vaccination
+  services and is available in case of emergencies.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask about the core vaccinations needed for dogs.
+- Inquire if emergency services are available outside of business hours.
+- Ask what the business hours are.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 16
+data_output:
+- services_offered: I'm not sure. However, I can provide information on vet visit
+    costs, the types of animals we accept, pet care tips, our opening hours, and our
+    weekend schedule.
+- core_vaccinations_list: null
+- emergency_services_availability: None
+- business_hours: Every weekday from 9am to 6pm.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00375795
+---
+conversation time: 71.256728
+assistant response time:
+- 3.212314
+- 0.891379
+- 0.779983
+- 0.787011
+- 1.205558
+- 0.993682
+- 3.712221
+- 0.850326
+- 1.726267
+- 0.839849
+- 1.071152
+- 1.162736
+- 0.724452
+- 1.161057
+- 0.613913
+- 0.754596
+response time report:
+  average: 1.280406
+  max: 3.712221
+  min: 0.613913
+---
+interaction:
+- User: What services do you offer at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information on vet visit costs,
+    the types of animals we accept, pet care tips, our opening hours, and our weekend
+    schedule.
+- User: What are the core vaccinations my dog needs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are essential for my dog to stay healthy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations are crucial for my dog's health?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the core vaccinations my puppy needs to be protected from common
+    diseases?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations should I prioritize to keep my puppy safe from common diseases?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the essential vaccinations I should get for my puppy to protect it
+    from common diseases?
+- Assistant: I'm not sure. However, I can provide information on vet visit costs,
+    the types of animals we accept, pet care tips, our opening hours, and our weekend
+    schedule.
+- User: Are emergency services available outside of business hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there an emergency service option for my dog outside of normal business
+    hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are your business hours for regular appointments?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are you open on weekends for appointments or emergencies?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Are your services available during the weekends for emergencies or regular
+    appointments?
+- Assistant: Every weekday from 9am to 6pm.
+- User: What should I do if my puppy needs immediate care outside of your business
+    hours?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I do if my puppy needs urgent care when you're closed?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What happens if my puppy needs urgent medical attention outside of your business
+    hours?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: Is there a referral for an emergency animal hospital nearby if your clinic
+    is closed?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

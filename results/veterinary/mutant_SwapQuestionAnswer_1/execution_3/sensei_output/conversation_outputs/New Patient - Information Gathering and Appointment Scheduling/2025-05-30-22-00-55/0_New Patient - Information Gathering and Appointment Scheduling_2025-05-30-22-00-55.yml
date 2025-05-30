@@ -1,0 +1,116 @@
+serial: 2025-05-30-22-00-55
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to establish him with a reputable veterinary
+  center for his healthcare needs.
+- You want to find a vet that offers comprehensive services and has appointment times
+  that fit your busy schedule.
+ask_about:
+- Inquire about the services offered at the veterinary center.
+- Ask about the veterinary center's policy on accepting certain animal types as patients.
+- Ask what the approximate cost range is for a standard veterinary visit.
+- Inquire about the available times for an appointment.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- date: Today
+- time: 9:30 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- services_offered: None
+- animal_acceptance_policy: null
+- standard_visit_cost_range: In the range of $50 to $60.
+- appointment_availability_info: Every weekday from 9am to 6pm.
+- appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 28/10/2024 at 09:30:00 for Vaccination. \nSee you then!    \n"
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00592905
+---
+conversation time: 119.429694
+assistant response time:
+- 3.100594
+- 3.458784
+- 3.607355
+- 0.921394
+- 1.257674
+- 1.314397
+- 0.851157
+- 0.830942
+- 1.44439
+- 0.624523
+- 1.148968
+- 0.989309
+- 0.958346
+- 0.639035
+- 1.043954
+- 0.741974
+- 0.826054
+- 0.752738
+- 0.79754
+- 0.799364
+response time report:
+  average: 1.305424
+  max: 3.607355
+  min: 0.624523
+---
+interaction:
+- User: What services do you offer at your veterinary center?
+- Assistant: In the range of $50 to $60.
+- User: What is your policy on accepting different types of animals as patients?
+- Assistant: In the range of $50 to $60.
+- User: What is the approximate cost range for a standard veterinary visit?
+- Assistant: In the range of $50 to $60.
+- User: What are the available times for scheduling an appointment?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Can I schedule a vaccination appointment for my dog today at 9:30 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 09:30:00 for Vaccination. \nSee you then!    \n"
+- User: Can you confirm what vaccinations my puppy will need for the appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations will my puppy need for the appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations will my puppy require for the appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the recommended vaccinations for a puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the recommended vaccinations for a puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations should I consider for my puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations should I consider for my puppy?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations does my puppy need?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations does my puppy need?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations does my puppy need for his first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations does my puppy need for his first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations will my puppy need for his first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the recommended vaccinations for puppies?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations will my puppy need for his first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations will my puppy need for his first visit?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

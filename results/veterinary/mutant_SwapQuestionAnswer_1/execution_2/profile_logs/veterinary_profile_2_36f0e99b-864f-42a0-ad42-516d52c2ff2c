@@ -1,0 +1,65 @@
+{
+    "specification": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Vaccination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What can I do to help my puppy adjust to its new home?",
+                "What vaccines are available for dogs at your veterinary center?",
+                "What vaccinations do you recommend for puppies at your veterinary center?",
+                "What vaccines does your veterinary center administer for puppies?",
+                "What vaccinations does your veterinary center recommend for puppies?",
+                "What common diseases do the recommended vaccinations for puppies protect against?",
+                "What types of vaccinations do you recommend for my puppy?",
+                "What are some common health issues that puppies face?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "31/10/2024"
+            ],
+            "time": [
+                "11:00:00"
+            ],
+            "service": [
+                "Vaccination"
+            ]
+        },
+        "top-level": {}
+    }
+}

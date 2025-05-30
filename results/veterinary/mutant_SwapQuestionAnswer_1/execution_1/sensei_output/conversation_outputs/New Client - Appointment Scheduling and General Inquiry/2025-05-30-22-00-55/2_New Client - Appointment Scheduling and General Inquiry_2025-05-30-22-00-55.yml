@@ -1,0 +1,125 @@
+serial: 2025-05-30-22-00-55
+language: English
+context:
+- You recently moved to the area and are looking for a reputable veterinary center
+  for your pets.
+- You have a rabbit that requires regular grooming and you'd like to establish care
+  with a local vet.
+- Before committing, you want to gather some preliminary information about their services
+  and pricing.
+ask_about:
+- Inquire about the types of animals the veterinary center treats.
+- If the veterinary center treats rabbits, ask to schedule a grooming appointment
+  for a rabbit.
+- Provide the date {{date}} and time {{time}} for the grooming appointment.
+- Ask about the typical price range for a veterinary visit.
+- Ask about available services and information.
+- date: This Friday
+- time: 3:00 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 18
+data_output:
+- animal_acceptance_response: I'm not sure. However, I can provide information regarding
+    vet visit costs, the types of animals we accept, pet care, our regular hours,
+    and weekend availability.
+- grooming_appointment_confirmation: null
+- veterinary_visit_price_range: In the range of $50 to $60.
+- available_services_and_information: I'm not sure. However, I can provide information
+    regarding vet visit costs, the types of animals we accept, pet care, our regular
+    hours, and weekend availability.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00521415
+---
+conversation time: 121.370984
+assistant response time:
+- 2.524934
+- 2.426716
+- 0.651877
+- 0.999155
+- 1.094693
+- 1.007268
+- 0.778574
+- 0.740409
+- 4.629682
+- 3.590199
+- 2.544481
+- 3.602272
+- 3.552758
+- 4.332694
+- 4.115592
+- 3.074922
+- 3.044781
+- 3.402153
+response time report:
+  average: 2.561842
+  max: 4.629682
+  min: 0.651877
+---
+interaction:
+- User: What types of animals do you treat at your veterinary center?
+- Assistant: In the range of $50 to $60.
+- User: Do you treat rabbits at your veterinary center?
+- Assistant: In the range of $50 to $60.
+- User: Can I schedule a grooming appointment for my rabbit this Friday at 3:00 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can I book a grooming appointment for my rabbit on Friday at 3:00 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can I set up a grooming appointment for my rabbit this Friday at 3:00 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you confirm if you have availability for a rabbit grooming appointment
+    this Friday at 3:00 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you check if you have any openings for a rabbit grooming appointment on
+    Friday at 3:00 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Could you let me know if you have any openings for a rabbit grooming appointment
+    this Friday at 3:00 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Could you provide information on the available services for rabbits at your
+    veterinary center?
+- Assistant: In the range of $50 to $60.
+- User: What services do you offer specifically for rabbits at your veterinary center?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    availability.
+- User: What is the typical price range for a veterinary visit at your center?
+- Assistant: In the range of $50 to $60.
+- User: Do you offer any specialized grooming services for rabbits at your veterinary
+    center?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    availability.
+- User: Do you have any specific grooming services tailored for rabbits?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    availability.
+- User: Can you tell me more about the grooming services you provide for rabbits?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    hours.
+- User: What are the specific grooming services you provide for rabbits?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    availability.
+- User: Do you have a list of services that you offer for grooming rabbits?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    hours.
+- User: Can you provide details on the types of services you offer for grooming rabbits?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    availability.
+- User: Do you have any specific rabbit grooming services available?
+- Assistant: I'm not sure. However, I can provide information regarding vet visit
+    costs, the types of animals we accept, pet care, our regular hours, and weekend
+    availability.
