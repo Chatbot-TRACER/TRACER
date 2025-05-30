@@ -1,0 +1,64 @@
+{
+    "specification": {
+        "modules": [
+            "make_appointment",
+            "top-level",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "make_appointment",
+            "top-level",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What vaccines do you usually give to puppies during their first visit?",
+                "What vaccines do you recommend for puppies during their first visit?",
+                "What vaccinations do you typically recommend for puppies during their first appointment?",
+                "What types of vaccinations will my dog receive during the appointment?",
+                "What vaccinations do you usually give to puppies when they come in for their first appointment?",
+                "What vaccinations do you typically administer to puppies during their first visit?",
+                "What kinds of vaccinations are available for dogs at your center?",
+                "What specific vaccinations will puppies generally receive during their initial appointment?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "31/10/2024"
+            ],
+            "time": [
+                "11:00:00"
+            ],
+            "service": [
+                "Physical examination"
+            ]
+        },
+        "top-level": {}
+    }
+}

@@ -1,0 +1,62 @@
+{
+    "specification": {
+        "modules": [
+            "make_appointment",
+            "top-level",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "make_appointment",
+            "top-level",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "What types of services do you have for dogs at your veterinary center?",
+                "What vaccinations can you provide for dogs?",
+                "What specific services do you offer for dogs at your veterinary center?",
+                "What types of services do you offer for dogs?",
+                "What specific services are available for dogs at your veterinary center?",
+                "What types of services do you provide specifically for dogs?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "29/10/2024"
+            ],
+            "time": [
+                "09:30:00"
+            ],
+            "service": [
+                "Physical examination"
+            ]
+        },
+        "top-level": {}
+    }
+}

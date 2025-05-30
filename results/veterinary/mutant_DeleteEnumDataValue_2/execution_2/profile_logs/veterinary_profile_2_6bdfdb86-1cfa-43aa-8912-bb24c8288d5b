@@ -1,0 +1,69 @@
+{
+    "specification": {
+        "modules": [
+            "make_appointment",
+            "top-level",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "make_appointment",
+            "top-level",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "Do you offer routine check-ups for dogs?",
+                "Can you provide information about the vaccination schedule for puppies?",
+                "What types of vaccines do you recommend for puppies during their first year?",
+                "Do you offer any services besides vaccinations, like routine check-ups or grooming?",
+                "What vaccinations will my puppy need in the first year?",
+                "What types of vaccinations are typically given to puppies?",
+                "What are the common vaccinations given to puppies during their first year?",
+                "When should my puppy receive its first set of vaccinations?",
+                "Do you have a specific type of vaccination schedule for puppies?",
+                "What kinds of vaccinations are available for dogs?",
+                "Do you offer vaccinations for puppies?",
+                "What vaccinations are typically recommended for puppies in their first year?",
+                "What are the common vaccinations needed when my puppy is young?"
+            ]
+        },
+        "make_appointment": {
+            "date": [
+                "27/10/2024"
+            ],
+            "time": [
+                "14:30:00"
+            ],
+            "service": [
+                "Physical examination"
+            ]
+        },
+        "top-level": {}
+    }
+}

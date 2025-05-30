@@ -1,0 +1,112 @@
+serial: 2025-05-30-16-24-54
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: '2023-11-17'
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 17/11/2023 at 10:00:00 for Physical examination. \nSee you then!   \n"
+- rescheduling_prompt: 2023-11-17 at 10:00 AM
+- new_appointment_confirmation: None
+errors: []
+total_cost($): 0.00450615
+---
+conversation time: 69.931747
+assistant response time:
+- 0.792881
+- 0.894011
+- 0.924874
+- 0.96306
+- 0.918208
+- 1.257441
+- 0.95374
+- 0.822703
+- 0.917826
+- 0.812427
+- 1.218778
+- 0.947965
+- 0.944657
+- 1.056764
+- 0.887777
+response time report:
+  average: 0.954207
+  max: 1.25744
+  min: 0.792881
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I provide the correct appointment details, including the new date of 2023-11-17
+    and time of 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to provide the updated appointment details, which are now for 2023-11-17
+    at 10:00 AM. Can you help with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to reschedule my appointment for 2023-11-17 at 10:00 AM. How can I
+    confirm that change?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to make sure the appointment I have is changed to 2023-11-17 at 10:00
+    AM. Could you help me with the process?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I would like to change my appointment to 2023-11-17 at 10:00 AM. What steps
+    do I need to take to confirm this change?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to update my appointment to 2023-11-17 at 10:00 AM. What do I need
+    to do?
+- Assistant: "Ok, I have received your request to schedule an appointment for 17/11/2023\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I actually meant to reschedule my existing appointment, not schedule a new
+    one. Can you assist with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I meant to say that I need to reschedule my existing appointment instead of
+    scheduling a new one. Can you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my existing appointment date and time to 2023-11-17 at 10:00
+    AM. Can you help me confirm that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to make sure I’m changing my existing appointment to 2023-11-17 at
+    10:00 AM. What do I need to do to make that happen?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to ensure my existing appointment is rescheduled to 2023-11-17 at 10:00
+    AM. How can I do that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 17/11/2023\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to clarify that I want to reschedule my existing appointment, not create
+    a new one. Can you help me with this?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to make it clear that I'm trying to reschedule my current appointment,
+    not create a new one. Can you assist with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I just want to confirm that I need to reschedule my current appointment, not
+    book a new one. How can I do that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to make sure that I'm rescheduling my current appointment and not creating
+    a new one. What do I need to do next?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

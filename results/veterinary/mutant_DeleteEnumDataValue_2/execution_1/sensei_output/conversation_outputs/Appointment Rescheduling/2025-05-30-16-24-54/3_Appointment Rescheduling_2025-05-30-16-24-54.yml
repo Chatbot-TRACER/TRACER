@@ -1,0 +1,119 @@
+serial: 2025-05-30-16-24-54
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: November 12
+- time: 4:45 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: I'm sorry, but I did not understand the last sentence, can
+    you say that again?
+- rescheduling_prompt: November 12 at 4:45 PM
+- new_appointment_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.00386955
+---
+conversation time: 80.439413
+assistant response time:
+- 0.845389
+- 0.867169
+- 0.83885
+- 0.861516
+- 0.910797
+- 0.753225
+- 1.124537
+- 0.883861
+- 0.808241
+- 0.956066
+- 0.977651
+- 0.966653
+- 3.203697
+- 0.749774
+- 0.816466
+response time report:
+  average: 1.037592
+  max: 3.203697
+  min: 0.749774
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to provide the correct appointment details, including a new date of
+    November 12 at 4:45 PM. How do I update that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my appointment to the new date of November 12 at 4:45 PM.
+    What do I need to do?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you confirm if there’s a specific procedure to follow for rescheduling
+    appointments?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What steps do I need to take to reschedule my appointment for November 12
+    at 4:45 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What do I need to do to change my appointment to November 12 at 4:45 PM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Is there a phone number or email I can use to reach someone for help with
+    my appointment rescheduling?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you provide me with a contact method, like a phone number or email, to
+    discuss rescheduling my appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you give me a phone number or email to contact for help with rescheduling
+    my appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the available options for contacting customer service regarding appointment
+    changes?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the different ways I can contact customer service to help me with
+    my appointment rescheduling?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you let me know how I can reach customer service to assist with rescheduling
+    my appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What if I just show up at the appointment on the original date and time? Would
+    that work?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: If I just go to my appointment on the original date and time, will that be
+    okay?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'
+- User: If I attend my appointment on the original date and time, will that be acceptable?
+- Assistant: '```
+
+    I''m sorry, but I did not understand the last sentence, can you say that again?
+
+    ```'

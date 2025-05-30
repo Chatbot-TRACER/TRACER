@@ -1,0 +1,113 @@
+serial: 2025-05-30-16-24-54
+language: English
+context:
+- 'personality: personalities/disorganized-user'
+- You booked an appointment a while ago, but now realize the details you initially
+  provided were incorrect.
+- You need to update the appointment information, specifically the date and time,
+  to reflect your current availability.
+ask_about:
+- I need to reschedule an appointment I have.
+- The appointment details are incorrect.
+- I want to provide the correct appointment details, including the new {{date}} and
+  {{time}}.
+- date: Today
+- time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 15
+data_output:
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 28/10/2024 at 10:00:00 for Physical examination. \nSee you then!    \n"
+- rescheduling_prompt: I need to make sure the appointment is for today at 10:00 AM.
+    Can you confirm that you can change it?
+- new_appointment_confirmation: "Ok, I have received your request to schedule an appointment\
+    \ for 28/10/2024 at 10:00:00 for Physical examination. \nSee you then!    \n"
+errors: []
+total_cost($): 0.0048321
+---
+conversation time: 79.330179
+assistant response time:
+- 1.016511
+- 0.838925
+- 1.483704
+- 1.380496
+- 1.133768
+- 1.31307
+- 1.882446
+- 1.304907
+- 1.17949
+- 1.294295
+- 1.110944
+- 1.457798
+- 1.415031
+- 1.365128
+- 1.739017
+response time report:
+  average: 1.327702
+  max: 1.882446
+  min: 0.838925
+---
+interaction:
+- User: I need to reschedule an appointment I have. The appointment details are incorrect.
+    Can I provide the correct appointment details, including the new date as today
+    at 10:00 AM?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I want to update my appointment details to reflect the new date and time,
+    which is today at 10:00 AM. Can you help me with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: I need to change my appointment to reflect a new date and time, which is today
+    at 10:00 AM. Can you assist with that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I meant to say today, not next year. Can you change that to today at 10:00
+    AM instead?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I really need to change that to today at 10:00 AM. Can you help me make that
+    adjustment?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need you to correct that to today at 10:00 AM, not next year. Can you do
+    that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need you to make the appointment for today, not next year. Can we get the
+    date fixed to today at 10:00 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I really need the appointment set for today at 10:00 AM. Can we fix that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I just want to confirm that the appointment is for today at 10:00 AM, can
+    you change that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I really need the appointment to be for today at 10:00 AM. Can you change
+    it to reflect that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to make sure the appointment is for today at 10:00 AM. Can you update
+    that for me?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need you to update the appointment to today at 10:00 AM. Can you correct
+    that for me?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to make sure the appointment is for today at 10:00 AM. Can you confirm
+    that you can change it?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I need to make sure that the appointment is correct this time. Can we confirm
+    that the appointment is for today at 10:00 AM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"
+- User: I really need the appointment confirmed for today at 10:00 AM. Can you change
+    the date and time to reflect that?
+- Assistant: "Ok, I have received your request to schedule an appointment for 28/10/2024\
+    \ at 10:00:00 for Physical examination. \nSee you then!    \n"

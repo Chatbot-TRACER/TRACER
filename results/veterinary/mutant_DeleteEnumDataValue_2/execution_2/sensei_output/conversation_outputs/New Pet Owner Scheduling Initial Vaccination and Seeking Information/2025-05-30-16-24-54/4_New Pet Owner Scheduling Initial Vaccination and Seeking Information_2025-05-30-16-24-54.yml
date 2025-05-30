@@ -1,0 +1,142 @@
+serial: 2025-05-30-16-24-54
+language: English
+context:
+- 'personality: personalities/direct-user'
+- You recently adopted a puppy and want to ensure it receives the necessary vaccinations
+  to stay healthy.
+- As a first-time dog owner, you're also keen to learn more about the veterinary center
+  and responsible pet care practices.
+ask_about:
+- Inquire about the services offered by the veterinary center.
+- Ask what types of animals the veterinary center treats.
+- Confirm if the veterinary center treats dogs.
+- Ask about the types of vaccinations offered for dogs.
+- Schedule a vaccination appointment for my dog on {{date}} at {{time}}.
+- Ask about the business hours of operation.
+- date: November 3
+- time: 4:00 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 24
+data_output:
+- available_veterinary_services: We specialize in dogs, cats, and birds. For inquiries
+    about other animals, please reach out to us first.
+- treatable_animals: We specialize in dogs, cats, and birds.
+- treatable_animal_confirmation: We specialize in dogs, cats, and birds.
+- vaccination_information: null
+- appointment_details: "Ok, I have received your request to schedule an appointment\
+    \ for 03/11/2024 at 16:00:00 for Physical examination. \nSee you then!    \n"
+- business_hours: Every weekday from 9am to 6pm.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0092667
+---
+conversation time: 144.340381
+assistant response time:
+- 2.921012
+- 2.877538
+- 2.984212
+- 3.669313
+- 1.077827
+- 0.836022
+- 1.157946
+- 0.869054
+- 1.111432
+- 1.100264
+- 0.755405
+- 0.857089
+- 1.291597
+- 0.810032
+- 0.944442
+- 2.081274
+- 1.011739
+- 1.112065
+- 1.251663
+- 1.761243
+- 1.13281
+- 1.284703
+- 1.079472
+- 1.291784
+response time report:
+  average: 1.46958
+  max: 3.669313
+  min: 0.755405
+---
+interaction:
+- User: What types of animals does your veterinary center treat?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: Do you treat dogs at your veterinary center?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: What types of vaccinations do you offer for dogs?
+- Assistant: I'm not sure. However, I can provide information regarding the cost of
+    a vet visit, the types of animals we accept, pet care tips, our opening hours,
+    and our weekend schedule.
+- User: Can you tell me about the services offered by the veterinary center?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us beforehand.
+- User: What are your business hours of operation?
+- Assistant: Every weekday from 9am to 6pm.
+- User: Can you provide information about the types of vaccinations offered for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me what vaccinations you offer for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations do you provide for dogs?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you schedule a vaccination appointment for my dog on November 3 at 4:00
+    PM?
+- Assistant: "Ok, I have received your request to schedule an appointment for 03/11/2024\
+    \ at 16:00:00 for Physical examination. \nSee you then!    \n"
+- User: Can you confirm which vaccinations my dog will receive during that appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Can you tell me which vaccinations my dog will receive during the appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What vaccinations can I expect for my dog during the appointment?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I do if my dog has a reaction to a vaccination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I do if my dog has a vaccination reaction?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What actions should I take if my dog experiences a reaction to a vaccination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I keep in mind for post-vaccination care for my dog?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I remember for post-vaccination care for my dog?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the important considerations for post-vaccination care for my dog?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are the important things I should know about post-vaccination care for
+    my dog?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What are some essential things I should keep in mind for post-vaccination
+    care for my dog?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I be aware of for post-vaccination care for my dog?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What do you recommend I monitor in my dog after vaccination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What should I keep an eye on with my dog after they get vaccinated?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What signs should I watch for in my dog after vaccination?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?

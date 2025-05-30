@@ -1,0 +1,63 @@
+{
+    "specification": {
+        "modules": [
+            "top-level",
+            "make_appointment",
+            "vetcen_qa"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [],
+            "What kind of animals do you accept?": [],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": []
+        },
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "Physical examination",
+                "Dental health and cleaning",
+                "Lab or diagnostic testing"
+            ]
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "vetcen_qa",
+            "top-level"
+        ],
+        "vetcen_qa": {
+            "How much does a vet visit cost?": [
+                "How much does a vet visit cost?"
+            ],
+            "What kind of animals do you accept?": [
+                "What kind of animals do you accept?"
+            ],
+            "What can I do to take care of my pet?": [],
+            "When are you open?": [],
+            "How late are you open on weekends?": [],
+            "unknown": [
+                "Are there specific vaccination or treatment costs that I should be aware of?",
+                "What specific vaccinations do you recommend for cats and what are their typical costs?",
+                "What specific vaccinations do you recommend for dogs and what are their typical costs?",
+                "What vaccines do you typically recommend for pets, and how much do they cost?",
+                "What types of vaccinations are generally given to pets?",
+                "What specific vaccinations do you offer for dogs and cats?",
+                "What are the specific vaccinations recommended for pets and their associated costs?",
+                "What vaccinations do you recommend for pets, and what do they typically cost?",
+                "Are there additional fees for vaccinations or treatments during the visit?",
+                "What are the core vaccinations for dogs and cats that you recommend?",
+                "What kind of vaccines do you suggest for pets, and what are their costs?",
+                "How much does a physical examination cost?"
+            ]
+        },
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "top-level": {}
+    }
+}

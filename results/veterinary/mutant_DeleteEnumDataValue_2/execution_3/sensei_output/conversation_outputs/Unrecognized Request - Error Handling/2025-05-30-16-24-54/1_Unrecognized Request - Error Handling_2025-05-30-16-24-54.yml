@@ -1,0 +1,87 @@
+serial: 2025-05-30-16-24-54
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to gather information about a local pet care service but are in a
+  rush and using shorthand.
+- You are intentionally using incomplete or ambiguous phrasing to test the chatbot's
+  understanding and error handling capabilities.
+ask_about:
+- Ask about the walk-in policy using an ambiguous phrase.
+- Ask about the grooming services using an ambiguous phrase.
+- Ask about the 24-hour emergency services using an ambiguous phrase.
+- Ask about the holiday schedule using an ambiguous phrase.
+- Inquire about what the cost would be for a checkup using an ambiguous phrase.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- rephrase_request: Monday to Friday, 9 AM to 6 PM.
+errors: []
+total_cost($): 0.0033258
+---
+conversation time: 69.751163
+assistant response time:
+- 2.363905
+- 0.973491
+- 0.854952
+- 0.666882
+- 0.970717
+- 2.124314
+- 0.875847
+- 1.068503
+- 0.570629
+- 0.916762
+- 0.860494
+- 2.209913
+- 2.986534
+- 0.901659
+- 0.945313
+response time report:
+  average: 1.285994
+  max: 2.986534
+  min: 0.570629
+---
+interaction:
+- User: What's the deal with walk-in times or whatever?
+- Assistant: Monday to Friday, 9 AM to 6 PM.
+- User: What about the fluff and stuff for grooming?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: Grooming... like, what’s up with that?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: 'User: So, what’s the 24/7 vet thing or something?'
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What's the holiday hours or whatever for you guys?
+- Assistant: 'We are open every weekday from 9am to 6pm. '
+- User: What’s the checkup price or whatever?
+- Assistant: In the range of $50 to $60.
+- User: What about the drop-in thing, like for pets?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the deal with fluff and stuff, like for grooming?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the sitch with the emergency vet, like, 24/7 or whatever?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the scoop on your holiday schedule or whatever?
+- Assistant: We are open every weekday from 9am to 6pm.
+- User: What’s the vibe with the grooming stuff, like, for fluffing or whatever?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the lowdown on checkup costs or something?
+- Assistant: In the range of $50 to $60.
+- User: What’s the sitch with the walk-in thing, like times or whatever?
+- Assistant: We specialize in dogs, cats, and birds. For inquiries about other animals,
+    please reach out to us first.
+- User: What’s the deal with the fluff and stuff, like grooming or whatever?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
+- User: What’s the 411 on the drop-in hours or whatever?
+- Assistant: I'm sorry, but I did not understand the last sentence, can you say that
+    again?
