@@ -1,0 +1,137 @@
+serial: 2025-05-31-13-56-03
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - BBQ Chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: 'Thanks for ordering a large pizza with c, h, i, c, k, e and
+    n!
+
+    I understand that you would like to confirm your order for the large BBQ Chicken
+    pizza.'
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: 'Thanks for ordering a large pizza with c, h, i, c, k, e
+    and n!
+
+    I understand that you would like to confirm your order for the large BBQ Chicken
+    pizza.'
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 145.561942
+assistant response time:
+- 1.542991
+- 1.43677
+- 2.258614
+- 2.830442
+- 3.581453
+- 6.572897
+- 3.177167
+- 2.849406
+- 3.501105
+- 2.688218
+- 2.831394
+- 2.979917
+- 1.684826
+- 1.743973
+- 20.034437
+response time report:
+  average: 3.980907
+  max: 20.034437
+  min: 1.43677
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kinds of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a BBQ Chicken pizza, please. Can you confirm if that's on your menu?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I think there might be a misunderstanding. Can you tell me if BBQ Chicken
+    pizza is one of the options?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there a way I can customize a pizza with BBQ Chicken, even if it's not
+    on the standard menu?
+- Assistant: I see that you've chosen chicken as a topping. Could you please let me
+    know the size of the pizza you would like? It can be small, medium, or large.
+- User: What size pizza can I get with the BBQ Chicken?
+- Assistant: 'Thanks for ordering a small pizza with c, h, i, c, k, e and n!
+
+    I still need to know how many drinks you would like to order and what type of
+    drinks you prefer. Could you please provide that information? The options for
+    drinks are coke, sprite, or water.'
+- User: I didn't actually say I wanted a small pizza. Can I get a large pizza instead?
+    Also, can I just have a BBQ Chicken pizza with no additional drinks?
+- Assistant: 'Thanks for ordering a large pizza with c, h, i, c, k, e and n!
+
+    I understand that you would like a large BBQ Chicken pizza with no additional
+    drinks. However, I still need to know how many drinks you would like to order
+    and what type of drinks you prefer. Could you please provide that information?
+    The options for drinks are coke, sprite, or water.'
+- User: I just want the large BBQ Chicken pizza. Can you confirm my order without
+    any drinks?
+- Assistant: 'Thanks for ordering a large pizza with c, h, i, c, k, e and n!
+
+    I understand that you would like a large BBQ Chicken pizza. However, I still need
+    to know how many drinks you would like to order and what type of drinks you prefer.
+    Could you please provide that information? The options for drinks are coke, sprite,
+    or water.'
+- User: I don’t want any drinks! Can you just confirm my order for the large BBQ Chicken
+    pizza?
+- Assistant: 'Thanks for ordering a large pizza with c, h, i, c, k, e and n!
+
+    I understand that you would like a large BBQ Chicken pizza, but I still need to
+    know how many drinks you would like to order and what type of drinks you prefer.
+    Could you please provide that information? The options for drinks are coke, sprite,
+    or water.'
+- User: I just want to confirm my order for the large BBQ Chicken pizza. Can you please
+    do that without asking about drinks?
+- Assistant: 'Thanks for ordering a large pizza with c, h, i, c, k, e and n!
+
+    I understand that you would like to confirm your order for the large BBQ Chicken
+    pizza. However, I still need to know how many drinks you would like to order and
+    what type of drinks you prefer. Could you please provide that information? The
+    options for drinks are coke, sprite, or water.'
+- User: I just want to confirm if my order for the large BBQ Chicken pizza has been
+    successfully placed. Can you let me know?
+- Assistant: 'Thanks for ordering a large pizza with c, h, i, c, k, e and n!
+
+    I understand that you would like to confirm your order for the large BBQ Chicken
+    pizza. However, I still need to know how many drinks you would like to order and
+    what type of drinks you prefer. Could you please provide that information? The
+    options for drinks are coke, sprite, or water.'
+- User: I just want to ensure that my order for the large BBQ Chicken pizza has been
+    placed correctly. Can you confirm that?
+- Assistant: I understand that you would like to confirm your order for the large
+    BBQ Chicken pizza. However, I still need to know how many drinks you would like
+    to order and what type of drinks you prefer. Could you please provide that information?
+    The options for drinks are coke, sprite, or water.
+- User: I just want to know if my large BBQ Chicken pizza order is confirmed. Can
+    you please clarify that for me?
+- Assistant: I understand that you would like to confirm your order for the large
+    BBQ Chicken pizza. However, I still need to know how many drinks you would like
+    to order and what type of drinks you prefer. Could you please provide that information?
+    The options for drinks are coke, sprite, or water.
+- User: I just want to make sure my order for the large BBQ Chicken pizza is confirmed.
+    Can you provide that confirmation without asking about drinks?

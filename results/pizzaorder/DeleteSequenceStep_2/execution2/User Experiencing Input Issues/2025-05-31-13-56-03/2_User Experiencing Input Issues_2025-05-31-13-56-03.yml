@@ -1,0 +1,88 @@
+serial: 2025-05-31-13-56-03
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Vegetarian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: None
+errors: []
+---
+conversation time: 93.079112
+assistant response time:
+- 1.603075
+- 1.071807
+- 1.935051
+- 2.034302
+- 2.355293
+- 0.830859
+- 1.015571
+- 0.721332
+- 0.981704
+- 0.897057
+- 0.748303
+- 0.996431
+- 0.835026
+- 0.672283
+- 0.741742
+- 0.821133
+- 0.907773
+response time report:
+  average: 1.127573
+  max: 2.355293
+  min: 0.672283
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Vegetarian pizza, please. Can you tell me what toppings are on
+    that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings do you put on the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What ingredients are included in the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I said, what ingredients are included in the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the specific ingredients that come with the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What specific toppings are included in the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any additional toppings I can add to the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any extra toppings I can choose for the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any optional toppings available for the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you tell me about the Custom pizza options?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the different options I can choose for a Custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: 'User: What choices do I have for toppings on a Custom pizza?'
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the available toppings I can choose for a Custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings can I choose for a Custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

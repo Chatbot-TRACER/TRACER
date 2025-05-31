@@ -1,0 +1,50 @@
+serial: 2025-05-31-13-56-03
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I didn't understand.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients).
+- custom_pizza_response: null
+errors:
+- 504: No response was received from the server in less than 20
+- 1001: 1 goals left to complete.
+---
+conversation time: 34.843652
+assistant response time:
+- 1.327112
+- 2.14716
+- 2.207425
+- 20.022455
+response time report:
+  average: 6.426038
+  max: 20.022455
+  min: 1.327112
+---
+interaction:
+- User: Can you help me with ordering a pizza?
+- Assistant: "Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order\
+    \ pizzas and drinks. \nWhat can I do for you?"
+- User: What types of pizzas do you offer?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like to order a Hawaiian pizza, but can you confirm if it comes with extra
+    cheese?

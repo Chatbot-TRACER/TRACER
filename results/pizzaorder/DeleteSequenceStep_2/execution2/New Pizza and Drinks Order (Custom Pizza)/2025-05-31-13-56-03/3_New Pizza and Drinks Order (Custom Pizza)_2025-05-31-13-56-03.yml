@@ -1,0 +1,138 @@
+serial: 2025-05-31-13-56-03
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - corn
+- topping2:
+  - corn
+- topping3:
+  - corn
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: corn, corn, corn'
+errors: []
+---
+conversation time: 105.852422
+assistant response time:
+- 1.686459
+- 2.434196
+- 1.668921
+- 5.833075
+- 2.113296
+- 2.381085
+- 4.231413
+- 1.062937
+- 1.012998
+- 0.891957
+- 2.521861
+- 3.08595
+- 2.915285
+- 3.257119
+- 3.778041
+- 2.032449
+response time report:
+  average: 2.55669
+  max: 5.833075
+  min: 0.891957
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to order an extra large pizza. Can I get corn as one of the toppings?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I have an extra large pizza with corn as one of the toppings?
+- Assistant: It seems that the pizza size you requested is not available. Please choose
+    from small, medium, or large. Also, could you confirm if you would like any additional
+    toppings besides corn? The available options are cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, and chicken.
+- User: I would like an extra large pizza with corn, corn, and corn. Can you confirm
+    that order?
+- Assistant: It seems that the pizza size you requested is not available. Please choose
+    from small, medium, or large. Also, please note that you can only choose one topping.
+    Would you like to proceed with a large pizza with corn, or would you like to choose
+    a different topping?
+- User: I want a large pizza with corn, corn, and corn. Could you confirm that order
+    for me?
+- Assistant: 'Thanks for ordering a large pizza with c, o, r and n!
+
+    Thank you for your pizza order! Could you please let me know how many drinks you
+    would like to order? Also, please specify the type of drink (coke, sprite, or
+    water).'
+- User: I'd like to order three drinks, please. Can I get two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza with cheese, olives, red peppers, and mushrooms, along
+    with three Cokes, is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 66e95e.'
+- User: Can you confirm if my order is actually for a large pizza with corn, corn,
+    and corn, along with two Cokes and one Sprite, or is there a mix-up?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please confirm if I have a large pizza with corn, corn, and corn,
+    plus two Cokes and one Sprite? Is that correct?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please confirm if my order consists of a large pizza with corn,
+    corn, and corn, along with two Cokes and one Sprite? Is that accurate?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I just want to make sure we're on the same page. Can you tell me what the
+    total cost of my order is again?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Can you tell me what the total cost would be for my large pizza with corn,
+    corn, and corn, plus two Cokes and one Sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please clarify what the total cost would be for my large pizza with
+    corn, corn, and corn, along with two Cokes and one Sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the total cost of my large pizza with corn, corn,
+    and corn, including the two Cokes and one Sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the total cost for my large pizza with corn, corn,
+    and corn, plus two Cokes and one Sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you let me know if there's a specific price for drinks like Coke and
+    Sprite?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.

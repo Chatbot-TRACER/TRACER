@@ -1,0 +1,85 @@
+serial: 2025-05-31-13-56-03
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: null
+errors:
+- 504: No response was received from the server in less than 20
+- 1001: 1 goals left to complete.
+---
+conversation time: 135.100192
+assistant response time:
+- 1.25652
+- 1.328177
+- 1.636957
+- 1.845516
+- 0.786416
+- 0.733412
+- 0.852292
+- 0.785083
+- 0.719134
+- 1.051072
+- 7.427921
+- 6.04136
+- 0.787938
+- 0.664928
+- 0.678549
+- 20.023008
+response time report:
+  average: 2.913642
+  max: 20.023008
+  min: 0.664928
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Pepperoni pizza. Can you confirm if that's available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to order a Pepperoni pizza. Is that available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to order a Pepperoni pizza. Can you tell me if it's on the menu?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Is the Pepperoni pizza one of the options on your menu?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Is the Pepperoni pizza available for order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Is the Pepperoni pizza an option on your menu?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any other pizza options besides the ones you listed?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any other pizza options apart from the ones you've mentioned?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any additional pizza varieties beyond the ones you listed?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any special deals or discounts on pizzas today?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any promotions or discounts available for pizza orders today?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any current promotions or discounts for pizza orders?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any items on the menu that are not pizza-related?

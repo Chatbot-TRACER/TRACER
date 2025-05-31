@@ -1,0 +1,141 @@
+serial: 2025-05-31-13-56-03
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - pepper
+- topping2:
+  - pepper
+- topping3:
+  - pepper
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: green peppers, banana
+    peppers, red bell peppers'
+errors: []
+---
+conversation time: 170.292837
+assistant response time:
+- 2.333317
+- 1.947918
+- 1.926325
+- 1.622226
+- 9.416752
+- 4.334294
+- 4.195032
+- 1.176007
+- 4.671043
+- 9.600869
+- 15.432965
+- 5.471576
+- 4.122516
+- 4.456203
+- 6.379099
+- 4.982001
+response time report:
+  average: 5.129258
+  max: 15.432965
+  min: 1.176007
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. What sizes are available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want an extra-large pizza. Can I add three types of peppers on it?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I’d like to place an order for an extra-large pizza with three different kinds
+    of peppers. Can I confirm that?
+- Assistant: 'It looks like the pizza size you requested is not available. Please
+    choose from small, medium, or large. Also, I need you to specify the toppings
+    you would like from the following options: cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken. Thank you!'
+- User: Could I please order a large pizza with three kinds of peppers then?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    Thank you for your order! Could you please let me know how many drinks you would
+    like to order and what type of drinks you prefer? You can choose from coke, sprite,
+    or water. '
+- User: I would like to order three drinks, please. Can I get two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza topped with pepperoni, green peppers, and mushrooms,
+    along with three Cokes, is $26.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is e98e45.'
+- User: Could you please confirm the types of peppers you'd like on your large pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please confirm that I'd like a large pizza with three different
+    kinds of peppers?
+- Assistant: 'It seems that the toppings you provided are not in the accepted list.
+    Please choose from the following options: cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken. Thank you!'
+- User: I'd like to confirm that I want a large pizza with green peppers, banana peppers,
+    and red bell peppers. Is that okay?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    Thank you for your order! I still need to know the types of drinks you would like.
+    You can choose from coke, sprite, or water. Could you please confirm the drinks
+    you want? '
+- User: I would like to order three drinks, please. Can I get two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza topped with pepperoni, green peppers, and mushrooms,
+    along with three Cokes, is $26.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is adab32.'
+- User: Could you please confirm that I want a large pizza with green peppers, banana
+    peppers, and red bell peppers?
+- Assistant: It seems that I still need to confirm the pizza size for your order.
+    Please let me know if you would like a small, medium, or large pizza. Thank you!
+- User: I would like to confirm that I want a large pizza with green peppers, banana
+    peppers, and red bell peppers, please.
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    Thank you for confirming your pizza order! However, I still need to confirm the
+    types of drinks you would like. Could you please let me know how many drinks you
+    would like to order and what type of drinks you prefer? You can choose from coke,
+    sprite, or water. Thank you!'
+- User: I would like to order three drinks, please. Can I get two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza topped with pepperoni, green peppers, and mushrooms,
+    along with three Cokes, is $26.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is ea697f.'
+- User: Could you please confirm that I want a large pizza with green peppers, banana
+    peppers, and red bell peppers?
+- Assistant: It seems that I still need to confirm the pizza size for your order.
+    Please let me know if you would like a small, medium, or large pizza. Thank you!
+- User: I would like to confirm that I want a large pizza with green peppers, banana
+    peppers, and red bell peppers, please. Can you make sure that's right?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    Thank you for confirming your pizza order! However, I still need to confirm the
+    types of drinks you would like. Could you please let me know how many drinks you
+    would like to order and what type of drinks you prefer? You can choose from coke,
+    sprite, or water. Thank you!'

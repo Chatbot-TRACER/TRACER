@@ -1,0 +1,93 @@
+serial: 2025-05-31-13-56-03
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - cheese
+- topping2:
+  - cheese
+- topping3:
+  - cheese
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: null
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: cheese, cheese,
+    cheese'
+errors:
+- 504: No response was received from the server in less than 20
+- 1001: 1 goals left to complete.
+---
+conversation time: 102.154202
+assistant response time:
+- 1.919218
+- 1.844537
+- 1.946533
+- 3.343048
+- 2.918015
+- 4.029245
+- 0.773552
+- 1.029686
+- 2.400878
+- 20.036148
+response time report:
+  average: 4.024086
+  max: 20.036148
+  min: 0.773552
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a medium pizza. Can I get cheese, cheese, and cheese on it?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'm looking to confirm my order for a medium pizza topped with cheese, cheese,
+    and more cheese. Can you help me with that?
+- Assistant: I see that you've chosen a medium pizza, but it looks like you mentioned
+    cheese multiple times. Could you please confirm the toppings you'd like? You can
+    choose from cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or
+    chicken. Thank you!
+- User: I’d like to stick with just cheese on my medium pizza. Can you confirm that
+    for me?
+- Assistant: 'Thanks for ordering a medium pizza with c, h, e, e, s and e!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you''d like to order (num_drinks) and what type of drinks you prefer
+    (coke, sprite, or water)? '
+- User: I’d like to order three drinks, please. Can I get two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a medium pizza topped with cheese and three Cokes is $21.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 1467a7.'
+- User: Could you please confirm if you'd like to include any extra sauces or sides
+    with your order, like garlic sauce or dipping sauces?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I was wondering if I could add any extra sauces or sides to go along with
+    my pizza and drinks, like garlic sauce or dipping sauces?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me if I can add any extra sauces or sides, like garlic sauce
+    or dipping sauces, to my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.
+- User: Is there a specific sauce or side that you recommend with a cheese pizza?

@@ -1,0 +1,138 @@
+serial: 2025-05-31-13-56-03
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - mushrooms
+- topping2:
+  - mushrooms
+- topping3:
+  - mushrooms
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: mushrooms, pepperoni,
+    olives'
+errors: []
+---
+conversation time: 119.563614
+assistant response time:
+- 2.191908
+- 2.617832
+- 4.452277
+- 2.547377
+- 4.170149
+- 3.438178
+- 2.421985
+- 4.409448
+- 3.193991
+- 4.581525
+- 3.005861
+- 2.58293
+- 5.399539
+- 1.206199
+- 2.282556
+- 2.818373
+response time report:
+  average: 3.207508
+  max: 5.399539
+  min: 1.206199
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. Can I choose any toppings I like?
+- Assistant: 'It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza? '
+- User: I'd like a medium pizza, please. Can I add mushrooms?
+- Assistant: 'Thanks for ordering a medium pizza with m, u, s, h, r, o, o, m and s!
+
+    Thank you for your order! Could you please let me know how many drinks you would
+    like to add? Also, please specify if you would like coke, sprite, or water. '
+- User: Could I please have three drinks? Let's go with two cokes and one sprite.
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a medium pizza topped with mushrooms and three Cokes is $22.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 018c34.'
+- User: Could you please confirm my order for a medium pizza with mushrooms, mushrooms,
+    and mushrooms?
+- Assistant: 'It seems that I still need the pizza size. Could you please confirm
+    that you would like a medium pizza? '
+- User: I'd like to confirm my order for a medium pizza with mushrooms, mushrooms,
+    and mushrooms. Also, could you tell me if the pizza will come with any sauce?
+- Assistant: 'Thanks for ordering a medium pizza with m, u, s, h, r, o, o, m and s!
+
+    Thank you for confirming your pizza order! However, I still need to clarify the
+    drinks. You mentioned three drinks, but I need to know the exact number of each
+    type. Could you please confirm that you would like two cokes and one sprite? '
+- User: Yes, that's correct. I would like two Cokes and one Sprite. Can you please
+    tell me what kind of sauce comes with the pizza?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a medium pizza topped with mushrooms and three Cokes is $22.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is e02937.'
+- User: Could you let me know if there are any other toppings I can add to my pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: Can I add pepperoni and olives to my medium pizza with mushrooms?'
+- Assistant: I see that you have provided the toppings, but I still need the pizza
+    size. Could you please confirm if you would like a small, medium, or large pizza?
+- User: I'd like to confirm my medium pizza with mushrooms, pepperoni, and olives.
+    Can you tell me if there are any extra charges for those toppings?
+- Assistant: 'Thanks for ordering a medium pizza with mushrooms, pepperoni and olives!
+
+    Thank you for your order details! However, I still need to confirm the number
+    of drinks and their types. Could you please tell me how many drinks you would
+    like and specify if you would like coke, sprite, or water? '
+- User: I’d like to stick with my previous order of two Cokes and one Sprite, please.
+    Are there any extra charges for adding pepperoni and olives to my pizza?
+- Assistant: 'Thanks for ordering a medium pizza with mushrooms, pepperoni and olives!
+
+    Thank you for your patience! I have noted that you would like two Cokes and one
+    Sprite, which means you have a total of three drinks. I will now proceed to finalize
+    your order. '
+- User: Could you please tell me if there are any special promotions or discounts
+    available for my order?
+- Assistant: 'I have received your order for three Cokes.
+
+    The cost for a medium pizza topped with mushrooms, pepperoni, and olives, along
+    with three Cokes, is $19.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 83cc6f.'
+- User: Could you let me know if there are any side options available to add to my
+    order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if there are any side options available to add to
+    my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please let me know if there are any sides like garlic bread or salads
+    that I can add to my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.

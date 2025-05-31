@@ -1,0 +1,83 @@
+serial: 2025-05-31-13-56-03
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Meat Lovers
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I appreciate your patience! I have noted that you want a medium
+    pizza. However, I still need to confirm your toppings. Could you please let me
+    know if you'd like cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn,
+    or chicken?
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: I have noted that you want a medium pizza with pepperoni
+    and mushrooms.
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 110.014922
+assistant response time:
+- 1.457745
+- 3.868921
+- 2.33035
+- 2.217528
+- 4.139158
+- 3.862226
+- 4.149092
+- 4.249659
+- 20.026191
+response time report:
+  average: 5.144541
+  max: 20.026191
+  min: 1.457745
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Meat Lovers pizza, please. Can you confirm that you have that option?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I see, so no Meat Lovers pizza? That’s a bit odd. Can I order a custom pizza
+    instead?
+- Assistant: It looks like I still need some information to complete your order. Could
+    you please provide the pizza size (small, medium, or large) and the toppings you'd
+    like (cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken)?
+- User: I'd like a medium custom pizza with pepperoni and mushrooms, please. Can you
+    repeat that back to me?
+- Assistant: You have ordered a medium pizza, but I still need to confirm your toppings.
+    Could you please let me know if you'd like cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken?
+- User: I said I want a medium custom pizza with pepperoni and mushrooms. Can you
+    confirm that again?
+- Assistant: Thank you for your patience! I have noted that you want a medium pizza.
+    However, I still need to confirm your toppings. Could you please let me know if
+    you'd like cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or
+    chicken?
+- User: I already mentioned that I want a medium custom pizza with pepperoni and mushrooms.
+    Can you just confirm that without asking for the toppings again?
+- Assistant: I appreciate your patience! I have noted that you want a medium pizza.
+    However, I still need to confirm your toppings. Could you please let me know if
+    you'd like cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or
+    chicken?
+- User: I just want to make sure you got my order right. Can you please confirm that
+    it's a medium custom pizza with pepperoni and mushrooms?

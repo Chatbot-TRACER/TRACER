@@ -1,0 +1,113 @@
+serial: 2025-05-31-13-56-03
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - olives
+- topping2:
+  - olives
+- topping3:
+  - olives
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: olives, olives, olives'
+errors: []
+---
+conversation time: 128.231694
+assistant response time:
+- 3.263252
+- 3.282676
+- 4.502483
+- 2.58422
+- 5.551268
+- 1.677612
+- 2.056385
+- 5.13012
+- 0.99543
+- 1.133782
+- 1.961448
+- 2.579623
+- 1.97427
+- 15.492147
+- 2.13153
+- 2.059801
+response time report:
+  average: 3.523502
+  max: 15.492147
+  min: 0.99543
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'll go with a small custom pizza, please. What toppings do you recommend?
+- Assistant: 'It looks like I have the pizza size as small, but I still need to know
+    your choice of toppings. Please let me know which toppings you would like from
+    the following options: cheese, mushrooms, pepper, ham, bacon, pepperoni, olives,
+    corn, chicken.'
+- User: I want to order a small pizza with olives, olives, and olives. Can you confirm
+    my order?
+- Assistant: 'Thanks for ordering a small pizza with o, l, i, v, e and s!
+
+    I have your order for a small pizza with olives. Now, could you please let me
+    know how many drinks you would like to order and your choice of drink (coke, sprite,
+    or water)?'
+- User: I'd like to order two drinks, please. Can I have one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a small pizza topped with olives and two Cokes is $14.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is d46ae3.'
+- User: Could you please confirm the total cost for the drinks along with the pizza?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please clarify how much the drinks cost in total for the two drinks?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you tell me how much the total would be for one Coke and one Sprite?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: The total for one Coke and one Sprite would be $3.00. So, combining that with
+    your pizza, the total cost is $14.50 for the pizza plus $3.00 for the drinks,
+    which makes it $17.50.
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please confirm the total cost for my order, which includes a small
+    pizza with olives and one Coke and one Sprite?
+- Assistant: 'Your total cost for the order, which includes a small pizza with olives
+    and one Coke and one Sprite, is $17.50. '
+- User: Could you please let me know when my order will be ready for pickup?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please confirm the exact time my order will be ready for pickup?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please let me know if my order will be ready in 15 minutes?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please tell me if my order is ready to be picked up in 15 minutes?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please confirm if my order will be ready in approximately 15 minutes?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please tell me if you can check the status of my order to confirm
+    if it will be ready in 15 minutes?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
