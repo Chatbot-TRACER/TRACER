@@ -1,0 +1,123 @@
+serial: 2025-05-31-21-57-29
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Meat Lovers
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I'm sorry, I did not get what you said. Can you rephrase?
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: 'Of course! I can help you with that. Could you please provide
+    the size of the pizza you would like? It can be small, medium, or large. Also,
+    let me know your choice of toppings from the following options: cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, or chicken.'
+errors: []
+---
+conversation time: 149.146867
+assistant response time:
+- 1.479917
+- 1.258195
+- 2.028806
+- 2.239517
+- 0.882486
+- 0.819458
+- 5.586268
+- 3.603432
+- 2.920699
+- 3.415491
+- 3.313175
+- 4.035666
+- 4.169543
+- 4.033949
+- 3.87704
+- 3.327643
+- 3.313861
+response time report:
+  average: 2.959126
+  max: 5.586268
+  min: 0.819458
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kinds of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like a Meat Lovers pizza. Can you make sure that’s what I ordered?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I would like to order a Meat Lovers pizza. Can you confirm that for me?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to make sure I’m ordering a Meat Lovers pizza. Can you confirm that
+    for me?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a custom pizza. Can you help with that?
+- Assistant: 'Of course! I can help you with that. Could you please provide the size
+    of the pizza you would like? It can be small, medium, or large. Also, let me know
+    your choice of toppings from the following options: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, or chicken.'
+- User: I’d like a large pizza, and I want to include cheese, pepperoni, and bacon
+    as my toppings. Can you confirm that?
+- Assistant: 'I have noted that you want a large pizza. However, I still need to know
+    your choice of toppings. Could you please confirm if you would like cheese, pepperoni,
+    and bacon, or if you have any other toppings in mind? '
+- User: I want to confirm that I’d like cheese, pepperoni, and bacon as my toppings
+    on the large custom pizza. Can you make sure that’s clear?
+- Assistant: 'Thank you for confirming the size of your pizza as large. I have noted
+    your toppings as cheese, pepperoni, and bacon. Let me finalize your order. '
+- User: 'User: Can you tell me how long it will take for my large custom pizza with
+    cheese, pepperoni, and bacon to be delivered?'
+- Assistant: 'I have noted that you want a large pizza, but I still need to confirm
+    your toppings. Could you please confirm that you would like cheese, pepperoni,
+    and bacon as your toppings? '
+- User: I want to confirm that I’d like cheese, pepperoni, and bacon as my toppings
+    on the large custom pizza. Can you tell me how long it will take for delivery?
+- Assistant: 'Thank you for confirming the size of your pizza as large. However, I
+    still need to confirm your choice of toppings. Could you please confirm that you
+    would like cheese, pepperoni, and bacon as your toppings? '
+- User: I just want to confirm that I’d like cheese, pepperoni, and bacon as my toppings
+    on the large custom pizza. Can you tell me how long it will take for delivery?
+- Assistant: 'Thank you for your patience! I have noted that you want a large pizza.
+    However, I still need to confirm your choice of toppings. Could you please confirm
+    that you would like cheese, pepperoni, and bacon as your toppings? '
+- User: I want to confirm that I’d like cheese, pepperoni, and bacon as my toppings
+    on the large custom pizza. Can you tell me how long it will take for delivery?
+- Assistant: Thank you for your confirmation! I have noted that you want a large pizza.
+    However, I still need to confirm your choice of toppings. Could you please confirm
+    that you would like cheese, pepperoni, and bacon as your toppings?
+- User: I want to make sure I'm getting cheese, pepperoni, and bacon on my large custom
+    pizza. Can you tell me how long it will take for delivery?
+- Assistant: Thank you for your patience! I have noted that you want a large pizza.
+    However, I still need to confirm your choice of toppings. Could you please confirm
+    that you would like cheese, pepperoni, and bacon as your toppings?
+- User: I want to confirm that I’d like cheese, pepperoni, and bacon as my toppings
+    on my large custom pizza. Can you tell me how long it will take for delivery?
+- Assistant: Thank you for your confirmation! I have noted that you want a large pizza.
+    However, I still need to confirm your choice of toppings. Could you please confirm
+    that you would like cheese, pepperoni, and bacon as your toppings?
+- User: I want to make sure I'm ordering a large custom pizza with cheese, pepperoni,
+    and bacon. Can you tell me how long it will take for delivery?
+- Assistant: Thank you for your confirmation! I have noted that you want a large pizza.
+    However, I still need to confirm your choice of toppings. Could you please confirm
+    that you would like cheese, pepperoni, and bacon as your toppings?
+- User: I just want to double-check that I'm ordering a large custom pizza with cheese,
+    pepperoni, and bacon. How long will it take for delivery?
+- Assistant: Thank you for your patience! I have noted that you want a large pizza.
+    However, I still need to confirm your choice of toppings. Could you please confirm
+    that you would like cheese, pepperoni, and bacon as your toppings?

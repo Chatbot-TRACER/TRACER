@@ -1,0 +1,57 @@
+serial: 2025-05-31-21-57-29
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Vegetarian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I'm sorry, I did not get what you said. Can you rephrase?
+- pizza_type_response: 'We have several predefined pizzas available: margarita, carbonara,
+    marinera, hawaiian, four cheese, and vegetarian.'
+- custom_pizza_response: 'We have several predefined pizzas available: margarita,
+    carbonara, marinera, hawaiian, four cheese, and vegetarian. Would you like to
+    order one of these, or would you prefer a custom pizza?'
+errors:
+- 500: Chatbot internal error
+---
+conversation time: 20.864662
+assistant response time:
+- 1.376747
+- 1.792901
+- 0.924467
+- 1.700668
+- 1.324624
+response time report:
+  average: 1.423881
+  max: 1.792901
+  min: 0.924467
+---
+interaction:
+- User: Can you help me order a pizza? My microphone isn't working so well.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to order a pizza, but my microphone's not picking up clearly. Can
+    you help me with that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to know what kinds of pizzas you have available.
+- Assistant: 'We have several predefined pizzas available: margarita, carbonara, marinera,
+    hawaiian, four cheese, and vegetarian. Would you like to order one of these, or
+    would you prefer a custom pizza?'
+- User: I’d like to order a Vegetarian pizza, but did you say something about custom
+    pizzas? How does that work?
+- Assistant: 'Error: 500 Internal Server Error: Error executing the engine: Data is
+    missing the property pizza_size'

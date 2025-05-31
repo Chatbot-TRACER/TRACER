@@ -1,0 +1,98 @@
+serial: 2025-05-31-21-57-29
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Margherita
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: None
+errors: []
+---
+conversation time: 89.148499
+assistant response time:
+- 1.646804
+- 1.327682
+- 2.045461
+- 2.121073
+- 2.517514
+- 3.667066
+- 3.383429
+- 2.165705
+- 0.775152
+- 0.814134
+- 0.809533
+- 0.813042
+- 0.90742
+- 1.248334
+- 0.802325
+- 1.064802
+- 1.090823
+response time report:
+  average: 1.600017
+  max: 3.667066
+  min: 0.775152
+---
+interaction:
+- User: Can you help me with ordering a pizza?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: I want to know what kinds of pizzas you have available.
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can you tell me more about the Margherita pizza? What toppings does it have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Wait, I think I might have miscommunicated. I wanted to know about the toppings
+    on the Margherita pizza, not just a list of pizzas. Can you clarify what toppings
+    are included in a Margherita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What are the toppings on a Margherita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What are the prices for the different types of pizzas?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Can you tell me what the Carbonara pizza includes?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What ingredients are in the Carbonara pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are included in the Carbonara pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you tell me what the ingredients are for the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the toppings on the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What ingredients are included in the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What about the Hawaiian pizza? Can you tell me what toppings it has?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are included in the Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the ingredients in the Hawaiian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What about drinks? Can you tell me what beverages are available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

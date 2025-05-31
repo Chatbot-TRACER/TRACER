@@ -1,0 +1,106 @@
+serial: 2025-05-31-21-57-29
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that!
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: I'm sorry, I did not get what you said. Can you rephrase?
+errors: []
+---
+conversation time: 136.989255
+assistant response time:
+- 1.290131
+- 1.153056
+- 3.024381
+- 2.276241
+- 2.20832
+- 1.743014
+- 2.366416
+- 3.061244
+- 2.744566
+- 6.177722
+- 2.269089
+- 0.787733
+- 0.73657
+- 1.179163
+- 1.308208
+- 2.763189
+- 2.980135
+response time report:
+  average: 2.239363
+  max: 6.177722
+  min: 0.73657
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can you tell me more about the Hawaiian pizza? What toppings does it have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I think there was a mix-up. I asked about the Hawaiian pizza toppings specifically.
+    What toppings are on it?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of the pizzas, prices of beverages, how to get the order,
+    and how much time it takes to get an order.
+- User: What are the toppings on the Hawaiian pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings are on the Hawaiian pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What are the prices of the pizzas?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What about drinks? What kind of beverages do you offer?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: I'd like a Hawaiian pizza. Can you confirm the toppings for that?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What if I want to order a custom pizza instead? What toppings can I choose?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings can I select if I decide to order a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What ingredients can I pick if I want to create a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you tell me the prices for the custom pizzas with more than three ingredients?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the prices for custom pizzas that have more than three toppings?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What if I want to order a custom pizza with four toppings? How much would
+    that cost?
+- Assistant: I can help you with that! However, I still need to know the size of the
+    pizza you want (small, medium, or large) and the specific toppings you'd like
+    to include. Could you please provide that information?
+- User: I'd like a medium custom pizza with four toppings. Can you tell me how much
+    that would cost?
+- Assistant: 'I have noted that you want a medium pizza. Could you please tell me
+    which four toppings you''d like to include from the following options: cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken?'

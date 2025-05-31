@@ -1,0 +1,118 @@
+serial: 2025-05-31-21-57-29
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - pepperoni
+- topping2:
+  - pepperoni
+- topping3:
+  - pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepperoni, pepperoni,
+    pepperoni'
+errors: []
+---
+conversation time: 93.68239
+assistant response time:
+- 2.841768
+- 1.965701
+- 2.192598
+- 0.929218
+- 1.321503
+- 1.380941
+- 1.564474
+- 1.056471
+- 2.990143
+- 2.452114
+- 3.198667
+- 2.663197
+- 1.925565
+- 5.198675
+- 3.077292
+- 3.91404
+response time report:
+  average: 2.417022
+  max: 5.198675
+  min: 0.929218
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. What toppings do you recommend for a crowd-pleaser?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings would you suggest that would be popular with a mixed group of
+    friends?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please suggest some popular toppings that would appeal to a mixed
+    group of friends for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you think would make a great custom pizza for a group of
+    friends?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you help me with some popular toppings for a custom pizza that my friends
+    might enjoy?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you think would be best for a custom pizza that my friends
+    would really like?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What popular toppings do you recommend for a custom pizza that my friends
+    would enjoy?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    long it takes to get an order.
+- User: Could you tell me what types of cheese I can choose for my custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What size pizza can I order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What toppings do you have available for a custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Could you tell me what kind of drinks you offer to go with the pizza?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Can I get a large pizza with pepperoni, pepperoni, and pepperoni?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you'd like a small, medium, or large pizza?
+- User: I want a large pizza with pepperoni, pepperoni, and pepperoni. Can you confirm
+    that order for me?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e, r, o, n and i!
+
+    I have your pizza order confirmed as a large pizza with three pepperonis. Now,
+    could you please let me know how many drinks you would like to order and what
+    type of drinks (coke, sprite, or water)?'
+- User: I think I'll have two Cokes, please. Could you add that to my order?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large pizza topped with pepperoni and two Cokes is $26.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 709b12.'

@@ -1,0 +1,125 @@
+serial: 2025-05-31-21-57-29
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - BBQ Chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I'm sorry, I did not get what you said. I can help you ordering
+    predefined or custom pizzas, and then drinks.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: Your order for a medium custom pizza with BBQ Chicken and
+    mushrooms is confirmed!
+errors: []
+---
+conversation time: 115.54995
+assistant response time:
+- 0.883964
+- 0.995056
+- 2.016238
+- 2.26537
+- 3.065917
+- 2.187441
+- 3.787295
+- 1.808177
+- 1.953308
+- 4.090674
+- 3.030022
+- 1.132532
+- 9.380817
+- 1.425389
+- 1.649063
+- 0.971855
+- 1.122192
+response time report:
+  average: 2.456782
+  max: 9.380817
+  min: 0.883964
+---
+interaction:
+- User: I'm trying to order a pizza, but my microphone isn’t picking up what I'm saying
+    correctly. Can you help me with that?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What types of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a BBQ Chicken pizza, please. Can you confirm you have that?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I think there might be a misunderstanding. Do you have a BBQ Chicken pizza,
+    or not?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I just want to make sure, do you offer any custom toppings, or is it just
+    those pizzas you mentioned?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I create my own custom pizza with BBQ Chicken as one of the toppings?
+- Assistant: I see that you've chosen chicken as one of your toppings. Could you please
+    let me know the size of the pizza you would like? It can be small, medium, or
+    large.
+- User: Is there a limit to how many toppings I can choose for my custom pizza?
+- Assistant: There is no specific limit to the number of toppings you can choose for
+    your custom pizza, but please note that you can only select one topping for this
+    order. Since you've already chosen chicken, could you please let me know the size
+    of the pizza you would like? It can be small, medium, or large.
+- User: Can I add additional toppings to my custom pizza, or am I limited to just
+    the BBQ Chicken?
+- Assistant: You can add additional toppings to your custom pizza! Please let me know
+    the size of the pizza you would like, and feel free to specify any additional
+    toppings you want. The available toppings are cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, and corn.
+- User: Can I have a medium custom pizza with BBQ Chicken and mushrooms, please?
+- Assistant: Thank you for your order! I see you've chosen a medium pizza. Could you
+    please confirm the toppings you'd like? You can choose from cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, or chicken.
+- User: I'd like to confirm my order for a medium custom pizza with BBQ Chicken and
+    mushrooms. Is that correct?
+- Assistant: 'Thanks for ordering a medium pizza with m, u, s, h, r, o, o, m and s!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order? Also, please specify the type of drink (coke,
+    sprite, or water) you''d like. '
+- User: Could I just confirm, do you have any specific drink options besides coke,
+    sprite, and water?
+- Assistant: We only offer coke, sprite, and water as drink options. How many drinks
+    would you like to order, and which type would you prefer?
+- User: Do you have any special deals or combos if I order a pizza and drinks together?
+- Assistant: Currently, I don't have information about special deals or combos. However,
+    I can help you with your drink order. How many drinks would you like to order,
+    and what type (coke, sprite, or water) would you prefer?
+- User: Can you tell me if there are any promotions or discounts available for ordering
+    a pizza and drinks together?
+- Assistant: I currently don't have information on promotions or discounts for ordering
+    a pizza and drinks together. However, I can help you with your drink order. How
+    many drinks would you like, and what type (coke, sprite, or water) would you prefer?
+- User: Is there any way to find out if there are current promotions or discounts
+    for pizza and drink orders?
+- Assistant: I currently don't have information on promotions or discounts for pizza
+    and drink orders. However, I can help you with your drink order. Could you please
+    let me know how many drinks you would like to order and the type of drink (coke,
+    sprite, or water)?
+- User: Can I just order a medium custom pizza with BBQ Chicken and mushrooms, and
+    skip the drinks altogether?
+- Assistant: 'Yes, you can order just the medium custom pizza with BBQ Chicken and
+    mushrooms without drinks. Your order is confirmed! '
+- User: Can I get a confirmation for my medium custom pizza with BBQ Chicken and mushrooms?
+- Assistant: Your order for a medium custom pizza with BBQ Chicken and mushrooms is
+    confirmed! If you need anything else, feel free to ask.

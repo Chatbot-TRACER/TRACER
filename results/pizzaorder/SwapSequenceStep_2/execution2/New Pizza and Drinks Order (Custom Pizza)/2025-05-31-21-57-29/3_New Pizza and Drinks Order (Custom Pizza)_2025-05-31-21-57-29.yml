@@ -1,0 +1,79 @@
+serial: 2025-05-31-21-57-29
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - corn
+- topping2:
+  - corn
+- topping3:
+  - corn
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: corn, corn, corn'
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 64.542877
+assistant response time:
+- 2.077402
+- 2.705126
+- 4.55763
+- 1.140665
+- 1.338439
+- 3.252414
+- 3.903202
+- 20.017826
+response time report:
+  average: 4.874088
+  max: 20.017826
+  min: 1.140665
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to order an extra large pizza. Can I add corn as the only topping?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you'd like a small, medium, or large pizza?
+- User: I want to confirm my order for an extra large pizza with corn, corn, and corn.
+- Assistant: I'm sorry, but we only offer small, medium, and large pizza sizes. Could
+    you please choose one of those sizes for your pizza with corn?
+- User: I want to confirm my order for an extra large pizza with corn, corn, and corn.
+- Assistant: I'm sorry, but we only offer small, medium, or large pizzas. Could you
+    please choose one of those sizes for your order?
+- User: I understand that you only have small, medium, and large. Can I go ahead and
+    order a large pizza with corn, corn, and corn instead?
+- Assistant: 'Thanks for ordering a large pizza with c, o, r and n!
+
+    Thank you for your order of a large pizza with corn! Now, could you please let
+    me know how many drinks you would like to order and what type of drinks (coke,
+    sprite, or water) you would like?'
+- User: I'd like to order three drinks, please. Can I get two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza with cheese, olives, red peppers, and mushrooms, along
+    with three Cokes, is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is f5ee3c.'
+- User: I just want to double-check my order. Can I confirm that I have a large pizza
+    with corn, corn, and corn, plus two Cokes and one Sprite for a total of $25.00?
