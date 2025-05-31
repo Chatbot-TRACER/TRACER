@@ -1,0 +1,124 @@
+serial: 2025-05-31-11-04-04
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Margherita
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: You can choose from toppings such as pepperoni, mushrooms,
+    onions, sausage, bacon, extra cheese, black olives, green peppers, pineapple,
+    and spinach.
+errors: []
+---
+conversation time: 121.941754
+assistant response time:
+- 0.988901
+- 0.984941
+- 4.249975
+- 2.630528
+- 3.038531
+- 1.994884
+- 1.17601
+- 1.264965
+- 1.81441
+- 1.358389
+- 1.94016
+- 1.953068
+- 2.873164
+- 1.351485
+- 2.776574
+- 1.246564
+- 4.220051
+response time report:
+  average: 2.109564
+  max: 4.249975
+  min: 0.984941
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: "Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order\
+    \ pizzas and drinks. \nWhat can I do for you?"
+- User: What kinds of pizzas do you offer?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Margherita pizza, please. Can you confirm the size options available?
+- Assistant: 'We offer several predefined pizzas: margarita, carbonara, marinera,
+    hawaiian, four cheese, and vegetarian. Would you like to order one of these, or
+    would you prefer a custom pizza?'
+- User: Can you tell me what size options are available for the Margherita pizza?
+- Assistant: I can help you with ordering a pizza, but I don't have information on
+    size options. Would you like to proceed with ordering the Margherita pizza, or
+    would you prefer a custom pizza?
+- User: Could you at least give me a hint about the size options for the Margherita
+    pizza?
+- Assistant: I'm sorry, but I don't have information about the size options for the
+    Margherita pizza. Would you like to proceed with ordering the Margherita pizza,
+    or would you prefer a custom pizza?
+- User: What size options are there for the Margherita pizza?
+- Assistant: I'm sorry, but I don't have information on the size options for the Margherita
+    pizza. Would you like to proceed with ordering the Margherita pizza, or would
+    you prefer a custom pizza?
+- User: Can you please tell me what size options are available for the Margherita
+    pizza?
+- Assistant: I'm sorry, but I don't have information about the size options for the
+    Margherita pizza. Would you like to proceed with ordering the Margherita pizza,
+    or would you prefer a custom pizza?
+- User: Could you at least tell me how long it usually takes for a pizza to be delivered?
+- Assistant: 'I''m sorry, but I can only assist with ordering pizzas. If you''d like
+    to order a Margherita pizza or any other predefined or custom pizza, please let
+    me know! '
+- User: Is there a way to customize my pizza order, or do I need to stick to the predefined
+    options?
+- Assistant: You can customize your pizza order if you'd like, or you can choose from
+    our predefined options. What would you prefer?
+- User: Can you tell me what kinds of toppings I can choose for a custom pizza?
+- Assistant: 'I''m happy to help with your pizza order! However, I can only assist
+    with predefined pizzas or custom pizzas. If you''d like to order a custom pizza,
+    please let me know your desired toppings. If you prefer a predefined pizza, I
+    can help you with that as well. Please choose one of these options: margarita,
+    carbonara, marinera, hawaiian, four cheese, or vegetarian.'
+- User: What toppings can I select if I want to create a custom pizza?
+- Assistant: For a custom pizza, you can choose from a variety of toppings such as
+    pepperoni, mushrooms, onions, sausage, bacon, extra cheese, black olives, green
+    peppers, pineapple, and spinach. Would you like to order a custom pizza with any
+    of these toppings, or would you prefer a predefined pizza?
+- User: Can I get a custom pizza with pepperoni and extra cheese?
+- Assistant: I see you want a custom pizza with pepperoni and extra cheese. Could
+    you please let me know the size of the pizza you would like? The options are small,
+    medium, or large. Thank you!
+- User: What size options do you have for the custom pizza?
+- Assistant: The size options for the custom pizza are small, medium, or large. Please
+    let me know which size you would like for your pizza!
+- User: I'll go with a medium size for my custom pizza with pepperoni and extra cheese.
+    Can you confirm my order?
+- Assistant: 'Thanks for ordering a medium pizza with p, e, p, p, e, r, o, n and i!
+
+    Your order for a medium custom pizza with pepperoni and extra cheese is confirmed!
+    Now, could you please let me know how many drinks you would like to order and
+    what type of drinks? The options for drinks are coke, sprite, or water. Thank
+    you!'
+- User: Can you tell me what drink options you have again?
+- Assistant: The drink options we have are coke, sprite, and water. How many drinks
+    would you like to order and which type would you prefer?
+- User: I’m interested in ordering a drink. Can you remind me what the drink options
+    are again?
+- Assistant: The drink options we have are coke, sprite, and water. How many drinks
+    would you like to order and which type would you prefer?

@@ -1,0 +1,103 @@
+serial: 2025-05-31-11-04-04
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - cheese
+- topping2:
+  - cheese
+- topping3:
+  - cheese
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: cheese, cheese,
+    cheese'
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 118.341748
+assistant response time:
+- 1.712674
+- 1.706025
+- 7.748742
+- 10.033552
+- 3.963729
+- 1.747531
+- 1.885646
+- 0.78829
+- 0.766236
+- 0.769955
+- 0.641218
+- 2.917552
+- 20.025422
+response time report:
+  average: 4.208197
+  max: 20.025422
+  min: 0.641218
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I order a medium pizza with cheese, cheese, and cheese?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?
+- User: I want to confirm my order for a medium pizza with cheese, cheese, and cheese.
+- Assistant: 'Thanks for ordering a medium pizza with c, h, e, e, s and e!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks (coke, sprite, or
+    water) you prefer?'
+- User: I'd like to order three drinks, please. Can I get two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a medium pizza topped with cheese and three Cokes is $21.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is d60b2f.'
+- User: Could you please confirm if I need to pick up the order, or is there a delivery
+    option available?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Could you tell me what time I should arrive to pick up my order?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Could you please let me know if there's anything else I should bring along
+    when I pick up my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me if there's anything specific I should bring with me when
+    I come to pick up my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there anything specific I should consider bringing with me when I come
+    to pick up my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a special promotion or deal going on today that I should know about?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a special offer or discount available today that I should be aware
+    of?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, how to get your order, and how long
+    it takes to get an order.
+- User: Could you tell me if there are any toppings on the pizza that are not available
+    for a custom order?

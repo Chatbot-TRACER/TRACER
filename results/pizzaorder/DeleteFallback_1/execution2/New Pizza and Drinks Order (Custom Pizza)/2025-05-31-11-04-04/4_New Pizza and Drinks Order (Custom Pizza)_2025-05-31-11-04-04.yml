@@ -1,0 +1,112 @@
+serial: 2025-05-31-11-04-04
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - ham
+- topping2:
+  - ham
+- topping3:
+  - ham
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: ham, ham, ham'
+errors: []
+---
+conversation time: 133.425744
+assistant response time:
+- 1.620556
+- 15.17521
+- 1.915027
+- 1.564501
+- 3.143947
+- 2.207469
+- 15.921174
+- 0.795836
+- 0.718425
+- 0.711032
+- 13.628399
+- 1.300607
+- 0.834848
+- 1.043732
+- 0.999003
+- 0.772132
+response time report:
+  average: 3.896993
+  max: 15.921174
+  min: 0.711032
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. What toppings can I choose from?
+- Assistant: 'Please switch to English or Spanish so I can assist you better. '
+- User: What toppings can I choose from for my custom pizza?
+- Assistant: You can choose from a variety of toppings for your custom pizza, such
+    as pepperoni, mushrooms, onions, sausage, bacon, extra cheese, black olives, green
+    peppers, and pineapple. Please let me know which toppings you would like!
+- User: I want a large pizza with ham, ham, and ham. Can you confirm my order?
+- Assistant: I see that you've chosen ham as your topping, but I still need to confirm
+    the pizza size. Could you please let me know if you want a small, medium, or large
+    pizza?
+- User: I want a large pizza with ham, ham, and ham. Can you confirm my order?
+- Assistant: 'Thanks for ordering a large pizza with h, a and m!
+
+    I have your pizza order confirmed as a large pizza with ham. Now, could you please
+    let me know how many drinks you would like to order and what type of drinks (coke,
+    sprite, or water) you prefer?'
+- User: I’d like to order four drinks. Can I get two cokes and two waters, please?
+- Assistant: 'I have received your order for four Cokes.
+
+    The cost of a large pizza with h, a, and m, along with 4 Cokes, is $26.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 615e34.'
+- User: Could you clarify if the drinks I ordered have any ice in them or if they
+    will be served without ice?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me if the drinks I ordered come with ice or without ice?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you let me know if the drinks I ordered will be served with ice or without
+    ice?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me if the drinks I ordered will come with ice or without ice?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Will my drinks come with ice or without ice?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Will my drinks be served with ice, or will they come without ice?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please let me know if you have any dessert options available?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Do you have any dessert options available?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if you have any dessert options available?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

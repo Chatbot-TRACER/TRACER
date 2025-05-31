@@ -1,0 +1,117 @@
+serial: 2025-05-31-11-04-04
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - BBQ Chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+errors: []
+---
+conversation time: 139.319661
+assistant response time:
+- 2.387578
+- 2.641416
+- 2.870798
+- 2.546353
+- 2.373148
+- 5.059443
+- 1.650211
+- 3.281983
+- 4.363135
+- 1.98176
+- 2.3027
+- 2.276918
+- 2.248439
+- 14.328008
+- 1.959316
+- 2.302292
+- 2.489648
+response time report:
+  average: 3.356655
+  max: 14.328008
+  min: 1.650211
+---
+interaction:
+- User: Can you help me with that? I want to order a pizza.
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What types of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like a BBQ Chicken pizza, please. Can you confirm that you have that?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Do you have a BBQ Chicken pizza, or can I order a custom one to include BBQ
+    Chicken?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I order a custom pizza to include BBQ Chicken then?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?
+- User: What sizes do you have for the custom pizza?
+- Assistant: 'We have three sizes for the custom pizza: small, medium, and large.
+    Please let me know which size you would like!'
+- User: I'll go with a medium size for the custom pizza. Can you add BBQ Chicken to
+    it?
+- Assistant: 'Thanks for ordering a medium pizza with c, h, i, c, k, e and n!
+
+    Thank you for your order! I still need to know how many drinks you would like
+    to order. Could you please provide the number of drinks? Also, let me know what
+    type of drinks you would like (coke, sprite, or water).'
+- User: Can I just get one drink, please? Do you have Coke available?
+- Assistant: 'Got it! I''ve received your order for one Coke.
+
+    The cost of a medium pizza topped with chicken and one Coke is $18.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is df361d.'
+- User: Could you confirm if I can pick up the order, or do you offer delivery as
+    well?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a specific time I should arrive to pick up my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a specific time I should arrive to pick up my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Are you saying I can just show up anytime to pick up my order? Wouldn't it
+    be better to arrive at the time you mentioned earlier?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: So, I can just show up anytime to pick up my order? It seems a bit odd not
+    to have a specific time.
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a specific time that the order will be ready for pickup, or should
+    I just arrive in 15 minutes?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a specific time my order will be ready for pickup, or should I just
+    arrive in 15 minutes?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Could you please confirm if my order will be ready exactly in 15 minutes,
+    or should I allow for a little extra time?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.

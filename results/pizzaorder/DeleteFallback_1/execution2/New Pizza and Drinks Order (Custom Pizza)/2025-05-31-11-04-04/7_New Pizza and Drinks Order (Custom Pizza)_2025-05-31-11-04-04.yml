@@ -1,0 +1,91 @@
+serial: 2025-05-31-11-04-04
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - pepper
+- topping2:
+  - pepper
+- topping3:
+  - pepper
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepper, pepper, pepper'
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 80.328268
+assistant response time:
+- 6.209443
+- 1.942699
+- 2.490927
+- 2.945402
+- 3.04548
+- 3.001245
+- 3.785014
+- 4.094136
+- 20.026829
+response time report:
+  average: 5.282352
+  max: 20.026829
+  min: 1.942699
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want an extra-large pizza. Can I get that size?
+- Assistant: 'Please let me know if you would like to order a predefined pizza or
+    a custom one. You can choose from predefined options like margarita, carbonara,
+    marinera, hawaiian, four cheese, and vegetarian. If you prefer a custom pizza,
+    please specify your toppings. '
+- User: I want to create a custom pizza. Can you help me with that?
+- Assistant: 'Of course! I can help you with that. Could you please tell me the size
+    of the pizza you would like? It can be small, medium, or large. Also, let me know
+    your choice of toppings from the following options: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, or chicken.'
+- User: I want an extra-large pizza with pepper, pepper, and pepper. Can you confirm
+    my order?
+- Assistant: I'm sorry, but we only offer small, medium, or large pizza sizes. Could
+    you please choose one of those sizes? Also, the toppings you can choose from are
+    cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Please
+    let me know your choices!
+- User: Could I please confirm that I want a large pizza with pepper, pepper, and
+    pepper?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    It looks like I still need some information to complete your order. Could you
+    please let me know how many drinks you would like to order? Also, please specify
+    the type of drink you want from the following options: coke, sprite, or water.'
+- User: I would like to order two drinks. Can I get one coke and one sprite, please?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large pizza topped with pepperoni, green peppers, and extra cheese,
+    along with two Cokes, is $24.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is a84842.'
+- User: Could you please confirm my order for a large pizza with pepper, pepper, and
+    pepper, along with one Coke and one Sprite?
+- Assistant: It looks like I still need the size of the pizza. Could you please confirm
+    if you would like a small, medium, or large pizza? Thank you!
+- User: I would like to confirm that I want a large pizza with pepper, pepper, and
+    pepper, along with one Coke and one Sprite.

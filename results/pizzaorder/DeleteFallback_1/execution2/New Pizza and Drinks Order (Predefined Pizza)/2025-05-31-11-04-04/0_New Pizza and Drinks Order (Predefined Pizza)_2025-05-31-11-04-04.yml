@@ -1,0 +1,122 @@
+serial: 2025-05-31-11-04-04
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: 'Order Summary:
+
+    - Pizza Type: Large Hawaiian
+
+    - Drinks: 2 Cokes
+
+    - Total Cost: $25.00
+
+    - Estimated Readiness Time: 15 minutes
+
+    - Pickup Location: 23 Main Street, NY
+
+    - Order ID: 7adae2'
+- delivery_information: We do not do delivery, but customers need to get the shop
+    for their orders. We are located at 23 Main Street, New York.
+errors: []
+---
+conversation time: 114.346247
+assistant response time:
+- 11.689958
+- 2.694124
+- 8.189491
+- 2.097955
+- 1.11938
+- 1.245955
+- 1.457994
+- 0.847819
+- 0.826731
+- 1.003339
+- 1.836988
+- 0.904738
+- 1.289103
+- 1.086933
+- 0.926017
+- 1.074112
+response time report:
+  average: 2.393164
+  max: 11.689958
+  min: 0.826731
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. Can you please tell
+    me the total cost?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for your order! I see you would like two Cokes, but I still need to
+    confirm the number of drinks. Could you please tell me how many drinks you would
+    like to order? '
+- User: I would like to order two Cokes, as mentioned earlier. Can you confirm the
+    total cost now?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 7adae2.'
+- User: Can you confirm that delivery is not available for this order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Could you please confirm the payment methods accepted for pickup?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you confirm the payment methods accepted for pickup?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you clarify what payment methods are accepted for my pickup order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please let me know what payment methods are accepted for my pickup
+    order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you provide information on the payment methods that are accepted for
+    my pickup order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please let me know what payment methods I can use for my pickup
+    order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if I can pay with a credit card for my pickup order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup process, and estimated
+    time for orders.
+- User: Can you please let me know if cash is an acceptable payment method for my
+    pickup order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you confirm whether cash is accepted as a payment method for my pickup
+    order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please provide me with information on whether cash is accepted for
+    my pickup order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if I can use a debit card for my pickup order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please confirm if I can use a debit card for my pickup order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

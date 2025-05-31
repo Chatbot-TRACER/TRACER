@@ -1,0 +1,144 @@
+serial: 2025-05-31-11-04-04
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - anchovies
+- topping2:
+  - pineapple
+- topping3:
+  - Pineapple
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: medium
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: cheese, pepperoni'
+errors: []
+---
+conversation time: 141.223808
+assistant response time:
+- 2.195368
+- 1.75353
+- 5.651335
+- 2.693026
+- 1.64962
+- 3.179939
+- 7.497092
+- 3.648478
+- 4.496257
+- 3.055439
+- 3.704854
+- 6.189635
+- 4.2507
+- 4.200149
+- 3.120237
+- 3.401445
+response time report:
+  average: 3.792943
+  max: 7.497092
+  min: 1.64962
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to go for a medium custom pizza. Can I add anchovies and pineapple
+    to it?
+- Assistant: 'It looks like the toppings you provided are not on our list. Please
+    choose from the following toppings: cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken. Also, please confirm the pizza size as well. Thank you!'
+- User: I’d like to confirm my order for a medium pizza with anchovies and pineapple.
+    Can you check if those toppings can be added?
+- Assistant: 'Unfortunately, anchovies and pineapple are not on our list of available
+    toppings. Please choose from the following toppings: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, or chicken. Also, I can confirm that your
+    pizza size is medium. Thank you!'
+- User: Could I order a medium pizza with just pineapple and some other toppings?
+- Assistant: 'Unfortunately, pineapple is not on our list of available toppings. Please
+    choose from the following toppings: cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken. Also, please confirm the pizza size as medium. Thank
+    you!'
+- User: 'User: Can I get a medium pizza with cheese and pepperoni then?'
+- Assistant: 'Thank you for confirming the pizza size as medium. Now, could you please
+    provide the toppings you would like? You can choose from the following options:
+    cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. '
+- User: I’d like a medium pizza with cheese and pepperoni, please. Can you confirm
+    that order?
+- Assistant: 'Thank you for confirming the pizza size as medium. Now, could you please
+    provide the toppings you would like? You can choose from the following options:
+    cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken.'
+- User: I’d like to confirm my order for a medium pizza with cheese and pepperoni.
+    Can you finalize that for me?
+- Assistant: 'Thank you for confirming the pizza size as medium. However, I still
+    need you to provide the toppings for your pizza. You can choose from the following
+    options: cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken.
+    Please let me know your choice!'
+- User: I’d like to order a medium pizza with cheese and pepperoni. Can you finalize
+    that order for me?
+- Assistant: 'Thank you for confirming the pizza size as medium. Now, could you please
+    provide the toppings you would like? You can choose from the following options:
+    cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. '
+- User: I’d like to confirm my order for a medium pizza with cheese and pepperoni,
+    please finalize that for me.
+- Assistant: 'Thank you for confirming the pizza size as medium. However, I still
+    need you to provide the toppings for your pizza. You can choose from the following
+    options: cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken.
+    Please let me know your choice!'
+- User: I’d like to confirm my order for a medium pizza with cheese and pepperoni,
+    please. Can you finalize that for me?
+- Assistant: 'Thanks for ordering a medium pizza with cheese and pepperoni!
+
+    Thank you for confirming your order for a medium pizza with cheese and pepperoni.
+    Now, could you please let me know how many drinks you would like to order and
+    the type of drinks? You can choose from coke, sprite, or water. Thank you!'
+- User: I'd like to order two drinks, please. Can I get one coke and one sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost for a medium cheese and pepperoni pizza, along with two Cokes, is $18.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 5da538.'
+- User: Could you provide me with the total amount for my order?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please break down the prices for the medium pizza with cheese and
+    pepperoni, and the two drinks? I'd like to understand how you got to the total
+    amount.
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you confirm the price of a medium pizza with cheese and pepperoni based
+    on the breakdown you provided?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you let me know the specific price for a medium pizza with cheese and
+    pepperoni?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.

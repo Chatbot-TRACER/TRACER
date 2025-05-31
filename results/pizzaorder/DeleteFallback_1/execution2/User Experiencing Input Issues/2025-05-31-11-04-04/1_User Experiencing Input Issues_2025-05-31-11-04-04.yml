@@ -1,0 +1,124 @@
+serial: 2025-05-31-11-04-04
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you order pizzas and drinks. What can I do for
+    you?
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+errors: []
+---
+conversation time: 135.857278
+assistant response time:
+- 1.556165
+- 1.046245
+- 1.62632
+- 1.879568
+- 17.599016
+- 1.884476
+- 2.462754
+- 1.85333
+- 1.854196
+- 3.590057
+- 2.814099
+- 2.317827
+- 2.457548
+- 2.668523
+- 7.633817
+- 1.786819
+- 2.364866
+response time report:
+  average: 3.376213
+  max: 17.599016
+  min: 1.046245
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: "Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order\
+    \ pizzas and drinks. \nWhat can I do for you?"
+- User: What types of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Pepperoni pizza. Could you confirm that you have that option?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Do you have a Pepperoni pizza option or not?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can you just tell me if I can add Pepperoni to a custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I add Pepperoni to a custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.
+- User: Can you tell me if I can add Pepperoni as a topping for a custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and order time.
+- User: Can you tell me if I can customize my pizza with Pepperoni?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you tell me what the prices are for the pizzas you mentioned?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Can you tell me the price for a Custom pizza with Pepperoni as one of the
+    ingredients?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Can you tell me the price for a Custom pizza if I choose three ingredients,
+    including Pepperoni?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Can you clarify what the total price would be for a Custom pizza with Pepperoni
+    and two other ingredients?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you give me an example of what two other ingredients I could choose with
+    Pepperoni for a Custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you tell me if I can choose mushrooms as one of the other ingredients
+    for a Custom pizza with Pepperoni?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, order pickup, and estimated time for
+    orders.
+- User: Can you tell me what other toppings I can choose for a custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can you at least tell me if you have any vegetables as options for a custom
+    pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.

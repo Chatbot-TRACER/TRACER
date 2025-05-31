@@ -1,0 +1,136 @@
+serial: 2025-05-31-11-04-04
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - olives
+- topping2:
+  - olives
+- topping3:
+  - olives
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: olives, olives, olives'
+errors: []
+---
+conversation time: 119.638646
+assistant response time:
+- 2.161619
+- 1.927675
+- 2.531211
+- 11.806358
+- 1.828195
+- 4.141045
+- 2.415769
+- 5.396286
+- 0.73593
+- 0.791419
+- 0.811839
+- 8.576201
+- 2.612364
+- 7.301435
+- 5.984282
+- 3.211853
+response time report:
+  average: 3.889592
+  max: 11.806358
+  min: 0.73593
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. What are the options for toppings?
+- Assistant: 'Please let me know if you would like to order a predefined pizza or
+    a custom one. If you want a custom pizza, I can help you with the toppings options. '
+- User: What toppings do you have available for a custom pizza?
+- Assistant: I can help you with the toppings options for a custom pizza. Please let
+    me know if you would like to proceed with ordering a custom pizza or if you prefer
+    a predefined one.
+- User: I'd like to go ahead and order a custom pizza. What toppings can I choose
+    from?
+- Assistant: 'Please let me know the toppings you would like to choose for your custom
+    pizza. You can select from options like pepperoni, mushrooms, onions, sausage,
+    bacon, extra cheese, black olives, green peppers, pineapple, and spinach. '
+- User: Can I please get a small pizza with olives, olives, and olives?
+- Assistant: It looks like I have the toppings you want, but I still need to confirm
+    the pizza size. Could you please let me know if you would like a small, medium,
+    or large pizza?
+- User: I'd like a small pizza, please. Can you confirm my order for a small pizza
+    with olives, olives, and olives?
+- Assistant: 'Thanks for ordering a small pizza with o, l, i, v, e and s!
+
+    Thank you for confirming your order for a small pizza with olives. Now, could
+    you please let me know how many drinks you would like to order and what type of
+    drinks (coke, sprite, or water) you prefer?'
+- User: I would like to order two drinks. Can I get one Coke and one water, please?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a small pizza topped with olives and two Cokes is $14.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 881668.'
+- User: Could you please confirm if you want one Coke and one water instead of two
+    Cokes?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please confirm my order for one Coke and one water instead of two
+    Cokes?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I just want to confirm my order for one Coke and one water instead of two
+    Cokes. Is that correct?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you please confirm the total cost for a small pizza with olives and one
+    Coke and one water?
+- Assistant: I see that you've provided the toppings as olives, but I still need to
+    confirm the pizza size. Could you please let me know if you would like a small,
+    medium, or large pizza?
+- User: I already confirmed it's a small pizza. Can you please just give me the total
+    cost for a small pizza with olives and one Coke and one water?
+- Assistant: 'Thanks for ordering a small pizza with o, l, i, v, e and s!
+
+    I see that you''ve mentioned two drinks, but I need to confirm the specific types
+    of drinks you would like. Could you please let me know how many of each drink
+    you want? You can choose from coke, sprite, or water. Thank you!'
+- User: I want one Coke and one water, please. Can you confirm the total cost for
+    that?
+- Assistant: 'Got it! I''ve received your order for one Coke.
+
+    The cost of a small pizza topped with olives and a Coke is $13.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 310633.'
+- User: Could you please clarify the total cost for a small pizza with olives, one
+    Coke, and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please provide the total cost for a small pizza with olives, one
+    Coke, and one water based on the pricing you just mentioned?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.

@@ -1,0 +1,133 @@
+serial: 2025-05-31-11-04-04
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: Your medium Hawaiian pizza will have ham, pineapple, extra
+    cheese, and mushrooms.
+- custom_pizza_response: Your medium Hawaiian pizza will have ham, pineapple, extra
+    cheese, and mushrooms.
+errors: []
+---
+conversation time: 156.266588
+assistant response time:
+- 1.145335
+- 0.973265
+- 7.327236
+- 6.509659
+- 1.419377
+- 1.568598
+- 1.76194
+- 3.691947
+- 3.515
+- 4.021434
+- 5.471175
+- 3.665273
+- 2.608375
+- 1.428056
+- 1.377006
+- 1.508807
+- 4.091643
+response time report:
+  average: 3.063772
+  max: 7.327236
+  min: 0.973265
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: "Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order\
+    \ pizzas and drinks. \nWhat can I do for you?"
+- User: What kind of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Hawaiian pizza, please. Can you confirm what toppings come on that?
+- Assistant: 'We have several predefined pizzas available: margarita, carbonara, marinera,
+    hawaiian, four cheese, and vegetarian. Would you like to order one of these, or
+    would you prefer a custom pizza?'
+- User: I thought I asked for a Hawaiian pizza. Can you tell me what toppings are
+    on that?
+- Assistant: A Hawaiian pizza typically comes with ham and pineapple as its main toppings.
+    Would you like to proceed with ordering the Hawaiian pizza?
+- User: Could you just confirm that it has ham and pineapple? I want to make sure
+    before I order.
+- Assistant: Yes, a Hawaiian pizza typically comes with ham and pineapple as its main
+    toppings. Would you like to proceed with ordering the Hawaiian pizza?
+- User: I just want to double-check, can I add extra toppings to the Hawaiian pizza,
+    or is it fixed?
+- Assistant: The Hawaiian pizza comes with ham and pineapple as its standard toppings.
+    If you want to add extra toppings, you would need to order a custom pizza instead.
+    Would you like to proceed with the Hawaiian pizza or create a custom one?
+- User: Can I add extra cheese and mushrooms to the Hawaiian pizza?
+- Assistant: I see you're interested in adding extra cheese and mushrooms, but I still
+    need to know the size of the pizza. Could you please tell me if you would like
+    a small, medium, or large pizza?
+- User: Can I get a medium-sized Hawaiian pizza with extra cheese and mushrooms, then?
+- Assistant: 'Thank you for the size! I just need to confirm the toppings. You mentioned
+    extra cheese and mushrooms, but I need to know if you would like to stick with
+    cheese and mushrooms or choose from the available toppings: cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, chicken. Please let me know your
+    choice!'
+- User: I want to stick with the extra cheese and mushrooms on my medium Hawaiian
+    pizza. Can you confirm that?
+- Assistant: 'I have noted that you want a medium Hawaiian pizza. However, I still
+    need to confirm the toppings. You mentioned extra cheese and mushrooms, but I
+    need to know if you would like to stick with cheese and mushrooms or choose from
+    the available toppings: cheese, mushrooms, pepper, ham, bacon, pepperoni, olives,
+    corn, chicken. Please let me know your choice!'
+- User: I want to stick with the extra cheese and mushrooms on my medium Hawaiian
+    pizza. Can you just confirm that those are the toppings?
+- Assistant: 'I have noted that you want a medium Hawaiian pizza, but I still need
+    to confirm the toppings. Please let me know if you would like to choose from the
+    available toppings: cheese, mushrooms, pepper, ham, bacon, pepperoni, olives,
+    corn, chicken. Thank you!'
+- User: I just want to confirm that I want a medium Hawaiian pizza with extra cheese
+    and mushrooms. Can you assure me that those are the toppings?
+- Assistant: 'I appreciate your patience! I have noted that you want a medium Hawaiian
+    pizza, but I still need to confirm the toppings. Please let me know if you would
+    like to choose from the available toppings: cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, chicken. Thank you!'
+- User: I just want to be sure; can you confirm that my medium Hawaiian pizza will
+    have ham and pineapple, along with extra cheese and mushrooms?
+- Assistant: 'Thanks for ordering a medium pizza with h, a and m!
+
+    Thank you for your order! I just need to know if you would like to add any drinks
+    to your order. How many drinks would you like, and what type of drink would you
+    prefer (coke, sprite, or water)?'
+- User: Could you just clarify that my medium Hawaiian pizza has ham, pineapple, extra
+    cheese, and mushrooms?
+- Assistant: Your medium Hawaiian pizza will have ham, pineapple, extra cheese, and
+    mushrooms. Now, how many drinks would you like, and what type of drink would you
+    prefer (coke, sprite, or water)?
+- User: Can you confirm that my medium Hawaiian pizza will have ham, pineapple, extra
+    cheese, and mushrooms before I move on to drinks?
+- Assistant: Your medium Hawaiian pizza will have ham, pineapple, extra cheese, and
+    mushrooms. Now, how many drinks would you like, and what type of drink would you
+    prefer (coke, sprite, or water)?
+- User: Can you assure me one last time that my medium Hawaiian pizza includes ham,
+    pineapple, extra cheese, and mushrooms?
+- Assistant: Your medium Hawaiian pizza will indeed have ham, pineapple, extra cheese,
+    and mushrooms. Now, how many drinks would you like, and what type of drink would
+    you prefer (coke, sprite, or water)?
+- User: Could you just confirm that my medium Hawaiian pizza has ham, pineapple, extra
+    cheese, and mushrooms one more time?
+- Assistant: Your medium Hawaiian pizza will have ham, pineapple, extra cheese, and
+    mushrooms. Now, how many drinks would you like, and what type of drink would you
+    prefer (coke, sprite, or water)?
