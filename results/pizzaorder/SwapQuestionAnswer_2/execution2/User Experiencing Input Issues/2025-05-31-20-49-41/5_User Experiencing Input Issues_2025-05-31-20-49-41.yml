@@ -1,0 +1,129 @@
+serial: 2025-05-31-20-49-41
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - BBQ Chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: Yes, your order is confirmed as a large custom pizza with
+    BBQ sauce, chicken, and extra cheese.
+- pizza_type_response: Your order is confirmed as a large custom pizza with BBQ sauce,
+    chicken, and extra cheese.
+- custom_pizza_response: Your order is confirmed as a large custom pizza with BBQ
+    sauce, chicken, and extra cheese.
+errors: []
+---
+conversation time: 123.475538
+assistant response time:
+- 1.168689
+- 1.460146
+- 2.019935
+- 2.029
+- 2.406687
+- 2.883811
+- 1.790096
+- 3.390592
+- 3.263775
+- 1.67998
+- 1.721406
+- 2.019226
+- 2.039234
+- 2.078577
+- 1.998601
+- 1.889526
+- 1.855175
+response time report:
+  average: 2.099673
+  max: 3.390592
+  min: 1.168689
+---
+interaction:
+- User: Can you help me with ordering a pizza?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What types of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like to order a BBQ Chicken pizza, but I want to make sure that's available.
+    Is it on your menu?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there a way to customize a pizza, like adding BBQ sauce or extra toppings?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I add BBQ sauce and extra toppings to a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I put BBQ sauce and extra toppings on a custom pizza?
+- Assistant: Yes, you can add BBQ sauce and extra toppings to a custom pizza. Would
+    you like to order a custom pizza now?
+- User: I want to order a custom pizza. Can you help me with that?
+- Assistant: 'Sure! I can help you with that. Could you please tell me the size of
+    the pizza you would like? You can choose from small, medium, or large. Also, let
+    me know your preferred toppings from the following options: cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, or chicken.'
+- User: I’d like a large custom pizza with BBQ sauce, chicken, and extra cheese. Can
+    you confirm that for me?
+- Assistant: 'Thanks for ordering a large pizza with c, h, i, c, k, e and n!
+
+    Your large custom pizza with BBQ sauce, chicken, and extra cheese sounds great!
+    Now, could you please let me know how many drinks you would like to order and
+    what type of drinks you prefer? You can choose from coke, sprite, or water.'
+- User: I didn't mention drinks yet. Can you just confirm my pizza order first? I
+    want to make sure it's all correct.
+- Assistant: Your order is a large custom pizza with BBQ sauce, chicken, and extra
+    cheese. Now, could you please let me know how many drinks you would like to order
+    and what type of drinks you prefer? You can choose from coke, sprite, or water.
+- User: Can you just confirm that my order is a large custom pizza with BBQ sauce,
+    chicken, and extra cheese?
+- Assistant: Your order is a large custom pizza with BBQ sauce, chicken, and extra
+    cheese. Now, could you please let me know how many drinks you would like to order
+    and what type of drinks you prefer? You can choose from coke, sprite, or water.
+- User: Can you just confirm that the pizza is actually a large custom pizza with
+    BBQ sauce, chicken, and extra cheese?
+- Assistant: Your order is a large custom pizza with BBQ sauce, chicken, and extra
+    cheese. Now, could you please let me know how many drinks you would like to order
+    and what type of drinks you prefer? You can choose from coke, sprite, or water.
+- User: 'Can you just tell me if my order is correct: a large custom pizza with BBQ
+    sauce, chicken, and extra cheese?'
+- Assistant: Your order is a large custom pizza with BBQ sauce, chicken, and extra
+    cheese. Now, could you please let me know how many drinks you would like to order
+    and what type of drinks you prefer? You can choose from coke, sprite, or water.
+- User: Is my order confirmed as a large custom pizza with BBQ sauce, chicken, and
+    extra cheese?
+- Assistant: Your order is confirmed as a large custom pizza with BBQ sauce, chicken,
+    and extra cheese. Now, could you please let me know how many drinks you would
+    like to order and what type of drinks you prefer? You can choose from coke, sprite,
+    or water.
+- User: Just to clarify, is my order a large custom pizza with BBQ sauce, chicken,
+    and extra cheese?
+- Assistant: Yes, your order is confirmed as a large custom pizza with BBQ sauce,
+    chicken, and extra cheese. Now, could you please let me know how many drinks you
+    would like to order and what type of drinks you prefer? You can choose from coke,
+    sprite, or water.
+- User: Can you just confirm one more time that my order is a large custom pizza with
+    BBQ sauce, chicken, and extra cheese?
+- Assistant: Your order is confirmed as a large custom pizza with BBQ sauce, chicken,
+    and extra cheese. Now, could you please let me know how many drinks you would
+    like to order and what type of drinks you prefer? You can choose from coke, sprite,
+    or water.
+- User: Is my order definitely a large custom pizza with BBQ sauce, chicken, and extra
+    cheese?
+- Assistant: Yes, your order is definitely a large custom pizza with BBQ sauce, chicken,
+    and extra cheese. Now, could you please let me know how many drinks you would
+    like to order and what type of drinks you prefer? You can choose from coke, sprite,
+    or water.

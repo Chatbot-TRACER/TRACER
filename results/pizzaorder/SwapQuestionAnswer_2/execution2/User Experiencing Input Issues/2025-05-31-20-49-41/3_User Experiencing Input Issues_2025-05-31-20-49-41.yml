@@ -1,0 +1,118 @@
+serial: 2025-05-31-20-49-41
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Meat Lovers
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I'm sorry, I did not get what you said. Can you rephrase?
+- pizza_type_response: Yes, I have noted your order for a large pizza with pepperoni
+    and extra cheese.
+- custom_pizza_response: $26.00
+errors: []
+---
+conversation time: 130.84174
+assistant response time:
+- 2.601621
+- 0.917967
+- 1.47906
+- 3.607248
+- 1.985246
+- 4.049128
+- 1.64302
+- 6.2208
+- 2.093439
+- 9.824814
+- 3.332641
+- 1.337257
+- 2.028265
+- 5.517258
+- 1.996392
+- 2.213725
+- 1.222545
+response time report:
+  average: 3.062966
+  max: 9.824814
+  min: 0.917967
+---
+interaction:
+- User: I'd like to order a Meat Lovers pizza, can you confirm you got that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a Meat Lovers pizza. Did you get that this time?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a custom pizza. Can you help me with that?
+- Assistant: 'Of course! I can help you with that. Could you please let me know the
+    size of the pizza you would like? It can be small, medium, or large. Also, please
+    tell me your choice of toppings from the following options: cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, or chicken.'
+- User: Could you repeat the toppings again? I want to make sure I understand them
+    all clearly.
+- Assistant: 'Sure! Here are the toppings you can choose from: cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, or chicken. Please let me know your
+    choice of toppings along with the size of the pizza you would like!'
+- User: I want to order a large pizza with pepperoni and extra cheese. Did you get
+    that?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e, r, o, n and i!
+
+    I have noted your order for a large pizza with pepperoni and extra cheese. Now,
+    could you please let me know how many drinks you would like to order and what
+    type of drinks? You can choose from coke, sprite, or water.'
+- User: I want to make sure you got my order right. Can you confirm that I ordered
+    a large pizza with pepperoni and extra cheese before we move on to drinks?
+- Assistant: Yes, I have noted your order for a large pizza with pepperoni and extra
+    cheese. Now, could you please let me know how many drinks you would like to order
+    and what type of drinks? You can choose from coke, sprite, or water.
+- User: I'd like to order two cokes, please. Did you get that?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large pizza topped with pepperoni and two Cokes is $26.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 443616.'
+- User: Can you confirm the total price again for my order?
+- Assistant: Every day from 1pm to 11:30pm
+- User: I didn't ask for your hours. Can you just tell me the total price for my large
+    pizza with pepperoni and two Cokes again?
+- Assistant: Every day from 1pm to 11:30pm
+- User: I really just need the total price for my large pizza with pepperoni and two
+    Cokes. Can you give me that?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I didn't ask about the prices of the pizzas. Can you just tell me the total
+    price for my large pizza with pepperoni and two Cokes?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I just want to know the total price for my large pizza with pepperoni and
+    two Cokes. Can you tell me that?
+- Assistant: Every day from 1pm to 11:30pm
+- User: 'User: Can you please confirm the total price for my order of a large pizza
+    with pepperoni and two Cokes?'
+- Assistant: Every day from 1pm to 11:30pm
+- User: I just want to know the total price for my order of a large pizza with pepperoni
+    and two Cokes. Can you confirm that for me?
+- Assistant: Every day from 1pm to 11:30pm
+- User: I didn't ask about your hours again. Can you just tell me the total price
+    for my large pizza with pepperoni and two Cokes?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Is there a way you can tell me the total price for my large pizza with pepperoni
+    and two Cokes?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

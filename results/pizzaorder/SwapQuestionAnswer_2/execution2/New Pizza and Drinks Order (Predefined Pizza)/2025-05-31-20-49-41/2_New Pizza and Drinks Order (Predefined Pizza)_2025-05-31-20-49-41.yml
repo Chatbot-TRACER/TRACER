@@ -1,0 +1,87 @@
+serial: 2025-05-31-20-49-41
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: 'Large Hawaiian pizza
+
+    Two Cokes
+
+    Total cost: $25.00
+
+    Estimated readiness time: 15 minutes
+
+    Pickup location: 23 Main Street, NY
+
+    Order ID: 644389'
+- delivery_information: Delivery is not available. Please pick up your order at 23
+    Main Street, New York.
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 92.428792
+assistant response time:
+- 12.470491
+- 2.466343
+- 4.303857
+- 2.826412
+- 0.930979
+- 5.19936
+- 1.117984
+- 1.296436
+- 20.037667
+response time report:
+  average: 5.627725
+  max: 20.037667
+  min: 0.930979
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. What is the total
+    cost?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for your order! I see you would like two Cokes. Just to confirm, could
+    you please tell me the number of drinks you would like to order? '
+- User: I would like to order two Cokes, as mentioned earlier. What is the total cost
+    for my order?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 644389.'
+- User: Can you confirm that delivery is not available for this order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there anything else you would like to add to your order, or do you have
+    any special requests for your pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please confirm if there are any special requests or additional items
+    I can add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please confirm if there are any special requests or additional items
+    I can add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a dessert option available that I could consider adding to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any dessert options available that I could consider adding to my
+    order?

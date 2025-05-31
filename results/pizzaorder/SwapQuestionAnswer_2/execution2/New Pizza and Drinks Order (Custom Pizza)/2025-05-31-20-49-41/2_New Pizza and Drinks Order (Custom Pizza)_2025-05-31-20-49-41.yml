@@ -1,0 +1,101 @@
+serial: 2025-05-31-20-49-41
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - chicken
+- topping2:
+  - chicken
+- topping3:
+  - chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: chicken, chicken,
+    chicken'
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 117.84589
+assistant response time:
+- 2.899614
+- 18.048011
+- 8.210313
+- 3.509961
+- 3.413822
+- 3.936916
+- 1.130012
+- 1.221055
+- 3.123035
+- 2.507496
+- 2.46781
+- 20.031929
+response time report:
+  average: 5.874997
+  max: 20.031929
+  min: 1.130011
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want a small pizza with chicken, chicken, and chicken.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I’d like to confirm my order for a small pizza with chicken, chicken, and
+    chicken. Can you do that?
+- Assistant: It looks like I still need to know the size of your pizza. Could you
+    please confirm if you would like a small, medium, or large pizza?
+- User: I'd like to confirm that I want a small pizza, please. Can we go ahead with
+    that?
+- Assistant: 'Thanks for ordering a small pizza with c, h, i, c, k, e and n!
+
+    Thank you for confirming your small pizza order! Now, could you please let me
+    know how many drinks you would like to order and what type of drinks you prefer?
+    You can choose from coke, sprite, or water.'
+- User: I’d like to order two drinks, please. Can I have one coke and one water?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a small pizza topped with chicken and two Cokes is $15.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 967ed3.'
+- User: 'Could you please confirm if I got the order right: a small pizza with chicken
+    and one Coke and one water?'
+- Assistant: "Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order\
+    \ pizzas and drinks. \nWhat can I do for you?"
+- User: 'I''d like to confirm my order is correct: a small pizza with chicken, one
+    Coke, and one water. Is that right?'
+- Assistant: 'Yes, your order is correct: a small pizza with chicken, one Coke, and
+    one water. Would you like to proceed with the order?'
+- User: I'd like to double-check the total cost for the small pizza with chicken,
+    one Coke, and one water. What would that be?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please clarify how much the custom pizza with chicken costs? I'm
+    a bit confused about the pricing.
+- Assistant: Every day from 1pm to 11:30pm
+- User: 'User: Can you tell me the total cost for my small custom pizza with chicken
+    and the drinks, please?'
+- Assistant: Every day from 1pm to 11:30pm
+- User: Could you please provide the pricing details for the small custom pizza with
+    chicken and the drinks? I want to make sure I have the correct total cost.

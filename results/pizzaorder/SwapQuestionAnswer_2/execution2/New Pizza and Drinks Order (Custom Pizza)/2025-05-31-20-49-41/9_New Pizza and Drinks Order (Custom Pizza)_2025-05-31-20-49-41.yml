@@ -1,0 +1,115 @@
+serial: 2025-05-31-20-49-41
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - anchovies
+- topping2:
+  - pineapple
+- topping3:
+  - Pineapple
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: medium
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: anchovies, mushrooms'
+errors: []
+---
+conversation time: 100.397541
+assistant response time:
+- 2.200138
+- 1.989286
+- 2.437166
+- 3.832909
+- 2.747314
+- 4.022951
+- 2.431047
+- 4.791651
+- 2.054616
+- 2.165153
+- 2.723781
+- 1.996006
+- 1.96537
+- 1.928614
+- 2.178988
+- 2.968305
+response time report:
+  average: 2.65208
+  max: 4.791651
+  min: 1.928614
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want a medium pizza with anchovies, pineapple, and Pineapple. Can you confirm
+    my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you please confirm my order for a medium pizza with anchovies and pineapple?
+- Assistant: 'It looks like the pizza size is confirmed as medium, but I cannot accept
+    anchovies and pineapple as toppings. Could you please choose from the following
+    toppings: cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, or corn? Thank
+    you!'
+- User: I understand. Can I confirm my order for a medium pizza with anchovies and
+    mushrooms instead of pineapple?
+- Assistant: 'Thanks for ordering a medium pizza with m, u, s, h, r, o, o, m and s!
+
+    Thank you for your order of a medium pizza with anchovies and mushrooms! Could
+    you please let me know how many drinks you would like to order and what type of
+    drinks (coke, sprite, or water)? Thank you!'
+- User: I’d like to order two drinks, please. Can I have one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a medium pizza topped with mushrooms and two Cokes is $21.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is b5bc7e.'
+- User: Could you please confirm if that total includes tax and any additional fees?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Could you please confirm if the total of $21.00 includes tax and any additional
+    fees?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas, prices of beverages, how to get the order,
+    and how much time it takes to get an order.
+- User: Could you please provide me with the prices of the drinks?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please confirm if the total of $21.00 includes two drinks at the
+    price of $1.50 each?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please break down the total cost for me, including the pizza and
+    the drinks?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me the price of a medium pizza with anchovies and mushrooms?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Could you please tell me the price of a medium pizza with anchovies and mushrooms?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Could you please tell me the price of a medium pizza with anchovies and mushrooms?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Could you please tell me what the price of a medium pizza with anchovies and
+    mushrooms is?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Could you please let me know the price of a medium pizza with anchovies and
+    mushrooms?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.

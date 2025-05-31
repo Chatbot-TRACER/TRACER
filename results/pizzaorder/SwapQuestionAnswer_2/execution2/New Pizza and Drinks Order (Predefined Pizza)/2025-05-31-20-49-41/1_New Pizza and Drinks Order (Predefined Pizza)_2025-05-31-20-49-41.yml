@@ -1,0 +1,128 @@
+serial: 2025-05-31-20-49-41
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: 'Order Summary:
+
+    - Pizza: Large Hawaiian
+
+    - Drinks: 2 Cokes
+
+    - Total Cost: $25.00
+
+    - Estimated Readiness Time: 15 minutes
+
+    - Pickup Location: 23 Main Street, New York
+
+    - Order ID: 63d78c'
+- delivery_information: 'Delivery is not available. Pickup location: 23 Main Street,
+    New York.'
+errors: []
+---
+conversation time: 134.855342
+assistant response time:
+- 2.121584
+- 2.656911
+- 6.715009
+- 2.515428
+- 3.894547
+- 1.248122
+- 1.410646
+- 1.437127
+- 3.142659
+- 2.280452
+- 2.776583
+- 2.25621
+- 2.63383
+- 6.668988
+- 2.555078
+- 1.841463
+response time report:
+  average: 2.884664
+  max: 6.715009
+  min: 1.248122
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. Could you please
+    confirm that delivery is not available?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Thank you for the information! I would like to order a large Hawaiian pizza
+    and two Cokes for pickup. What is the total cost?
+- Assistant: It looks like I need some additional information to complete your order.
+    Could you please confirm the pizza size (small, medium, or large) and the pizza
+    type (margarita, carbonara, marinera, hawaiian, four cheese, vegetarian)? Thank
+    you!
+- User: I already specified that I want a large Hawaiian pizza. What is the total
+    cost for that along with the two Cokes?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for your patience! I see that you have ordered two Cokes, but I need
+    to confirm the number of drinks. Could you please tell me how many drinks you
+    would like to order? '
+- User: I would like to order two Cokes, as mentioned earlier. What is the total cost
+    for the large Hawaiian pizza and the two Cokes?
+- Assistant: 'I have received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 63d78c.'
+- User: Thank you for the details! Could you please let me know if there are any special
+    instructions I should provide for the order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please clarify if there are any specific instructions I should provide
+    for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any specific instructions I should provide for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a specific time I should pick up my order, or is it ready as soon
+    as I arrive?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please confirm if my order will be ready in 15 minutes as stated
+    earlier, or should I expect a longer wait time?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please confirm if my order for a large Hawaiian pizza and two Cokes
+    will indeed be ready in 15 minutes, or if there is a possibility of a longer wait
+    time?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Is there a chance that my order could be ready sooner than the estimated 15
+    minutes?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Is there a way to check if my order is ready before I arrive at the pickup
+    location?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a phone number I can call to check the status of my order before
+    I arrive?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    long it takes to get an order.
+- User: Could you please provide the phone number or contact information for the shop
+    so I can check the status of my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Could you please confirm the shop's opening hours?
+- Assistant: Every day from 1pm to 11:30pm

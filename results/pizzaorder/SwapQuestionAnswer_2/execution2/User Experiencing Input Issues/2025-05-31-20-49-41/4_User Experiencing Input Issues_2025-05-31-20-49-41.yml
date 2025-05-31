@@ -1,0 +1,119 @@
+serial: 2025-05-31-20-49-41
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: Of course! I can help you with that. What type of pizza would
+    you like to order? You can choose from our predefined options or create a custom
+    pizza.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients).
+- custom_pizza_response: I don't have the address for your pickup. Please provide
+    the address where you would like to pick up your order.
+errors: []
+---
+conversation time: 128.685217
+assistant response time:
+- 1.116187
+- 1.316723
+- 2.479449
+- 5.582676
+- 3.357017
+- 1.445898
+- 4.939862
+- 1.281315
+- 3.139018
+- 4.232077
+- 1.522567
+- 1.525544
+- 1.64176
+- 1.271114
+- 1.530832
+- 1.563544
+- 1.253022
+response time report:
+  average: 2.3058
+  max: 5.582676
+  min: 1.116187
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Of course! I can help you with that. What type of pizza would you like
+    to order? You can choose from our predefined options or create a custom pizza.
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Hawaiian pizza, please. Can you confirm the toppings?
+- Assistant: I see that you've chosen a Hawaiian pizza. Could you please let me know
+    the size of the pizza you would like? It can be small, medium, or large.
+- User: Can I get a large Hawaiian pizza, please? And does it come with extra cheese?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for your order of a large Hawaiian pizza! Now, could you please let
+    me know how many drinks you would like to order and what type of drinks? You can
+    choose from coke, sprite, or water.'
+- User: Do you have any desserts available to add to my order?
+- Assistant: Currently, I can only assist you with ordering pizza and drinks. If you'd
+    like to proceed with your drink order, please let me know how many drinks you
+    would like and what type (coke, sprite, or water).
+- User: Can I just get a large Hawaiian pizza and a Coke?
+- Assistant: 'Got it! I''ve received your order for one Coke.
+
+    The cost of a large Hawaiian pizza and one Coke is $23.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 3eb2f6.'
+- User: Is there a way to add a special instruction for my pizza, like no extra pineapple?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can I add special instructions for my large Hawaiian pizza, like no extra
+    pineapple?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas, prices of beverages, how to get the order,
+    and how much time it takes to get an order.
+- User: Can I just confirm my order for the large Hawaiian pizza and Coke?
+- Assistant: Thank you for your order! I have noted that you would like a large Hawaiian
+    pizza. I also see that you want a Coke and have specified no extra pineapple.
+    Is there anything else you would like to add or modify?
+- User: Can you confirm if the total for the large Hawaiian pizza and Coke is $23.50?
+- Assistant: I cannot confirm the total price for your order, but I can help you with
+    your pizza and drink order. If you have any other questions or need assistance,
+    feel free to ask!
+- User: I just want to double-check that I really ordered a large Hawaiian pizza and
+    a Coke. Is that correct?
+- Assistant: Yes, you ordered a large Hawaiian pizza and a Coke. If you need any further
+    assistance or want to make changes, feel free to let me know!
+- User: Can you tell me if I can pick up my order, or is delivery only available?
+- Assistant: 'You can choose either pickup or delivery for your order. If you prefer
+    to pick it up, just let us know when you''d like to come by! '
+- User: Is there a specific time you would like to come by for the pickup of your
+    large Hawaiian pizza and Coke?
+- Assistant: Is there a specific time you would like to come by for the pickup of
+    your large Hawaiian pizza and Coke?
+- User: Can I just pick up my order now, or do I need to wait for a specific time?
+- Assistant: You can pick up your order now if it's ready. However, if you want to
+    ensure it's prepared when you arrive, it's best to wait for a specific time. Would
+    you like to confirm a pickup time?
+- User: Can I just pick it up now, or do I have to wait for a specific time?
+- Assistant: You can pick up your order now! Just head over to Fast Pizza, and your
+    large Hawaiian pizza and Coke will be ready for you. Enjoy!
+- User: Can you confirm the address where I need to pick up my order?
+- Assistant: I don't have the address for your pickup. Please provide the address
+    where you would like to pick up your order.

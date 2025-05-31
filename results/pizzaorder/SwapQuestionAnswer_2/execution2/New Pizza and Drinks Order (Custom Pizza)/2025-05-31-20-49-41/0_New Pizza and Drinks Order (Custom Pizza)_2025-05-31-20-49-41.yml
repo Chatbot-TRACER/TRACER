@@ -1,0 +1,128 @@
+serial: 2025-05-31-20-49-41
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - bacon
+- topping2:
+  - bacon
+- topping3:
+  - bacon
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: bacon'
+errors: []
+---
+conversation time: 146.351888
+assistant response time:
+- 3.047796
+- 2.421887
+- 2.23154
+- 3.074917
+- 2.851639
+- 4.343458
+- 1.534486
+- 0.97017
+- 1.302931
+- 4.034713
+- 2.871268
+- 4.323755
+- 1.204012
+- 1.312615
+- 1.327629
+- 1.409435
+response time report:
+  average: 2.39139
+  max: 4.343458
+  min: 0.97017
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I order a large pizza with bacon, bacon, and bacon?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could I confirm my order for a large pizza with just bacon on it?
+- Assistant: It looks like you've already provided the pizza size as large, but I
+    need to confirm the toppings. Could you please specify the toppings you would
+    like on your pizza? The options are cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken.
+- User: Could I please confirm that my large pizza will have just bacon as the topping?
+- Assistant: 'Thanks for ordering a large pizza with b, a, c, o and n!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order? '
+- User: I would like to order three drinks, please. What options do you have for drinks?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza topped with b, a, c, o, and n, along with 3 Cokes, is
+    $25.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is b23683.'
+- User: Could I change my drink order to include one Coke, one Sprite, and one iced
+    tea instead?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could I modify my drink order to include one Coke, one Sprite, and one iced
+    tea instead?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could I switch my drinks to have one Coke, one Sprite, and one iced tea instead?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could I please confirm my order for a large pizza with bacon and switch my
+    drinks to one Coke, one Sprite, and one iced tea?
+- Assistant: 'Thank you for your order! I have noted that you want a large pizza with
+    bacon. However, I still need to confirm the drink options you would like. Could
+    you please specify the drinks you want from the options: Coke, Sprite, or iced
+    tea?'
+- User: I would like one Coke, one Sprite, and one iced tea, please.
+- Assistant: 'Thanks for ordering a large pizza with b, a, c, o and n!
+
+    It seems that iced tea is not an option we offer. Could you please let me know
+    if you would like to replace the iced tea with either Coke or Sprite? Also, please
+    confirm the total number of drinks you would like to order.'
+- User: Could I replace the iced tea with another Sprite, please? So that will be
+    one Coke and two Sprites.
+- Assistant: 'I have received your order for three Sprites.
+
+    The cost of a large pizza topped with b, a, c, o, and n, along with 3 Sprites,
+    is $25.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 36944f.'
+- User: Could you please confirm that my order is for a large pizza with just bacon
+    and includes one Coke and two Sprites?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please confirm that my order is for a large pizza with just bacon
+    and includes one Coke and two Sprites?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please confirm if my order is for a large pizza with just bacon,
+    one Coke, and two Sprites?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could I please confirm that my order is for a large pizza with just bacon,
+    one Coke, and two Sprites?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

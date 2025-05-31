@@ -1,0 +1,104 @@
+serial: 2025-05-31-20-49-41
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I didn't understand.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: I do not know.
+errors: []
+---
+conversation time: 217.493372
+assistant response time:
+- 1.305552
+- 1.304215
+- 2.112495
+- 2.957422
+- 2.207391
+- 2.424594
+- 2.384858
+- 2.100119
+- 2.072314
+- 2.562029
+- 2.217386
+- 2.053862
+- 2.357363
+- 1.46334
+- 5.81244
+- 3.34828
+- 1.870179
+response time report:
+  average: 2.385519
+  max: 5.81244
+  min: 1.304215
+---
+interaction:
+- User: Can you help me with that? I want to order a pizza.
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What types of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like a Pepperoni pizza, please. Do you have any special deals for that?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I think there might be a misunderstanding. I asked for a Pepperoni pizza.
+    Do you have any special deals or promotions on that?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Is there a specific promotion you can tell me about for the Pepperoni pizza?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What time does the promotion start?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What are the opening hours for the pizza place?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Are you saying that the promotion for the Pepperoni pizza is available every
+    day from 1pm to 11:30pm?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Is that promotion specifically for the Pepperoni pizza, or does it apply to
+    all pizzas?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of the pizzas, prices of the beverages, how to get the
+    order, and how much time it takes to get an order.
+- User: Can you tell me what the price of a Pepperoni pizza is?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What is the actual price of a Pepperoni pizza?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Is the price of a Pepperoni pizza the same every day, or does it vary?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Is there anyone I can speak to for more detailed information about the Pepperoni
+    pizza pricing?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can I get in touch with someone who can provide detailed information about
+    the pricing of a Pepperoni pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas, prices of beverages, how to get the order,
+    and how much time it takes to get an order.
+- User: Could you please confirm if the Pepperoni pizza has a fixed price or if it
+    changes based on the day?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas, prices of beverages, how to get the order,
+    and how much time it takes to get an order.
+- User: Is there a way to find out the specific price of a Pepperoni pizza from your
+    website or customer service?
+- Assistant: Every day from 1pm to 11:30pm

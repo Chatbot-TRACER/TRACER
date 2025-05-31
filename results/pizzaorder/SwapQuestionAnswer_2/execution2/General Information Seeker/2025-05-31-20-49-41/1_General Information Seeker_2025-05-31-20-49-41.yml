@@ -1,0 +1,60 @@
+serial: 2025-05-31-20-49-41
+language: English
+context:
+- You are planning a casual pizza night with friends and want to explore options from
+  a local pizza shop you haven't tried before.
+- Before placing an order, you want to gather some general information about their
+  menu, services, and pricing.
+ask_about:
+- Ask what types of questions the chatbot can answer.
+- Ask what the daily opening hours are.
+- Ask about the estimated order time, without specifying the number of pizzas.
+- Ask what drink options are available and their prices.
+- Ask about the pricing for a custom pizza.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- available_information: null
+- opening_hours: Every day from 1pm to 11:30pm
+- estimated_order_time: It depends on the number of pizzas of the order, typically
+    around 15 minutes per pizza, but depends on how busy we are.
+- drink_options_and_prices: Sprite and Coke are 1.50$. Water is 1$.
+- custom_pizza_pricing: null
+errors:
+- 504: No response was received from the server in less than 20
+- 1001: 2 goals left to complete.
+---
+conversation time: 60.11736
+assistant response time:
+- 0.872591
+- 1.293217
+- 1.929332
+- 2.830808
+- 2.089625
+- 2.42655
+- 2.465823
+- 20.016303
+response time report:
+  average: 4.240531
+  max: 20.016303
+  min: 0.872591
+---
+interaction:
+- User: What types of questions can you answer?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me what the daily opening hours are?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What is the estimated order time for a pizza?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: What drink options do you have available, and what are their prices?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: What is the pricing for a custom pizza?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What is the pricing for a custom pizza?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What is the pricing for a custom pizza?
