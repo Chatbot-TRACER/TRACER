@@ -1,0 +1,91 @@
+serial: 2025-05-31-13-08-44
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Meat Lovers
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: Welcome to Fast Pizza!. I'm a chatbot assistant that can help
+    you order pizzas and drinks. What can I do for you?
+- pizza_type_response: We have predefined specialty pizzas available. You can choose
+    from margarita, carbonara, marinera, hawaiian, four cheese, and vegetarian.
+- custom_pizza_response: Yes, we have predefined specialty pizzas available. You can
+    choose from margarita, carbonara, marinera, hawaiian, four cheese, and vegetarian.
+errors: []
+---
+conversation time: 63.960819
+assistant response time:
+- 0.830936
+- 0.953144
+- 1.702686
+- 0.975831
+- 0.942926
+- 3.145065
+- 0.96097
+- 0.890669
+- 0.858511
+- 0.983647
+- 0.967546
+- 1.071749
+- 1.037216
+- 1.343268
+- 1.433383
+- 1.152917
+- 1.210185
+response time report:
+  average: 1.203567
+  max: 3.145065
+  min: 0.830936
+---
+interaction:
+- User: Can you help me with that? I want to order a pizza, but my microphone isn't
+    working well.
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What types of pizzas do you offer?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the toppings you have for pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings can I choose from for my pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What options do you have for pizza toppings?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you just list some pizza toppings for me?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: 'User: Can you tell me some of the toppings available for pizzas?'
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What kinds of toppings can I pick for my pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are some popular pizza toppings that people usually order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings do people usually put on pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What options do you have for toppings on your pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any specialty pizzas that I can choose from?
+- Assistant: Yes, we have predefined specialty pizzas available. You can choose from
+    margarita, carbonara, marinera, hawaiian, four cheese, and vegetarian. Would you
+    like to order one of these?
+- User: Are there any toppings on those specialty pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: 'User: Do those specialty pizzas come with any toppings?'
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do the specialty pizzas include specific toppings?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

@@ -1,0 +1,128 @@
+serial: 2025-05-31-13-08-44
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - cheese
+- topping2:
+  - cheese
+- topping3:
+  - cheese
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: null
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: cheese'
+errors:
+- 1001: 1 goals left to complete.
+---
+conversation time: 104.583282
+assistant response time:
+- 1.625263
+- 0.971959
+- 0.94791
+- 0.888554
+- 2.500713
+- 2.64718
+- 3.477786
+- 0.949814
+- 0.79822
+- 2.303325
+- 2.459827
+- 14.069923
+- 3.125239
+- 2.914778
+- 2.246331
+- 3.59929
+response time report:
+  average: 2.845381
+  max: 14.069923
+  min: 0.79822
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What sizes of pizza are available for my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the different sizes of pizza I can choose from for my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I get a medium pizza with just cheese?
+- Assistant: It looks like you've already provided the pizza size as medium and the
+    topping as cheese. Is there anything else you would like to add to your order?
+- User: Can I confirm my order for a medium pizza with just cheese?
+- Assistant: 'Thanks for ordering a medium pizza with c, h, e, e, s and e!
+
+    I can confirm your order for a medium pizza with just cheese. However, I still
+    need to know how many drinks you would like to order and what type of drinks you
+    prefer (coke, sprite, or water). Could you please provide that information?'
+- User: I'd like to order three drinks. Can I get one coke, one sprite, and one water,
+    please?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a medium pizza topped with cheese and three Cokes is $21.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 38e9c6.'
+- User: Can you confirm if my order includes one Coke, one Sprite, and one water,
+    along with the medium pizza with just cheese?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please confirm if my order has one Coke, one Sprite, and one water
+    along with the medium pizza with just cheese?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you please verify if my order includes a medium pizza with just cheese,
+    one Coke, one Sprite, and one water?
+- Assistant: I do not know. I can answer questions about our opening hours, pizza
+    and beverage prices, order pickup, and estimated time for orders.
+- User: Can you tell me the total cost for the medium pizza with just cheese and the
+    drinks I ordered?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please let me know how much a medium pizza with just cheese costs?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the total price for a medium pizza with just cheese?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the total cost for a medium pizza with just cheese,
+    along with one Coke, one Sprite, and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me how much the drinks cost?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: What is the total cost for my order including the medium pizza with just cheese,
+    one Coke, one Sprite, and one water?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.

@@ -1,0 +1,109 @@
+serial: 2025-05-31-13-08-44
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - bacon
+- topping2:
+  - bacon
+- topping3:
+  - bacon
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: bacon, bacon, bacon'
+errors: []
+---
+conversation time: 92.659173
+assistant response time:
+- 2.004108
+- 0.884452
+- 0.921192
+- 0.959625
+- 3.580082
+- 2.469893
+- 4.601873
+- 0.715326
+- 0.696146
+- 0.756081
+- 0.734878
+- 0.628698
+- 0.633119
+- 1.086256
+- 2.609731
+- 2.065313
+response time report:
+  average: 1.584173
+  max: 4.601873
+  min: 0.628698
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What sizes of pizza are available for me to order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What sizes of pizzas can I choose from?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I order a large pizza with bacon, bacon, and bacon?
+- Assistant: 'It looks like you''ve already specified a large pizza with bacon. However,
+    I need to confirm the toppings. Could you please let me know if you would like
+    any additional toppings or if you want to stick with just bacon? '
+- User: I just want to confirm my order for a large pizza with bacon, bacon, and bacon.
+    Is that okay?
+- Assistant: 'Thanks for ordering a large pizza with b, a, c, o and n!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks (coke, sprite, or
+    water) you prefer?'
+- User: I would like to order two drinks, please. Can I have one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large pizza topped with b, a, c, o, and n, along with 2 Cokes, is
+    $24.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 82fa19.'
+- User: Could you tell me if there's a specific way you’d like me to pay for the order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me if there's a preferred payment method for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What payment options do you accept for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What payment methods do you accept for the order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you please tell me what payment methods are available for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What payment options do you have for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a way I can choose a crust type for my pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me if I can choose a type of crust for my pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, pizza
+    prices, beverage prices, order pickup, and the time it takes to get an order.
+- User: Can you please let me know if you offer any special crust options for my pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, pizza
+    and beverage prices, order pickup, and estimated time for orders.

@@ -1,0 +1,105 @@
+serial: 2025-05-31-13-08-44
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - mushrooms
+- topping2:
+  - mushrooms
+- topping3:
+  - mushrooms
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: mushrooms, mushrooms,
+    mushrooms'
+errors: []
+---
+conversation time: 120.377333
+assistant response time:
+- 2.060462
+- 0.874543
+- 1.216969
+- 0.910816
+- 2.893484
+- 16.872659
+- 11.630635
+- 0.822804
+- 0.657173
+- 2.098369
+- 8.340684
+- 0.939602
+- 1.245388
+- 1.419424
+- 1.67501
+- 1.008788
+response time report:
+  average: 3.416675
+  max: 16.872659
+  min: 0.657173
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the sizes of pizza available for my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the different pizza sizes I can choose from for my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I get a medium pizza with mushrooms, mushrooms, and mushrooms?
+- Assistant: It looks like I have the toppings you want, which is mushrooms. However,
+    I still need to confirm the pizza size. Could you please let me know if you would
+    like a small, medium, or large pizza?
+- User: Can I confirm my order for a medium pizza with mushrooms, mushrooms, and mushrooms?
+- Assistant: 'Thanks for ordering a medium pizza with m, u, s, h, r, o, o, m and s!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks you prefer? You can
+    choose from coke, sprite, or water.'
+- User: I would like to order three drinks, please. Can I get two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a medium pizza topped with mushrooms and three Cokes is $22.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is c61d63.'
+- User: Could you please confirm if you would like anything else to go with your order,
+    like sides or desserts?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can I add a side of garlic bread to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could I please add a side of garlic bread to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could I please order a side of garlic bread along with my pizza and drinks?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could I please add garlic bread as a side to my pizza and drinks order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you please let me know if I can add a side of garlic bread to my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you tell me if there's a way to add garlic bread to my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you let me know if I can include garlic bread as a side with my pizza
+    and drinks?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you please tell me if I have the option to add garlic bread as a side
+    to my pizza and drinks order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

@@ -1,0 +1,112 @@
+serial: 2025-05-31-13-08-44
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - chicken
+- topping2:
+  - chicken
+- topping3:
+  - chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: chicken, chicken,
+    chicken'
+errors: []
+---
+conversation time: 97.976203
+assistant response time:
+- 14.657158
+- 1.030161
+- 1.065423
+- 0.97196
+- 2.853391
+- 2.373739
+- 6.746417
+- 0.733392
+- 2.419059
+- 5.167217
+- 0.679288
+- 4.479256
+- 0.648336
+- 2.232911
+- 1.763834
+- 2.294834
+response time report:
+  average: 3.132273
+  max: 14.657158
+  min: 0.648336
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What sizes of pizza are available for me to order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What different pizza sizes can I choose from?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I get a small pizza with chicken, chicken, and chicken?
+- Assistant: It looks like I have the toppings you want, which are chicken. However,
+    I still need to know the pizza size. Could you please confirm if you would like
+    a small, medium, or large pizza?
+- User: Could you please confirm that I want a small pizza with chicken, chicken,
+    and chicken?
+- Assistant: 'Thanks for ordering a small pizza with c, h, i, c, k, e and n!
+
+    I still need to know how many drinks you would like to order and what type of
+    drinks you prefer. Could you please provide the number of drinks and choose from
+    coke, sprite, or water?'
+- User: I’d like to order two drinks, please. I'll take one coke and one sprite.
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a small pizza topped with chicken and two Cokes is $15.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 61771e.'
+- User: Could you please confirm if the total of $15.00 includes tax and any additional
+    fees?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you clarify if the total of $15.00 covers all taxes and extra fees?
+- Assistant: I do not know. I can answer questions about our opening hours, pizza
+    and beverage prices, order pickup, and estimated time for orders.
+- User: Could you please tell me how long it will take for my order to be ready?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please let me know how busy you are right now?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me what the current wait time is for orders?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please let me know if there are any special offers or discounts
+    available for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if there are any current promotions or discounts
+    I can use for my order?
+- Assistant: I do not know. I can answer questions about our opening hours, pizza
+    and beverage prices, how to get your order, and the time it takes to prepare an
+    order.
+- User: Could you please tell me the opening hours of your shop?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Could you please let me know if you have any vegetarian pizza options available?
+- Assistant: I do not know. I can answer questions about our opening hours, pizza
+    and beverage prices, order pickup, and estimated time for orders.

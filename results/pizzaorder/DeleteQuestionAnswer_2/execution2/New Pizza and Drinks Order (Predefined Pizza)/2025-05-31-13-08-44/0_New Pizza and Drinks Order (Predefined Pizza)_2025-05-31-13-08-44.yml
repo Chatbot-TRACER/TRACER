@@ -1,0 +1,122 @@
+serial: 2025-05-31-13-08-44
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: 'Order Summary:
+
+    - Pizza: Large Hawaiian
+
+    - Drinks: 2 Cokes
+
+    - Total Cost: $25.00
+
+    - Estimated Readiness Time: 15 minutes
+
+    - Pickup Location: 23 Main Street, NY
+
+    - Order ID: a6701a'
+- delivery_information: Delivery is not available. Please visit our shop at 23 Main
+    Street, New York.
+errors: []
+---
+conversation time: 137.817667
+assistant response time:
+- 4.16411
+- 2.258787
+- 3.625285
+- 2.705561
+- 3.971102
+- 1.946958
+- 1.948904
+- 1.002978
+- 2.529214
+- 1.809955
+- 10.000459
+- 1.767341
+- 1.915812
+- 2.965352
+- 1.902088
+- 1.831473
+response time report:
+  average: 2.896586
+  max: 10.000459
+  min: 1.002978
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. What is the total
+    cost?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    It seems I need to confirm the number of drinks and their type. Could you please
+    tell me how many drinks you would like to order and specify if they are Coke,
+    Sprite, or Water? Thank you!'
+- User: I would like to order two Cokes, please. What is the total cost now?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is a6701a.'
+- User: Can you confirm that delivery is not available?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there anything else I need to know about my order or the pickup process?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a specific time I should arrive for pickup to ensure my order is
+    ready?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: What time should I arrive to pick up my order to ensure it's ready?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please provide an estimate of how busy the shop might be at this
+    time?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please estimate how busy the shop might be at this time?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you provide me with the shop's typical busy hours so I can plan my pickup
+    accordingly?
+- Assistant: Every day from 1pm to 11:30pm
+- User: 'User: Are there any special promotions or discounts available for my order
+    today?'
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any promotions or discounts available for my order today?
+- Assistant: I do not know. I can answer questions about our opening hours, pizza
+    and beverage prices, order pickup process, and estimated time for orders.
+- User: Are there any specific toppings or options available for the Hawaiian pizza
+    that I should know about before I pick it up?
+- Assistant: I do not know. I can answer questions about our opening hours, pizza
+    and beverage prices, order pickup process, and estimated time for orders.
+- User: 'User: Is there a specific size for the Hawaiian pizza that I should be aware
+    of before I pick it up?'
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What are the specific ingredients included in your Hawaiian pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, pizza
+    and beverage prices, order pickup, and estimated time for orders.
+- User: What are the specific toppings on the Hawaiian pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, pizza
+    and beverage prices, order pickup, and estimated time for orders.

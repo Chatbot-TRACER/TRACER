@@ -1,0 +1,129 @@
+serial: 2025-05-31-13-08-44
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Margherita
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that! Could you please let me know the
+    size of the pizza you would like? It can be small, medium, or large.
+- pizza_type_response: We do offer some special options for the Margherita pizza,
+    such as extra cheese and fresh basil.
+- custom_pizza_response: Unfortunately, we only offer predefined pizzas at Fast Pizza,
+    and the Margherita pizza does not come with the option to add pineapple as a topping.
+errors: []
+---
+conversation time: 135.252976
+assistant response time:
+- 0.858463
+- 1.039083
+- 1.977624
+- 0.967049
+- 2.785134
+- 1.935054
+- 3.457533
+- 2.601551
+- 1.591228
+- 2.052438
+- 1.832221
+- 5.320426
+- 0.875593
+- 4.049017
+- 0.936905
+- 1.171058
+- 1.528422
+response time report:
+  average: 2.057576
+  max: 5.320426
+  min: 0.858463
+---
+interaction:
+- User: Can you help me with my pizza order? I want to order a pizza, but my microphone
+    isn’t working well.
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What types of pizzas do you have available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What kinds of pizza do you offer?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a Margherita pizza. Do you have that?
+- Assistant: I can help you with that! Could you please let me know the size of the
+    pizza you would like? It can be small, medium, or large.
+- User: I want a medium Margherita pizza, but can you tell me if you have any special
+    toppings for it?
+- Assistant: 'Thanks for ordering a medium margarita pizza!
+
+    I can help you with your order! Could you please let me know how many drinks you
+    would like to order? Also, please specify the type of drink: coke, sprite, or
+    water.'
+- User: Do you have any special toppings or options for the Margherita pizza, like
+    extra cheese or fresh basil?
+- Assistant: 'We do offer some special options for the Margherita pizza, such as extra
+    cheese and fresh basil. Would you like to add any of these toppings to your medium
+    Margherita pizza? Also, please let me know how many drinks you would like to order
+    and the type of drink: coke, sprite, or water.'
+- User: I’d like to add extra cheese to my medium Margherita pizza. Can you tell me
+    what drinks you have again?
+- Assistant: 'I can help you with your order! Could you please let me know how many
+    drinks you would like to order? Also, please specify the type of drink: coke,
+    sprite, or water.'
+- User: I want to order a custom pizza. Can I mix toppings like mushrooms and peppers
+    on it?
+- Assistant: 'I can help you with your order! However, I still need to know how many
+    drinks you would like to order and the type of drink: coke, sprite, or water.
+    Please let me know!'
+- User: Can I mix toppings like mushrooms and peppers on my custom pizza?
+- Assistant: 'Yes, you can mix toppings like mushrooms and peppers on your custom
+    pizza! Now, could you please let me know how many drinks you would like to order?
+    Also, please specify the type of drink: coke, sprite, or water.'
+- User: What if I want to add something unusual like pineapple to my custom pizza?
+- Assistant: 'I can help you with your order! Could you please let me know how many
+    drinks you would like to order? Also, please specify the type of drink: coke,
+    sprite, or water.'
+- User: Can I add pineapple to my custom pizza along with mushrooms and peppers?
+- Assistant: 'Got it! I''ve received your order for 0 Coke.
+
+    The cost of a medium margarita pizza and a Coke is $15.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is b4322d.'
+- User: Wait, I didn't order a Coke! Can you confirm if I can still add pineapple
+    to my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can I still add pineapple to my custom pizza along with mushrooms and peppers?
+- Assistant: Thank you for your order! I see that you want a Margherita pizza. Could
+    you please confirm the size of the pizza you would like? It can be small, medium,
+    or large.
+- User: Can I just confirm if I can add pineapple to my custom pizza with mushrooms
+    and peppers?
+- Assistant: Unfortunately, we do not offer custom toppings for our pizzas. However,
+    you can order a Margherita pizza as is. Would you like to proceed with the medium
+    Margherita pizza?
+- User: 'User: Can I really not add pineapple to my custom pizza, or is there a way
+    to do that?'
+- Assistant: Unfortunately, the Margherita pizza does not come with the option to
+    add pineapple as a topping. However, you can choose from the available toppings
+    like mushrooms and peppers. Would you like to proceed with the medium Margherita
+    pizza with those toppings?
+- User: Can I at least get a custom pizza with mushrooms, peppers, and pineapple,
+    or is that really not possible?
+- Assistant: Unfortunately, we only offer predefined pizzas at Fast Pizza, and the
+    Margherita pizza does not come with the option to add pineapple as a topping.
+    You can choose from our predefined options. Would you like to proceed with the
+    medium Margherita pizza, or would you like to choose a different type of pizza?

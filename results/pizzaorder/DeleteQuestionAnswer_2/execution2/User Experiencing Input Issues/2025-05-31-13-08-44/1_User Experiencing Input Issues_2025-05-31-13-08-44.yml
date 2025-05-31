@@ -1,0 +1,113 @@
+serial: 2025-05-31-13-08-44
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have special vegetarian pizzas such as Margherita, Veggie
+    Supreme, or Spinach and Feta.
+- custom_pizza_response: Yes, we have a vegetarian pizza option available on our menu.
+errors: []
+---
+conversation time: 105.500777
+assistant response time:
+- 1.156795
+- 0.959681
+- 2.144491
+- 3.940117
+- 1.354875
+- 1.046022
+- 2.835262
+- 2.639157
+- 1.533617
+- 2.886917
+- 2.300529
+- 2.65761
+- 1.738536
+- 2.029069
+- 1.10077
+- 2.781429
+- 2.406994
+response time report:
+  average: 2.088933
+  max: 3.940117
+  min: 0.959681
+---
+interaction:
+- User: I want to order a pizza. Can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What types of pizzas are available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any vegetarian options on your menu?
+- Assistant: Yes, we have a vegetarian pizza option available on our menu. Would you
+    like to order a predefined vegetarian pizza, or would you prefer to create a custom
+    pizza?
+- User: I'd like a Pepperoni pizza.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I would like to order a Pepperoni pizza, please.
+- Assistant: Thank you for your order! Could you please let me know the size of the
+    Pepperoni pizza you would like? The options are small, medium, or large.
+- User: Can I get a large Pepperoni pizza, please?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e, r, o, n and i!
+
+    Thank you for your order of a large Pepperoni pizza! Would you like to add any
+    drinks to your order? If so, please let me know how many drinks you would like
+    and the type (coke, sprite, or water).'
+- User: Can I just order the pizza for now, without any drinks?
+- Assistant: Sure! Your order for a large Pepperoni pizza is confirmed. If you decide
+    to add drinks later, just let me know. Enjoy your meal!
+- User: Can I just check if you have any special offers or deals on pizzas today?
+- Assistant: I'm here to help with your pizza and drink orders, but I don't have information
+    on special offers or deals. You might want to check our website or ask in-store
+    for the latest promotions. If you have any other questions or need to place an
+    order, feel free to let me know!
+- User: Could you tell me if you have any special vegetarian pizzas?
+- Assistant: 'At Fast Pizza, we do offer special vegetarian pizzas! You can choose
+    from options like Margherita, Veggie Supreme, or Spinach and Feta. If you''re
+    interested in ordering one, just let me know which one you''d like and the size! '
+- User: 'User: Can you tell me more about the Veggie Supreme pizza?'
+- Assistant: The Veggie Supreme pizza is loaded with a variety of fresh vegetables,
+    including bell peppers, onions, mushrooms, and olives, all on a delicious tomato
+    base and topped with mozzarella cheese. It's a great choice for vegetarians! If
+    you're interested in ordering it or have any other questions, feel free to ask!
+- User: Is the Veggie Supreme pizza available in all sizes?
+- Assistant: 'Yes, the Veggie Supreme pizza is available in all sizes: small, medium,
+    and large. If you would like to place an order or have any other questions, feel
+    free to ask!'
+- User: Can I get a large Veggie Supreme pizza, please?
+- Assistant: Thank you for your order! I will add a large Veggie Supreme pizza to
+    your order. Would you like to add any drinks to your order? If so, please let
+    me know how many drinks you would like and the type (coke, sprite, or water).
+- User: I just want the large Veggie Supreme pizza for now, without any drinks. Can
+    you confirm that?
+- Assistant: Your order for a large Veggie Supreme pizza is confirmed! If you decide
+    to add drinks later, just let me know. Enjoy your meal!
+- User: Can you tell me if the Veggie Supreme pizza has any special toppings or sauces?
+- Assistant: The Veggie Supreme pizza typically comes with a variety of fresh vegetables,
+    such as bell peppers, onions, mushrooms, and olives. It may also include a special
+    pizza sauce, but the exact toppings can vary. If you have any specific preferences
+    or questions about the toppings, feel free to ask!
+- User: 'User: Does the Veggie Supreme pizza have any cheese or is it vegan?'
+- Assistant: The Veggie Supreme pizza typically contains cheese, but we can also offer
+    a vegan version without cheese. If you have any other questions or would like
+    to place an order, feel free to ask!
