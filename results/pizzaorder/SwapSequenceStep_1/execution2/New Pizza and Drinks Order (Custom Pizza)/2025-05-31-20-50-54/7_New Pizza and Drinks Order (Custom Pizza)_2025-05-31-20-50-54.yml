@@ -1,0 +1,124 @@
+serial: 2025-05-31-20-50-54
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - pepper
+- topping2:
+  - pepper
+- topping3:
+  - pepper
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepper, pepper, pepper'
+errors: []
+---
+conversation time: 107.356626
+assistant response time:
+- 2.109349
+- 2.498931
+- 4.64097
+- 1.247159
+- 1.20586
+- 2.173557
+- 4.394605
+- 1.449208
+- 1.884862
+- 1.872796
+- 4.370769
+- 5.002276
+- 1.031659
+- 2.122388
+- 1.949571
+- 4.754442
+response time report:
+  average: 2.669275
+  max: 5.002276
+  min: 1.031659
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to order an extra-large custom pizza. Can I put pepper, pepper, and
+    pepper on it?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?
+- User: I'd like to confirm my order for an extra-large pizza with pepper, pepper,
+    and pepper. Can you help me with that?
+- Assistant: Unfortunately, we only offer small, medium, or large pizzas. Could you
+    please choose one of those sizes for your pizza?
+- User: I'd like to confirm my order for an extra-large pizza with pepper, pepper,
+    and pepper, please.
+- Assistant: Unfortunately, we only offer small, medium, or large pizzas. Could you
+    please choose one of those sizes for your pizza?
+- User: Could I please get a large pizza with pepper, pepper, and pepper?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    Thank you for your order! Could you please let me know how many drinks you would
+    like to order? '
+- User: I'd like to order four drinks, please. What options do you have?
+- Assistant: 'I have received your order for four Cokes.
+
+    The cost of a large pizza topped with pepperoni, green peppers, and mushrooms,
+    along with 4 Cokes, is $27.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is aafb59.'
+- User: Could you please confirm if you'd like to stick with four Cokes for your drinks,
+    or would you like to choose something else?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me what drink options you have available?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: I'd like to stick with four Cokes for my drinks, please. Could you confirm
+    my total order again?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: I'd like to confirm my order for a large pizza with pepper, pepper, and pepper,
+    along with four Cokes. Can you let me know the total again?
+- Assistant: 'Thanks for ordering a large pizza with pepper, pepper and pepper!
+
+    Thank you for your order! I see that you would like to order four drinks. Could
+    you please confirm the type of drinks you would like? The options are coke, sprite,
+    or water.'
+- User: I'd like to confirm four Cokes for my drinks, please. Can you tell me the
+    total for my order again?
+- Assistant: 'I have received your order for four Cokes.
+
+    The cost of a large pizza topped with peppers and four Cokes is $26.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 5ed19c.'
+- User: Could you please let me know if there are any additional toppings or special
+    requests you would like to add to your pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me if there are any other toppings I can add to my pizza besides
+    pepper?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: Can I add mushrooms or olives to my pizza, or are they not available?'
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Could I please add mushrooms and olives to my large pizza with pepper, pepper,
+    and pepper?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?

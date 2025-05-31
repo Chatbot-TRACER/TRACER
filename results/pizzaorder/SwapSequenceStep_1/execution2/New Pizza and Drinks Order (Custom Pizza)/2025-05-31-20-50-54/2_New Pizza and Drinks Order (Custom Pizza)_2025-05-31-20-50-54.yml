@@ -1,0 +1,88 @@
+serial: 2025-05-31-20-50-54
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - chicken
+- topping2:
+  - chicken
+- topping3:
+  - chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: null
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: chicken, chicken,
+    chicken'
+errors:
+- 504: No response was received from the server in less than 20
+- 1001: 1 goals left to complete.
+---
+conversation time: 68.292308
+assistant response time:
+- 1.826342
+- 2.756351
+- 4.165404
+- 3.193463
+- 4.246347
+- 1.384168
+- 0.989108
+- 2.811408
+- 20.039702
+response time report:
+  average: 4.601365
+  max: 20.039702
+  min: 0.989108
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a small pizza with chicken, chicken, and chicken. Can you
+    confirm that for me?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?
+- User: I want a small pizza with chicken, chicken, and chicken. Can you confirm that
+    for me?
+- Assistant: 'Thanks for ordering a small pizza with c, h, i, c, k, e and n!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks (coke, sprite, or
+    water) you prefer?'
+- User: I’d like to order two drinks, please. Can I have one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a small pizza topped with chicken and two Cokes is $15.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 8ddc0c.'
+- User: Could you please tell me if you'd like to add any sides or extras to your
+    order, like garlic bread or a salad?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you let me know if I can add any sides or extras to my order, like garlic
+    bread or a salad?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me if there are any sides or extras available to add to my order,
+    like garlic bread or a salad?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Could you please let me know what sides or extras you have available, like
+    garlic bread or a salad?

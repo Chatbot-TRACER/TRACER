@@ -1,0 +1,119 @@
+serial: 2025-05-31-20-50-54
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - bacon
+- topping2:
+  - bacon
+- topping3:
+  - bacon
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: big
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: bacon, bacon, bacon'
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 132.31613
+assistant response time:
+- 1.777816
+- 8.869056
+- 2.076671
+- 3.264694
+- 3.319281
+- 4.188124
+- 4.65862
+- 2.962147
+- 4.105421
+- 3.52417
+- 2.912488
+- 20.022999
+response time report:
+  average: 5.140123
+  max: 20.022999
+  min: 1.777816
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want a large pizza with bacon, bacon, and bacon. Can you confirm that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to confirm my order for a large pizza topped with bacon, bacon, and
+    bacon.
+- Assistant: 'It looks like you''ve already provided the pizza size as large and the
+    topping as bacon. However, I noticed that you mentioned bacon multiple times.
+    Could you please confirm if you would like just bacon as the topping, or if you
+    would like to add any other toppings as well? '
+- User: I just want the large pizza with bacon, bacon, and bacon, please. Can we also
+    add a couple of drinks to the order? What options do you offer?
+- Assistant: 'Thanks for ordering a large pizza with b, a, c, o and n!
+
+    I can help with that! Could you please let me know how many drinks you would like
+    to add to your order? Also, please specify the type of drinks you would like from
+    the options: coke, sprite, or water.'
+- User: I'd like to order two drinks, please. Can I get one coke and one sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large pizza topped with b, a, c, o, and n, along with 2 Cokes, is
+    $24.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 3ae276.'
+- User: Could you confirm if I can also get a large pizza with bacon, bacon, and bacon
+    for my friends on the same order?
+- Assistant: 'I see that you''ve provided the toppings as bacon, but I still need
+    to confirm the pizza size. Could you please confirm that you would like a large
+    pizza? '
+- User: Yes, I would like to add another large pizza with bacon, bacon, and bacon
+    for my friends, please. Can we confirm that and keep it on the same order?
+- Assistant: 'Thanks for ordering a large pizza with b, a, c, o and n!
+
+    Thank you for confirming the order for another large pizza with bacon. I have
+    noted that you would like two drinks: one coke and one sprite. Just to confirm,
+    you mentioned two drinks, but I need to ensure that the drinks are correct. Could
+    you please confirm that you would like one coke and one sprite? '
+- User: Yes, I would like to confirm that I want one Coke and one Sprite. So, we have
+    two large pizzas with bacon, bacon, and bacon, and the drinks. Can you tell me
+    what the total cost will be now?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large pizza topped with b, a, c, o, and n, along with 2 Cokes, is
+    $24.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is b920b6.'
+- User: Just to clarify, what would the total cost be for two large pizzas with bacon,
+    bacon, and bacon, along with one Coke and one Sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you break down the cost for me? I want to make sure I understand how
+    much the two large pizzas with bacon, bacon, and bacon, and the drinks will cost.
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the total cost for two large custom pizzas with bacon,
+    bacon, and bacon, and one Coke and one Sprite?

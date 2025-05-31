@@ -1,0 +1,129 @@
+serial: 2025-05-31-20-50-54
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Meat Lovers
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- custom_pizza_response: Sure! Your order is confirmed for a large custom pizza with
+    pepperoni and extra cheese.
+errors: []
+---
+conversation time: 190.035642
+assistant response time:
+- 1.329923
+- 1.391168
+- 8.609766
+- 2.149902
+- 2.438353
+- 3.197141
+- 4.217327
+- 3.496966
+- 3.088586
+- 1.856383
+- 1.551788
+- 1.775444
+- 1.577169
+- 1.869366
+- 1.918824
+- 1.785062
+- 1.506045
+response time report:
+  average: 2.574071
+  max: 8.609766
+  min: 1.329923
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Meat Lovers pizza. Can you confirm that you have that option?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Do you have any other options besides what you listed for pizzas?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there a way to modify one of the listed pizzas, like adding extra toppings
+    or changing the sauce?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    long it takes to get an order.
+- User: Can I order a custom pizza with extra toppings, or is that not an option?
+- Assistant: It looks like I still need some information to complete your order. Could
+    you please provide the pizza size (small, medium, or large) and the toppings you'd
+    like (cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken)?
+    Thank you!
+- User: Can I get a large custom pizza with pepperoni and extra cheese?
+- Assistant: Thank you for your order! I just need to confirm the toppings you'd like
+    on your large pizza. You can choose from cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken. Please let me know your choice!
+- User: I want a large custom pizza with pepperoni and extra cheese. Can we skip the
+    other toppings?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e, r, o, n and i!
+
+    Thank you for your pizza order! Now, could you please let me know how many drinks
+    you would like to order and what type of drinks (coke, sprite, or water)? Thank
+    you!'
+- User: I only want the pizza for now, so can we just stick with the large custom
+    pizza with pepperoni and extra cheese?
+- Assistant: Sure! Your order is confirmed for a large custom pizza with pepperoni
+    and extra cheese. If you decide to add drinks later, just let me know. Enjoy your
+    pizza!
+- User: Can you tell me the estimated delivery time for my large custom pizza with
+    pepperoni and extra cheese?
+- Assistant: The estimated delivery time for your large custom pizza with pepperoni
+    and extra cheese is typically around 30 to 45 minutes. Thank you for your order!
+- User: Is there a way to track the status of my pizza delivery once I place the order?
+- Assistant: Currently, we do not have a tracking system for pizza deliveries. However,
+    once you place your order, you can expect it to be delivered within the estimated
+    time provided. If you have any other questions or need assistance with your order,
+    feel free to ask!
+- User: Can I change the delivery address after I've placed my order?
+- Assistant: It is usually possible to change the delivery address after placing your
+    order, but it depends on the specific policies of Fast Pizza. I recommend contacting
+    the shop directly to confirm if they can accommodate your request. Is there anything
+    else I can assist you with regarding your order?
+- User: What happens if I want to cancel my order after it's been placed?
+- Assistant: 'It seems like you have some questions about your order and delivery
+    process. Unfortunately, I can''t provide information on order cancellations or
+    changes. I recommend contacting our customer service for assistance with those
+    inquiries. If you decide to order drinks later, just let me know! '
+- User: Can you tell me what the cancellation policy is for orders placed at Fast
+    Pizza?
+- Assistant: I can’t provide specific details about the cancellation policy for orders
+    placed at Fast Pizza. I recommend checking the shop's website or contacting customer
+    service for accurate information. If you have any other questions or need assistance
+    with your order, feel free to ask!
+- User: Can I get a refund if my pizza arrives late?
+- Assistant: I understand your concerns about delivery and refunds. For specific questions
+    about refunds for late deliveries, I recommend checking our cancellation policy
+    or contacting customer service directly for the most accurate information. If
+    you have any other questions or if you're ready to place your order, feel free
+    to let me know!
+- User: Can I ask if there are any special deals or discounts available for my pizza
+    order?
+- Assistant: I currently don't have information about special deals or discounts.
+    I recommend checking our website or contacting customer service for the latest
+    offers. If you're ready to place your order or have any other questions, just
+    let me know!

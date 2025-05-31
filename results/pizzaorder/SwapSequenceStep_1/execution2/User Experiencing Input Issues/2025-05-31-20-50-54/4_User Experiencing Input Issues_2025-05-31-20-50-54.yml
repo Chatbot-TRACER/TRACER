@@ -1,0 +1,125 @@
+serial: 2025-05-31-20-50-54
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients).
+- custom_pizza_response: Hawaiian pizzas are 12$ for small, 17$ for medium, and 22$
+    for big.
+errors: []
+---
+conversation time: 139.567811
+assistant response time:
+- 1.472948
+- 2.007798
+- 2.856106
+- 2.376376
+- 2.527046
+- 7.59499
+- 2.969567
+- 5.977663
+- 3.459515
+- 3.731388
+- 1.964344
+- 3.196343
+- 3.613892
+- 2.343843
+- 2.732576
+- 2.490466
+- 2.618452
+response time report:
+  average: 3.172547
+  max: 7.59499
+  min: 1.472948
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What types of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like a Hawaiian pizza, but can you double-check if it has extra cheese?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is the Hawaiian pizza the one with extra cheese, or do I need to ask for that
+    specifically?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there a way to make the Hawaiian pizza with extra cheese, or do I have
+    to customize it?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you tell me if I need to customize the Hawaiian pizza to add extra cheese,
+    or is that a standard option?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you tell me the price of the Hawaiian pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the price of the Hawaiian pizza in each size?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the price of the Hawaiian pizza for a small size?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the price of the Hawaiian pizza for a small size?
+- Assistant: Hawaiian pizzas are 12$ for small.
+- User: What about the medium size? How much is that?
+- Assistant: 'The prices of the pizzas are as follows: Margarita pizzas are 10$ for
+    small, 15$ for medium and 20$ for big. The other predefined pizzas, except for
+    carbonara, are 2$ more for each size. Therefore, the Hawaiian pizza for a medium
+    size costs 17$.'
+- User: What is the price for a big Hawaiian pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the price for a big Hawaiian pizza?
+- Assistant: The price for a big Hawaiian pizza is 22$.
+- User: Can I customize the Hawaiian pizza with additional toppings, or is it just
+    a standard option?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you tell me if I can add extra toppings to the Hawaiian pizza, or would
+    I need to start from a custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you confirm if I can add extra toppings to the Hawaiian pizza, or do I
+    have to order a custom pizza for that?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.

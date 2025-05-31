@@ -1,0 +1,121 @@
+serial: 2025-05-31-20-50-54
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: Yes, you can add extra toppings to your custom pizza!
+errors: []
+---
+conversation time: 151.445018
+assistant response time:
+- 1.524333
+- 1.776006
+- 2.295054
+- 2.204184
+- 4.19071
+- 1.355116
+- 4.627013
+- 1.728253
+- 1.715251
+- 4.68243
+- 9.691416
+- 1.581861
+- 1.227341
+- 1.187349
+- 1.243551
+- 5.335167
+- 1.783948
+response time report:
+  average: 2.832293
+  max: 9.691416
+  min: 1.187349
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Pepperoni pizza, but I'm not sure if I heard you right. Did you
+    say you have Pepperoni?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I see, so no Pepperoni pizza? What if I wanted to create a custom pizza, could
+    I include Pepperoni in that?
+- Assistant: Thank you for providing the toppings! Could you please let me know the
+    pizza size? It can be small, medium, or large.
+- User: What sizes do you offer for the custom pizza?
+- Assistant: 'We offer three sizes for the custom pizza: small, medium, and large.
+    Please let me know which size you would like!'
+- User: I'll go with a medium size for the custom pizza. Can I add Pepperoni to it?
+- Assistant: 'Thanks for ordering a medium pizza with p, e, p, p, e, r, o, n and i!
+
+    Thank you for choosing a medium size for your custom pizza with Pepperoni! Now,
+    could you please let me know how many drinks you would like to order and what
+    type of drinks? You can choose from coke, sprite, or water.'
+- User: I just want to confirm, can I add extra toppings to my custom pizza as well?
+- Assistant: Yes, you can add extra toppings to your custom pizza! Please let me know
+    what extra toppings you would like to add. Also, could you please tell me how
+    many drinks you would like to order and what type of drinks? You can choose from
+    coke, sprite, or water.
+- User: What extra toppings can I add to my custom pizza?
+- Assistant: You can add a variety of extra toppings to your custom pizza, such as
+    mushrooms, onions, green peppers, olives, or sausage. Would you like to add any
+    extra toppings along with your order? Also, please let me know how many drinks
+    you would like and the type of drinks you prefer.
+- User: Can I add mushrooms and olives as extra toppings to my custom pizza?
+- Assistant: Yes, you can add mushrooms and olives as extra toppings to your custom
+    pizza! Now, could you please let me know how many drinks you would like to order
+    and what type of drinks? You can choose from coke, sprite, or water.
+- User: I'd like to order two drinks, can I get one coke and one sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a medium pizza topped with pepperoni and two Cokes is $21.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is e7cb5a.'
+- User: Wait, I think there was a mistake. I asked for one Coke and one Sprite, not
+    two Cokes. Can you confirm that?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I asked for one Coke and one Sprite, not two Cokes. Can you confirm the drinks
+    in my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I specifically requested one Coke and one Sprite for my drinks. Can you confirm
+    that those are the drinks in my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I need to check if my order is correct. Can you confirm if I have one Coke
+    and one Sprite in my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I need to confirm my drink order. Did I order one Coke and one Sprite, or
+    is it still showing two Cokes?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I want to verify if my drink order is correct. Did I order one Coke and one
+    Sprite?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

@@ -1,0 +1,119 @@
+serial: 2025-05-31-20-50-54
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - anchovies
+- topping2:
+  - pineapple
+- topping3:
+  - Pineapple
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: medium
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: ham, mushrooms,
+    pineapple'
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 111.22099
+assistant response time:
+- 2.740325
+- 2.287427
+- 7.670567
+- 1.756162
+- 3.313183
+- 3.114989
+- 3.967479
+- 2.87513
+- 3.164508
+- 5.633462
+- 3.270015
+- 20.027392
+response time report:
+  average: 4.985053
+  max: 20.027392
+  min: 1.756162
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a medium pizza with anchovies, pineapple, and pineapple. Can
+    you confirm my order?
+- Assistant: 'It looks like the toppings you provided include "anchovies" and "pineapple,"
+    which are not available. Please choose from the following toppings: cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, or chicken. Also, I see that the
+    pizza size is already provided as "medium." Please confirm the toppings you''d
+    like to use.'
+- User: Could I please confirm if I can add anchovies and pineapple to my medium pizza
+    order?
+- Assistant: 'Unfortunately, anchovies and pineapple are not available as toppings.
+    Please choose from the following options: cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken for your medium pizza. '
+- User: Could I replace the anchovies with ham on my medium pizza with pineapple?
+- Assistant: 'I see that you have confirmed the pizza size as "medium." However, I
+    still need you to provide the toppings. Please choose from the following options:
+    cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Thank
+    you!'
+- User: I would like to confirm my order for a medium pizza with ham, pineapple, and
+    could you please add some mushrooms as well?
+- Assistant: 'Thanks for ordering a medium pizza with ham and mushrooms!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks you prefer? You can
+    choose from coke, sprite, or water. '
+- User: I would like to order three drinks, please. Can I have two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost for a medium pizza topped with ham and mushrooms, along with three Cokes,
+    is $19.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is ed3a07.'
+- User: Could you please confirm the total cost of my order, including the drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please break down the cost for my medium custom pizza with ham and
+    mushrooms, along with the two cokes and one sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please confirm the base price for a medium custom pizza with ham
+    and mushrooms?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please clarify what the base price is for a medium pizza with ham
+    and mushrooms?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the total cost for a medium custom pizza with ham
+    and mushrooms, including the drinks?
