@@ -1,0 +1,95 @@
+serial: 2025-05-31-08-48-02
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - chicken
+- topping2:
+  - chicken
+- topping3:
+  - chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: null
+errors:
+- 1001: 1 goals left to complete.
+---
+conversation time: 82.20854
+assistant response time:
+- 1.924945
+- 2.217776
+- 1.191103
+- 1.451487
+- 1.220687
+- 1.69374
+- 5.566267
+- 1.296483
+- 0.996802
+- 0.974881
+- 0.924911
+- 1.171987
+- 0.947041
+- 1.252313
+- 0.930959
+- 0.799854
+response time report:
+  average: 1.535077
+  max: 5.566267
+  min: 0.799854
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. What toppings do you recommend for a crowd-pleaser?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I'm interested in creating a custom pizza. What toppings do you recommend
+    that would appeal to a group?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you think would be popular for a custom pizza that my friends
+    would enjoy?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me what kind of drinks you have available for order?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could I please get a small pizza with chicken, chicken, and chicken?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could I please confirm my order for a small pizza with chicken, chicken, and
+    chicken?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you confirm that I can get a small pizza with chicken as the only topping?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drinks would pair well with a small pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you let me know what drinks you have available for a small pizza order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drinks do you have that I can order along with my pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could I please get a recommendation for a good drink to have with pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drink options do you recommend to go with pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the drink options available to order with my pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Is there a specific type of soda you prefer, like Sprite or Coke?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

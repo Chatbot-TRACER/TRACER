@@ -1,0 +1,88 @@
+serial: 2025-05-31-08-48-02
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Margherita
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: None
+errors: []
+---
+conversation time: 107.315852
+assistant response time:
+- 1.010193
+- 1.010481
+- 1.863588
+- 2.56392
+- 1.866481
+- 0.922377
+- 0.959237
+- 1.084243
+- 1.276751
+- 1.445132
+- 1.024485
+- 0.957714
+- 1.039597
+- 1.019759
+- 0.991666
+- 1.11687
+- 1.045128
+response time report:
+  average: 1.246918
+  max: 2.56392
+  min: 0.922377
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Margherita pizza. What size do you have?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What sizes do you offer for the Margherita pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the available sizes for the Margherita pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What sizes do you have for the Margherita pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What options do you have for the sizes of the Margherita pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the different size options for the Margherita pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What about drinks? Do you have any beverages to go with the pizza?
+- Assistant: Yes, we have a variety of beverages available to go with your pizza.
+    Would you like to order a drink along with your Margherita pizza?
+- User: What drinks do you have available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What beverage options are available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What types of beverages can I choose from?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What kind of drinks do you offer?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What beverages can I select from?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drink options do you have?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the different types of drinks you have?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

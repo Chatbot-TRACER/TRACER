@@ -1,0 +1,94 @@
+serial: 2025-05-31-08-48-02
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+errors: []
+---
+conversation time: 116.183524
+assistant response time:
+- 1.189478
+- 1.194207
+- 1.689973
+- 2.134317
+- 2.198844
+- 7.055229
+- 2.356835
+- 1.435994
+- 1.005772
+- 0.917606
+- 16.910948
+- 0.994918
+- 1.106292
+- 1.042316
+- 0.935513
+- 0.937963
+- 1.01779
+response time report:
+  average: 2.595529
+  max: 16.910948
+  min: 0.917606
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kinds of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Hawaiian pizza, but can you confirm if it has pineapple and ham?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is Hawaiian pizza the one with pineapple and ham, or am I mistaken?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you just confirm whether Hawaiian pizza has pineapple and ham?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: I want to order a custom pizza. Can you tell me what ingredients I can choose
+    from?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What ingredients are available for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What ingredients can I select for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings can I choose for my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you tell me what toppings I can select for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you list the toppings available for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any vegetarian options for the custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you offer any vegetarian toppings for custom pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any vegetarian toppings that I can choose for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any gluten-free options for your pizzas?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any gluten-free pizzas available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

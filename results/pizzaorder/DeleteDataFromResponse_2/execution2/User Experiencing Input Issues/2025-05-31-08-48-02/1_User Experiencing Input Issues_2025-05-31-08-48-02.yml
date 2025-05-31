@@ -1,0 +1,117 @@
+serial: 2025-05-31-08-48-02
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: 'You can choose from the following size options for your
+    custom pizza: small, medium, or large.'
+errors: []
+---
+conversation time: 108.648906
+assistant response time:
+- 0.869589
+- 1.195381
+- 2.058217
+- 2.239338
+- 2.372577
+- 1.95499
+- 1.922516
+- 2.164159
+- 2.403733
+- 2.532873
+- 1.817882
+- 2.035392
+- 2.154059
+- 6.09938
+- 1.907223
+- 1.922585
+- 1.855131
+response time report:
+  average: 2.206177
+  max: 6.09938
+  min: 0.869589
+---
+interaction:
+- User: Can you help me with that? I want to order a pizza, but my microphone is acting
+    up.
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kinds of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Pepperoni pizza, please. Can you confirm the size options available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can you confirm the size options for the Pepperoni pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What are the size options for the Pepperoni pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What are the size options available for the Pepperoni pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What are the size options available for the Pepperoni pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What are the different sizes I can get for the Pepperoni pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you at least tell me if there are small, medium, and large sizes for the
+    Pepperoni pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Are there any toppings available for the Pepperoni pizza besides just pepperoni?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Are there any additional toppings I can add to the Pepperoni pizza aside from
+    the pepperoni itself?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Are there any vegetables or other toppings I can customize on the Pepperoni
+    pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can I order a custom pizza with extra toppings, or is it just Pepperoni?
+- Assistant: It seems that I need to collect some information from you. Could you
+    please provide the pizza size (small, medium, or large) and the toppings you would
+    like (cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken)?
+    Thank you!
+- User: Can I get a custom pizza with extra toppings, or is it just Pepperoni?
+- Assistant: 'It looks like "extra toppings" is not a valid option. Please choose
+    from the following toppings: cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken. Also, I still need to know the pizza size (small, medium,
+    or large). Thank you!'
+- User: Can I order a custom pizza with toppings like mushrooms and olives, or is
+    it limited to just the basic options?
+- Assistant: You can choose from the toppings like mushrooms and olives, which are
+    valid options. However, I still need to know the pizza size (small, medium, or
+    large) to proceed with your order. Could you please provide that? Thank you!
+- User: What are the size options I can choose from for the custom pizza?
+- Assistant: 'You can choose from the following size options for your custom pizza:
+    small, medium, or large. Please let me know which size you would like, along with
+    your choice of toppings (cheese, mushrooms, pepper, ham, bacon, pepperoni, olives,
+    corn, or chicken). Thank you!'

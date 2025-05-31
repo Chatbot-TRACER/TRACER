@@ -1,0 +1,148 @@
+serial: 2025-05-31-08-48-02
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - mushrooms
+- topping2:
+  - mushrooms
+- topping3:
+  - mushrooms
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: medium
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: mushrooms, mushrooms,
+    mushrooms'
+errors: []
+---
+conversation time: 126.822664
+assistant response time:
+- 2.051223
+- 4.510054
+- 2.844593
+- 3.030604
+- 2.924676
+- 4.432614
+- 4.479543
+- 2.586042
+- 4.438261
+- 1.603416
+- 3.323283
+- 3.542935
+- 7.58952
+- 3.849305
+- 4.08017
+- 3.761128
+response time report:
+  average: 3.69046
+  max: 7.58952
+  min: 1.603416
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want a medium pizza with mushrooms, mushrooms, and mushrooms.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to confirm my order for a medium pizza topped with mushrooms, mushrooms,
+    and mushrooms.
+- Assistant: 'It looks like I still need to confirm the pizza size for your order.
+    Could you please confirm that you would like a medium pizza? '
+- User: Yes, I confirm that I would like a medium pizza. Can you tell me about the
+    drink options available?
+- Assistant: 'Thanks for ordering a medium pizza with m, u, s, h, r, o, o, m and s!
+
+    Thank you for confirming your medium pizza! Now, could you please let me know
+    how many drinks you would like to order? Also, please specify the type of drink
+    you prefer: coke, sprite, or water.'
+- User: I'd like to order two drinks, please. Can I have one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a medium pizza along with two Cokes is $21.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 8418f3.'
+- User: Can you confirm if the medium pizza with mushrooms, mushrooms, and mushrooms,
+    along with one Coke and one Sprite is correct?
+- Assistant: It seems that I still need to confirm the pizza size for your order.
+    Could you please confirm that you would like a medium pizza?
+- User: Yes, I can confirm that I would like a medium pizza topped with mushrooms,
+    mushrooms, and mushrooms, along with one Coke and one Sprite. Is there anything
+    else I need to do to finalize my order?
+- Assistant: 'Thanks for ordering a medium pizza with m, u, s, h, r, o, o, m and s!
+
+    Thank you for confirming your order! However, I noticed that the drinks you specified
+    are not in the accepted format. Could you please let me know how many drinks you
+    would like to order and specify the type of drinks as either coke, sprite, or
+    water? '
+- User: I'd like to confirm that I want one Coke and one Sprite. Is that clear now?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a medium pizza along with two Cokes is $21.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 62f554.'
+- User: Could you please confirm if my order includes a medium pizza with mushrooms,
+    mushrooms, and mushrooms, along with one Coke and one Sprite?
+- Assistant: Your order includes a medium pizza with mushrooms, mushrooms, and mushrooms,
+    along with one Coke and one Sprite. Is there anything else you would like to add
+    or modify?
+- User: I just want to make sure everything is correct. Can you tell me the total
+    cost for my order?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you clarify how much the medium custom pizza with mushrooms is, given
+    that mushrooms are the only topping?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you tell me the total cost for a medium custom pizza with three mushroom
+    toppings?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you help me calculate the total cost for my medium custom pizza with
+    three mushroom toppings and one Coke and one Sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me how much a medium pizza with three mushroom toppings
+    would cost?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I just need to know the cost of my medium custom pizza with three mushroom
+    toppings. Would you be able to break that down for me?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.

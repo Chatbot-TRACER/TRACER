@@ -1,0 +1,135 @@
+serial: 2025-05-31-08-48-02
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - cheese
+- topping2:
+  - cheese
+- topping3:
+  - cheese
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: medium
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: cheese, cheese,
+    cheese'
+errors: []
+---
+conversation time: 135.189665
+assistant response time:
+- 2.116459
+- 1.931113
+- 2.146417
+- 3.063412
+- 2.537783
+- 11.589775
+- 2.847256
+- 5.464181
+- 3.035624
+- 2.624801
+- 3.266128
+- 4.732712
+- 7.206633
+- 2.537866
+- 3.376081
+- 2.623762
+response time report:
+  average: 3.81875
+  max: 11.589775
+  min: 1.931113
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want a medium pizza with cheese, cheese, and cheese. Can you confirm that
+    for me?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you please confirm my order for a medium pizza with three types of cheese?
+- Assistant: 'It looks like I need to confirm the pizza size for your order. Could
+    you please confirm that you would like a medium pizza? '
+- User: Yes, I would like to confirm that I want a medium pizza with three types of
+    cheese. Can I also add a drink to my order?
+- Assistant: 'Thanks for ordering a medium pizza with c, h, e, e, s and e!
+
+    Sure! How many drinks would you like to add to your order? And what type of drink
+    would you prefer? You can choose from coke, sprite, or water.'
+- User: I would like to add two drinks, please. Can I have one coke and one sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a medium pizza along with two Cokes is $19.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 375e08.'
+- User: Could you please confirm the total cost of my order again?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please break down the cost for the medium pizza with three types
+    of cheese and the two drinks? I'm a bit confused about the total.
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please let me know the price for a medium pizza with three types
+    of cheese?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please provide the total price for a medium pizza with three types
+    of cheese and two drinks again? I just want to make sure I have it right.
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me the price of a medium pizza with three types of cheese?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me how much the drinks cost?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please tell me the total price for my order of a medium custom pizza
+    with three types of cheese and two drinks, one coke and one sprite?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas, prices of beverages, how to get the order,
+    and how much time it takes to get an order.
+- User: Could you please confirm the total price for a medium pizza with three types
+    of cheese, along with one Coke and one Sprite?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please let me know how much a medium pizza with three types of cheese
+    would cost?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the final price for a medium pizza with three types
+    of cheese and the drinks?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.

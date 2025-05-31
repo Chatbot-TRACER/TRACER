@@ -1,0 +1,140 @@
+serial: 2025-05-31-08-48-02
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - pepperoni
+- topping2:
+  - pepperoni
+- topping3:
+  - pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepperoni, pepperoni,
+    pepperoni, extra cheese'
+errors: []
+---
+conversation time: 160.933037
+assistant response time:
+- 1.667182
+- 2.232465
+- 2.244101
+- 3.702984
+- 2.768182
+- 5.308952
+- 14.650356
+- 2.567277
+- 4.499385
+- 0.972315
+- 2.083453
+- 1.757225
+- 5.950724
+- 17.95854
+- 2.824311
+- 5.898719
+response time report:
+  average: 4.817885
+  max: 17.95854
+  min: 0.972315
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a large custom pizza. Can I have pepperoni, pepperoni, and
+    more pepperoni on it?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I would like to confirm my order for a large pizza topped with pepperoni,
+    pepperoni, and even more pepperoni.
+- Assistant: 'It looks like I still need to confirm the pizza size for your order.
+    Could you please confirm that you would like a large pizza? '
+- User: Yes, I confirm that I want a large pizza. Now, can you tell me if there are
+    any special deals on drinks I can order with my pizza?
+- Assistant: 'Thanks for ordering a large pizza with pepperoni, pepperoni and pepperoni!
+
+    To help you with your drink order, could you please let me know how many drinks
+    you would like to order? Also, what type of drinks would you like? You can choose
+    from coke, sprite, or water.'
+- User: I would like to order three drinks. Can I get two cokes and one sprite, please?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza with three Cokes is $24.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 089447.'
+- User: Can I get a confirmation for my order that includes a large pizza with pepperoni,
+    pepperoni, and pepperoni, along with two Cokes and one Sprite?
+- Assistant: I see that you've confirmed your large pizza with pepperoni. However,
+    I still need to confirm the pizza size for your order. Could you please confirm
+    that you would like a large pizza?
+- User: Yes, I confirm that I want a large pizza with pepperoni, pepperoni, and pepperoni,
+    along with two Cokes and one Sprite. Could you please confirm the total price
+    for me?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e, r, o, n and i!
+
+    Thank you for your order details! I see that you would like two Cokes and one
+    Sprite, which totals three drinks. However, I need to confirm the drink types
+    as they should be in lowercase. Could you please confirm that you would like two
+    cokes and one sprite? '
+- User: Yes, I confirm that I would like two cokes and one sprite. Can you tell me
+    the total price for my order now?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza along with three Cokes is $27.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 9f8552.'
+- User: Could you please let me know if there are any additional toppings or special
+    requests you'd like to add to your pizza order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if there are any additional toppings or special requests
+    I can add to my pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: Can I add some extra cheese to my large pizza with pepperoni, pepperoni,
+    and pepperoni?'
+- Assistant: Yes, you can add extra cheese to your large pizza with pepperoni, pepperoni,
+    and pepperoni. Would you like to proceed with this addition to your order?
+- User: Yes, please add extra cheese to my large pizza with pepperoni, pepperoni,
+    and pepperoni. What will the new total price be?
+- Assistant: 'It looks like I still need to confirm the toppings for your order. Could
+    you please let me know which toppings you would like on your pizza? '
+- User: I would like to confirm that my large pizza has pepperoni, pepperoni, pepperoni,
+    and extra cheese. Can you tell me the new total price with these changes?
+- Assistant: 'I see that you''ve confirmed your large pizza, but I still need to know
+    the toppings you''d like. Could you please confirm the toppings for your pizza? '
+- User: I would like to confirm that my large pizza has pepperoni, pepperoni, pepperoni,
+    and extra cheese. Can you tell me the new total price with these changes?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e, r, o, n and i!
+
+    Thank you for confirming your pizza details! However, I still need to confirm
+    the number of drinks and their types. Could you please let me know how many drinks
+    you would like to order and what types? You can choose from coke, sprite, or water.'
+- User: I would like to keep my order the same, so it’s a large pizza with pepperoni,
+    pepperoni, pepperoni, and extra cheese, plus two Cokes and one Sprite. Can you
+    confirm the total price for this updated order?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza along with three Cokes is $27.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 8ea7fd.'

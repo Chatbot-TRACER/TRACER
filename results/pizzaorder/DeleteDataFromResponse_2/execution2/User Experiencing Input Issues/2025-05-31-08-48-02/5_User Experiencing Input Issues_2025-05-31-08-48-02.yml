@@ -1,0 +1,88 @@
+serial: 2025-05-31-08-48-02
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - BBQ Chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: I'm sorry, I did not get what you said. Can you rephrase?
+errors: []
+---
+conversation time: 106.09232
+assistant response time:
+- 1.295007
+- 1.005191
+- 1.911306
+- 1.630296
+- 1.006669
+- 1.086322
+- 0.971286
+- 0.807163
+- 0.936422
+- 13.376539
+- 1.122114
+- 1.091432
+- 1.016168
+- 0.910487
+- 1.032445
+- 1.675619
+- 0.861567
+response time report:
+  average: 1.866825
+  max: 13.376539
+  min: 0.807163
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a BBQ Chicken pizza. Can you confirm if that's available?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I’d like to know if you have BBQ Chicken pizza available.
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Is the BBQ Chicken pizza on your menu?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Is the BBQ Chicken pizza an option on your menu?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Is there a BBQ Chicken pizza available to order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Is there a BBQ Chicken pizza that I can order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any other special pizzas aside from the ones you mentioned?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any specialty pizzas other than the ones you've listed?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any unique or specialty pizzas beyond the standard options you've
+    shared?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you offer any vegan pizza options?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any pizzas that are vegan?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any pizzas that are suitable for vegans?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any gluten-free pizza options?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any pizzas that are gluten-free?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

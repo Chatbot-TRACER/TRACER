@@ -1,0 +1,120 @@
+serial: 2025-05-31-08-48-02
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - ham
+- topping2:
+  - ham
+- topping3:
+  - ham
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: ham, ham, ham'
+errors: []
+---
+conversation time: 119.201973
+assistant response time:
+- 2.756948
+- 2.571602
+- 7.237204
+- 3.009879
+- 4.515066
+- 12.817422
+- 3.221554
+- 2.852332
+- 2.309676
+- 2.494137
+- 5.449907
+- 1.79763
+- 1.80221
+- 2.001975
+- 1.715176
+- 1.589394
+response time report:
+  average: 3.633882
+  max: 12.817422
+  min: 1.589394
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want a large pizza with ham, ham, and ham. Can you confirm my order?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you'd like a small, medium, or large pizza?
+- User: I'd like a large pizza with ham, ham, and ham. Could you confirm that for
+    me?
+- Assistant: 'Thanks for ordering a large pizza with h, a and m!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you''d like to order and what type of drinks you prefer? You can choose
+    from coke, sprite, or water.'
+- User: I'd like to order three drinks, please. Can I have two cokes and one sprite?
+- Assistant: 'I have received your order for three Cokes.
+
+    The cost of a large pizza with three Cokes is $24.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 789df8.'
+- User: Could you please confirm the total cost for my large pizza with ham, ham,
+    and ham, along with two Cokes and one Sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please break down the costs for the large custom pizza with ham,
+    ham, and ham, and the drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the cost of a large custom pizza with ham, ham, and
+    ham, along with the two Cokes and one Sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the total cost of my large custom pizza with ham,
+    ham, and ham, and the drinks?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas, prices of beverages, how to get the order,
+    and how much time it takes to get an order.
+- User: Could you please tell me the price of two Cokes and one Sprite?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please confirm the total cost for two Cokes and one Sprite?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please add that up for me? What would be the total for two Cokes
+    and one Sprite?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please help me calculate the total for two Cokes and one Sprite
+    based on the prices you provided?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please confirm the total for two Cokes and one Sprite?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please tell me how much the total would be for two Cokes and one
+    Sprite?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please help me figure out the total for two Cokes and one Sprite?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.

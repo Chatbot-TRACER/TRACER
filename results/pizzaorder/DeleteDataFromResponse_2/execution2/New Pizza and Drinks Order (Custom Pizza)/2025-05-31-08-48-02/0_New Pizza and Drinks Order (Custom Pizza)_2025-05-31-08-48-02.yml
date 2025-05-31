@@ -1,0 +1,117 @@
+serial: 2025-05-31-08-48-02
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - bacon
+- topping2:
+  - bacon
+- topping3:
+  - bacon
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: bacon, bacon, bacon'
+errors: []
+---
+conversation time: 117.662906
+assistant response time:
+- 1.754716
+- 2.01694
+- 2.540022
+- 3.517281
+- 2.639126
+- 3.968572
+- 1.978684
+- 0.845583
+- 0.709544
+- 1.400305
+- 1.371373
+- 1.107329
+- 1.008676
+- 1.420588
+- 0.930834
+- 2.085934
+response time report:
+  average: 1.830969
+  max: 3.968572
+  min: 0.709544
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a large custom pizza. Can I get bacon, bacon, and more bacon
+    on it?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to confirm my order for a large custom pizza with bacon, bacon, and
+    more bacon. Can you do that?
+- Assistant: I see that you've chosen the toppings as bacon. Could you please confirm
+    the pizza size? It can be small, medium, or large. Thank you!
+- User: I'd like to confirm my order for a large pizza with bacon, bacon, and more
+    bacon. Can you help me with that?
+- Assistant: 'Thanks for ordering a large pizza with b, a, c, o and n!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order? Also, please specify the type of drink (coke,
+    sprite, or water). Thank you!'
+- User: I'd like to order three drinks, please. I'll go with two cokes and one sprite.
+    Can you confirm that for me?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza with three Cokes is $25.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 948197.'
+- User: Could you let me know if I should add anything else to my order, like a side
+    or dessert?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you suggest if there's anything else I might want to add to my order,
+    like a side dish or dessert?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you recommend any sides or desserts that would go well with my pizza
+    and drinks?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What sides do you have available that would pair nicely with my pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you let me know what sides you have available that would pair nicely
+    with my pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me what sides you have that would complement my pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What desserts do you have that I could add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What kind of desserts do you have available that I could add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me what kinds of desserts you have that I could consider adding
+    to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What kind of toppings can I choose for my custom pizza besides bacon?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)

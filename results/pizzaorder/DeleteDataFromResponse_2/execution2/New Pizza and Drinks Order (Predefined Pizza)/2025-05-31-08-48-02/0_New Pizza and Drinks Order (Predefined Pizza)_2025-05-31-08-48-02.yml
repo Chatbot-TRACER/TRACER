@@ -1,0 +1,131 @@
+serial: 2025-05-31-08-48-02
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: The total cost is $25.00. The estimated readiness time is 15 minutes.
+    The pickup location is 23 Main Street, NY. The order ID is 7ee53d.
+- delivery_information: We do not do delivery, but customers need to get the shop
+    for their orders. We are located at 23 Main Street, New York.
+errors: []
+---
+conversation time: 131.484583
+assistant response time:
+- 5.265382
+- 3.144176
+- 4.491362
+- 1.990153
+- 0.814898
+- 2.65722
+- 6.362138
+- 2.494798
+- 1.812887
+- 2.336009
+- 1.782699
+- 1.473937
+- 1.810002
+- 1.615757
+- 5.944353
+- 2.266063
+response time report:
+  average: 2.891364
+  max: 6.362138
+  min: 0.814898
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. What is the total
+    cost?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    I see that you''ve mentioned wanting two Cokes, which means I need to confirm
+    the number of drinks and the type of drinks. Could you please confirm that you
+    would like 2 drinks of Coke? Thank you!'
+- User: Yes, I would like two drinks of Coke. What is the estimated time for pickup?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 7ee53d.'
+- User: Can you confirm that delivery is not available?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there any special request you would like to make for your pizza, such as
+    extra toppings or adjustments?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if there are any special requests or adjustments
+    I can make for my pizza, like extra toppings?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Can I add extra pineapple and ham as toppings to my Hawaiian pizza?
+- Assistant: It looks like I need to collect some information from you. Could you
+    please provide the pizza size (small, medium, or large) and the toppings (cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken) for your order?
+    Thank you!
+- User: I would like to keep the large Hawaiian pizza as is, but can you please confirm
+    if the extra pineapple and ham will incur any additional charges?
+- Assistant: I can only help you with the size and toppings that are available for
+    the pizza. Unfortunately, I cannot provide information about additional charges
+    for extra toppings. Would you like to proceed with the large Hawaiian pizza with
+    the standard toppings? If so, please confirm the toppings you would like to include.
+- User: Could you please clarify if adding extra pineapple and ham will incur any
+    additional charges for the large Hawaiian pizza?
+- Assistant: I'm sorry, but I don't have information about additional charges for
+    extra toppings. However, I can help you place your order for the large Hawaiian
+    pizza. Would you like to proceed with that?
+- User: Could you please let me know if there are any promotions or discounts available
+    for my order?
+- Assistant: I can't provide information about promotions or discounts. However, I
+    can help you with your pizza order. You mentioned a large Hawaiian pizza, but
+    I need to confirm the toppings. The available toppings are cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, and chicken. Please let me know if
+    you would like to keep the toppings as is or make any changes. Thank you!
+- User: Is there a way to inquire about potential promotions or discounts for future
+    orders, even if they are not applicable to my current order?
+- Assistant: I'm here to help you with your pizza order, but I don't have information
+    about promotions or discounts. You might want to check with the shop directly
+    for any current offers. If you have any other questions about your pizza order,
+    feel free to ask!
+- User: Could you please confirm the pickup location for my order?
+- Assistant: I'm here to help you with your pizza order, but I don't have information
+    about pickup locations. You might want to check with the shop directly for that
+    information. If you have any other questions about your pizza order, feel free
+    to ask!
+- User: Could you please confirm the pickup location for my order?
+- Assistant: I'm here to help you with your pizza order, but I don't have information
+    about the pickup location. You might want to check with the shop directly for
+    that information. If you have any other questions about your pizza order, feel
+    free to ask!
+- User: Could you please confirm the pickup location for my order?
+- Assistant: I'm here to help you with your pizza order, but I don't have information
+    about the pickup location. You might want to check with the shop directly for
+    that. If you have any other questions about your pizza order, feel free to ask!
+- User: Could you please confirm the address for the pickup location?
+- Assistant: I'm here to help you with your pizza order, but I don't have information
+    about the pickup location. You might want to check with the shop directly for
+    the address. If you have any other questions about your pizza order, feel free
+    to ask!
+- User: Could you please provide the address for the pickup location for my order?
+- Assistant: I'm here to help you with your pizza order, but I don't have information
+    about the pickup location. You might want to check with the shop directly for
+    the address. If you have any other questions about your pizza order, feel free
+    to ask!

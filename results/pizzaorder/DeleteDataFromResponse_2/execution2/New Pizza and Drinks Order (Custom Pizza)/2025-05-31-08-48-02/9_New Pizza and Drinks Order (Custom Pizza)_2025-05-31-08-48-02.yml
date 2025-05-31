@@ -1,0 +1,128 @@
+serial: 2025-05-31-08-48-02
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - anchovies
+- topping2:
+  - pineapple
+- topping3:
+  - Pineapple
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: pineapple, cheese'
+errors: []
+---
+conversation time: 110.053972
+assistant response time:
+- 2.001422
+- 7.139766
+- 5.400382
+- 1.971749
+- 3.183399
+- 4.156303
+- 3.334542
+- 3.398638
+- 0.871754
+- 1.06502
+- 2.078908
+- 2.23204
+- 2.098585
+- 2.029128
+- 5.649385
+- 4.897248
+response time report:
+  average: 3.219266
+  max: 7.139766
+  min: 0.871754
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to order a medium custom pizza with anchovies and pineapple. Can
+    you confirm my order for that?
+- Assistant: 'It looks like the toppings you provided are not on our list. Please
+    choose from the following toppings: cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken. Also, please confirm the pizza size as small, medium,
+    or large. Thank you!'
+- User: Can I add anchovies to the list of toppings, or do I need to choose something
+    else?
+- Assistant: 'Unfortunately, anchovies are not on our list of available toppings.
+    Please choose from the following toppings: cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken. Also, please confirm the pizza size as small,
+    medium, or large. Thank you!'
+- User: I'd like to order a medium custom pizza with pineapple and extra cheese, please.
+    Can you confirm that order?
+- Assistant: 'Thanks for ordering a medium pizza with c, h, e, e, s and e!
+
+    Thank you for confirming your pizza order! To complete your order, could you please
+    let me know how many drinks you would like to order and what type of drinks (coke,
+    sprite, or water)? '
+- User: I'd like to order two drinks, please. Can I get one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a medium pizza along with two Cokes is $19.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is c89a0b.'
+- User: Could you please confirm the total cost of the drinks and pizza together?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Can you tell me how much extra it would cost if I decided to add one more
+    topping to my medium custom pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: If I add one more topping to my medium custom pizza, it would cost an extra
+    50 cents. What topping do you recommend I add?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: If I decide to add another topping to my medium custom pizza, what would you
+    recommend I choose?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you have available that I can choose from for my pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: What toppings can I choose from if I go for a custom pizza?'
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: Can you list the toppings available for a custom pizza again?'
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, order pickup, and estimated
+    time for orders.
+- User: Could you please confirm the toppings available for a custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, order pickup, and estimated
+    time for orders.
+- User: Could you tell me if you have any vegetarian options for toppings on the custom
+    pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, order pickup, and estimated time for
+    orders.
+- User: What types of beverages do you offer for the pizza order?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.

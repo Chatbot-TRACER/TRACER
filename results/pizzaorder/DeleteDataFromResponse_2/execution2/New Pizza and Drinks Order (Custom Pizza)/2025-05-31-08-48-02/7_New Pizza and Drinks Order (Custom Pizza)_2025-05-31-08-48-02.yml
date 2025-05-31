@@ -1,0 +1,134 @@
+serial: 2025-05-31-08-48-02
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - pepper
+- topping2:
+  - pepper
+- topping3:
+  - pepper
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, or large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepper, extra cheese,
+    olives'
+errors: []
+---
+conversation time: 107.048602
+assistant response time:
+- 1.64822
+- 1.949241
+- 4.543639
+- 2.297522
+- 2.861449
+- 5.130976
+- 1.841656
+- 0.83056
+- 0.956585
+- 1.001318
+- 9.706305
+- 2.12008
+- 5.943251
+- 4.79753
+- 0.671461
+- 1.055398
+response time report:
+  average: 2.959699
+  max: 9.706305
+  min: 0.671461
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want an extra-large pizza. Can I get that size with custom toppings?
+- Assistant: It seems that I need some additional information to complete your order.
+    Could you please provide the pizza size (small, medium, or large) and the toppings
+    you would like (cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn,
+    chicken)? Thank you!
+- User: I want an extra-large pizza with pepper, pepper, and pepper. Can you confirm
+    my order?
+- Assistant: 'Unfortunately, we only offer small, medium, or large pizza sizes at
+    Fast Pizza. Could you please choose one of those sizes and let me know your desired
+    toppings from the available options: cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, chicken? Thank you!'
+- User: I see. Can I order a large pizza with just pepper, then?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    Thank you for your order of a large pizza with pepper. Could you please let me
+    know how many drinks you would like to order and what type of drinks (coke, sprite,
+    water)? Thank you!'
+- User: I'd like to order three drinks, please. Can I get two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza, along with three Cokes, is $26.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 4cbfbc.'
+- User: Could you please confirm if I need to pick up the order at 23 Main Street,
+    NY?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there anything else you would like to add to your order, like additional
+    toppings or a dessert?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please let me know if there's anything else I would like to add
+    to my order, such as extra toppings or maybe a dessert?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a possibility to add extra toppings or perhaps a dessert to my order?
+- Assistant: Yes, you can add extra toppings to your pizza order. Additionally, we
+    offer desserts that you can include with your order. What would you like to add?
+- User: I'd like to add extra cheese and some olives to my pizza, please. And what
+    desserts do you have available?
+- Assistant: It looks like I still need the pizza size (small, medium, or large) and
+    the toppings you would like (cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, chicken). Could you please provide that information? Thank you!
+- User: I've already ordered a large pizza with pepper, and I'm looking to add extra
+    cheese and olives. What desserts do you have available?
+- Assistant: It seems that you want to add extra cheese and olives, but I can only
+    accept specific toppings. The available toppings are cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, and chicken. Since you mentioned a large
+    pizza with pepper, would you like to confirm that order or provide a different
+    topping? Also, I cannot assist with dessert options. Thank you!
+- User: I would like to confirm my order of a large pizza with pepper, extra cheese,
+    and olives. What desserts do you have available?
+- Assistant: 'Thanks for ordering a large pizza with pepper and olives!
+
+    Thank you for confirming your pizza order! However, I still need to know the type
+    of drinks you''d like to order. Could you please specify how many drinks you would
+    like and what types (coke, sprite, water)? Thank you!'
+- User: I think we've already ordered three drinks, which are two Cokes and one Sprite.
+    But can you just tell me what desserts are available?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza with three Cokes is $24.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is e87d44.'
+- User: What desserts do you have available for me to consider adding to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me what desserts you have available for me to consider
+    adding to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
