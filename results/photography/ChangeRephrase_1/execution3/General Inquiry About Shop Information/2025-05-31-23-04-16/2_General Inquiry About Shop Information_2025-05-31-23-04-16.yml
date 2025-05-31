@@ -1,0 +1,92 @@
+serial: 2025-05-31-23-04-16
+language: English
+context:
+- You are planning a visit to a local shop but need to gather some basic information
+  before heading over.
+- You want to confirm their location and opening hours to ensure it fits your schedule.
+ask_about:
+- Ask what kind of shop-related issues the chatbot can answer questions about.
+- Inquire about the location of the shop.
+- Ask about the opening hours of the shop.
+- Ask if the shop is open on Saturdays.
+- If the chatbot doesn't know if the shop is open on Saturdays, ask it to list the
+  available information categories.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- shop_information: '{"location":"14 Wooster Street in SoHo","hours":"Monday to Friday,
+    from 9 AM to 5 PM","saturday_availability":"closed"}'
+- shop_related_issues: I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 144.199002
+assistant response time:
+- 0.942518
+- 1.365634
+- 2.699806
+- 3.449438
+- 4.36744
+- 0.874689
+- 2.915815
+- 2.686973
+- 2.95776
+- 3.212321
+- 3.72936
+- 7.149784
+- 2.400213
+- 1.059546
+- 1.193931
+- 20.018317
+response time report:
+  average: 3.813971
+  max: 20.018317
+  min: 0.874689
+---
+interaction:
+- User: What kind of shop-related issues can you answer questions about?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you tell me where the shop is located?
+- Assistant: The store is located at 14 Wooster Street in SoHo.
+- User: What are the opening hours of the shop?
+- Assistant: We create art both on location and in our SoHo studio. Our hours are
+    Monday to Friday, from 9 AM to 5 PM.
+- User: Is the shop open on Saturdays?
+- Assistant: We create art both on location and in our SoHo studio. Our hours are
+    Monday to Friday, from 9 AM to 5 PM.
+- User: Could you please list the available information categories?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you tell me if the shop offers any specific services or products?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What specific photography services do you provide?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What specific photography services do you provide?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What specific photography services do you provide?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: Can you provide details about your portfolio?
+- Assistant: We have recently completed significant on-site digitization projects
+    for the Taller del Prado in Madrid, Spain, and the Centro Cultural Eduardo Leon
+    Jimenez Art Museum in Santiago, Dominican Republic.
+- User: What types of media do you handle in your shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: Can you tell me about the pricing structure for your services?
+- Assistant: Our hourly rate is $200.
+- User: What types of payment methods do you accept?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: What payment options are available for the services at the shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you tell me what payment methods you accept for your services?

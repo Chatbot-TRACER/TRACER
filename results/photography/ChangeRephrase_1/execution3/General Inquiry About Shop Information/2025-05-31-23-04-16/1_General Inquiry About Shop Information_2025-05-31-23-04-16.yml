@@ -1,0 +1,95 @@
+serial: 2025-05-31-23-04-16
+language: English
+context:
+- You are planning a visit to a local shop but need to gather some basic information
+  before heading over.
+- You want to confirm their location and opening hours to ensure it fits your schedule.
+ask_about:
+- Ask what kind of shop-related issues the chatbot can answer questions about.
+- Inquire about the location of the shop.
+- Ask about the opening hours of the shop.
+- Ask if the shop is open on Saturdays.
+- If the chatbot doesn't know if the shop is open on Saturdays, ask it to list the
+  available information categories.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- shop_information: '{"location":"14 Wooster Street in SoHo","hours":"Monday to Friday,
+    from 9 AM to 5 PM","saturday_availability":"Not open on Saturdays"}'
+- shop_related_issues: I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+errors: []
+---
+conversation time: 127.059039
+assistant response time:
+- 1.242556
+- 1.390217
+- 2.777088
+- 3.97742
+- 3.011105
+- 1.267554
+- 3.518411
+- 3.2295
+- 2.762734
+- 2.981835
+- 3.625462
+- 3.090495
+- 0.738142
+- 5.283811
+- 7.464216
+- 0.958999
+response time report:
+  average: 2.957471
+  max: 7.464216
+  min: 0.738142
+---
+interaction:
+- User: What kind of shop-related issues can you answer questions about?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you tell me the location of the shop?
+- Assistant: The store is located at 14 Wooster Street in SoHo.
+- User: What are the opening hours of the shop?
+- Assistant: We create art both on location and in our SoHo studio. Our hours are
+    Monday to Friday, from 9 AM to 5 PM.
+- User: Are you open on Saturdays?
+- Assistant: We create art both on location and in our SoHo studio. Our hours are
+    Monday to Friday, from 9 AM to 5 PM.
+- User: Could you please list the available information categories?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: What services do you offer in the shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What type of photography services do you specialize in?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What type of photography services do you specialize in?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What specific types of photography do you focus on?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What specific types of media do you handle in your shop?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle,
+    such as photography, video, and virtual/3D rendering.
+- User: What specific types of photography do you offer in your portfolio?
+- Assistant: We have recently completed significant on-site digitization projects
+    for the Taller del Prado in Madrid, Spain, and the Centro Cultural Eduardo Leon
+    Jimenez Art Museum in Santiago, Dominican Republic.
+- User: What types of video services do you offer in your shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: What types of video services are available at your shop?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What types of video services do you specialize in?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What types of virtual/3D rendering services do you offer in your shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
