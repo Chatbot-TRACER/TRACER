@@ -1,0 +1,130 @@
+serial: 2025-05-31-12-54-46
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - BBQ Chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients).
+- custom_pizza_response: Yes, you can add extra cheese to your large BBQ Chicken pizza!
+errors: []
+---
+conversation time: 137.68495
+assistant response time:
+- 0.808537
+- 0.867829
+- 1.783814
+- 3.963451
+- 1.960965
+- 3.371929
+- 2.372788
+- 2.03077
+- 1.559189
+- 1.713167
+- 1.708622
+- 1.952522
+- 1.798956
+- 1.751156
+- 2.443963
+- 2.8029
+- 4.232392
+response time report:
+  average: 2.183702
+  max: 4.232392
+  min: 0.808537
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a BBQ Chicken pizza. Can you confirm if you have that?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I think there might be a misunderstanding. Do you have a BBQ Chicken pizza
+    or not?
+- Assistant: I do not know. I can answer questions about the types of pizzas we serve,
+    their prices, the prices of beverages, how to get the order, and how much time
+    it takes to get an order.
+- User: Can you just tell me if I can customize a pizza to include BBQ Chicken?
+- Assistant: I see that you've chosen chicken as a topping. Could you please let me
+    know the size of the pizza you would like? It can be small, medium, or large.
+- User: I want a large pizza. Can I also add extra cheese to that?
+- Assistant: 'Thanks for ordering a large pizza with c, h, i, c, k, e and n!
+
+    Thank you for your order! Could you please let me know how many drinks you would
+    like to add? Also, please specify the type of drink (coke, sprite, or water).'
+- User: I didn't mention drinks yet. Can you just confirm if I can add extra cheese
+    to my large BBQ Chicken pizza?
+- Assistant: Yes, you can add extra cheese to your large BBQ Chicken pizza! Now, could
+    you please let me know how many drinks you would like to add and the type of drink
+    (coke, sprite, or water)?
+- User: I just want to confirm that I can add extra cheese. Can you assure me it will
+    be included with the BBQ Chicken pizza?
+- Assistant: Yes, you can add extra cheese to your large BBQ Chicken pizza! Now, could
+    you please let me know how many drinks you would like to add and the type of drink
+    (coke, sprite, or water)?
+- User: Can you guarantee that the extra cheese will be on the pizza when it arrives?
+- Assistant: Yes, I can assure you that the extra cheese will be included on your
+    large BBQ Chicken pizza when it arrives! Now, could you please let me know how
+    many drinks you would like to add and the type of drink (coke, sprite, or water)?
+- User: I just want to double-check one more thing. Can you tell me if there are any
+    additional charges for adding extra cheese to my pizza?
+- Assistant: Yes, there may be an additional charge for adding extra cheese to your
+    pizza. Now, could you please let me know how many drinks you would like to add
+    and the type of drink (coke, sprite, or water)?
+- User: How much is the extra charge for adding cheese to my pizza?
+- Assistant: I understand your concern about the extra charge for adding cheese to
+    your pizza, but I don't have that information. You may want to check with the
+    staff at Fast Pizza for the exact pricing. Meanwhile, could you please let me
+    know how many drinks you would like to add and the type of drink (coke, sprite,
+    or water)?
+- User: Can you tell me if there’s a way to find out the prices for additional toppings
+    like extra cheese?
+- Assistant: I'm unable to provide specific pricing information for additional toppings
+    like extra cheese. I recommend checking the menu on our website or contacting
+    the shop directly for the most accurate pricing. If you're ready to order drinks,
+    please let me know how many and what type (coke, sprite, or water) you'd like!
+- User: Can you at least tell me if there's a menu available online where I could
+    check the prices for the extra toppings?
+- Assistant: I'm sorry, but I can't provide information about the menu or prices.
+    However, I can confirm that you can add extra cheese to your large BBQ Chicken
+    pizza! Now, could you please let me know how many drinks you would like to add
+    and the type of drink (coke, sprite, or water)?
+- User: Is there a way to contact customer support to ask about the prices for additional
+    toppings?
+- Assistant: I'm sorry, but I can't provide information about customer support. However,
+    I can confirm that you can add extra cheese to your large BBQ Chicken pizza! Now,
+    could you please let me know how many drinks you would like to add and the type
+    of drink (coke, sprite, or water)?
+- User: Can you tell me if there are any promotions or discounts currently available
+    for pizza orders?
+- Assistant: I'm sorry, but I can't provide information about promotions or discounts.
+    However, I can confirm that you can add extra cheese to your large BBQ Chicken
+    pizza! Now, could you please let me know how many drinks you would like to add
+    and the type of drink (coke, sprite, or water)?
+- User: Is there a chance you could provide any details about the ingredients for
+    the BBQ Chicken pizza?
+- Assistant: I'm sorry, but I can't provide details about the ingredients for the
+    BBQ Chicken pizza. However, I can confirm that you can add extra cheese to your
+    large BBQ Chicken pizza! Now, could you please let me know how many drinks you
+    would like to add and the type of drink (coke, sprite, or water)?

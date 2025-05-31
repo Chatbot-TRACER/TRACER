@@ -1,0 +1,134 @@
+serial: 2025-05-31-12-54-46
+language: English
+context:
+- You are planning a casual pizza night with friends and want to explore options from
+  a local pizza shop you haven't tried before.
+- Before placing an order, you want to gather some general information about their
+  menu, services, and pricing.
+ask_about:
+- Ask what types of questions the chatbot can answer.
+- Ask what the daily opening hours are.
+- Ask about the estimated order time, without specifying the number of pizzas.
+- Ask what drink options are available and their prices.
+- Ask about the pricing for a custom pizza.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- available_information: I can answer questions about the types of pizza we serve,
+    their prices, the prices of beverages, how to get the order, and how much time
+    it takes to get an order.
+- opening_hours: null
+- estimated_order_time: It depends on the number of pizzas of the order, typically
+    around 15 minutes per pizza, but depends on how busy we are.
+- drink_options_and_prices: Sprite and Coke are 1.50$. Water is 1$.
+- custom_pizza_pricing: Margarita pizzas are 10$ for small, 15$ for medium and 20$
+    for big. The other predefined pizzas, except for carbonara are 2$ more for each
+    size. Carbonara is 2.5$ more for each size. Custom pizzas with up to three ingredients
+    are the same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+errors:
+- 1001: 1 goals left to complete.
+---
+conversation time: 184.993662
+assistant response time:
+- 1.005418
+- 0.915714
+- 1.643489
+- 1.369017
+- 2.382104
+- 2.455435
+- 3.211011
+- 1.052086
+- 1.160109
+- 2.398787
+- 0.746936
+- 1.540031
+- 1.173724
+- 2.867215
+- 3.297157
+- 4.407842
+- 2.203704
+- 3.236174
+- 5.486275
+- 3.397029
+- 3.517992
+response time report:
+  average: 2.355583
+  max: 5.486275
+  min: 0.746936
+---
+interaction:
+- User: What types of questions can you answer?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me what the daily opening hours are?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What are the daily opening hours for the pizza shop?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What is the estimated order time for a pizza?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: What drink options do you have available, and what are their prices?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: What is the pricing for a custom pizza?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What types of toppings do you recommend for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you suggest for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings would you recommend for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What are the most popular toppings that customers usually choose for their
+    pizzas?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What are the most popular toppings that customers typically select for their
+    pizzas?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What are the most common toppings that customers like to put on their pizzas?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What are the most popular pizzas on your menu?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: 'User: Can you tell me more about the Marinera pizza? What toppings does it
+    have?'
+- Assistant: I do not know. I can answer questions about the types of pizza we serve,
+    their prices, the prices of beverages, how to get the order, and how much time
+    it takes to get an order.
+- User: What are the ingredients in the Marinera pizza?
+- Assistant: I do not know. I can answer questions about the types of pizza we serve,
+    their prices, the prices of beverages, how to get the order, and how much time
+    it takes to get an order.
+- User: What are the ingredients in the Four Cheese pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What are the ingredients in the Vegetarian pizza?
+- Assistant: I do not know. I can answer questions about the types of pizza we serve,
+    their prices, the prices of beverages, how to get the order, and how much time
+    it takes to get an order.
+- User: What are the ingredients in the Hawaiian pizza?
+- Assistant: I do not know. I can answer questions about the types of pizza we serve,
+    their prices, the prices of beverages, how to get the order, and how long it takes
+    to get an order.
+- User: What are the ingredients in the Carbonara pizza?
+- Assistant: I do not know. I can answer questions about the types of pizza we serve,
+    their prices, the prices of beverages, how to get the order, and how much time
+    it takes to get an order.
+- User: What are the ingredients in the Margarita pizza?
+- Assistant: I do not know. I can answer questions about the types of pizza we serve,
+    their prices, the prices of beverages, how to get the order, and how much time
+    it takes to get an order.

@@ -1,0 +1,146 @@
+serial: 2025-05-31-12-54-46
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Vegetarian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: Your order for a large Vegetarian pizza with extra olives
+    is confirmed!
+errors: []
+---
+conversation time: 112.12714
+assistant response time:
+- 0.963319
+- 0.820713
+- 1.708896
+- 3.650213
+- 7.209975
+- 5.094174
+- 0.64415
+- 3.939942
+- 1.782109
+- 2.773484
+- 4.33788
+- 0.837671
+- 4.194671
+- 1.944816
+- 1.700536
+- 1.798756
+- 1.704259
+response time report:
+  average: 2.653268
+  max: 7.209975
+  min: 0.64415
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Vegetarian pizza. Can I get that with extra olives?
+- Assistant: It looks like I still need the pizza size and pizza type to complete
+    your order. Could you please provide that information? The pizza size can be small,
+    medium, or large, and the pizza type can be margarita, carbonara, marinera, hawaiian,
+    four cheese, or vegetarian. Thank you!
+- User: I want a large Vegetarian pizza with extra olives, please. Can you confirm
+    that?
+- Assistant: 'Thanks for ordering a large vegetarian pizza!
+
+    Your order for a large Vegetarian pizza with extra olives is confirmed! Now, could
+    you please let me know how many drinks you would like to order and what type of
+    drinks? You can choose from coke, sprite, or water. Thank you!'
+- User: I’d like to order two drinks. Can I get one Coke and one Sprite, please?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large vegetarian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is fad04d.'
+- User: Wait, I said one Coke and one Sprite, not two Cokes! Can you fix that?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I wanted to order one Coke and one Sprite, not two Cokes. Can you correct
+    that for me?
+- Assistant: It looks like I still need some information to complete your order. Could
+    you please provide the pizza size (small, medium, or large) and the toppings (cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken)? Thank you!
+- User: I said I wanted one Coke and one Sprite. Can you just fix that for me?
+- Assistant: I understand you want a Coke and a Sprite, but I still need the pizza
+    size (small, medium, or large) and the toppings (cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, corn, chicken) to complete your order. Could you please
+    provide that information? Thank you!
+- User: I already mentioned earlier that I wanted a large Vegetarian pizza with extra
+    olives and one Coke and one Sprite. Can you just confirm that?
+- Assistant: 'Thanks for ordering a large pizza with o, l, i, v, e and s!
+
+    Thank you for your patience! I see that you want a large Vegetarian pizza with
+    extra olives, and you mentioned wanting one Coke and one Sprite. Just to confirm,
+    could you please tell me how many drinks you would like to order in total? It
+    seems I need the number of drinks as an integer. Thank you!'
+- User: 'I already said I wanted two drinks: one Coke and one Sprite. Can you just
+    confirm my order now?'
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large pizza topped with olives and two Cokes is $24.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 391043.'
+- User: I just want to clarify that I ordered one Coke and one Sprite, not two Cokes.
+    Can you fix that?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I want to make sure I get my drinks right. Can you change my order to one
+    Coke and one Sprite instead of two Cokes?
+- Assistant: 'Thank you for your patience! I still need to know the pizza size (small,
+    medium, or large) and the specific toppings (cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, chicken) for your order. Could you please provide that
+    information? '
+- User: I just want to change my drinks to one Coke and one Sprite. Can you confirm
+    that?
+- Assistant: I understand that you want to change your drinks to one Coke and one
+    Sprite, but I still need to confirm the pizza size (small, medium, or large) and
+    the specific toppings (cheese, mushrooms, pepper, ham, bacon, pepperoni, olives,
+    corn, chicken) for your order. Could you please provide that information? Thank
+    you!
+- User: 'I just want to confirm the drinks: can you update my order to one Coke and
+    one Sprite?'
+- Assistant: I understand that you want to confirm your drinks as one Coke and one
+    Sprite. However, I still need the pizza size (small, medium, or large) and the
+    specific toppings (cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn,
+    chicken) to complete your pizza order. Could you please provide that information?
+    Thank you!
+- User: 'I just want to confirm the drinks: can you update my order to one Coke and
+    one Sprite?'
+- Assistant: I understand that you want to confirm your drinks as one Coke and one
+    Sprite. However, I still need the pizza size (small, medium, or large) and the
+    specific toppings (cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn,
+    chicken) to complete your pizza order. Could you please provide that information?
+    Thank you!
+- User: I just want to clarify again that I need one Coke and one Sprite. Can you
+    update my order with those drinks?
+- Assistant: I understand that you want to confirm your drinks as one Coke and one
+    Sprite. However, I still need the pizza size (small, medium, or large) and the
+    specific toppings (cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn,
+    chicken) to complete your pizza order. Could you please provide that information?
+    Thank you!

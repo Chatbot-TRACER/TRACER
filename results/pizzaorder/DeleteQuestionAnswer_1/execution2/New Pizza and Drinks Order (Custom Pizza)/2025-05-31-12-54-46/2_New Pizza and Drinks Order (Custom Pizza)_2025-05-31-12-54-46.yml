@@ -1,0 +1,116 @@
+serial: 2025-05-31-12-54-46
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - chicken
+- topping2:
+  - chicken
+- topping3:
+  - chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: chicken, chicken,
+    chicken'
+errors: []
+---
+conversation time: 136.260766
+assistant response time:
+- 2.569971
+- 1.678095
+- 2.485725
+- 2.999389
+- 2.719386
+- 3.984831
+- 18.41122
+- 2.140398
+- 2.079841
+- 0.610107
+- 2.025817
+- 2.540894
+- 1.673682
+- 2.020509
+- 2.353113
+- 1.52875
+response time report:
+  average: 3.238858
+  max: 18.41122
+  min: 0.610107
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I order a small pizza with chicken, chicken, and chicken?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could I place an order for a small pizza topped with chicken, chicken, and
+    more chicken?
+- Assistant: It looks like I have the toppings you want, which are chicken. However,
+    I still need to confirm the pizza size. Could you please let me know if you would
+    like a small, medium, or large pizza?
+- User: I would like to confirm my order for a small pizza with chicken, chicken,
+    and chicken.
+- Assistant: 'Thanks for ordering a small pizza with c, h, i, c, k, e and n!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks you prefer? You can
+    choose from coke, sprite, or water.'
+- User: I would like to order two cokes, please.
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a small pizza topped with chicken and two Cokes is $15.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 3731f9.'
+- User: Could you please tell me if I need to pick up my order or if you offer delivery?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Could you please confirm what time I should arrive to pick up my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Could you please remind me how long it will take for my order to be ready?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please confirm the exact time I should come to pick up my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me exactly when I should come to pick up my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Could you please tell me how long my order will take from now?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please tell me if there's a specific time I should come to pick
+    up my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Could you please just confirm if my order will be ready in 15 minutes from
+    now?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please tell me if I need to arrive exactly 15 minutes from now to
+    pick up my order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Could you please clarify if my order will be ready in 15 minutes from when
+    I placed it?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.

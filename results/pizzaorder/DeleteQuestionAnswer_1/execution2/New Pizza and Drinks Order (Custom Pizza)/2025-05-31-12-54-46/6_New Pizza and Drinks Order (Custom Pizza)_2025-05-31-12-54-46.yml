@@ -1,0 +1,121 @@
+serial: 2025-05-31-12-54-46
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - olives
+- topping2:
+  - olives
+- topping3:
+  - olives
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: olives, olives, olives'
+errors: []
+---
+conversation time: 102.809765
+assistant response time:
+- 1.896829
+- 1.686102
+- 4.216958
+- 3.391256
+- 3.689477
+- 0.840678
+- 0.824195
+- 0.696936
+- 0.89691
+- 0.909121
+- 0.686288
+- 0.696514
+- 1.67321
+- 1.100738
+- 2.907625
+- 1.554194
+response time report:
+  average: 1.729189
+  max: 4.216958
+  min: 0.686288
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like to order a small pizza, please. Can I add olives, olives, and more
+    olives on it?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?
+- User: I want to confirm my order for a small pizza with olives, olives, and olives.
+- Assistant: 'Thanks for ordering a small pizza with o, l, i, v, e and s!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks you prefer? You can
+    choose from coke, sprite, or water.'
+- User: I’d like to order two drinks, please. Can I get one coke and one sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a small pizza topped with olives and two Cokes is $14.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is e47aae.'
+- User: Could you please confirm if you wanted one Coke and one Sprite, or if you
+    wanted two different types of drinks?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I’d like to confirm my drink order. Did I ask for one Coke and one Sprite,
+    or did I mistakenly order two Cokes?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I’d like to confirm if my drink order is still one Coke and one Sprite, or
+    did I accidentally order two Cokes instead?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I’d like to confirm my drink order again. Can I check if I ordered one Coke
+    and one Sprite?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I’d like to clarify my drink order. Did I place an order for one Coke and
+    one Sprite?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I just want to make sure about my drink order. Did I order one Coke and one
+    Sprite?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I just want to verify my order details. Can you tell me if my pizza is ready
+    for pickup?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I’d like to check if my pizza is ready for pickup. Can you confirm that for
+    me?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is my order for a small pizza with olives, olives, and olives confirmed?
+- Assistant: "Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order\
+    \ pizzas and drinks. \nWhat can I do for you?"
+- User: I’d like to confirm my order for a small pizza with olives, olives, and olives.
+    Is that all set?
+- Assistant: I do not know. I can answer questions about the types of pizza we serve,
+    their prices, the prices of beverages, how to get the order, and how long it takes
+    to get an order.
+- User: I understand. Can you please tell me how long it will take for my order to
+    be ready?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.

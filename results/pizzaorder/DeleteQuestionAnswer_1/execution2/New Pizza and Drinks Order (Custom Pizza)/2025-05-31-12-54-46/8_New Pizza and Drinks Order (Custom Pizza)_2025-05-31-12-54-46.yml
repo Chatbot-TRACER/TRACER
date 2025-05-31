@@ -1,0 +1,114 @@
+serial: 2025-05-31-12-54-46
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - pepperoni
+- topping2:
+  - pepperoni
+- topping3:
+  - pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepperoni, mushrooms,
+    olives'
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 110.046207
+assistant response time:
+- 1.880773
+- 2.030764
+- 2.73807
+- 2.285129
+- 1.086508
+- 0.905366
+- 0.844526
+- 11.23254
+- 3.077999
+- 3.409575
+- 5.305694
+- 3.549299
+- 20.029085
+response time report:
+  average: 4.490409
+  max: 20.029085
+  min: 0.844526
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to order a large custom pizza. Could you tell me what toppings are
+    available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Could you please list the toppings I can choose for my custom pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings would you recommend for a large custom pizza that would please
+    a group of friends?
+- Assistant: For a large custom pizza that would please a group of friends, I recommend
+    a combination of popular toppings such as pepperoni, mushrooms, bell peppers,
+    onions, and olives. You could also consider adding some extra cheese or a spicy
+    sausage for more flavor. Would you like to proceed with any specific toppings?
+- User: I'm thinking about adding pepperoni to my pizza, but what do you think about
+    including mushrooms as well? Would that be a good combo?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I'd like to add pepperoni and mushrooms to my pizza. Would you recommend any
+    other toppings that go well with those?
+- Assistant: Adding pepperoni and mushrooms is a great choice! You might also consider
+    adding olives or bell peppers for some extra flavor. They complement the pepperoni
+    and mushrooms nicely. Would you like to add any of these toppings to your pizza?
+- User: Yes, I'd like to add olives to my pizza along with the pepperoni and mushrooms.
+    Can you confirm my order so far?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you please confirm my order so far? I would like a large pizza with
+    pepperoni, mushrooms, and olives.
+- Assistant: It looks like I have the pizza size as large, but I need to confirm the
+    toppings. You mentioned pepperoni and mushrooms, but olives are not on the list
+    of accepted toppings. Could you please confirm your toppings again? The available
+    options are cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, and
+    chicken. Thank you!
+- User: I would like to confirm my order for a large pizza with pepperoni, mushrooms,
+    and olives.
+- Assistant: Thank you for confirming the pizza size as large. However, I still need
+    to confirm your toppings. You mentioned pepperoni and mushrooms, and olives are
+    on the list. Could you please confirm your toppings again? The available options
+    are cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, and chicken.
+    Thank you!
+- User: I would like to confirm my order for a large pizza with pepperoni, mushrooms,
+    and olives.
+- Assistant: Thank you for your patience! I have confirmed the pizza size as large.
+    However, I still need you to confirm your toppings. You mentioned pepperoni and
+    mushrooms, and olives are on the list. Could you please confirm your toppings
+    again? The available options are cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, and chicken. Thank you!
+- User: I would like to confirm my order for a large pizza with pepperoni, mushrooms,
+    and olives. Can you provide the total price for this order?
+- Assistant: Thank you for your order! I have confirmed the pizza size as large, but
+    I still need to know your toppings. You mentioned pepperoni and mushrooms, and
+    olives are on the list. Could you please confirm your toppings again? The available
+    options are cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, and
+    chicken. Thank you!
+- User: I would like to confirm my order for a large pizza with pepperoni, mushrooms,
+    and olives. Could you tell me the total price for this order?

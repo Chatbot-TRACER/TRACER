@@ -1,0 +1,132 @@
+serial: 2025-05-31-12-54-46
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - ham
+- topping2:
+  - ham
+- topping3:
+  - ham
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: ham, ham, ham'
+errors: []
+---
+conversation time: 102.687413
+assistant response time:
+- 1.63353
+- 1.472793
+- 1.639642
+- 0.822465
+- 4.703686
+- 2.837818
+- 4.588926
+- 2.676782
+- 2.59863
+- 2.514893
+- 2.444316
+- 1.758287
+- 1.597657
+- 3.562113
+- 0.67097
+- 0.669969
+response time report:
+  average: 2.262029
+  max: 4.703686
+  min: 0.669969
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. What toppings do you recommend for a crowd-pleaser?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I want to create a custom pizza. What toppings would you suggest that everyone
+    would enjoy?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I want a large pizza with ham, ham, and ham. Can you confirm my order?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?
+- User: I want to confirm my order for a large pizza with ham, ham, and ham. Can you
+    process that for me?
+- Assistant: 'Thanks for ordering a large pizza with h, a and m!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks you prefer (coke,
+    sprite, or water)?'
+- User: I would like to order three drinks, please. Can I get two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza with h, a, and m, along with 3 Cokes, is $24.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is e23265.'
+- User: Could you please confirm the total cost of my order, including the drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please break down the cost of my large custom pizza with ham, ham,
+    and ham, along with the two Cokes and one Sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the base price for a large custom pizza with three
+    ingredients?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you let me know how much a large custom pizza with three ingredients
+    costs?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the total cost for my large custom pizza with ham,
+    ham, and ham, considering it's three ingredients?
+- Assistant: Custom pizzas with up to three ingredients are the same prices as predefined
+    ones. A large custom pizza costs 20$.
+- User: If a large custom pizza with three ingredients costs $20, could you please
+    confirm the total cost including the two Cokes and one Sprite?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: So, if I have a large custom pizza for $20, and the two Cokes and one Sprite
+    would be $1.50 each, can you give me the total cost for the drinks as well?
+- Assistant: The total cost for the drinks would be $1.50 each for two Cokes and one
+    Sprite. So, the total for the drinks is $1.50 * 2 + $1.50 * 1 = $4.50. Therefore,
+    the total cost for your order, including the large custom pizza for $20 and the
+    drinks, would be $20 + $4.50 = $24.50.
+- User: Could you please let me know if I can add anything else to my order, like
+    an appetizer or dessert?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me if there are any appetizers or desserts available to add to
+    my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

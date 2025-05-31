@@ -1,0 +1,135 @@
+serial: 2025-05-31-12-54-46
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - anchovies
+- topping2:
+  - pineapple
+- topping3:
+  - Pineapple
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: medium
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: ham, mushrooms,
+    olives'
+errors: []
+---
+conversation time: 117.348123
+assistant response time:
+- 1.497738
+- 2.276361
+- 4.868568
+- 2.171186
+- 2.714908
+- 4.618649
+- 1.84288
+- 0.754811
+- 0.677762
+- 0.607932
+- 2.897523
+- 2.825017
+- 6.246079
+- 2.305011
+- 0.72642
+- 1.899241
+response time report:
+  average: 2.43313
+  max: 6.246079
+  min: 0.607932
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want a medium pizza with anchovies, pineapple, and pineapple. Can you confirm
+    my order?
+- Assistant: 'It looks like the toppings you provided include "anchovies" and "pineapple,"
+    which are not on our list. Please choose from the following toppings: cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Additionally,
+    I see that the pizza size is already provided as "medium." Please confirm the
+    toppings you''d like to have.'
+- User: Could you please clarify if I can still include anchovies with the other toppings
+    you mentioned?
+- Assistant: 'Unfortunately, anchovies are not on our list of available toppings.
+    Please choose from the following toppings: cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken. You already have "medium" as the pizza size.
+    Please confirm the toppings you''d like to have.'
+- User: Could I order a medium pizza with ham, mushrooms, and olives instead?
+- Assistant: 'Thanks for ordering a medium pizza with ham, mushrooms and olives!
+
+    Thank you for your order of a medium pizza with ham, mushrooms, and olives! Now,
+    could you please let me know how many drinks you would like to order and the type
+    of drinks (coke, sprite, or water)?'
+- User: I’d like to order three drinks, please. Can I get two cokes and one sprite?
+- Assistant: 'I have received your order for three Cokes.
+
+    The cost for a medium pizza topped with ham, mushrooms, and olives, along with
+    three Cokes, is $19.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 026b59.'
+- User: Could you please confirm if I can pay with cash when I pick up the order?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Can you let me know if there are any special instructions or requests I should
+    include with my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me if there are any special instructions or requests I should
+    add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if there are any specific instructions or requests
+    I should include with my pizza order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if there's a way to request extra cheese on my pizza?
+- Assistant: I do not know. I can answer questions about the types of pizza we serve,
+    their prices, the prices of beverages, how to get the order, and how much time
+    it takes to get an order.
+- User: Could you please let me know the total cost for adding extra cheese to my
+    medium pizza with ham, mushrooms, and olives?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you tell me how much extra cheese would cost if I wanted to add it to
+    my medium pizza with ham, mushrooms, and olives?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please clarify if adding extra cheese would count as an additional
+    ingredient and how much that would add to my order?
+- Assistant: I do not know. I can answer questions about the types of pizza we serve,
+    their prices, the prices of beverages, how to get the order, and how much time
+    it takes to get an order.
+- User: Could you please let me know if there's a way to request my pizza to be cut
+    into slices?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if my pizza can be cut into slices when I pick it
+    up?
+- Assistant: I do not know. I can answer questions about the types of pizza we serve,
+    their prices, the prices of beverages, how to get the order, and how long it takes
+    to get an order.

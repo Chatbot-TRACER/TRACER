@@ -1,0 +1,121 @@
+serial: 2025-05-31-12-54-46
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: I don't have information about the prices for the drinks.
+errors: []
+---
+conversation time: 101.24627
+assistant response time:
+- 1.000912
+- 1.207059
+- 1.473616
+- 0.961399
+- 3.641564
+- 2.468465
+- 2.856095
+- 1.63698
+- 1.637559
+- 1.87073
+- 1.535485
+- 1.764515
+- 1.525002
+- 1.586731
+- 1.638406
+- 1.711856
+- 1.649462
+response time report:
+  average: 1.77446
+  max: 3.641564
+  min: 0.961399
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Hawaiian pizza, but I think you might have misunderstood me. Did
+    you get that right?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: I want to order a Hawaiian pizza, did you catch that correctly this time?
+- Assistant: It looks like I have the pizza type, which is Hawaiian, but I still need
+    to know the pizza size. Could you please let me know if you would like a small,
+    medium, or large pizza?
+- User: I want a large Hawaiian pizza. Did you get that?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    I have noted that you want a large Hawaiian pizza. Now, could you please let me
+    know how many drinks you would like to order and what type of drinks you prefer?
+    You can choose from coke, sprite, or water.'
+- User: I want to order a drink, but I'm having trouble with the microphone. Can you
+    just tell me what drinks you have again?
+- Assistant: 'We have three types of drinks available: coke, sprite, and water. Please
+    let me know how many drinks you would like to order and which type you prefer.'
+- User: I want to order a drink, but I need to confirm—did you say you have Coke,
+    Sprite, and water?
+- Assistant: Yes, we have coke, sprite, and water available. How many drinks would
+    you like to order and which type do you prefer?
+- User: I want to order a drink, but can you remind me if the drinks come in different
+    sizes?
+- Assistant: The drinks we offer at Fast Pizza come in standard sizes, but they are
+    not available in different sizes like pizzas. You can choose from coke, sprite,
+    or water. How many drinks would you like to order and which type do you prefer?
+- User: I want to confirm, so the drinks only come in one standard size, right?
+- Assistant: Yes, the drinks come in one standard size. Now, could you please let
+    me know how many drinks you would like to order and what type of drink you prefer?
+    You can choose from coke, sprite, or water.
+- User: I want to order a drink, but can you tell me again how many drinks I can order?
+- Assistant: 'You can order as many drinks as you like! Just let me know how many
+    drinks you would like and which type you prefer: coke, sprite, or water.'
+- User: I want to order a drink, but can you remind me what types of drinks you have?
+- Assistant: 'We have three types of drinks available: coke, sprite, and water. Please
+    let me know how many drinks you would like to order and which type you prefer!'
+- User: I want to order a drink, but can you confirm if I can choose just one type
+    or mix them?
+- Assistant: 'You can only choose one type of drink for your order. Please let me
+    know how many drinks you would like and which type you prefer: coke, sprite, or
+    water.'
+- User: I want to order a drink, but can you clarify if I can order more than one
+    of the same type?
+- Assistant: 'Yes, you can order more than one of the same type of drink. Please let
+    me know how many drinks you would like and which type you prefer: coke, sprite,
+    or water.'
+- User: I want to order a drink, but can you tell me if there are any special offers
+    on drinks today?
+- Assistant: 'I don''t have information about special offers on drinks today. However,
+    I can help you with your drink order. Please let me know how many drinks you would
+    like and which type you prefer: coke, sprite, or water.'
+- User: I want to order a drink, but can you tell me if there are any deals for ordering
+    multiple drinks?
+- Assistant: 'Currently, I don''t have information about any special offers or deals
+    for ordering multiple drinks. However, you can order as many drinks as you like,
+    just let me know how many and which type you prefer: coke, sprite, or water.'
+- User: I want to order a drink, but can you remind me what the prices are for the
+    drinks?
+- Assistant: 'I currently don''t have information about the prices for the drinks.
+    However, you can order as many drinks as you like. Please let me know how many
+    drinks you would like and which type you prefer: coke, sprite, or water.'
