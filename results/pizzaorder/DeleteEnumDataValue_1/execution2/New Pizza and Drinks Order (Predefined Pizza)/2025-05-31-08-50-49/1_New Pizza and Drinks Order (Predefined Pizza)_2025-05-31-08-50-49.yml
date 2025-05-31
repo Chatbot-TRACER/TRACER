@@ -1,0 +1,111 @@
+serial: 2025-05-31-08-50-49
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: "Order Summary: \n- Pizza: Large Hawaiian \n- Drinks: 2 Cokes \n\
+    - Total Cost: $25.00 \n- Estimated Readiness Time: 15 minutes \n- Pickup Location:\
+    \ 23 Main Street, NY \n- Order ID: 22f92d"
+- delivery_information: We do not do delivery, but customers need to get the shop
+    for their orders. We are located at 23 Main Street, New York.
+errors: []
+---
+conversation time: 132.373148
+assistant response time:
+- 7.191426
+- 3.341749
+- 6.225384
+- 2.551997
+- 1.927701
+- 1.773399
+- 5.005619
+- 2.400322
+- 1.708054
+- 0.869736
+- 0.779598
+- 0.977009
+- 0.873975
+- 0.829336
+- 0.720375
+- 0.76469
+response time report:
+  average: 2.371273
+  max: 7.191426
+  min: 0.720375
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. What is the total
+    cost?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for your order! I see that you would like two Cokes, but I need to confirm
+    the number of drinks and the type of drinks. Could you please specify how many
+    drinks you would like and ensure the drink type is either coke, sprite, or water?
+    Thank you!'
+- User: I would like two Cokes, please. What is the total cost for the pizza and drinks?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 22f92d.'
+- User: Can you confirm if delivery is available for future orders?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a way to customize my pizza if I decide to place another order in
+    the future?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: If I choose the Custom pizza option, what ingredients do you offer for customization?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What specific ingredients can I choose for the Custom pizza option?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.
+- User: Could you please provide the opening hours for your shop?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What types of beverages do you offer besides Coke?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Are there any other food items or snacks available for purchase at your shop?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please let me know if there are any appetizers or sides available
+    for purchase?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me if there are any desserts available for purchase at your
+    shop?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: 'User: Can you tell me about any special promotions or discounts currently
+    available?'
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a way to sign up for a loyalty program or receive updates on future
+    promotions?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if there are any special promotions or discounts
+    available right now?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you provide information on whether you have any special promotions or
+    discounts available currently?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

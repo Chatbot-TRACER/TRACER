@@ -1,0 +1,120 @@
+serial: 2025-05-31-08-50-49
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - olives
+- topping2:
+  - olives
+- topping3:
+  - olives
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: olives, olives, olives'
+errors: []
+---
+conversation time: 104.407145
+assistant response time:
+- 2.060502
+- 2.054411
+- 2.156594
+- 3.056378
+- 3.569652
+- 8.896687
+- 1.152798
+- 1.54002
+- 0.828209
+- 0.941381
+- 1.161088
+- 0.983729
+- 0.907616
+- 1.039914
+- 0.849818
+- 0.914259
+response time report:
+  average: 2.007066
+  max: 8.896687
+  min: 0.828209
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like to order a small custom pizza. Can I have olives, olives, and olives
+    on it?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want a small pizza topped with olives, olives, and olives. Can you confirm
+    my order?
+- Assistant: I see that you've chosen olives as your topping, but I still need to
+    know the size of your pizza. Could you please confirm if you want a small, medium,
+    or large pizza?
+- User: I want a small pizza with just olives on it. Can you confirm that for me?
+- Assistant: 'Thanks for ordering a small pizza with o, l, i, v, e and s!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks you prefer? You can
+    choose from coke, sprite, or water.'
+- User: I’d like to order two drinks, please. Can I get one coke and one sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a small pizza topped with olives and two Cokes is $14.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 2b7831.'
+- User: Could you please double-check that my order is for a small pizza with just
+    olives, and I wanted one Coke and one Sprite?
+- Assistant: Your order is for a small custom pizza with just olives, one Coke, and
+    one Sprite. Is that correct?
+- User: Yes, that's correct! Could you please tell me if you need anything else for
+    your pizza night? Maybe some sides or desserts?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me if there are any side dishes or desserts that you recommend
+    for my pizza night?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: 'User: Are there any side dishes or desserts available that might go well
+    with my pizza order?'
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you let me know if there are any appetizers or sides that pair well
+    with pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Are there any appetizers or sides that you recommend to go with my pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me about any appetizers or sides that would be a good match
+    for my pizza order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you confirm if you have any garlic bread or salads as sides to go with
+    my pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please let me know if you have garlic bread or salads available
+    as sides for my pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me if you offer garlic bread or salads as side options with
+    my pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

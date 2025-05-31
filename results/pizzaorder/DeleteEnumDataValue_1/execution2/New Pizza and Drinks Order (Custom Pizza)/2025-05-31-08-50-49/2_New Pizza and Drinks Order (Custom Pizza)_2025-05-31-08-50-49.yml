@@ -1,0 +1,121 @@
+serial: 2025-05-31-08-50-49
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - chicken
+- topping2:
+  - chicken
+- topping3:
+  - chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: null
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: chicken, chicken,
+    chicken'
+errors:
+- 1001: 1 goals left to complete.
+---
+conversation time: 129.103278
+assistant response time:
+- 2.348531
+- 8.738413
+- 2.666171
+- 10.162645
+- 3.102459
+- 4.483777
+- 2.376885
+- 1.692778
+- 0.861241
+- 0.960166
+- 1.409065
+- 13.815859
+- 0.963948
+- 0.849384
+- 0.863236
+- 0.85282
+response time report:
+  average: 3.509211
+  max: 13.815859
+  min: 0.849384
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want a small pizza with chicken, chicken, and chicken. Can you confirm that
+    order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to confirm my order for a small pizza with chicken, chicken, and
+    chicken.
+- Assistant: 'It looks like I still need to confirm the pizza size for your order.
+    Could you please confirm that you would like a small pizza? '
+- User: Yes, I would like to confirm that I want a small pizza. Now, can you tell
+    me what drinks are available for my order?
+- Assistant: 'Thanks for ordering a small pizza with c, h, i, c, k, e and n!
+
+    I still need to know how many drinks you would like to order and what type of
+    drinks you prefer. Could you please provide the number of drinks and choose from
+    the following options: coke, sprite, or water?'
+- User: I'd like to order two drinks, please. Can I have one coke and one sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a small pizza topped with chicken and two Cokes is $15.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 79439d.'
+- User: Could you please confirm if I need to pick up the order or if there’s a delivery
+    option available?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there anything else you'd like to add to your order, such as extra toppings
+    or a dessert?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: 'User: Can you help me with adding something extra to my order, like a dessert
+    or another topping?'
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I'd like to know if I can add a dessert to my order. What options do you have?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I'd really like to add a dessert to my order. Do you have any options like
+    brownies or cookies?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is it possible for me to select a dessert option, such as brownies or cookies,
+    to add to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you let me know what dessert options you have, like brownies or cookies?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a way for me to choose a dessert, like ice cream or a slice of cake,
+    to go with my pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I'd really like to know if you have any dessert options available, like ice
+    cream or cake, that I can add to my order.
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me what dessert options are available, like ice cream
+    or cake?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

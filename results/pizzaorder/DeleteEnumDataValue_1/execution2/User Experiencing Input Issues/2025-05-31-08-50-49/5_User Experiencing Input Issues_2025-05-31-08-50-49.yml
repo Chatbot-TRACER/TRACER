@@ -1,0 +1,134 @@
+serial: 2025-05-31-08-50-49
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - BBQ Chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: I see that you've chosen chicken as a topping. Could you
+    please let me know the size of the pizza you would like? It can be small, medium,
+    or large.
+errors: []
+---
+conversation time: 154.809226
+assistant response time:
+- 0.921168
+- 1.507204
+- 2.119883
+- 2.397933
+- 1.957492
+- 2.357435
+- 10.344716
+- 1.502113
+- 1.744543
+- 3.372063
+- 4.119935
+- 3.288179
+- 2.970057
+- 3.209723
+- 2.580597
+- 3.141837
+- 0.89795
+response time report:
+  average: 2.848989
+  max: 10.344716
+  min: 0.89795
+---
+interaction:
+- User: Can you help me with ordering a pizza?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What types of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like a BBQ Chicken pizza, please. Can you confirm if that's on the menu?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I think the microphone is messing up again. Can you just tell me again if
+    BBQ Chicken is an option?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is BBQ Chicken pizza available, or do I need to create a custom pizza for
+    that?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there any way I can create a custom pizza that includes BBQ Chicken?
+- Assistant: I see that you've chosen chicken as a topping. Could you please let me
+    know the size of the pizza you would like? It can be small, medium, or large.
+- User: What sizes do you offer for the custom pizza?
+- Assistant: 'We offer three sizes for the custom pizza: small, medium, and large.
+    Please let me know which size you would like!'
+- User: Can I get a large custom pizza with BBQ Chicken and some other toppings? What
+    toppings do you recommend?
+- Assistant: 'You''ve already chosen chicken as a topping. For a large custom pizza,
+    I recommend adding some of the following toppings: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, or corn. Which additional toppings would you like
+    to include?'
+- User: Can I add mushrooms and pepperoni to my large custom pizza with BBQ Chicken?
+- Assistant: 'Thanks for ordering a large pizza with chicken, mushrooms and pepperoni!
+
+    Thank you for your order! Could you please let me know how many drinks you would
+    like to add to your order? Also, please specify the type of drink (coke, sprite,
+    or water) you would like.'
+- User: Can I just get one drink, please? Do you have Coke available?
+- Assistant: 'Got it! I''ve received your order for one Coke.
+
+    The cost of a large pizza topped with chicken, mushrooms, and pepperoni, along
+    with one Coke, is $21.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 283f56.'
+- User: Can you confirm if the total price includes tax, or is that just the base
+    price?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: So, just to clarify, is the total price of $21.50 including taxes, or is that
+    just the base price before any taxes are added?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Is there a way for me to know if the $21.50 includes tax, or do I need to
+    add tax on top of that?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Is there a specific tax rate I should know about to calculate if the $21.50
+    includes tax?
+- Assistant: I do not know. However, I can answer questions about our opening hours,
+    types and prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.
+- User: Could you at least give me a general idea of the tax rate for food in this
+    area?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Is there a way for me to check the tax rate for food in my area online?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

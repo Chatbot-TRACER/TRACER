@@ -1,0 +1,105 @@
+serial: 2025-05-31-08-50-49
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Vegetarian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that!
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: 'You can choose from the following toppings for your small
+    custom pizza: cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn,
+    or chicken.'
+errors: []
+---
+conversation time: 121.726077
+assistant response time:
+- 0.804961
+- 0.996277
+- 1.927601
+- 2.20298
+- 0.79673
+- 1.04789
+- 1.116656
+- 0.897885
+- 1.384603
+- 0.928667
+- 2.064078
+- 1.168248
+- 4.333642
+- 2.49833
+- 1.723796
+- 2.17271
+- 1.696497
+response time report:
+  average: 1.633032
+  max: 4.333642
+  min: 0.79673
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Vegetarian pizza, but can you tell me what toppings are on it?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are included on the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings come with the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are on the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What ingredients do you put on the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What ingredients are included in the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What exactly is on the Vegetarian pizza? Can you just give me a list of the
+    ingredients?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: 'What ingredients do you have on the Vegetarian pizza? '
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are included on the Vegetarian pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What about a custom pizza? Can you tell me what toppings I could choose?
+- Assistant: 'I can help you with that! However, I still need to know the size of
+    the pizza you''d like to order. Could you please tell me if you want a small,
+    medium, or large pizza? Additionally, please let me know your choice of toppings
+    from the following options: cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken.'
+- User: Can you just give me a list of the toppings available for a custom pizza?
+- Assistant: 'The available toppings for a custom pizza are: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, and chicken. However, I still need to know
+    the size of the pizza you''d like to order. Could you please tell me if you want
+    a small, medium, or large pizza?'
+- User: What sizes do you have for the pizza?
+- Assistant: 'We have three sizes available for the pizza: small, medium, and large.
+    Please let me know which size you''d like to order, along with your choice of
+    toppings from the following options: cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken.'
+- User: What size pizza do you recommend for a single person?
+- Assistant: 'For a single person, I would recommend a small pizza. It’s usually just
+    the right size for one person. Would you like to go with a small pizza? If so,
+    please let me know your choice of toppings from the following options: cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken.'
+- User: What toppings can I choose for a small custom pizza?
+- Assistant: 'You can choose from the following toppings for your small custom pizza:
+    cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Please
+    let me know which toppings you''d like to add!'

@@ -1,0 +1,124 @@
+serial: 2025-05-31-08-50-49
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - anchovies
+- topping2:
+  - pineapple
+- topping3:
+  - Pineapple
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: medium
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: cheese, mushrooms,
+    anchovies, pineapple'
+errors: []
+---
+conversation time: 98.29293
+assistant response time:
+- 2.639792
+- 2.858793
+- 2.512803
+- 0.882766
+- 1.192904
+- 4.33296
+- 1.511876
+- 3.378727
+- 3.520999
+- 4.113307
+- 3.16844
+- 3.350372
+- 1.007421
+- 0.859736
+- 0.820967
+- 1.660492
+response time report:
+  average: 2.363272
+  max: 4.33296
+  min: 0.820967
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. What toppings do you recommend?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings would you suggest for a custom pizza that would be a hit with
+    friends?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings do you think would be a good combination for a custom pizza
+    that everyone would enjoy?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want a medium pizza with anchovies, pineapple, and pineapple.
+- Assistant: 'It looks like the pizza size is already provided as medium, but the
+    toppings you mentioned include anchovies and pineapple, which are not on our list.
+    Please choose from the following toppings: cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken. '
+- User: I’d like to confirm my order for a medium pizza with anchovies, pineapple,
+    and pineapple. Can we go ahead with that?
+- Assistant: 'It seems you are trying to confirm an order with toppings that are not
+    available. Please choose from the following toppings: cheese, mushrooms, pepper,
+    ham, bacon, pepperoni, olives, corn, or chicken for your medium pizza.'
+- User: I appreciate your help. Can I get a medium pizza with cheese and mushrooms,
+    along with anchovies and pineapple?
+- Assistant: 'Thank you for your order! However, I still need you to confirm the toppings
+    for your medium pizza. Please choose from the following options: cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, or chicken. '
+- User: I’d like to confirm my order for a medium pizza with cheese, mushrooms, anchovies,
+    and pineapple. Can we go ahead with that?
+- Assistant: 'Thanks for ordering a medium pizza with c, h, e, e, s and e!
+
+    Thank you for your order! I just need a bit more information to complete it. How
+    many drinks would you like to order? And please specify the type of drink (coke,
+    sprite, or water).'
+- User: I’d like to order two drinks. Can I get one Coke and one Sprite, please?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a medium pizza topped with cheese and two Cokes is $19.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is bb84e9.'
+- User: Could you please confirm if the pizza is ready for pickup in 15 minutes, and
+    is the cost of $19.50 final, or are there any additional fees?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a chance there might be any taxes or additional fees added to the
+    total of $19.50?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Is there a specific tax rate I should expect to be applied to my total of
+    $19.50?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What is the tax rate that would apply to my total of $19.50?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a tax rate that would be applied to the total cost of my order, which
+    is $19.50?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you tell me if there are any promotions or discounts available for my
+    order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

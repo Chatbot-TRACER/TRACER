@@ -1,0 +1,123 @@
+serial: 2025-05-31-08-50-49
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - pepperoni
+- topping2:
+  - pepperoni
+- topping3:
+  - pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepperoni, pepperoni,
+    pepperoni'
+errors: []
+---
+conversation time: 123.609327
+assistant response time:
+- 1.915677
+- 2.37209
+- 4.345022
+- 2.876659
+- 12.3799
+- 6.247125
+- 2.530107
+- 2.071249
+- 2.575515
+- 2.679616
+- 2.337398
+- 1.142468
+- 1.397517
+- 0.907627
+- 0.831494
+- 0.986577
+response time report:
+  average: 2.974752
+  max: 12.3799
+  min: 0.831494
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to order a large custom pizza with pepperoni, pepperoni, and pepperoni.
+    Can you confirm that for me?
+- Assistant: It looks like I still need the pizza size. Could you please let me know
+    if you would like a small, medium, or large pizza?
+- User: I want to confirm my order for a large pizza with pepperoni, pepperoni, and
+    pepperoni. Is that all set?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e, r, o, n and i!
+
+    I still need some information to complete your order. Could you please let me
+    know how many drinks you would like to order (num_drinks) and what type of drinks
+    you prefer (coke, sprite, or water)?'
+- User: I'd like to order three drinks, please. Can I get two Cokes and one Sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost of a large pizza topped with pepperoni and three Cokes is $27.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 57cfe7.'
+- User: Thank you for that. Can you tell me if there are any special deals or promotions
+    available for my order today?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: That's good to know! Are there any discounts for ordering multiple pizzas
+    or drinks?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me what the opening hours are for the pizza place?
+- Assistant: Every day from 1pm to 11:30pm
+- User: 'User: Thank you for the information! Can you remind me again what time I
+    should pick up my order?'
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: 'User: Thank you for clarifying that! Can you also remind me if I can modify
+    my order after placing it?'
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you tell me how long it usually takes to prepare a custom pizza?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Thank you for the information! If I wanted to add a dessert to my order, do
+    you have any options available?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you let me know if there are any dessert options available?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me if there are any sides or appetizers available to order along
+    with my pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if you offer any garlic bread or salads as sides?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if there are any special sides like garlic bread
+    or salads that I can order with my pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

@@ -1,0 +1,127 @@
+serial: 2025-05-31-08-50-49
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Margherita
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients).
+- custom_pizza_response: Yes, you can definitely add extra basil and olives to your
+    Margherita pizza!
+errors: []
+---
+conversation time: 118.102941
+assistant response time:
+- 1.686196
+- 1.034101
+- 2.227031
+- 4.727816
+- 2.907699
+- 1.520038
+- 2.189566
+- 1.6258
+- 1.77769
+- 2.958306
+- 2.078285
+- 2.417381
+- 1.868814
+- 2.198904
+- 2.030433
+- 1.698003
+- 1.333432
+response time report:
+  average: 2.134087
+  max: 4.727816
+  min: 1.034101
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Margherita pizza, please. Can you confirm that?
+- Assistant: It looks like I have the pizza type as "Margherita," but I still need
+    to know the pizza size. Could you please let me know if you would like a small,
+    medium, or large pizza?
+- User: I want a large Margherita pizza. Can you confirm that?
+- Assistant: 'Thanks for ordering a large margarita pizza!
+
+    I have your large Margherita pizza confirmed! Now, could you please let me know
+    how many drinks you would like to order and what type of drinks (coke, sprite,
+    or water)?'
+- User: I want to order just the pizza for now, can you confirm my large Margherita
+    pizza again?
+- Assistant: Your large Margherita pizza is confirmed! If you decide to order drinks
+    later, just let me know. Enjoy your pizza!
+- User: Can you tell me the total price for my large Margherita pizza?
+- Assistant: 'I can’t provide the total price for your large Margherita pizza as I
+    don''t have the pricing information. However, I can confirm your order: you have
+    a large Margherita pizza. If you need anything else or want to add drinks later,
+    just let me know!'
+- User: Can you at least give me an estimate for how much a large Margherita pizza
+    might cost?
+- Assistant: The price for a large Margherita pizza typically ranges around $12 to
+    $15, depending on the location and any ongoing promotions. If you have any other
+    questions or need to place an order, feel free to ask!
+- User: What size is the large Margherita pizza, by the way?
+- Assistant: A large Margherita pizza typically has a diameter of about 14 inches.
+    If you have any other questions or if you'd like to order drinks, just let me
+    know!
+- User: Is there a way to customize my large Margherita pizza with extra toppings?
+- Assistant: Currently, I can only confirm your large Margherita pizza order. Unfortunately,
+    I don't have information on customizing pizzas with extra toppings. If you would
+    like to proceed with your order or have any other questions, feel free to ask!
+- User: Can you tell me what toppings are included on a standard Margherita pizza?
+- Assistant: A standard Margherita pizza typically includes fresh mozzarella cheese,
+    tomatoes, fresh basil, olive oil, and a sprinkle of salt. If you have any specific
+    toppings in mind for customization, feel free to let me know!
+- User: What if I wanted to add extra basil and olives to my Margherita pizza? Is
+    that possible?
+- Assistant: Yes, you can definitely add extra basil and olives to your Margherita
+    pizza! Just let me know if you would like to proceed with that customization or
+    if there's anything else you'd like to add.
+- User: Can you confirm if adding extra basil and olives will change the price of
+    my large Margherita pizza?
+- Assistant: Adding extra toppings like basil and olives will typically change the
+    price of your large Margherita pizza. The exact price change can vary based on
+    the shop's pricing policy. If you'd like, I can help you with the details or any
+    other questions you may have!
+- User: Can you give me an idea of how much extra basil and olives might cost for
+    my large Margherita pizza?
+- Assistant: I currently don't have specific pricing information for extra toppings
+    like basil and olives. I recommend checking with the shop directly for the most
+    accurate pricing. If you have any other questions or need assistance with your
+    order, feel free to ask!
+- User: What if I want to add just one extra topping, like olives? Is there a way
+    to do that without changing my order?
+- Assistant: You can definitely add just one extra topping like olives to your large
+    Margherita pizza without changing your order. However, please note that adding
+    extra toppings may affect the price. If you would like to proceed with that, let
+    me know!
+- User: Can you confirm if adding just olives as an extra topping will be a simple
+    process, or will it complicate my order?
+- Assistant: Adding just olives as an extra topping to your large Margherita pizza
+    should be a simple process and won't complicate your order. If you'd like to proceed
+    with that, please let me know!
+- User: Can you assure me that adding olives won't delay my order?
+- Assistant: 'Adding olives as an extra topping should not complicate your order or
+    cause any delays. If you decide to proceed with that, just let me know! '

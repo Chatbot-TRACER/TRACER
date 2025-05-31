@@ -1,0 +1,128 @@
+serial: 2025-05-31-08-50-49
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: 'Order Summary:
+
+    - Pizza: Large Hawaiian
+
+    - Drinks: 2 Cokes
+
+    - Total Cost: $25.00
+
+    - Estimated Readiness Time: 15 minutes
+
+    - Pickup Location: 23 Main Street, NY
+
+    - Order ID: 9f6ea1'
+- delivery_information: Delivery is not available. Please visit our shop at 23 Main
+    Street, NY.
+errors: []
+---
+conversation time: 128.657064
+assistant response time:
+- 4.225542
+- 3.072482
+- 4.320188
+- 2.120782
+- 0.808273
+- 0.88004
+- 0.92305
+- 2.342175
+- 2.183303
+- 1.539882
+- 1.707891
+- 1.627654
+- 2.819682
+- 2.383484
+- 2.703021
+- 1.044111
+response time report:
+  average: 2.168847
+  max: 4.320188
+  min: 0.808273
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. What is the total
+    cost, the estimated time for pickup, and the pickup location?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for your order! I see that you would like two Cokes, which means I need
+    to confirm the number of drinks. Could you please tell me how many drinks you
+    would like to order? Additionally, please confirm that you would like Coke as
+    your drink choice. Thank you!'
+- User: I would like to order two Cokes, and yes, Coke is my drink choice. What is
+    the total cost, the estimated time for pickup, and the pickup location?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 9f6ea1.'
+- User: Can you confirm that delivery is not available?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a specific time you would like to pick up your order, or is the 15
+    minutes from now convenient for you?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if the 15-minute pickup time works for me, or do
+    I need to specify a different time?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is the 15-minute pickup time convenient for me, or do I need to choose a different
+    time?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a minimum order amount required for pickup, or can I just get my
+    pizza and drinks without any additional items?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there a minimum order amount required for pickup, or can I just get my
+    pizza and drinks without any additional items?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there a specific opening time for pickup, or can I come by anytime during
+    your business hours?
+- Assistant: Every day from 1pm to 11:30pm
+- User: 'User: Thank you for the information. Can I place my order now, or do I need
+    to wait until your opening time?'
+- Assistant: Every day from 1pm to 11:30pm
+- User: Can I place my order now, or do I need to wait until your opening time?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Can I place my order now, or do I need to wait until your opening time?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you tell me if there are any special promotions or discounts available
+    for my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: 'User: Are there any special promotions or discounts available for large pizzas
+    or drinks?'
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there a loyalty program or rewards system that I can sign up for to get
+    discounts on future orders?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
