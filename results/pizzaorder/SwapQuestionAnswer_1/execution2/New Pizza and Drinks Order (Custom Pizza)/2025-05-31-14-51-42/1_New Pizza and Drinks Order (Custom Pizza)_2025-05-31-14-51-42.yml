@@ -1,0 +1,111 @@
+serial: 2025-05-31-14-51-42
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - cheese
+- topping2:
+  - cheese
+- topping3:
+  - cheese
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: cheese'
+errors: []
+---
+conversation time: 145.93387
+assistant response time:
+- 2.181165
+- 2.248697
+- 1.989752
+- 2.930918
+- 3.045457
+- 4.911808
+- 1.000281
+- 0.852842
+- 1.038006
+- 0.919821
+- 0.940147
+- 1.130162
+- 1.421947
+- 1.851545
+- 1.417173
+- 2.27202
+response time report:
+  average: 1.884483
+  max: 4.911808
+  min: 0.852842
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Can I get a medium pizza with just cheese?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to confirm my order for a medium pizza topped with just cheese.
+- Assistant: It looks like I have the topping information, but I still need to confirm
+    the pizza size. Could you please confirm that you would like a medium pizza?
+- User: I want to confirm my order for a medium pizza with just cheese.
+- Assistant: 'Thanks for ordering a medium pizza with c, h, e, e, s and e!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks you prefer? You can
+    choose from coke, sprite, or water.'
+- User: I'd like to order two drinks, please. Can I get one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a medium pizza topped with cheese and two Cokes is $19.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 0483e4.'
+- User: Could you please confirm if I ordered two drinks, one Coke and one Sprite?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: 'I''d like to confirm if my drink order is correct: I ordered one Coke and
+    one Sprite.'
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: 'I want to double-check my drink order: can you confirm if I ordered one Coke
+    and one Sprite?'
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I'd like to make sure about my drink order again. Can you tell me what drinks
+    I have ordered?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: 'I just want to confirm my drink order: did I order one Coke and one Sprite?'
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me the total cost of my order, including the drinks?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a way to change my drink order if I decided I want something else?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can I change my drink order if I decided I wanted something different?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I'd like to know if I can change my drink order if I decided to pick something
+    different.
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Is there a way to find out the delivery options for the pizza place?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.

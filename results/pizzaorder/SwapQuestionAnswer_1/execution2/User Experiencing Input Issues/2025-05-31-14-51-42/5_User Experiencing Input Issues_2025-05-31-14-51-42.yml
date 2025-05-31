@@ -1,0 +1,101 @@
+serial: 2025-05-31-14-51-42
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - BBQ Chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you ordering predefined or custom pizzas, and then
+    drinks.
+- pizza_type_response: None
+- custom_pizza_response: I do not know. I can answer questions about our opening hours,
+    types of pizza we serve, prices of pizzas and beverages, how to get the order,
+    and how much time it takes to get an order.
+errors: []
+---
+conversation time: 143.282956
+assistant response time:
+- 1.070813
+- 1.203217
+- 2.017864
+- 4.736454
+- 2.081175
+- 2.246852
+- 2.522081
+- 0.798177
+- 2.670339
+- 14.45661
+- 2.266481
+- 1.978264
+- 2.382959
+- 2.383745
+- 2.813025
+- 2.83557
+- 2.965466
+response time report:
+  average: 3.02524
+  max: 14.45661
+  min: 0.798177
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kinds of pizzas do you have available?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What kinds of pizzas do you have available?
+- Assistant: Every day from 1pm to 11:30pm
+- User: I think there might be a misunderstanding. Can you just tell me what kind
+    of pizzas you have?
+- Assistant: Every day from 1pm to 11:30pm
+- User: I really just want to know what types of pizzas you offer. Can you list them
+    for me?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What kinds of pizzas do you have available?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Is there a specific type of pizza you're looking for, like a classic or a
+    specialty?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me more about the predefined pizzas you offer?
+- Assistant: Every day from 1pm to 11:30pm
+- User: I just want to know what types of predefined pizzas you have. Can you list
+    a few options?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What predefined pizza options do you have?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What about BBQ Chicken pizza? Is that one of the predefined options?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Is BBQ Chicken pizza one of the predefined options?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Is there a way to see a menu or list of the predefined pizzas you offer, like
+    BBQ Chicken?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Is there a way to customize a pizza if I don't find a predefined option that
+    I like?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you at least tell me if I can customize a pizza with specific toppings?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you confirm if I can add specific toppings to a custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.

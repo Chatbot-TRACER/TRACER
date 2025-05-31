@@ -1,0 +1,103 @@
+serial: 2025-05-31-14-51-42
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: You can add extra toppings like mushrooms or peppers to your
+    Hawaiian pizza. However, I still need to know the size of the pizza. Could you
+    please specify if you would like it small, medium, or large?
+- pizza_type_response: Yes, a Hawaiian pizza typically includes ham and pineapple
+    as its main toppings.
+- custom_pizza_response: None
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 186.547304
+assistant response time:
+- 4.293848
+- 2.448986
+- 2.024138
+- 2.114796
+- 1.015114
+- 17.739752
+- 1.614146
+- 2.839333
+- 4.214588
+- 1.277708
+- 0.922162
+- 2.018878
+- 2.05503
+- 2.103658
+- 20.036587
+response time report:
+  average: 4.447914
+  max: 20.036587
+  min: 0.922162
+---
+interaction:
+- User: I'd like to order a Hawaiian pizza, but can you confirm what ingredients are
+    on that?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Can you tell me what toppings are included on a Hawaiian pizza?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What toppings do you usually put on a Hawaiian pizza?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Are you saying that a Hawaiian pizza typically has ham and pineapple?
+- Assistant: Yes, a Hawaiian pizza typically includes ham and pineapple as its main
+    toppings.
+- User: Could you also let me know if there are any other toppings I can add to a
+    Hawaiian pizza?
+- Assistant: I see that you've chosen a Hawaiian pizza. Could you please let me know
+    the size of the pizza? It can be small, medium, or large.
+- User: Are there any extra toppings that I can add to the Hawaiian pizza, like mushrooms
+    or peppers?
+- Assistant: You can add extra toppings like mushrooms or peppers to your Hawaiian
+    pizza. However, I still need to know the size of the pizza. Could you please specify
+    if you would like it small, medium, or large?
+- User: Can I get a medium Hawaiian pizza with mushrooms and peppers, please?
+- Assistant: 'Thanks for ordering a medium hawaiian pizza!
+
+    Thank you for your order! Now, could you please let me know how many drinks you
+    would like to order? Also, please specify the type of drink (coke, sprite, or
+    water).'
+- User: Can I just get one drink with that order? What do you recommend?
+- Assistant: 'Got it! I''ve received your order for one Coke.
+
+    The cost of a medium Hawaiian pizza and one Coke is $18.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 7104d4.'
+- User: Is there a way to customize my drink, like choosing a different soda or something
+    else?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can I customize my drink to choose a different soda or something else instead
+    of Coke?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me if I can choose a different type of drink instead of just
+    Coke?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you tell me if I can choose a drink other than Coke or Sprite, like
+    lemonade or iced tea?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Is lemonade or iced tea available as an option for drinks?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Can you confirm if lemonade or iced tea is an option for drinks?

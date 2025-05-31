@@ -1,0 +1,92 @@
+serial: 2025-05-31-14-51-42
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: Of course! I can help you with that. What type of pizza would
+    you like to order? You can choose from our predefined options or create a custom
+    pizza.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+errors: []
+---
+conversation time: 111.01353
+assistant response time:
+- 1.19243
+- 1.149712
+- 2.591448
+- 1.970999
+- 1.92066
+- 1.986271
+- 2.019382
+- 2.726741
+- 1.687344
+- 1.206207
+- 0.925023
+- 1.120676
+- 1.323687
+- 1.024036
+- 1.551521
+- 1.061023
+- 1.074906
+response time report:
+  average: 1.560709
+  max: 2.726741
+  min: 0.925023
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Of course! I can help you with that. What type of pizza would you like
+    to order? You can choose from our predefined options or create a custom pizza.
+- User: What kind of pizzas do you have available?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Is that the time I can order, or is there a specific menu of pizzas you offer?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What kind of pizzas do you actually have on the menu?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Can you please tell me if you have a Pepperoni pizza?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Do you actually have any specific pizza options, like Pepperoni or Margherita?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Can you just tell me if you have a Pepperoni pizza or not?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Great, I’d like to order a Pepperoni pizza. Can you help me with that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to place an order for a Pepperoni pizza. Could you assist me with
+    that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I want to order a Pepperoni pizza. Can you help me with that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you please confirm if you have any special deals or promotions on pizzas
+    today?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any special deals or promotions on pizzas today?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any discounts or promotions available for pizzas today?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any vegetarian pizza options on the menu?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: 'User: Can you tell me if there are any vegetarian pizza choices available?'
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Do you have any options for vegetarian pizzas on your menu?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

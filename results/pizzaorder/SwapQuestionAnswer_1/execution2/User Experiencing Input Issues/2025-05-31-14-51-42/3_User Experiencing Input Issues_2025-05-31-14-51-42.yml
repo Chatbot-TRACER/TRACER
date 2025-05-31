@@ -1,0 +1,87 @@
+serial: 2025-05-31-14-51-42
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Meat Lovers
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: None
+- custom_pizza_response: None
+errors: []
+---
+conversation time: 130.825756
+assistant response time:
+- 1.330739
+- 8.735218
+- 2.682774
+- 2.907481
+- 2.093124
+- 2.338519
+- 1.86899
+- 2.13122
+- 2.375073
+- 2.592358
+- 1.909072
+- 2.180667
+- 2.373418
+- 2.731467
+- 2.050379
+- 2.238065
+- 2.877155
+response time report:
+  average: 2.671512
+  max: 8.735218
+  min: 1.330739
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kinds of pizzas do you have available?
+- Assistant: Every day from 1pm to 11:30pm
+- User: I didn't quite catch that. Can you tell me what kinds of pizzas you have?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What kinds of pizzas do you have?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What kinds of pizzas do you have?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What kinds of pizzas do you have?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What kinds of pizzas do you have?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What kinds of pizzas do you have?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What kind of pizzas do you have?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Could you please just list the types of pizzas you have?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What types of pizzas do you have?
+- Assistant: Every day from 1pm to 11:30pm
+- User: I really need to know what types of pizzas you offer. Can you please just
+    list them?
+- Assistant: Every day from 1pm to 11:30pm
+- User: This is getting frustrating. Can you just tell me if you have a Meat Lovers
+    pizza?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Do you have a Meat Lovers pizza?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Do you have a custom pizza option where I can choose my own toppings?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Can you please tell me if you have a Meat Lovers pizza on your menu?
+- Assistant: Every day from 1pm to 11:30pm

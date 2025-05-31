@@ -1,0 +1,97 @@
+serial: 2025-05-31-14-51-42
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - olives
+- topping2:
+  - olives
+- topping3:
+  - olives
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: null
+- custom_pizza_order_confirmation: null
+errors:
+- 504: No response was received from the server in less than 20
+- 1001: 2 goals left to complete.
+---
+conversation time: 116.916362
+assistant response time:
+- 2.076984
+- 2.900674
+- 0.883605
+- 1.280874
+- 0.874421
+- 2.269081
+- 1.270438
+- 2.664728
+- 0.851723
+- 0.886476
+- 1.319799
+- 2.27017
+- 2.266184
+- 2.309258
+- 20.026973
+response time report:
+  average: 2.943425
+  max: 20.026973
+  min: 0.851723
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What toppings do you recommend for a crowd-pleasing pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you suggest for a pizza that everyone will enjoy?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings would you recommend for a pizza that most people would like?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you tell me if there are any vegetarian options for my pizza?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What vegetarian toppings would you suggest for my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What vegetarian toppings do you have available for my custom pizza?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What kind of crust options do you have for the custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What crust options are available for my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What cheese options do you have for my custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What drinks do you have available to order with my pizza?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: What toppings can I choose for my custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, order pickup, and estimated
+    time for orders.
+- User: Can you tell me what types of cheese I can choose for my custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, order pickup, and estimated
+    time for orders.
+- User: Can you confirm if I can order a small pizza with just olives for my custom
+    pizza?
