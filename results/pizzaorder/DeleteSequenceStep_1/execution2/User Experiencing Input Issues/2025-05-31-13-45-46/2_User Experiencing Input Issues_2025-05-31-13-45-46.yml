@@ -1,0 +1,41 @@
+serial: 2025-05-31-13-45-46
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Vegetarian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: 'Error: chatbot server error'
+- pizza_type_response: None
+- custom_pizza_response: null
+errors:
+- 500: Server error
+- 1001: 1 goals left to complete.
+---
+conversation time: 3.191213
+assistant response time:
+- 0.01018
+response time report:
+  average: 0.01018
+  max: 0.01018
+  min: 0.01018
+---
+interaction:
+- User: I'd like to order a Vegetarian pizza, but can you tell me what toppings are
+    included in that?
+- Assistant: 'Error: chatbot server error'

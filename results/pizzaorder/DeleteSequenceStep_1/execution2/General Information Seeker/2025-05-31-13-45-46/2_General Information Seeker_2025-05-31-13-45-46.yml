@@ -1,0 +1,39 @@
+serial: 2025-05-31-13-45-46
+language: English
+context:
+- You are planning a casual pizza night with friends and want to explore options from
+  a local pizza shop you haven't tried before.
+- Before placing an order, you want to gather some general information about their
+  menu, services, and pricing.
+ask_about:
+- Ask what types of questions the chatbot can answer.
+- Ask what the daily opening hours are.
+- Ask about the estimated order time, without specifying the number of pizzas.
+- Ask what drink options are available and their prices.
+- Ask about the pricing for a custom pizza.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- available_information: null
+- opening_hours: None
+- estimated_order_time: null
+- drink_options_and_prices: null
+- custom_pizza_pricing: None
+errors:
+- 500: Server error
+- 1001: 3 goals left to complete.
+---
+conversation time: 3.81049
+assistant response time:
+- 0.005184
+response time report:
+  average: 0.005184
+  max: 0.005184
+  min: 0.005184
+---
+interaction:
+- User: What types of questions can you answer?
+- Assistant: 'Error: chatbot server error'
