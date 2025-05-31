@@ -1,0 +1,136 @@
+serial: 2025-05-31-11-52-41
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - mushrooms
+- topping2:
+  - mushrooms
+- topping3:
+  - mushrooms
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: mushrooms, mushrooms,
+    mushrooms'
+errors: []
+---
+conversation time: 136.981108
+assistant response time:
+- 1.761953
+- 1.935196
+- 1.762817
+- 4.871109
+- 18.99439
+- 3.37561
+- 3.217878
+- 2.395408
+- 2.553316
+- 2.818901
+- 2.489878
+- 2.161163
+- 1.855569
+- 2.09699
+- 1.907478
+- 2.299875
+response time report:
+  average: 3.531095
+  max: 18.99439
+  min: 1.761953
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like to go with a medium custom pizza. Can you help me with some topping
+    options?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I’d like to create a medium custom pizza. What topping options do I have?
+- Assistant: It looks like you've chosen a medium pizza, but I still need to know
+    which toppings you'd like. Your options are cheese, mushrooms, pepper, ham, bacon,
+    pepperoni, olives, corn, or chicken. Please let me know your choice!
+- User: I want a medium pizza with mushrooms, mushrooms, and mushrooms. Can you confirm
+    my order?
+- Assistant: 'Thanks for ordering a medium pizza with m, u, s, h, r, o, o, m and s!
+
+    I have your order for a medium pizza with mushrooms. Now, could you please let
+    me know how many drinks you would like to order and what type of drinks you prefer?
+    Your options are coke, sprite, or water.'
+- User: I’d like to have two drinks, please. Can I get one coke and one sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a medium pizza topped with mushrooms and two Cokes is $21.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is d2569b.'
+- User: Could you please confirm the total price again? I want to make sure I have
+    it right.
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please confirm the price for my medium custom pizza with three mushrooms
+    and two drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I understand that, but can you provide the total cost for my medium custom
+    pizza with three mushrooms and two drinks? Thank you!
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please give me the total cost for my medium custom pizza with three
+    mushrooms and two drinks, specifically?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please give me the total cost for my medium custom pizza with three
+    mushrooms and two drinks? I'm just trying to clarify.
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me if there are any additional fees or taxes on my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me how much time it takes to get my order ready?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Could you please tell me if I can get my order delivered, or is it strictly
+    for pickup?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Could you please confirm the pickup location and the hours of operation for
+    the shop?
+- Assistant: Every day from 1pm to 11:30pm
+- User: Could you please tell me if I can specify a pickup time, or do I just pick
+    it up as soon as it's ready?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    long it takes to get an order.

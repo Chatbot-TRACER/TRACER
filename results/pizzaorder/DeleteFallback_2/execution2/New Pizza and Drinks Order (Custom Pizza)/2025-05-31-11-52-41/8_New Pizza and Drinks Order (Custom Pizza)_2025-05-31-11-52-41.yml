@@ -1,0 +1,140 @@
+serial: 2025-05-31-11-52-41
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - pepperoni
+- topping2:
+  - pepperoni
+- topping3:
+  - pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepperoni, mushrooms,
+    olives'
+errors: []
+---
+conversation time: 136.411245
+assistant response time:
+- 19.450999
+- 1.683171
+- 7.045475
+- 2.758289
+- 7.122004
+- 1.305127
+- 1.94331
+- 2.186294
+- 1.170573
+- 6.721493
+- 2.74932
+- 3.693108
+- 1.023548
+- 2.373316
+- 2.905311
+- 1.903092
+response time report:
+  average: 4.127151
+  max: 19.450999
+  min: 1.023548
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I order a large custom pizza with extra pepperoni, please?
+- Assistant: 'It looks like the toppings you provided include "custom" and "extra
+    pepperoni," which are not valid options. Please choose from the following toppings:
+    cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken. Additionally,
+    I see that the pizza size is already provided as "large." Please confirm the toppings
+    you''d like.'
+- User: I’d like to have a large pizza with extra pepperoni, mushrooms, and olives.
+    Is that possible?
+- Assistant: 'Thanks for ordering a large pizza with mushrooms, olives and pepperoni!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and the type of drinks (coke, sprite, or water)? '
+- User: I’d like to order three drinks, please. Can I get two cokes and one sprite?
+- Assistant: 'I have received your order for three Cokes.
+
+    The cost for a large pizza topped with mushrooms, olives, and pepperoni, along
+    with three Cokes, is $24.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is cbc955.'
+- User: Could you please confirm if you would like to add any dipping sauces to your
+    order?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: Could you please confirm if I can add any dipping sauces to my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.
+- User: Can I add any dipping sauces like ranch or marinara to my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me if I can add ranch or marinara dipping sauce to my
+    order?
+- Assistant: Yes, you can add ranch or marinara dipping sauce to your order. Would
+    you like to proceed with your order?
+- User: Yes, I'd like to add one ranch and one marinara dipping sauce to my order,
+    please. Can you confirm that for me?
+- Assistant: 'It seems that I have the pizza size as "large," but I need to confirm
+    the toppings. You mentioned "extra pepperoni," "mushrooms," and "olives." However,
+    "extra pepperoni" is not a valid topping option. Please choose from the following
+    toppings: cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn, or chicken.
+    Once I have the correct toppings, I can proceed with your order.'
+- User: I'd like to confirm my order for a large pizza with pepperoni, mushrooms,
+    and olives, along with one ranch and one marinara dipping sauce. Is that all set?
+- Assistant: 'Thanks for ordering a large pizza with pepperoni, mushrooms and olives!
+
+    Thank you for confirming your pizza order! However, I still need to know the specific
+    types of drinks you''d like to order. You mentioned you''d like three drinks,
+    but could you please confirm the types? You can choose from coke, sprite, or water. '
+- User: I'd like to confirm that I want two Cokes and one Sprite, please. Is my order
+    all set now?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost for a large pizza topped with pepperoni, mushrooms, and olives, along
+    with three Cokes, is $24.50.
+
+    Your order will be ready for pickup in 15 minutes at our shop located at 23 Main
+    Street, NY. Your order ID is 5cf0c0.'
+- User: Could you please confirm if the order includes the ranch and marinara dipping
+    sauces?
+- Assistant: Yes, your order includes one ranch and one marinara dipping sauce. Is
+    there anything else I can assist you with?
+- User: Could you please tell me if there are any specials or discounts available
+    for my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there a way to find out about any specials or discounts for pickup orders?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me if there are any current promotions or bundle deals
+    available for pizza and drinks?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.

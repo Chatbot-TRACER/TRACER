@@ -1,0 +1,138 @@
+serial: 2025-05-31-11-52-41
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - ham
+- topping2:
+  - ham
+- topping3:
+  - ham
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: ham, ham, ham'
+errors: []
+---
+conversation time: 163.18043
+assistant response time:
+- 2.110151
+- 1.909094
+- 5.165027
+- 1.864835
+- 3.699419
+- 2.292985
+- 4.131025
+- 3.410894
+- 2.803755
+- 2.891689
+- 4.799808
+- 2.203502
+- 2.733635
+- 2.241742
+- 2.583246
+- 2.153501
+response time report:
+  average: 2.937144
+  max: 5.165027
+  min: 1.864835
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. What toppings do you recommend for a crowd-pleaser?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Could you recommend some popular toppings that usually go well together?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want a large pizza with ham, ham, and ham. Can you confirm my order?
+- Assistant: It looks like I still need the pizza size. Could you please confirm if
+    you would like a small, medium, or large pizza?
+- User: I want a large pizza with ham, ham, and ham. Can you confirm my order?
+- Assistant: 'Thanks for ordering a large pizza with h, a and m!
+
+    Thank you for confirming your pizza order! Could you please let me know how many
+    drinks you would like to order and what type of drinks (coke, sprite, or water)
+    you prefer?'
+- User: I would like to order two drinks, please. Can I get one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large pizza with h, a, and m, along with 2 Cokes, is $23.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 176a90.'
+- User: Could you please confirm the total cost for the large pizza with ham and the
+    two drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please confirm the total cost for the large pizza with ham, ham,
+    and ham, and the two drinks?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the cost of a large custom pizza with three toppings,
+    specifically ham, ham, and ham?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What is the base price for a large custom pizza with three toppings?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me how much a large pizza with ham, ham, and ham would
+    cost?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me the price for a large custom pizza with three toppings,
+    specifically ham, ham, and ham?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you please tell me how much extra I would need to pay for using ham
+    as a topping three times on a custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.
+- User: Could you please tell me if there's an additional charge for using the same
+    topping multiple times on a custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me the total cost for a large custom pizza with ham,
+    ham, and ham, and two drinks?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.

@@ -1,0 +1,61 @@
+serial: 2025-05-31-11-52-41
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Hawaiian
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I do not know. I can answer questions about our opening hours,
+    types of pizza, prices of pizzas, prices of beverages, how to get the order, and
+    how much time it takes to get an order.
+- pizza_type_response: None
+- custom_pizza_response: None
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 62.470921
+assistant response time:
+- 2.205292
+- 2.075266
+- 2.333271
+- 2.797492
+- 12.501363
+- 20.01854
+response time report:
+  average: 6.988537
+  max: 20.01854
+  min: 2.075266
+---
+interaction:
+- User: I'd like to order a Hawaiian pizza, but can you confirm what toppings are
+    on that?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I meant to ask about the toppings on the Hawaiian pizza specifically. Can
+    you tell me what those are?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings are included on the Hawaiian pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Do you at least know if the Hawaiian pizza has ham and pineapple on it?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there a way to confirm if the Hawaiian pizza has ham and pineapple, or
+    should I just assume that's standard?

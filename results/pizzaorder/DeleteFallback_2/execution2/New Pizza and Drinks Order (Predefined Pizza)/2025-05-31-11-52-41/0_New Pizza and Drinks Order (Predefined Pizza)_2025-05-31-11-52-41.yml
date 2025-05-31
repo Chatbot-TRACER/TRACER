@@ -1,0 +1,119 @@
+serial: 2025-05-31-11-52-41
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: 'Order: Large Hawaiian pizza, 2 Cokes
+
+    Total Cost: $25.00
+
+    Estimated Readiness Time: 15 minutes
+
+    Pickup Location: 23 Main Street, NY
+
+    Order ID: 20e4a8'
+- delivery_information: We do not do delivery. Please visit our shop at 23 Main Street,
+    NY.
+errors: []
+---
+conversation time: 174.324336
+assistant response time:
+- 10.399642
+- 3.558086
+- 7.11156
+- 2.258683
+- 2.04595
+- 2.119555
+- 3.22226
+- 2.636045
+- 2.015167
+- 5.799907
+- 2.086599
+- 2.421776
+- 2.360564
+- 1.928474
+- 2.365218
+- 2.550365
+response time report:
+  average: 3.42999
+  max: 10.399642
+  min: 1.928474
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. What is the total
+    cost?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for your order! I see that you would like two Cokes, but I need to confirm
+    the number of drinks and the type of drinks. Could you please specify how many
+    drinks you would like to order and ensure they are either coke, sprite, or water?
+    Thank you!'
+- User: I would like to order two Cokes, please. What is the estimated time for pickup?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 20e4a8.'
+- User: Can you confirm that delivery is not available?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there anything else I can add to my order, like a dessert or an appetizer?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Could you please let me know if you have any desserts available for order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me if you have any appetizers available for order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there a specific time frame for when you usually have your appetizers available?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you provide me with the opening hours of your shop?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What types of beverages do you have available besides Coke?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me the prices of the beverages available?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Is there a limit on how many drinks I can order with my pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What is the maximum number of pizzas I can order at once?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there a way for me to modify my order once it's placed?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, order pickup, and estimated time for
+    orders.
+- User: Is there a way for me to cancel my order after it has been placed?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me if you offer any special promotions or discounts
+    on orders?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.

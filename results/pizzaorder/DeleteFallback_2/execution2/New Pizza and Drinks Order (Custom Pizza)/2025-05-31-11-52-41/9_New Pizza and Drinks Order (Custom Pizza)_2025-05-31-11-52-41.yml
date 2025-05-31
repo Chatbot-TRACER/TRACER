@@ -1,0 +1,131 @@
+serial: 2025-05-31-11-52-41
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - anchovies
+- topping2:
+  - pineapple
+- topping3:
+  - Pineapple
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: mushrooms, pepperoni,
+    olives'
+errors: []
+---
+conversation time: 154.569018
+assistant response time:
+- 11.113917
+- 1.788754
+- 1.86124
+- 5.061724
+- 6.57308
+- 3.878785
+- 3.697483
+- 3.36469
+- 11.730144
+- 5.207007
+- 4.18462
+- 3.696028
+- 4.364669
+- 3.936846
+- 4.063061
+- 4.331712
+response time report:
+  average: 4.92836
+  max: 11.730144
+  min: 1.788754
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a medium custom pizza with anchovies, pineapple, and Pineapple.
+    Can you confirm that order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to confirm my order for a medium custom pizza with anchovies and
+    pineapple.
+- Assistant: 'It looks like there are some issues with your order. We only offer the
+    following toppings: cheese, mushrooms, pepper, ham, bacon, pepperoni, olives,
+    corn, and chicken. Could you please provide the correct toppings for your medium
+    pizza? Thank you!'
+- User: I see! In that case, how about a medium pizza with mushrooms, pepperoni, and
+    olives? Can you confirm if that's possible?
+- Assistant: Thank you for your order! I see that you've chosen a medium pizza, but
+    I still need to confirm your toppings. Could you please let me know if you would
+    like mushrooms, pepperoni, and olives for your pizza? Thank you!
+- User: I'd like to confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, please!
+- Assistant: Thank you for confirming your pizza size as medium! Now, could you please
+    let me know your toppings? You can choose from cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, corn, or chicken. Thank you!
+- User: I'd like to confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, please!
+- Assistant: Thank you for confirming your pizza size as medium! Now, could you please
+    let me know your toppings? You can choose from cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, corn, or chicken. Thank you!
+- User: I’d like to confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, please!
+- Assistant: Thank you for confirming your pizza size as medium! Now, could you please
+    let me know your toppings? You can choose from cheese, mushrooms, pepper, ham,
+    bacon, pepperoni, olives, corn, or chicken. Thank you!
+- User: I’d like to confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, please! Can you tell me if I can add extra cheese on that?
+- Assistant: Thank you for confirming your pizza size as medium! However, I still
+    need to confirm your toppings. Could you please let me know if you would like
+    mushrooms, pepperoni, and olives for your pizza? Thank you!
+- User: I’d like to confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, please! And can you tell me if I can add extra cheese on that?
+- Assistant: Thank you for confirming your pizza size as medium! However, I still
+    need to confirm your toppings. Could you please let me know if you would like
+    mushrooms, pepperoni, and olives for your pizza? Thank you!
+- User: I'd like to confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, please! And can you let me know if I can add extra cheese on that?
+- Assistant: Thank you for confirming your pizza size as medium! However, I still
+    need to confirm your toppings. Could you please let me know if you would like
+    mushrooms, pepperoni, and olives for your pizza? Thank you!
+- User: I'd like to confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, please! Also, can I add extra cheese on that?
+- Assistant: Thank you for confirming your pizza size as medium! However, I still
+    need to confirm your toppings. Could you please let me know if you would like
+    mushrooms, pepperoni, and olives for your pizza? Thank you!
+- User: I'd like to confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, please! And is there an option for adding extra cheese?
+- Assistant: Thank you for confirming your pizza size as medium! However, I still
+    need to confirm your toppings. Could you please let me know if you would like
+    mushrooms, pepperoni, and olives for your pizza? Thank you!
+- User: I'd like to confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, please! Is there a way to add extra cheese on that?
+- Assistant: Thank you for confirming your pizza size as medium! However, I still
+    need to confirm your toppings. Could you please let me know if you would like
+    mushrooms, pepperoni, and olives for your pizza? Thank you!
+- User: I'd like to confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, please! And can you tell me if there's an option for adding extra
+    cheese on that?
+- Assistant: Thank you for confirming your pizza size as medium! However, I still
+    need to confirm your toppings. Could you please let me know if you would like
+    mushrooms, pepperoni, and olives for your pizza? Thank you!
+- User: I'd like to confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, please! And can you let me know how much the extra cheese option costs?
+- Assistant: Thank you for confirming your pizza size as medium! However, I still
+    need to confirm your toppings. Could you please let me know if you would like
+    mushrooms, pepperoni, and olives for your pizza? Thank you!

@@ -1,0 +1,125 @@
+serial: 2025-05-31-11-52-41
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: 'Order Summary:
+
+    - Pizza: Large Hawaiian
+
+    - Drinks: 2 Cokes
+
+    - Total Cost: $25.00
+
+    - Estimated Readiness Time: 15 minutes
+
+    - Pickup Location: 23 Main Street, NY
+
+    - Order ID: 65b19f'
+- delivery_information: We do not do delivery, but customers need to get the shop
+    for their orders. We are located at 23 Main Street, New York.
+errors: []
+---
+conversation time: 166.271835
+assistant response time:
+- 4.587605
+- 2.708173
+- 15.415176
+- 6.115208
+- 2.631274
+- 3.522055
+- 2.408464
+- 3.599432
+- 1.8864
+- 2.598605
+- 18.423892
+- 4.142138
+- 2.069312
+- 2.568004
+- 2.574983
+- 2.175968
+response time report:
+  average: 4.839168
+  max: 18.423892
+  min: 1.8864
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. What is the total
+    cost?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for your order! I see you would like two Cokes, but I need to confirm
+    the number of drinks and the type of drinks. Could you please specify how many
+    drinks you would like and ensure the drink type is either coke, sprite, or water?
+    Thank you!'
+- User: I would like to order two Cokes, please. What is the total cost?
+- Assistant: 'I have received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 65b19f.'
+- User: Can you confirm that delivery is not available?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: What are the payment options available for my pickup order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup information, and
+    estimated time for orders.
+- User: Could you tell me what the opening hours are for your shop?
+- Assistant: Every day from 1pm to 11:30pm
+- User: What types of pizzas do you offer besides the Hawaiian pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What are the prices for the different types of pizzas you offer?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: What are the prices for the beverages, specifically the Cokes?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please let me know if there are any special promotions or discounts
+    available for my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Are there any additional toppings available for the Hawaiian pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Are there any vegan or vegetarian options available for your pizzas?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What are the ingredients in the Vegetarian pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me what the ingredients in the Hawaiian pizza are?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: What are the ingredients in the Carbonara pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please let me know if there are any gluten-free options available
+    for your pizzas?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.

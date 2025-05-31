@@ -1,0 +1,136 @@
+serial: 2025-05-31-11-52-41
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Margherita
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: Thanks for ordering a medium margarita pizza! The cost of
+    a medium margarita pizza and one Coke is $16.50.
+errors: []
+---
+conversation time: 145.384644
+assistant response time:
+- 1.117633
+- 1.186033
+- 2.292104
+- 5.316045
+- 2.914145
+- 1.692417
+- 5.098173
+- 3.677209
+- 3.094567
+- 2.514779
+- 2.646599
+- 3.114229
+- 3.180997
+- 3.471782
+- 2.595638
+- 2.750626
+- 2.521398
+response time report:
+  average: 2.893198
+  max: 5.316045
+  min: 1.117633
+---
+interaction:
+- User: Can you help me with ordering a pizza?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kinds of pizzas do you have available?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like a Margherita pizza, please. Can you confirm that?
+- Assistant: It looks like I have the pizza type as "Margherita," but I still need
+    to know the pizza size. Could you please let me know if you would like a small,
+    medium, or large pizza?
+- User: Could I get a medium size for the Margherita pizza?
+- Assistant: 'Thanks for ordering a medium margarita pizza!
+
+    Thank you for the details! Now, could you please let me know how many drinks you
+    would like to order and what type of drinks you prefer? You can choose from coke,
+    sprite, or water.'
+- User: Can I just order the pizza without any drinks?
+- Assistant: Unfortunately, we only process orders that include both pizza and drinks.
+    Could you please let me know how many drinks you would like to order and what
+    type of drinks you prefer? You can choose from coke, sprite, or water.
+- User: Could I just have one Coke with the medium Margherita pizza?
+- Assistant: 'Got it! I''ve received your order for one Coke.
+
+    The cost of a medium margarita pizza and one Coke is $16.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 92ba78.'
+- User: Could you confirm if the total price includes tax or if it's just the base
+    price?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Is the total price of $16.50 for the medium Margherita pizza and one Coke
+    inclusive of tax, or should I expect additional charges?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Is the total price of $16.50 for the medium Margherita pizza and one Coke
+    inclusive of tax, or should I expect additional charges?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there any way I can get a clearer breakdown of the costs for my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can I just confirm the total cost again for the medium Margherita pizza and
+    one Coke? Is it really $16.50?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Can you tell me if the cost of the medium Margherita pizza and the Coke includes
+    tax or if there might be additional charges?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there a way I can find out if the $16.50 includes tax, or should I just
+    assume it doesn't?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Is there a customer service number I could call to get clarification on whether
+    the total price includes tax?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.
+- User: Is there a way I could get a receipt or confirmation with a breakdown of the
+    costs after placing my order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get your order, and
+    how long it takes to get an order.
+- User: Can I get a confirmation of my order details, including the pizza type, size,
+    drink, and total price?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.

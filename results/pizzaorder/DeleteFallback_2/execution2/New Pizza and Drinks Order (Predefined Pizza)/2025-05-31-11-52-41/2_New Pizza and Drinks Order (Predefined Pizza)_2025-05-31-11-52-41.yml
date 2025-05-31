@@ -1,0 +1,90 @@
+serial: 2025-05-31-11-52-41
+language: English
+context:
+- 'personality: personalities/formal-user'
+- You are craving a Hawaiian pizza and want to order it for a quick and easy dinner.
+- You also want to grab some drinks to enjoy with your pizza, picking them up at the
+  same time.
+ask_about:
+- Hello, I would like to order a pizza and drinks for pickup.
+- I'd like to order a large Hawaiian pizza.
+- I would also like to order two Cokes.
+- What is the total cost, the estimated time for pickup, and the pickup location?
+- Can you confirm that delivery is not available?
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- order_summary: 'Order Summary:
+
+    - Pizza Type and Size: Large Hawaiian pizza (with extra cheese, no ham)
+
+    - Drinks: Two Cokes
+
+    - Total Cost: $25.00
+
+    - Estimated Ready Time: 15 minutes
+
+    - Pickup Location: 23 Main Street, NY
+
+    - Order ID: 17a4a8'
+- delivery_information: Delivery is not available. Please visit our shop at 23 Main
+    Street, NY.
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 82.252269
+assistant response time:
+- 5.050732
+- 2.743857
+- 3.753145
+- 2.02458
+- 1.733011
+- 7.170868
+- 2.798282
+- 20.013266
+response time report:
+  average: 5.660967
+  max: 20.013266
+  min: 1.733011
+---
+interaction:
+- User: Hello, I would like to order a pizza and drinks for pickup. I'd like to order
+    a large Hawaiian pizza. I would also like to order two Cokes. What is the total
+    cost?
+- Assistant: 'Thanks for ordering a large hawaiian pizza!
+
+    Thank you for your order! I see you would like two Cokes, but I need to confirm
+    the number of drinks and the type of drinks. Could you please specify how many
+    drinks you would like to order and ensure the drink type is either coke, sprite,
+    or water? Thank you!'
+- User: I would like to order two Cokes, please. What is the total cost, the estimated
+    time for pickup, and the pickup location?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a large Hawaiian pizza and two Cokes is $25.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 17a4a8.'
+- User: Could you confirm that delivery is not available?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: Is there a way to customize the pizza, such as adding or removing any toppings?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I add extra cheese and remove the ham from my Hawaiian pizza?
+- Assistant: It looks like I still need some information to complete your order. Could
+    you please provide the pizza size (small, medium, or large) and the toppings (cheese,
+    mushrooms, pepper, ham, bacon, pepperoni, olives, corn, chicken) you'd like? Thank
+    you!
+- User: I would like to keep the pizza as a large size with extra cheese and no ham.
+    Can you confirm if that adjustment can be made?
+- Assistant: 'Thanks for ordering a large pizza with c, h, e, e, s and e!
+
+    I see that you would like to order two Cokes, which means you would like to have
+    2 drinks. Just to confirm, could you please specify the number of drinks you would
+    like to order? Thank you!'
+- User: I would like to order two Cokes, as mentioned earlier. Can you confirm that
+    my pizza adjustments have been noted?

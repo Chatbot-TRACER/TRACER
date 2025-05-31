@@ -1,0 +1,148 @@
+serial: 2025-05-31-11-52-41
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - cheese
+- topping2:
+  - cheese
+- topping3:
+  - cheese
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: pepperoni, mushrooms,
+    bell peppers'
+errors: []
+---
+conversation time: 131.352019
+assistant response time:
+- 1.627512
+- 2.312139
+- 2.016684
+- 1.603866
+- 1.838429
+- 5.338995
+- 3.877601
+- 5.200272
+- 1.167209
+- 9.027932
+- 3.159667
+- 3.840984
+- 1.105165
+- 2.836801
+- 2.984395
+- 3.096994
+response time report:
+  average: 3.189665
+  max: 9.027932
+  min: 1.105165
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. What toppings do you recommend for a crowd-pleaser?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What if I combine pepperoni, mushrooms, and bell peppers for my custom pizza?
+    Would that work well together?
+- Assistant: Combining pepperoni, mushrooms, and bell peppers for your custom pizza
+    sounds like a delicious choice! The pepperoni adds a nice spice, while the mushrooms
+    and bell peppers provide a great balance of flavors and textures. It should be
+    a crowd-pleaser!
+- User: I think that sounds good! Now, can you tell me what size pizza I can order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas and beverages, order pickup, and estimated time for
+    orders.
+- User: I'd like to confirm my order for a medium pizza with pepperoni, mushrooms,
+    and bell peppers. Is there anything else I should know before placing the order?
+- Assistant: It looks like I have the toppings, but I still need to know the pizza
+    size. Could you please let me know if you would like a small, medium, or large
+    pizza?
+- User: I already requested a medium pizza! Can I go ahead and confirm my order for
+    a medium pizza with pepperoni, mushrooms, and bell peppers?
+- Assistant: 'Thanks for ordering a medium pizza with pepperoni, mushrooms and corn!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order and what type of drinks you prefer? You can
+    choose from coke, sprite, or water.'
+- User: I'd like to order three drinks, please. Can I have two cokes and one sprite?
+- Assistant: 'Got it! I''ve received your order for three Cokes.
+
+    The cost for a medium pizza topped with pepperoni, mushrooms, and corn, along
+    with three Cokes, is $19.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 0610b8.'
+- User: I just want to double-check my order. Did you say the pizza was topped with
+    corn instead of bell peppers?
+- Assistant: Your order is for a medium pizza topped with pepperoni, mushrooms, and
+    bell peppers, not corn. Would you like to proceed with this order or make any
+    changes?
+- User: I want to confirm my order as a medium pizza with pepperoni, mushrooms, and
+    bell peppers, along with two Cokes and one Sprite. Is that correct?
+- Assistant: It seems that I still need to confirm the pizza size. Could you please
+    let me know if you would like a small, medium, or large pizza?
+- User: I already confirmed a medium pizza! Can we just finalize my order for a medium
+    pizza with pepperoni, mushrooms, and bell peppers, along with two Cokes and one
+    Sprite?
+- Assistant: 'Thanks for ordering a medium pizza with pepperoni, mushrooms and corn!
+
+    Thank you for your patience! I see that you would like to order three drinks,
+    but I need to confirm the number of drinks and their types. Could you please let
+    me know how many drinks you would like to order in total and ensure the drink
+    types are either coke, sprite, or water? '
+- User: I want to confirm my order is for a medium pizza with pepperoni, mushrooms,
+    and bell peppers, along with two Cokes and one Sprite. Can we finalize that?
+- Assistant: 'I have received your order for three Cokes.
+
+    The cost for a medium pizza topped with pepperoni, mushrooms, and corn, along
+    with three Cokes, is $19.50.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 9fcb27.'
+- User: I just want to make sure that my order is correct. Can you confirm that it’s
+    a medium pizza with pepperoni, mushrooms, and bell peppers, along with two Cokes
+    and one Sprite?
+- Assistant: Your order is confirmed as a medium pizza with pepperoni, mushrooms,
+    and bell peppers, along with two Cokes and one Sprite. Is there anything else
+    I can assist you with?
+- User: Could you remind me of the total cost for my order?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: Could you help me calculate the total cost for my order of a medium custom
+    pizza with pepperoni, mushrooms, and bell peppers, plus two Cokes and one Sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: I understand that, but can you give me a total price for my specific order
+    of a medium custom pizza with pepperoni, mushrooms, and bell peppers, along with
+    two Cokes and one Sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.

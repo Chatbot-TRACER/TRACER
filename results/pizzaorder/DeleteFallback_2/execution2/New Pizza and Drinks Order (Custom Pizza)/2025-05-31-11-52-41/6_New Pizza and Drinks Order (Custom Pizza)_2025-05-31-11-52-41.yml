@@ -1,0 +1,94 @@
+serial: 2025-05-31-11-52-41
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - small
+- topping1:
+  - olives
+- topping2:
+  - olives
+- topping3:
+  - olives
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: small, toppings: None, None, None'
+errors: []
+---
+conversation time: 94.673722
+assistant response time:
+- 6.626951
+- 1.748972
+- 1.915988
+- 2.268235
+- 1.942542
+- 0.971787
+- 0.934343
+- 1.135414
+- 0.914865
+- 1.497919
+- 0.870806
+- 1.332244
+- 1.514695
+- 0.924594
+- 0.980748
+- 1.216669
+response time report:
+  average: 1.674798
+  max: 6.626951
+  min: 0.870806
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to order a small custom pizza. Can you tell me if I can add multiple
+    toppings?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can I add olives as one of the toppings for my small custom pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, order pickup, and estimated time
+    for orders.
+- User: Can you tell me what other toppings I can choose from for my small custom
+    pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are available for my small custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings can I choose for my small custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I add multiple toppings to my small custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you tell me what toppings I can choose for my small custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings are available for my small custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drinks do you have available for my pizza order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What beverages can I choose from for my pizza order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What drinks can I order with my pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can you please tell me if you have any special promotions for pizza orders
+    this week?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any special deals on pizzas this week?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any promotions or special deals for pizza orders this week?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
