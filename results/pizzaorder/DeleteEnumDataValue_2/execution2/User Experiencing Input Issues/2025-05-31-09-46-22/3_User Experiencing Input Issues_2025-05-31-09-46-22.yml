@@ -1,0 +1,115 @@
+serial: 2025-05-31-09-46-22
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Meat Lovers
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I'm sorry, I did not get what you said. I can help you ordering
+    predefined or custom pizzas, and then drinks.
+- pizza_type_response: None
+- custom_pizza_response: The Meat Lovers pizza is not mentioned as one of the available
+    options.
+errors: []
+---
+conversation time: 122.478552
+assistant response time:
+- 0.867568
+- 0.809509
+- 1.910444
+- 1.832173
+- 1.069928
+- 1.815547
+- 2.050676
+- 2.128392
+- 1.803476
+- 2.026358
+- 2.440571
+- 1.950675
+- 1.790333
+- 2.207933
+- 2.079899
+- 2.022108
+- 0.707184
+response time report:
+  average: 1.736045
+  max: 2.440571
+  min: 0.707184
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: I want to know what types of pizzas you have available.
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can you tell me more about the Meat Lovers pizza? What toppings does it come
+    with?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I think there might be a misunderstanding. I asked about the Meat Lovers pizza
+    specifically. Can you tell me what toppings are included on that?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I asked about the toppings for the Meat Lovers pizza. Can you provide that
+    information?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is the Meat Lovers pizza not one of your options? What toppings would typically
+    be on it?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is the Meat Lovers pizza not available on your menu, or do you just not know
+    what's on it?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is the Meat Lovers pizza available for ordering, or should I choose a different
+    one?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is the Meat Lovers pizza listed under your options, or should I just pick
+    another type of pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I need to know if the Meat Lovers pizza is actually on your menu or if I'm
+    better off choosing a different pizza. Can you clarify that?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is the Meat Lovers pizza just not on your menu, or are you unable to provide
+    information about it?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there a way to find out if the Meat Lovers pizza is available, or should
+    I just select a different type?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Can you just confirm if the Meat Lovers pizza is part of your menu or not?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there any way you can check if the Meat Lovers pizza is actually on your
+    menu?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there a way to find out if the Meat Lovers pizza is available today, or
+    should I just go with something else?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there a specific number I can call to ask about the Meat Lovers pizza,
+    or is there a different way to confirm its availability?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

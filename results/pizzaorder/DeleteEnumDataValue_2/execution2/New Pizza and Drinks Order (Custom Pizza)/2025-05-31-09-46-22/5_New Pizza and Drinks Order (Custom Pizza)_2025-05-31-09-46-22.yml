@@ -1,0 +1,121 @@
+serial: 2025-05-31-09-46-22
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - mushrooms
+- topping2:
+  - mushrooms
+- topping3:
+  - mushrooms
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: mushrooms'
+errors: []
+---
+conversation time: 103.213061
+assistant response time:
+- 1.83682
+- 2.339754
+- 1.803634
+- 1.098389
+- 1.185888
+- 2.274487
+- 2.962234
+- 4.611898
+- 7.475881
+- 0.833314
+- 0.956783
+- 0.688944
+- 2.655886
+- 1.13598
+- 1.751928
+- 1.966146
+response time report:
+  average: 2.223622
+  max: 7.475881
+  min: 0.688944
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a custom pizza. What toppings do you recommend for a crowd-pleaser?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I'm looking to create a custom pizza for my friends. Can you suggest some
+    toppings that are popular and might please a crowd?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What toppings do you recommend for a crowd-pleasing custom pizza?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I want a medium pizza with mushrooms, mushrooms, and mushrooms. Can you confirm
+    my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I’d like to order a medium custom pizza with mushrooms as the only topping.
+    Can you confirm that order?
+- Assistant: I see that you've chosen mushrooms as your topping, but I still need
+    to confirm the pizza size. Could you please let me know if you'd like a small,
+    medium, or large pizza?
+- User: I've already specified that I want a medium pizza. Can you confirm my order
+    for a medium pizza with mushrooms only?
+- Assistant: 'Thanks for ordering a medium pizza with m, u, s, h, r, o, o, m and s!
+
+    Thank you for confirming your order for a medium pizza with mushrooms. Now, could
+    you please let me know how many drinks you would like to order and what type of
+    drinks (coke, sprite, or water) you prefer?'
+- User: I’d like to order two drinks, please. Can I get one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost of a medium pizza topped with mushrooms and two Cokes is $21.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is dfea0c.'
+- User: Could you please confirm if I ordered one Coke and one Sprite, or did you
+    mean two Coke?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I just want to clarify my drink order. I requested one Coke and one Sprite,
+    right?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please confirm if I ordered one Coke and one Sprite, or was it two
+    Cokes?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I just want to double-check my order. Did I order a medium pizza with mushrooms
+    and one Coke and one Sprite?
+- Assistant: Margarita pizzas are 10$ for small, 15$ for medium and 20$ for big. The
+    other predefined pizzas, except for carbonara are 2$ more for each size. Carbonara
+    is 2.5$ more for each size. Custom pizzas with up to three ingredients are the
+    same prices than predefined ones. Each additional ingredient has an increment
+    of 50 cents.
+- User: 'I''d like to confirm if my order is correct: a medium pizza with mushrooms
+    and one Coke and one Sprite. Is that right?'
+- Assistant: Your order is a medium pizza with mushrooms, one Coke, and one Sprite.
+    That is correct! If you need anything else, feel free to ask.
+- User: Could you please let me know how long it will take for my order to be ready?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: 'User: So, are you saying my order will be ready in about 15 minutes?'
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.

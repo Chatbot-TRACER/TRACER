@@ -1,0 +1,142 @@
+serial: 2025-05-31-09-46-22
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - medium
+- topping1:
+  - anchovies
+- topping2:
+  - pineapple
+- topping3:
+  - Pineapple
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: medium
+- custom_pizza_order_confirmation: 'pizza size: medium, toppings: mushrooms, pepperoni,
+    olives'
+errors:
+- 504: No response was received from the server in less than 20
+---
+conversation time: 140.510958
+assistant response time:
+- 2.02666
+- 2.087454
+- 6.835363
+- 1.921539
+- 3.280983
+- 8.723773
+- 4.588058
+- 3.047847
+- 4.605715
+- 4.697113
+- 9.166183
+- 4.688177
+- 4.973279
+- 4.465047
+- 20.03037
+response time report:
+  average: 5.675837
+  max: 20.03037
+  min: 1.921539
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I'd like to go with a medium pizza. Can I add anchovies and pineapple to my
+    custom pizza?
+- Assistant: 'It looks like the toppings you provided are not on our list. Please
+    choose from the following toppings: cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken. Also, please confirm the pizza size as well. Thank you!'
+- User: Could I please confirm my order for a medium pizza with anchovies and pineapple?
+- Assistant: 'It seems that the toppings you mentioned, anchovies and pineapple, are
+    not on our list. Please choose from the following toppings: cheese, mushrooms,
+    pepper, ham, bacon, pepperoni, olives, corn, or chicken. Also, please confirm
+    the pizza size as medium. Thank you!'
+- User: Could I have a medium pizza with mushrooms, pepperoni, and olives instead?
+- Assistant: 'Thanks for ordering a medium pizza with mushrooms, pepperoni and olives!
+
+    Thank you for your pizza order! Could you please let me know how many drinks you
+    would like to order (num_drinks) and the type of drink (coke, sprite, or water)? '
+- User: I'd like to order two drinks, please. Can I get one Coke and one Sprite?
+- Assistant: 'Got it! I''ve received your order for two Cokes.
+
+    The cost for a medium pizza topped with mushrooms, pepperoni, and olives, along
+    with two Cokes, is $18.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 6bed1e.'
+- User: Can I also confirm the order with a small drink instead of a Coke?
+- Assistant: 'It seems that I still need to confirm the toppings for your pizza. Please
+    choose from the following options: cheese, mushrooms, pepper, ham, bacon, pepperoni,
+    olives, corn, or chicken. Thank you!'
+- User: Could I please confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, along with one Sprite and one small drink instead of a Coke?
+- Assistant: 'Thanks for ordering a medium pizza with mushrooms, pepperoni and olives!
+
+    Thank you for your order details! However, I still need to confirm the number
+    of drinks you would like to order (num_drinks) and the type of drink (coke, sprite,
+    or water). Could you please provide that information? Thank you!'
+- User: I'd like to confirm my order for one Sprite and one small water, please.
+- Assistant: 'Got it! I''ve received your order for 2 Sprites.
+
+    The cost for a medium pizza topped with mushrooms, pepperoni, and olives, along
+    with two Sprites, is $18.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 7da9d6.'
+- User: Could I please confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, along with one Sprite and one small water?
+- Assistant: It looks like I still need to confirm the pizza size for your order.
+    Could you please let me know if you would like a small, medium, or large pizza?
+    Thank you!
+- User: Could I please confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, along with one Sprite and one small water?
+- Assistant: 'Thanks for ordering a medium pizza with mushrooms, pepperoni and olives!
+
+    Thank you for your order details! However, I still need to confirm the number
+    of drinks you would like to order (num_drinks) and the type of drinks (coke, sprite,
+    or water). Could you please provide that information? Thank you!'
+- User: Could I please confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, along with one Sprite and one small water?
+- Assistant: 'Got it! I''ve received your order for 2 Sprites.
+
+    The cost for a medium pizza topped with mushrooms, pepperoni, and olives, along
+    with two Sprites, is $18.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 92b1c6.'
+- User: Could I please confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, along with one Sprite and one small water?
+- Assistant: 'Thanks for ordering a medium pizza with mushrooms, pepperoni and olives!
+
+    Thank you for your order details! However, I still need to confirm the number
+    of drinks you would like to order (num_drinks) and the type of drinks (coke, sprite,
+    or water). Could you please provide that information? Thank you!'
+- User: Could I please confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, along with one Sprite and one small water?
+- Assistant: 'I have received your order for two Sprites.
+
+    The cost for a medium pizza topped with mushrooms, pepperoni, and olives, along
+    with two Sprites, is $18.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is a4b131.'
+- User: Could I please confirm my order for a medium pizza with mushrooms, pepperoni,
+    and olives, along with one Sprite and one small water?

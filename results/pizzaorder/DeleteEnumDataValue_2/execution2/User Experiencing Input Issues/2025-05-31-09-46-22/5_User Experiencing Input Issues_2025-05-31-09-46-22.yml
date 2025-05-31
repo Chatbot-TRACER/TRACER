@@ -1,0 +1,125 @@
+serial: 2025-05-31-09-46-22
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - BBQ Chicken
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: Your medium pizza will have BBQ sauce, chicken, cheese, and
+    extra cheese as you requested.
+errors: []
+---
+conversation time: 146.679655
+assistant response time:
+- 0.94628
+- 0.860904
+- 14.018452
+- 2.526432
+- 2.010003
+- 4.698259
+- 4.445602
+- 1.893584
+- 1.895692
+- 1.351529
+- 1.615046
+- 3.505125
+- 1.703969
+- 1.700295
+- 1.760176
+- 1.744111
+- 1.644349
+response time report:
+  average: 2.842341
+  max: 14.018452
+  min: 0.860904
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like a BBQ Chicken pizza. Can you confirm if you have that?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I think there might be a misunderstanding. Do you have BBQ Chicken pizza or
+    not?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Is there a way to customize my pizza to make it a BBQ Chicken one?
+- Assistant: I see that you've chosen chicken as a topping. Could you please let me
+    know the size of the pizza you would like? It can be small, medium, or large.
+- User: Can I get a medium pizza with BBQ sauce, chicken, and cheese then?
+- Assistant: 'Thanks for ordering a medium pizza with c, h, i, c, k, e and n!
+
+    Thank you for your pizza order! Now, could you please let me know how many drinks
+    you would like to order and what type of drinks you prefer? You can choose from
+    coke, sprite, or water.'
+- User: 'I just want to confirm, did you catch all the toppings I wanted on my pizza? '
+- Assistant: Yes, I have noted your order for a medium pizza with BBQ sauce, chicken,
+    and cheese. Now, could you please let me know how many drinks you would like to
+    order and what type of drinks you prefer? You can choose from coke, sprite, or
+    water.
+- User: 'Could you repeat that? I want to make sure you have all the toppings I asked
+    for: BBQ sauce, chicken, and cheese. Did you get them all?'
+- Assistant: Yes, I have noted your pizza order with BBQ sauce, chicken, and cheese
+    on a medium pizza. Now, could you please let me know how many drinks you would
+    like to order and what type of drinks you prefer? You can choose from coke, sprite,
+    or water.
+- User: I'd like to double-check, can you confirm that my pizza has BBQ sauce, chicken,
+    and cheese?
+- Assistant: Yes, your pizza order includes BBQ sauce, chicken, and cheese. Now, could
+    you please let me know how many drinks you would like to order and what type of
+    drinks you prefer? You can choose from coke, sprite, or water.
+- User: Could you just confirm the size of my pizza again? I need to make sure it’s
+    medium.
+- Assistant: Your pizza is confirmed to be a medium pizza with BBQ sauce, chicken,
+    and cheese. Now, could you please let me know how many drinks you would like to
+    order and what type of drinks you prefer? You can choose from coke, sprite, or
+    water.
+- User: Can you also confirm if the pizza is going to be cooked with extra cheese?
+    I want to make sure it’s just right.
+- Assistant: Your pizza order is a medium pizza with BBQ sauce, chicken, and cheese.
+    However, I don't have information about extra cheese. Would you like to add extra
+    cheese to your pizza? Also, please let me know how many drinks you would like
+    and what type of drinks you prefer (coke, sprite, or water).
+- User: Can you tell me if I can add extra cheese to my pizza?
+- Assistant: Yes, you can add extra cheese to your pizza! Now, could you please let
+    me know how many drinks you would like to order and what type of drinks you prefer?
+    You can choose from coke, sprite, or water.
+- User: I want to add extra cheese to my pizza. Can you confirm that it will be included?
+- Assistant: Your medium pizza will have BBQ sauce, chicken, cheese, and extra cheese
+    as you requested. Now, could you please let me know how many drinks you would
+    like to order and what type of drinks you prefer? You can choose from coke, sprite,
+    or water.
+- User: Could you clarify how many drinks I'm allowed to order?
+- Assistant: You can order as many drinks as you like! Please let me know how many
+    drinks you would like to order and what type of drinks you prefer (coke, sprite,
+    or water).
+- User: I just want to make sure, can I order multiple drinks or is there a limit?
+- Assistant: You can order as many drinks as you like! Please let me know how many
+    drinks you would like to order and what type of drinks you prefer (coke, sprite,
+    or water).
+- User: Can you tell me if there's a limit to the number of drinks I can order?
+- Assistant: There is no limit to the number of drinks you can order! Please let me
+    know how many drinks you would like and what type of drinks you prefer (coke,
+    sprite, or water).

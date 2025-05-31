@@ -1,0 +1,120 @@
+serial: 2025-05-31-09-46-22
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - pepper
+- topping2:
+  - pepper
+- topping3:
+  - pepper
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: small, medium, large
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: peppers'
+errors: []
+---
+conversation time: 94.864039
+assistant response time:
+- 2.06975
+- 1.607161
+- 1.802252
+- 3.322558
+- 1.685952
+- 1.254833
+- 2.003906
+- 2.369785
+- 4.636339
+- 0.972562
+- 1.141723
+- 2.026601
+- 1.098778
+- 1.251098
+- 1.344064
+- 2.377294
+response time report:
+  average: 1.93529
+  max: 4.636339
+  min: 0.972562
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want an extra-large pizza. Can I customize it with just peppers?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I would like to order an extra-large pizza with just peppers as the topping.
+    Can I do that?
+- Assistant: 'It seems that I need to know the size of the pizza you''d like to order.
+    Could you please specify if you want a small, medium, or large pizza? '
+- User: I'd like to confirm my order for an extra-large pizza with just peppers. Can
+    you help me with that?
+- Assistant: Unfortunately, we only offer small, medium, or large pizzas. Could you
+    please choose one of those sizes for your order?
+- User: I'd like to order an extra-large pizza with just peppers, please. Can you
+    confirm that for me?
+- Assistant: 'Unfortunately, we only offer small, medium, or large pizzas. Could you
+    please specify one of those sizes for your pizza? '
+- User: I understand that, but I really want to order an extra-large pizza with just
+    peppers. Is there a chance you can make an exception this time?
+- Assistant: 'I''m sorry, but we can only offer small, medium, or large pizzas at
+    Fast Pizza. Could you please choose one of those sizes for your pizza? '
+- User: I see! In that case, I'll go with a large pizza with just peppers. Can you
+    confirm that order for me?
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e and r!
+
+    I can help you with your pizza order! Could you please let me know how many drinks
+    you would like to order? Also, please specify the type of drink (coke, sprite,
+    or water).'
+- User: I’d like to order three drinks, please. Can I get two Cokes and one Sprite?
+- Assistant: 'I have received your order for three Cokes.
+
+    The cost of a large pizza topped with pepperoni, green peppers, and mushrooms,
+    along with three Cokes, is $26.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 06dd35.'
+- User: I actually wanted two Cokes and one Sprite, not three Cokes. Can you adjust
+    that for me?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: I'd like to adjust my drink order. Can you confirm that I would like two Cokes
+    and one Sprite instead of three Cokes?
+- Assistant: You would like to adjust your drink order to two Cokes and one Sprite
+    instead of three Cokes. Is that correct?
+- User: Yes, that's correct! Can you confirm the updated total for my order with two
+    Cokes and one Sprite?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: So, with two Cokes at $1.50 each and one Sprite at $1.50, the total for your
+    drinks would be $4.50. Adding that to the price of your large pizza, can you confirm
+    if you'd like to finalize the order?
+- Assistant: Yes, I can help you finalize the order! Please provide the price of your
+    large pizza so I can calculate the total for your order.
+- User: 'User: The large pizza costs $12.00. Can you confirm my total with the drinks?'
+- Assistant: Your large pizza costs $12.00, and with two Cokes at $1.50 each and one
+    Sprite at $1.50, the total for your drinks is $4.50. Therefore, your total order
+    would be $16.50. Would you like to finalize the order?
+- User: Yes, I would like to finalize the order for a large pizza with just peppers,
+    two Cokes, and one Sprite for a total of $16.50. Can you confirm that?
+- Assistant: 'Your order is confirmed! You have a large pizza with just peppers, two
+    Cokes, and one Sprite for a total of $16.50. Thank you for choosing Fast Pizza! '
+- User: Could you please let me know what time I should pick up my order?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.

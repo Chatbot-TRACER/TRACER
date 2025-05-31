@@ -1,0 +1,94 @@
+serial: 2025-05-31-09-46-22
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - extra large
+- topping1:
+  - corn
+- topping2:
+  - corn
+- topping3:
+  - corn
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: extra large, toppings: corn, corn,
+    corn'
+errors: []
+---
+conversation time: 91.772157
+assistant response time:
+- 1.894383
+- 2.041847
+- 2.468257
+- 1.324806
+- 2.165649
+- 1.064831
+- 0.963524
+- 0.998505
+- 0.950384
+- 3.209865
+- 0.694918
+- 1.075115
+- 1.558156
+- 1.026653
+- 1.005706
+- 1.033312
+response time report:
+  average: 1.467244
+  max: 3.209865
+  min: 0.694918
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want an extra large pizza with corn, corn, and corn. Can you confirm my
+    order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to confirm my order for an extra large pizza topped with corn, corn,
+    and corn. Can you do that?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I'd like to verify my order for an extra large pizza with toppings of corn,
+    corn, and corn. Is that possible?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you tell me what drinks you have available for order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What beverages do you offer for purchase?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What types of drinks can I choose from for my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you let me know if you have any sides or appetizers available to order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you share if there are any sides or appetizers I can add to my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you please tell me what sides or appetizers are available that I might
+    add to my order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any desserts available that I could order with my pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: 'User: Are there any sweet treats or desserts that I can add to my pizza order?'
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Are there any sweet options or desserts that I can include with my pizza order?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Could you tell me about any discounts or special offers available right now?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: 'User: Can you inform me about any discounts or current promotions that might
+    be available?'
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?

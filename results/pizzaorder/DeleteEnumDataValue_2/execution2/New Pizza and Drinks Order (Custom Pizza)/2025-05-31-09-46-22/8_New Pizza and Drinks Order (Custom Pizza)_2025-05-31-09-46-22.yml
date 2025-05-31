@@ -1,0 +1,115 @@
+serial: 2025-05-31-09-46-22
+language: English
+context:
+- 'personality: personalities/elderly-user'
+- You're planning a casual pizza night with some friends and want to order from your
+  favorite local place.
+- You've decided to try creating your own custom pizza this time to cater to everyone's
+  preferences.
+- You're hoping to find a combination of toppings that will be a crowd-pleaser.
+ask_about:
+- I want to order a custom pizza.
+- What size pizza can I order?
+- I want a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and {{topping3}}.
+- Confirm my order for a {{pizza_size}} pizza with {{topping1}}, {{topping2}}, and
+  {{topping3}}.
+- pizza_size:
+  - large
+- topping1:
+  - pepperoni
+- topping2:
+  - pepperoni
+- topping3:
+  - pepperoni
+conversation:
+- interaction_style:
+  - single questions
+- number: 10
+- steps: 15
+data_output:
+- pizza_size_options: None
+- custom_pizza_order_confirmation: 'pizza size: large, toppings: pepperoni, pepperoni,
+    pepperoni'
+errors: []
+---
+conversation time: 131.643301
+assistant response time:
+- 1.73178
+- 1.699431
+- 7.399348
+- 4.106466
+- 2.470647
+- 3.852505
+- 0.827032
+- 1.024326
+- 0.737838
+- 0.845571
+- 3.150963
+- 2.705227
+- 0.715405
+- 1.825522
+- 0.682759
+- 0.972254
+response time report:
+  average: 2.171692
+  max: 7.399348
+  min: 0.682759
+---
+interaction:
+- User: What size pizza can I order?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I want to order a large pizza with pepperoni, pepperoni, and pepperoni. Can
+    you confirm that for me?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: I would like to confirm my order for a large pizza topped with pepperoni,
+    pepperoni, and more pepperoni.
+- Assistant: It looks like I have the pizza size as large, but I need to confirm the
+    toppings. Could you please specify the toppings you would like on your pizza?
+    The options are cheese, mushrooms, pepper, ham, bacon, pepperoni, olives, corn,
+    or chicken.
+- User: 'I would like to stick with my original choice of toppings: pepperoni, pepperoni,
+    and more pepperoni. Can you confirm that for a large pizza?'
+- Assistant: 'Thanks for ordering a large pizza with p, e, p, p, e, r, o, n and i!
+
+    Thank you for confirming your pizza order! Now, could you please let me know how
+    many drinks you would like to order? '
+- User: I would like to order four drinks, please. What options do you have?
+- Assistant: 'I have received your order for four Cokes.
+
+    The cost of a large pizza topped with pepperoni and four Cokes is $29.00.
+
+    Your order will be ready in 15 minutes. Please visit our shop at 23 Main Street,
+    NY. Your order ID is 288aa9.'
+- User: Could you please let me know if you would like to add anything else to your
+    order, like sides or desserts?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you clarify if I can add anything to my order, like sides or desserts?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you please tell me if there are any sides or desserts that I can add
+    to my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What kind of sides do you usually have available for a pizza order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What types of sides can I add to my pizza order?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Could you please tell me what types of drinks you have available?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you let me know if you have any sides or appetizers that I can add to
+    my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: What are the prices for the drinks you mentioned?
+- Assistant: Sprite and Coke are 1.50$. Water is 1$.
+- User: Could you please tell me what payment methods you accept for the order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Could you let me know what payment options are available for my order?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.

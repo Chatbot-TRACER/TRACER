@@ -1,0 +1,100 @@
+serial: 2025-05-31-09-46-22
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- You are trying to order a pizza through the chatbot, but you're having some trouble
+  with your phone's microphone.
+- This is causing the chatbot to misinterpret some of your requests, requiring you
+  to be more careful with your speech.
+ask_about:
+- I want to order a pizza.
+- I want to order a pizza, can you help me with that?
+- What kind of pizzas do you have?
+- I'd like a {{pizza_type}} pizza.
+- I want to order a custom pizza.
+- pizza_type:
+  - Margherita
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- pizza_order_response: I can help you with that.
+- pizza_type_response: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese,
+    Vegetarian, and Custom (you choose the ingredients)
+- custom_pizza_response: I'm sorry, I did not get what you said. Can you rephrase?
+errors: []
+---
+conversation time: 112.927437
+assistant response time:
+- 1.526705
+- 0.901871
+- 2.020177
+- 2.011611
+- 1.573954
+- 1.933522
+- 1.778959
+- 1.689311
+- 2.067146
+- 1.663677
+- 0.729594
+- 4.190663
+- 2.616974
+- 1.013405
+- 1.199318
+- 0.946377
+- 1.195872
+response time report:
+  average: 1.70936
+  max: 4.190663
+  min: 0.729594
+---
+interaction:
+- User: I want to order a pizza, can you help me with that?
+- Assistant: Welcome to Fast Pizza!. I'm a chatbot assistant that can help you order
+    pizzas and drinks. What can I do for you?
+- User: What kind of pizzas do you have?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: I’d like a Margherita pizza, but can you repeat what toppings come with that?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: Could you just tell me what toppings are included with the Margherita pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings are included with the Margherita pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What toppings are on the Margherita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza, prices of pizzas, prices of beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you at least give me a hint about what's on the Margherita pizza?
+- Assistant: We have Margarita, Carbonara, Marinera, Hawaiian, Four cheese, Vegetarian,
+    and Custom (you choose the ingredients)
+- User: What are the main ingredients in a Margherita pizza?
+- Assistant: I do not know. I can answer questions about our opening hours, types
+    of pizza we serve, prices of pizzas and beverages, how to get the order, and how
+    much time it takes to get an order.
+- User: Can you tell me how long it usually takes to get my pizza delivered?
+- Assistant: It depends on the number of pizzas of the order, typically around 15
+    minutes per pizza, but depends on how busy we are.
+- User: Is there a way to check the status of my order while I'm waiting for the delivery?
+- Assistant: I'm sorry, I did not get what you said. I can help you ordering predefined
+    or custom pizzas, and then drinks.
+- User: Can you let me know if there's a way to track my order status while I'm waiting
+    for the pizza delivery?
+- Assistant: We do not do delivery, but customers need to get the shop for their orders.
+    We are located at 23 Main Street, New York.
+- User: What if I want to order a custom pizza instead? What options do I have for
+    toppings?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What toppings can I choose for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What are the available toppings I can select for a custom pizza?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: What if I want to add extra cheese to my custom pizza? Is that an option?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
+- User: Can I add extra cheese to my custom pizza? Is that something I can do?
+- Assistant: I'm sorry, I did not get what you said. Can you rephrase?
