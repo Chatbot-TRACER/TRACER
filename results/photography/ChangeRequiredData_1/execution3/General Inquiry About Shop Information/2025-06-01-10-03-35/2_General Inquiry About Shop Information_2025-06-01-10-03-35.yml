@@ -1,0 +1,100 @@
+serial: 2025-06-01-10-03-35
+language: English
+context:
+- You are planning a visit to a local shop but need to gather some basic information
+  before heading over.
+- You want to confirm their location and opening hours to ensure it fits your schedule.
+ask_about:
+- Ask what kind of shop-related issues the chatbot can answer questions about.
+- Inquire about the location of the shop.
+- Ask about the opening hours of the shop.
+- Ask if the shop is open on Saturdays.
+- If the chatbot doesn't know if the shop is open on Saturdays, ask it to list the
+  available information categories.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- shop_information: '{"location":"14 Wooster Street in SoHo","hours":"Monday to Friday,
+    from 9 AM to 5 PM","Saturday availability":"No"}'
+- shop_related_issues: I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+errors: []
+---
+conversation time: 109.365386
+assistant response time:
+- 0.812735
+- 0.877465
+- 3.7234
+- 3.939857
+- 3.231516
+- 1.050962
+- 2.792089
+- 3.962151
+- 4.380664
+- 3.150075
+- 0.775186
+- 1.288458
+- 1.307716
+- 2.533276
+- 1.60162
+- 1.658594
+response time report:
+  average: 2.31786
+  max: 4.380664
+  min: 0.775186
+---
+interaction:
+- User: What kind of shop-related issues can you answer questions about?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: What is the location of the shop?
+- Assistant: The store is located at 14 Wooster Street in SoHo.
+- User: What are the opening hours of the shop?
+- Assistant: We create art both on location and in our SoHo studio. Our hours are
+    Monday to Friday, from 9 AM to 5 PM.
+- User: Is the shop open on Saturdays?
+- Assistant: We create art both on location and in our SoHo studio. Our hours are
+    Monday to Friday, from 9 AM to 5 PM.
+- User: If you're not sure about Saturday hours, could you list the available information
+    categories you can provide?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: What kind of services does the shop offer?
+- Assistant: Primarily focused on photographs, but also encompassing video and virtual/3D
+    rendering.
+- User: What specific types of photographs does the shop specialize in?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What specific types of photographs does the shop specialize in?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What specific types of media do you handle in your shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What types of appointments can I make at the shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: What types of appointments can I schedule at the shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: What types of appointments can I arrange at your shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Could you tell me more about the price estimates for the services offered?
+- Assistant: "I can help you with price estimates, but I need a bit more information\
+    \ first. Could you please provide the following details: \n1. The type of media\
+    \ you are interested in (photography, video, or 3D rendering)?\n2. The number\
+    \ of artworks you need?\n3. The type of artworks (picture, sculpture, or ceramic)?"
+- User: Could you clarify what types of media I could choose from for the price estimates?
+- Assistant: 'You can choose from the following types of media for the price estimates:
+    photography, video, or 3D rendering. Please let me know which one you are interested
+    in, along with the number of artworks and their types (picture, sculpture, or
+    ceramic).'
+- User: What types of appointments can I arrange for photography services at your
+    shop?
+- Assistant: I can provide information about the types of media available for photography
+    services. You can choose from photography, video, or 3D rendering. If you have
+    specific needs or questions about appointments, feel free to ask!

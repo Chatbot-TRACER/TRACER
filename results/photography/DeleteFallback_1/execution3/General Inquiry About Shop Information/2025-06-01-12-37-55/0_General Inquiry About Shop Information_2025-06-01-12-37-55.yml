@@ -1,0 +1,100 @@
+serial: 2025-06-01-12-37-55
+language: English
+context:
+- You are planning a visit to a local shop but need to gather some basic information
+  before heading over.
+- You want to confirm their location and opening hours to ensure it fits your schedule.
+ask_about:
+- Ask what kind of shop-related issues the chatbot can answer questions about.
+- Inquire about the location of the shop.
+- Ask about the opening hours of the shop.
+- Ask if the shop is open on Saturdays.
+- If the chatbot doesn't know if the shop is open on Saturdays, ask it to list the
+  available information categories.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- shop_information: '{"location":"14 Wooster Street in SoHo","hours":"Monday to Friday,
+    from 9 AM to 5 PM","saturday_availability":"No"}'
+- shop_related_issues: I can provide information regarding our opening hours, location,
+    portfolio, pricing structure, and the types of media we handle.
+errors: []
+---
+conversation time: 127.227684
+assistant response time:
+- 2.79975
+- 1.589738
+- 4.973987
+- 3.608153
+- 8.876117
+- 3.707403
+- 1.259674
+- 2.45833
+- 2.865224
+- 3.323893
+- 3.649246
+- 2.588699
+- 4.048009
+- 3.986401
+- 4.473561
+- 3.518305
+response time report:
+  average: 3.607905
+  max: 8.876117
+  min: 1.259674
+---
+interaction:
+- User: What kind of shop-related issues can you answer questions about?
+- Assistant: Welcome to ArtClicks, we are specialized in photographs for art galleries.
+    What can I do for you?
+- User: Can you tell me the location of the shop?
+- Assistant: The store is located at 14 Wooster Street in SoHo.
+- User: What are the opening hours of the shop?
+- Assistant: We create art both on location and in our SoHo studio. Our hours are
+    Monday to Friday, from 9 AM to 5 PM.
+- User: Are you open on Saturdays?
+- Assistant: We create art both on location and in our SoHo studio. Our hours are
+    Monday to Friday, from 9 AM to 5 PM.
+- User: Could you tell me if you have information about other store-related categories?
+- Assistant: We have recently completed significant on-site digitization projects
+    for the Taller del Prado in Madrid, Spain, and the Centro Cultural Eduardo Leon
+    Jimenez Art Museum in Santiago, Dominican Republic.
+- User: Could you list the available information categories you have?
+- Assistant: Welcome to ArtClicks, we are specialized in photographs for art galleries.
+    What can I do for you?
+- User: What kind of services do you offer at the shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What types of photography services do you provide?
+- Assistant: Primarily focused on photographs, but also encompassing video and virtual/3D
+    rendering.
+- User: What specific types of photography do you specialize in?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What types of media do you handle at the shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: Could you tell me more about the pricing structure for your services?
+- Assistant: Our hourly rate is $200.
+- User: What other details can you share about the types of projects you typically
+    work on?
+- Assistant: We have recently completed significant on-site digitization projects
+    for the Taller del Prado in Madrid, Spain, and the Centro Cultural Eduardo Leon
+    Jimenez Art Museum in Santiago, Dominican Republic.
+- User: Can you tell me if you work on any specific types of art projects or themes?
+- Assistant: We have recently completed significant on-site digitization projects
+    for the Taller del Prado in Madrid, Spain, and the Centro Cultural Eduardo Leon
+    Jimenez Art Museum in Santiago, Dominican Republic.
+- User: What specific types of art projects or themes do you focus on in your photography
+    services?
+- Assistant: We have recently completed significant on-site digitization projects
+    for the Taller del Prado in Madrid, Spain, and the Centro Cultural Eduardo Leon
+    Jimenez Art Museum in Santiago, Dominican Republic.
+- User: Could you tell me more about the types of art projects or themes you typically
+    focus on in your photography services?
+- Assistant: We have recently completed significant on-site digitization projects
+    for the Taller del Prado in Madrid, Spain, and the Centro Cultural Eduardo Leon
+    Jimenez Art Museum in Santiago, Dominican Republic.

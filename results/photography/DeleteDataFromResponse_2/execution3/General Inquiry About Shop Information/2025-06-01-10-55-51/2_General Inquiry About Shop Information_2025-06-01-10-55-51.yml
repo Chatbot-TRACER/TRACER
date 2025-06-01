@@ -1,0 +1,96 @@
+serial: 2025-06-01-10-55-51
+language: English
+context:
+- You are planning a visit to a local shop but need to gather some basic information
+  before heading over.
+- You want to confirm their location and opening hours to ensure it fits your schedule.
+ask_about:
+- Ask what kind of shop-related issues the chatbot can answer questions about.
+- Inquire about the location of the shop.
+- Ask about the opening hours of the shop.
+- Ask if the shop is open on Saturdays.
+- If the chatbot doesn't know if the shop is open on Saturdays, ask it to list the
+  available information categories.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- shop_information: '{"location":"14 Wooster Street in SoHo","hours":"Monday to Friday,
+    from 9 AM to 5 PM","saturday_availability":"No"}'
+- shop_related_issues: I'm sorry, I can help you to set an appointment for a session,
+    provide price estimates, and answer on issues related to our shop.
+errors: []
+---
+conversation time: 113.377235
+assistant response time:
+- 0.883357
+- 1.116444
+- 2.938473
+- 2.890189
+- 3.088148
+- 0.823723
+- 2.711232
+- 2.587369
+- 2.999198
+- 3.404105
+- 2.664628
+- 0.828263
+- 2.399904
+- 2.936148
+- 3.417552
+- 3.191144
+response time report:
+  average: 2.429992
+  max: 3.417552
+  min: 0.823723
+---
+interaction:
+- User: What kind of shop-related issues can you help me with?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you tell me the location of the shop?
+- Assistant: The store is located at 14 Wooster Street in SoHo.
+- User: What are the opening hours of the shop?
+- Assistant: We create art both on location and in our SoHo studio. Our hours are
+    Monday to Friday, from 9 AM to 5 PM.
+- User: Is the shop open on Saturdays?
+- Assistant: We create art both on location and in our SoHo studio. Our hours are
+    Monday to Friday, from 9 AM to 5 PM.
+- User: Can you list the available information categories?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you provide information about the services offered at the shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What specific photography services do you offer at the shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What specific photography services do you offer at the shop?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What specific photography services do you offer at the shop?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What types of media do you handle at the shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: Can you provide more details about the virtual/3D rendering services offered
+    at the shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you tell me more about the pricing structure for the services offered
+    at the shop?
+- Assistant: Our hourly rate is $200.
+- User: What types of photography do you specialize in at the shop?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: Can you tell me what types of photography you handle at the shop?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: Can you provide more details about the portfolio of work that the shop has
+    done?
+- Assistant: We have recently completed significant on-site digitization projects
+    for the Taller del Prado in Madrid, Spain, and the Centro Cultural Eduardo Leon
+    Jimenez Art Museum in Santiago, Dominican Republic.
