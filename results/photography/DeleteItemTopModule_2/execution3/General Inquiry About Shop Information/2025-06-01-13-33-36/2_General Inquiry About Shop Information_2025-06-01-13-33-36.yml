@@ -1,0 +1,36 @@
+serial: 2025-06-01-13-33-36
+language: English
+context:
+- You are planning a visit to a local shop but need to gather some basic information
+  before heading over.
+- You want to confirm their location and opening hours to ensure it fits your schedule.
+ask_about:
+- Ask what kind of shop-related issues the chatbot can answer questions about.
+- Inquire about the location of the shop.
+- Ask about the opening hours of the shop.
+- Ask if the shop is open on Saturdays.
+- If the chatbot doesn't know if the shop is open on Saturdays, ask it to list the
+  available information categories.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- shop_information: null
+- shop_related_issues: null
+errors:
+- 500: Server error
+- 1001: 2 goals left to complete.
+---
+conversation time: 3.263341
+assistant response time:
+- 0.010449
+response time report:
+  average: 0.010449
+  max: 0.010449
+  min: 0.010449
+---
+interaction:
+- User: What kind of shop-related issues can you answer questions about?
+- Assistant: 'Error: chatbot server error'

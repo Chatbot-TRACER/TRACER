@@ -1,0 +1,100 @@
+serial: 2025-06-01-13-36-48
+language: English
+context:
+- You are planning a visit to a local shop but need to gather some basic information
+  before heading over.
+- You want to confirm their location and opening hours to ensure it fits your schedule.
+ask_about:
+- Ask what kind of shop-related issues the chatbot can answer questions about.
+- Inquire about the location of the shop.
+- Ask about the opening hours of the shop.
+- Ask if the shop is open on Saturdays.
+- If the chatbot doesn't know if the shop is open on Saturdays, ask it to list the
+  available information categories.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- shop_information: '{"location":"14 Wooster Street in SoHo","hours":null,"saturday_availability":null,"available_info_categories":["shop''s
+    location","portfolio and key projects","pricing structure","types of media we
+    handle"]}'
+- shop_related_issues: I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+errors: []
+---
+conversation time: 113.503138
+assistant response time:
+- 0.800717
+- 1.051738
+- 2.770587
+- 0.931413
+- 3.240423
+- 1.016869
+- 0.968878
+- 3.951934
+- 3.617819
+- 3.312558
+- 3.410103
+- 3.375756
+- 2.856993
+- 3.68562
+- 3.297105
+- 2.629918
+response time report:
+  average: 2.557401
+  max: 3.951934
+  min: 0.800717
+---
+interaction:
+- User: What kind of shop-related issues can you answer questions about?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you tell me the location of the shop?
+- Assistant: The store is located at 14 Wooster Street in SoHo.
+- User: What are the opening hours of the shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you provide the opening hours for the shop?
+- Assistant: I'm not sure. However, I can provide information about the shop's location,
+    our portfolio and key projects, our pricing structure, and the types of media
+    we handle.
+- User: Can you tell me if the shop is open on Saturdays?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Could you list the available categories of information you can provide about
+    the shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you provide the opening hours for the shop?
+- Assistant: I'm not sure. However, I can provide information about the shop's location,
+    our portfolio and key projects, our pricing structure, and the types of media
+    we handle.
+- User: What kind of services does the shop offer?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What services does the shop specialize in?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: Could you tell me if the shop is open on Saturdays?
+- Assistant: I'm not sure. However, I can provide information about the shop's location,
+    our portfolio and key projects, our pricing structure, and the types of media
+    we handle.
+- User: Is there any way you could check if the shop is open on Saturdays?
+- Assistant: I'm not sure. However, I can provide information about the shop's location,
+    our portfolio and key projects, our pricing structure, and the types of media
+    we handle.
+- User: Could you tell me what services the shop specializes in?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: Could you provide the opening hours for the shop?
+- Assistant: I'm not sure. However, I can provide information about the shop's location,
+    our portfolio and key projects, our pricing structure, and the types of media
+    we handle.
+- User: Can you tell me if the shop is open on Saturdays?
+- Assistant: I'm not sure. However, I can provide information about the shop's location,
+    our portfolio and key projects, our pricing structure, and the types of media
+    we handle.
+- User: Can you provide details about the shop's location?
+- Assistant: The store is located at 14 Wooster Street in SoHo.

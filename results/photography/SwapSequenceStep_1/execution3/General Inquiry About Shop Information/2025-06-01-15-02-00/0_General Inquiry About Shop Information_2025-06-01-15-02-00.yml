@@ -1,0 +1,96 @@
+serial: 2025-06-01-15-02-00
+language: English
+context:
+- You are planning a visit to a local shop but need to gather some basic information
+  before heading over.
+- You want to confirm their location and opening hours to ensure it fits your schedule.
+ask_about:
+- Ask what kind of shop-related issues the chatbot can answer questions about.
+- Inquire about the location of the shop.
+- Ask about the opening hours of the shop.
+- Ask if the shop is open on Saturdays.
+- If the chatbot doesn't know if the shop is open on Saturdays, ask it to list the
+  available information categories.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- shop_information: '{"location": "14 Wooster Street in SoHo", "hours": "Monday to
+    Friday, from 9 AM to 5 PM", "saturday_availability": "Unknown", "available_information":
+    ["setting appointments for sessions", "price estimates", "issues related to our
+    shop", "portfolio", "pricing structure", "types of media handled"]}'
+- shop_related_issues: I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+errors: []
+---
+conversation time: 124.226497
+assistant response time:
+- 1.034777
+- 1.440086
+- 2.446949
+- 3.05493
+- 3.025789
+- 1.046927
+- 2.662133
+- 2.901353
+- 3.146975
+- 2.77993
+- 3.425561
+- 3.138709
+- 3.534941
+- 3.415115
+- 2.925183
+- 3.318117
+response time report:
+  average: 2.706092
+  max: 3.534941
+  min: 1.034777
+---
+interaction:
+- User: What kind of shop-related issues can you answer questions about?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: What is the exact location of the shop?
+- Assistant: The store is located at 14 Wooster Street in SoHo.
+- User: What are the opening hours of the shop?
+- Assistant: We create art both on location and in our SoHo studio. Our hours are
+    Monday to Friday, from 9 AM to 5 PM.
+- User: Is the shop open on Saturdays?
+- Assistant: We create art both on location and in our SoHo studio. Our hours are
+    Monday to Friday, from 9 AM to 5 PM.
+- User: What categories of information do you have available if you don't know if
+    the shop is open on Saturdays?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: What services do you offer at the shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What type of photography services do you specialize in at the shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What type of photography services do you specialize in at the shop?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What types of media do you handle at the shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What kind of photography services can I get at your shop?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What types of photography services can I get at your shop?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What types of photography services can I get at your shop?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What types of photography services can I get at your shop?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What types of media do you handle at the shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What specific types of photography do you offer services for at your shop?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.

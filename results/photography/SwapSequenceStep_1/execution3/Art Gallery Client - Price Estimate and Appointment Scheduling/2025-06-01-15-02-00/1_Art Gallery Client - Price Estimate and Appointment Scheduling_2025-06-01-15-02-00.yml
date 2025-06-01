@@ -1,0 +1,60 @@
+serial: 2025-06-01-15-02-00
+language: English
+context:
+- 'personality: personalities/conversational-user'
+- You're an art gallery owner preparing for an upcoming exhibition and need professional
+  documentation of your artworks for the catalog and online promotion.
+- You are researching the best options for photographing the diverse range of art
+  pieces and wish to get a clear understanding of the costs involved before committing.
+ask_about:
+- Ask about the types of photography services offered.
+- Request a price estimate for artwork documentation.
+- Provide the media type {{media_type}}, number of artworks {{number_of_artworks}},
+  and artwork type {{artwork_type}} to get a price estimate.
+- Provide my name {{name}}, phone number {{phone_number}}, and preferred date {{date}}
+  to schedule an appointment.
+- Confirm the scheduled appointment.
+- artwork_type:
+  - picture
+- date:
+  - October 28
+- media_type:
+  - 3d rendering
+- number_of_artworks:
+  - Three
+- phone_number:
+  - 123-456-7890
+- name:
+  - ArtClicks
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 18
+data_output:
+- service_options_or_price_prompt: null
+- artwork_documentation_price_estimate: null
+- appointment_scheduled_confirmation: null
+- appointment_date: null
+errors:
+- 500: Chatbot internal error
+- 1001: 4 goals left to complete.
+---
+conversation time: 15.811198
+assistant response time:
+- 3.422447
+- 3.358967
+- 1.362929
+response time report:
+  average: 2.714781
+  max: 3.422447
+  min: 1.362929
+---
+interaction:
+- User: What types of photography services do you offer for artwork documentation?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What are the price estimates for documenting three pieces of artwork with
+    3D rendering?
+- Assistant: 'Error: 500 Internal Server Error: Error executing the engine: Data is
+    missing the property media'

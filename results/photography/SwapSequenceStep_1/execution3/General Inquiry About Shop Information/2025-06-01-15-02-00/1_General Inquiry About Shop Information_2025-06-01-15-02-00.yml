@@ -1,0 +1,95 @@
+serial: 2025-06-01-15-02-00
+language: English
+context:
+- You are planning a visit to a local shop but need to gather some basic information
+  before heading over.
+- You want to confirm their location and opening hours to ensure it fits your schedule.
+ask_about:
+- Ask what kind of shop-related issues the chatbot can answer questions about.
+- Inquire about the location of the shop.
+- Ask about the opening hours of the shop.
+- Ask if the shop is open on Saturdays.
+- If the chatbot doesn't know if the shop is open on Saturdays, ask it to list the
+  available information categories.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- shop_information: 'Location: 14 Wooster Street in SoHo. Hours: Monday to Friday,
+    from 9 AM to 5 PM. Saturday availability: Unknown.'
+- shop_related_issues: I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+errors: []
+---
+conversation time: 131.791498
+assistant response time:
+- 1.310637
+- 1.382294
+- 2.687412
+- 3.559253
+- 2.912338
+- 1.138669
+- 3.233252
+- 1.165685
+- 4.678163
+- 3.230852
+- 4.072947
+- 2.295496
+- 2.750407
+- 1.211699
+- 1.166661
+- 1.458411
+response time report:
+  average: 2.390886
+  max: 4.678163
+  min: 1.138669
+---
+interaction:
+- User: What kind of shop-related issues can you answer questions about?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you tell me where the shop is located?
+- Assistant: The store is located at 14 Wooster Street in SoHo.
+- User: What are the opening hours of the shop?
+- Assistant: We create art both on location and in our SoHo studio. Our hours of operation
+    are Monday to Friday, from 9 AM to 5 PM.
+- User: Is the shop open on Saturdays?
+- Assistant: We create art both on location and in our SoHo studio. Our hours are
+    Monday to Friday, from 9 AM to 5 PM.
+- User: Can you list the available information categories since you weren't able to
+    confirm Saturday hours?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: What types of sessions or services do you offer at the shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: Can you tell me if there are any specific types of photography sessions available?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you elaborate on the specific types of photography sessions you offer?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: What specific types of media do you handle at the shop?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: What types of photography sessions do you offer?
+- Assistant: I'm not sure. However, I can provide information regarding our opening
+    hours, location, portfolio, pricing structure, and the types of media we handle.
+- User: I see. Can you tell me more about the pricing structure for the photography
+    sessions?
+- Assistant: Our hourly rate is $200.
+- User: What other services do you offer in addition to photography sessions?
+- Assistant: Primarily focused on photography, but also encompassing video and virtual/3D
+    rendering.
+- User: Can you provide more details about the video services offered at the shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: What kind of video services do you offer at the shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you tell me what types of virtual or 3D rendering services you provide
+    at the shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.

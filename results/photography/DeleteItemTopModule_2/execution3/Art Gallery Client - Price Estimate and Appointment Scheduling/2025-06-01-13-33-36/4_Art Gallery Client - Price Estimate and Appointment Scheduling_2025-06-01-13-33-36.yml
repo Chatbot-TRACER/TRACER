@@ -1,0 +1,53 @@
+serial: 2025-06-01-13-33-36
+language: English
+context:
+- 'personality: personalities/conversational-user'
+- You're an art gallery owner preparing for an upcoming exhibition and need professional
+  documentation of your artworks for the catalog and online promotion.
+- You are researching the best options for photographing the diverse range of art
+  pieces and wish to get a clear understanding of the costs involved before committing.
+ask_about:
+- Ask about the types of photography services offered.
+- Request a price estimate for artwork documentation.
+- Provide the media type {{media_type}}, number of artworks {{number_of_artworks}},
+  and artwork type {{artwork_type}} to get a price estimate.
+- Provide my name {{name}}, phone number {{phone_number}}, and preferred date {{date}}
+  to schedule an appointment.
+- Confirm the scheduled appointment.
+- artwork_type:
+  - ceramic
+- date:
+  - November 3
+- media_type:
+  - Animation
+- number_of_artworks:
+  - Fifteen
+- phone_number:
+  - 650-555-8901
+- name:
+  - ArtClicks
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 18
+data_output:
+- service_options_or_price_prompt: null
+- artwork_documentation_price_estimate: null
+- appointment_scheduled_confirmation: null
+- appointment_date: null
+errors:
+- 500: Server error
+- 1001: 4 goals left to complete.
+---
+conversation time: 3.895567
+assistant response time:
+- 0.010683
+response time report:
+  average: 0.010683
+  max: 0.010683
+  min: 0.010683
+---
+interaction:
+- User: What types of photography services do you offer for artwork documentation?
+- Assistant: 'Error: chatbot server error'

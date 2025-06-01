@@ -1,0 +1,96 @@
+serial: 2025-06-01-13-36-48
+language: English
+context:
+- You are planning a visit to a local shop but need to gather some basic information
+  before heading over.
+- You want to confirm their location and opening hours to ensure it fits your schedule.
+ask_about:
+- Ask what kind of shop-related issues the chatbot can answer questions about.
+- Inquire about the location of the shop.
+- Ask about the opening hours of the shop.
+- Ask if the shop is open on Saturdays.
+- If the chatbot doesn't know if the shop is open on Saturdays, ask it to list the
+  available information categories.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- shop_information: '{"location":"14 Wooster Street in SoHo","hours":null,"saturday_availability":null,"available_information_categories":["location","portfolio
+    and key projects","pricing structure","types of media we handle"]}'
+- shop_related_issues: I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+errors: []
+---
+conversation time: 111.391976
+assistant response time:
+- 1.334431
+- 0.838749
+- 3.059009
+- 0.900909
+- 3.923007
+- 1.008091
+- 0.808966
+- 1.353804
+- 3.567849
+- 5.245767
+- 2.633027
+- 1.438855
+- 2.647484
+- 3.473529
+- 0.83375
+- 3.33011
+response time report:
+  average: 2.274833
+  max: 5.245767
+  min: 0.808966
+---
+interaction:
+- User: What kind of shop-related issues can you answer questions about?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Can you tell me where the shop is located?
+- Assistant: The store is located at 14 Wooster Street in SoHo.
+- User: What are the opening hours of the shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: What are the opening hours for the shop?
+- Assistant: I'm not sure. However, I can provide information about the shop's location,
+    our portfolio and key projects, our pricing structure, and the types of media
+    we handle.
+- User: Are you open on Saturdays?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: What categories of information do you have available regarding the shop?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Could you please tell me what the opening hours for the shop are?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Could you provide me with the specific days and times when the shop is open?
+- Assistant: I'm not sure. However, I can provide information about the shop's location,
+    our portfolio and key projects, our pricing structure, and the types of media
+    we handle.
+- User: Could you please tell me what specific days and times the shop is open?
+- Assistant: I'm not sure. However, I can provide information about the shop's location,
+    our portfolio and key projects, our pricing structure, and the types of media
+    we handle.
+- User: Could you let me know if the shop is open on Sundays?
+- Assistant: Our hourly rate is $200.
+- User: Could you tell me if the shop is open on Sundays?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Could you let me know if the shop operates on Sundays?
+- Assistant: Our hourly rate is $200.
+- User: Could you please tell me if the shop is open on Sundays?
+- Assistant: I'm not sure. However, I can provide information about the shop's location,
+    our portfolio and key projects, our pricing structure, and the types of media
+    we handle.
+- User: Could you provide information about whether the shop is open on holidays?
+- Assistant: I'm sorry, I can help you to set an appointment for a session, provide
+    price estimates, and answer on issues related to our shop.
+- User: Could you please share the specific days and times the shop is open?
+- Assistant: I'm not sure. However, I can provide information about the shop's location,
+    our portfolio and key projects, our pricing structure, and the types of media
+    we handle.
