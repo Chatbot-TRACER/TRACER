@@ -1,0 +1,110 @@
+serial: 2025-06-01-18-17-01
+language: English
+context:
+- 'personality: personalities/curious-user'
+- Your bicycle has been making some strange noises lately, and you suspect it needs
+  a tune-up or repair.
+- You rely on your bike for commuting, so it's important to get it fixed as soon as
+  possible, preferably within the next few days.
+- You have a fairly busy schedule, so you need to find a convenient time that fits
+  your availability.
+ask_about:
+- Inquire about available bike repair services and scheduling options.
+- Ask for the price of a tune-up.
+- Schedule an appointment for a repair, specifying the date and time as {{appointment_date}}
+  and {{appointment_time}}.
+- Attempt to reschedule the appointment and inquire about the shop's contact information
+  when informed that rescheduling is not possible.
+- Decline to provide contact information and ask for business hours.
+- appointment_date: Saturday
+- appointment_time: 4:30 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- repair_services_info: I'm sorry it's a little loud in my shop, can you say that
+    again?
+- tune_up_price: The cost of a tune-up is $150.
+- appointment_details: null
+- rescheduling_policy: null
+- business_hours: I'm sorry it's a little loud in my shop, can you say that again?
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.0059532
+---
+conversation time: 102.272227
+assistant response time:
+- 0.809473
+- 0.791317
+- 0.746193
+- 0.811956
+- 0.858568
+- 0.864866
+- 2.642512
+- 0.842575
+- 0.857124
+- 0.751159
+- 3.511421
+- 4.06638
+- 3.003526
+- 0.714936
+- 0.770462
+- 0.80462
+- 0.741172
+- 0.886153
+- 0.780626
+- 0.752903
+response time report:
+  average: 1.300397
+  max: 4.066379
+  min: 0.714936
+---
+interaction:
+- User: What bike repair services do you offer, and what are the scheduling options?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you provide, and how can I schedule
+    an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services are available, and how can I set up an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What services do you offer for bike repairs, and how can I book an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you have, and how can I arrange an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of bike repair services do you offer, and how can I schedule an
+    appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the prices for a bike tune-up?
+- Assistant: The cost of a tune-up is $150.
+- User: Is that the only service you provide, or are there additional repair options
+    available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What other bike repair services do you offer besides the tune-up?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What additional bike repair services do you have apart from the tune-up?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the price for a full bike overhaul?
+- Assistant: I’m not sure about the cost of a complete bike overhaul. However, I can
+    provide information on the prices of new tires, tune-ups, new seats, and bike
+    maintenance tips.
+- User: What are the prices for new tires?
+- Assistant: The response to the question, "What is the price of a new tire?" is $20.
+- User: What are the prices for new bike seats?
+- Assistant: The response to the question, "What is the price of a new seat?" is that
+    it ranges from $50 to $100.
+- User: What are your business hours?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What time do you open and close your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your shop's opening and closing hours?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your business hours for bike repairs?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What time do you open and close for bike repairs?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your shop's hours for bike repairs?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What days and times are you usually open for bike repairs?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

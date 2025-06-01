@@ -1,0 +1,67 @@
+serial: 2025-05-31-12-01-45
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- Your bicycle has been feeling sluggish lately, and you suspect the tires are worn
+  and the chain needs lubrication.
+- You rely on your bike for daily commuting and weekend rides, so keeping it in top
+  condition is a priority.
+- You'd like to get it serviced as soon as possible, ideally tomorrow morning.
+ask_about:
+- Ask what services the bike shop offers.
+- Ask how much a new tire costs.
+- Inquire about tire installation.
+- Ask to schedule a repair appointment for tomorrow at 10 AM.
+- Ask what a bike tune-up includes.
+- Ask for the price of a bike tune-up.
+- Ask for bike maintenance advice.
+- Ask what type of lubricant should be used on a bike chain.
+- Ask for bike lubrication instructions.
+- Ask to confirm appointment for tomorrow at 10 AM.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 30
+data_output:
+- available_services: I'm sorry it's a little loud in my shop, can you say that again?
+- tire_price: The response to the question, "What is the price of a new tire?" is
+    $150.
+- tune_up_details: null
+- tune_up_price: I'm sorry it's a little loud in my shop, can you say that again?
+- maintenance_advice: null
+- lubrication_steps: None
+- appointment_details: null
+errors:
+- 504: No response was received from the server in less than 20
+- 1001: 3 goals left to complete.
+total_cost($): 0.00144345
+---
+conversation time: 48.495948
+assistant response time:
+- 0.779937
+- 0.733395
+- 0.793484
+- 3.615012
+- 0.712821
+- 0.789623
+- 20.032349
+response time report:
+  average: 3.922374
+  max: 20.032349
+  min: 0.712821
+---
+interaction:
+- User: What services do you offer for bike repairs and maintenance?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair and maintenance services do you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kind of bike repair and maintenance services do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: How much does a new tire cost?
+- Assistant: The response to the question, "What is the price of a new tire?" is $150.
+- User: Is there an additional charge for tire installation?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: How much do you charge for tire installation?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your rates for installing a new tire?

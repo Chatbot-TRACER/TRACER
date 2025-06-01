@@ -1,0 +1,89 @@
+serial: 2025-06-01-10-09-05
+language: English
+context:
+- You've noticed your car's tires are wearing thin and need to be replaced soon.
+- You want to get an idea of pricing and options before committing to a purchase.
+- You are particularly interested in understanding the differences between various
+  tire types.
+ask_about:
+- Ask if the business offers tire replacements.
+- Inquire about the price of a tire, specifying the size as {{tire_size}}, the brand
+  as {{tire_brand}}, and the type as {{tire_type}}.
+- Ask about the types of tires available.
+- Inquire about the price for a set of four all-season tires.
+- tire_brand: Michelin
+- tire_size: 205/55R16
+- tire_type: Touring
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- tire_replacement_confirmation: None
+- tire_price: I'm sorry it's a little loud in my shop, can you say that again?
+- tire_types_information: I'm sorry it's a little loud in my shop, can you say that
+    again?
+- all_season_tire_set_inquiry: I'm sorry it's a little loud in my shop, can you say
+    that again?
+errors: []
+total_cost($): 0.0035595
+---
+conversation time: 65.096408
+assistant response time:
+- 0.841063
+- 0.964745
+- 0.820136
+- 0.984496
+- 0.880376
+- 0.920771
+- 0.953907
+- 0.864128
+- 1.409127
+- 1.13507
+- 4.503238
+- 0.993321
+- 1.083668
+- 0.782945
+- 1.179701
+- 1.13549
+response time report:
+  average: 1.215761
+  max: 4.503237
+  min: 0.782945
+---
+interaction:
+- User: Do you offer tire replacements?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you provide tire replacement services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you offer tire replacement services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of tires do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of tires do you have in stock?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of tires do you have available for purchase?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the price for a set of four all-season tires?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the cost for a set of four all-season tires?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the price for a set of four all-season tires?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the price for a Michelin Touring tire, size 205/55R16?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the cost of a Michelin Touring tire in size 205/55R16?
+- Assistant: I’m unable to provide the price for a Michelin Touring tire in size 205/55R16.
+    However, I can assist with inquiries regarding the cost of a new tire, a tune-up,
+    a new seat, and bike maintenance.
+- User: What other tire brands do you have available besides Michelin?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: 'User: What other tire brands do you have for sale besides Michelin?'
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What tire brands do you carry other than Michelin?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the different types of tires you sell?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of tires do you sell?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

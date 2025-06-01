@@ -1,0 +1,128 @@
+serial: 2025-05-30-17-02-22
+language: English
+context:
+- You are a new resident in town and are looking for a local bike shop for potential
+  future repairs and maintenance.
+- You want to gather some basic information about the shop's services and operating
+  hours before visiting in person.
+- You also want to know if the chatbot can handle appointment rescheduling, as you
+  might need to adjust a future booking.
+ask_about:
+- Ask for the shop's weekday operating hours.
+- Ask if the shop is open on Saturdays.
+- Ask if the chatbot can help reschedule an appointment.
+- Ask for the shop's phone number.
+- Ask what capabilities the chatbot has.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- weekday_operating_hours: Every weekday from 9am to 5:30pm
+- saturday_open: We are not open on Saturdays.
+- appointment_reschedule_response: Can you help me reschedule an appointment if I
+    need to?
+- phone_number_information: I'm sorry, but I can't provide the shop's phone number.
+    However, I can help you with other inquiries. What can I do for you?
+- chatbot_capabilities: 'Welcome to my bike shop. I''m the owner and I''m happy to
+    help you.
+
+    What can I do for you?'
+errors: []
+total_cost($): 0.00532605
+---
+conversation time: 108.677685
+assistant response time:
+- 0.956691
+- 1.8461
+- 1.358353
+- 1.21717
+- 1.05237
+- 1.416572
+- 1.640186
+- 1.147322
+- 1.340402
+- 1.519269
+- 1.338018
+- 1.174515
+- 1.273023
+- 1.497605
+- 2.289986
+- 1.523457
+- 0.977011
+- 1.110909
+- 1.261799
+- 1.290652
+response time report:
+  average: 1.36157
+  max: 2.289986
+  min: 0.956691
+---
+interaction:
+- User: What are the shop's weekday operating hours?
+- Assistant: Every weekday from 9am to 5:30pm
+- User: Are you open on Saturdays?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Are you open on Saturdays?
+- Assistant: Our shop is open every weekday from 9am to 5:30pm. We are not open on
+    Saturdays.
+- User: Can you help me reschedule an appointment if I need to?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Can you help me reschedule an appointment if I need to?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Can you provide the shop's phone number?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: What capabilities does the chatbot have?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: What are the shop's weekday operating hours?
+- Assistant: Every weekday from 9am to 5:30pm
+- User: Are you open on Saturdays?
+- Assistant: Our shop is open every weekday from 9am to 5:30pm. We are not open on
+    Saturdays.
+- User: Can you help me reschedule an appointment if I need to?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Are you able to provide the shop's phone number?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: What are the shop's weekday operating hours?
+- Assistant: Every weekday from 9am to 5:30pm
+- User: Are you open on Saturdays?
+- Assistant: We are not open on Saturdays. Our hours are every weekday from 9am to
+    5:30pm.
+- User: Can you help me reschedule an appointment if I need to?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Can you provide the shop's phone number?
+- Assistant: I'm sorry, but I can't provide the shop's phone number. However, I can
+    help you with other inquiries. What can I do for you?
+- User: What capabilities does the chatbot have?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: What are the shop's weekday operating hours?
+- Assistant: Every weekday from 9am to 5:30pm
+- User: Are you open on Saturdays?
+- Assistant: We are not open on Saturdays. Our hours are every weekday from 9am to
+    5:30pm.
+- User: Can you help me reschedule an appointment if I need to?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Can you provide the shop's phone number?
+- Assistant: I'm sorry, but I can't provide the shop's phone number. However, I can
+    help you with other inquiries. What can I do for you?

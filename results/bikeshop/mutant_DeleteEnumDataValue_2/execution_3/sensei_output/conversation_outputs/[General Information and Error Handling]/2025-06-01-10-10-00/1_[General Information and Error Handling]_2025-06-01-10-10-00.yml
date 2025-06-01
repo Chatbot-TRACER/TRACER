@@ -1,0 +1,101 @@
+serial: 2025-06-01-10-10-00
+language: English
+context:
+- 'personality: personalities/curious-user'
+- You are planning a visit to a local shop and need to gather some basic information
+  before heading over.
+- You have a few specific items in mind, but you're also open to exploring other related
+  products they might offer.
+- You are not very tech-savvy and sometimes make errors when interacting with online
+  systems.
+ask_about:
+- Ask for the shop's operating hours.
+- Inquire about the availability of unicorn saddles.
+- Ask 'Tell me more about the options.
+- State 'I'd like to schedule an appointment', then when prompted for date/time, respond
+  with unintelligible noise.
+- Ask about bike helmets, then when told they don't have info, ask about bike prices.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- business_hours: Every weekday from 9am to 5:30pm
+- unavailable_item_response: I'm sorry it's a little loud in my shop, can you say
+    that again?
+- clarification_request: Every weekday from 9am to 5:30pm
+- unintelligible_request_response: Every weekday from 9am to 5:30pm
+- alternative_information_options: I'm sorry it's a little loud in my shop, can you
+    say that again?
+errors: []
+total_cost($): 0.00550665
+---
+conversation time: 102.342037
+assistant response time:
+- 1.299056
+- 1.149589
+- 0.826859
+- 0.769321
+- 0.882122
+- 0.87258
+- 0.851638
+- 0.801449
+- 0.786897
+- 0.817833
+- 0.893527
+- 0.761484
+- 0.87321
+- 0.751912
+- 1.10015
+- 0.803032
+- 1.015498
+- 0.746323
+- 1.013326
+- 0.788499
+response time report:
+  average: 0.890215
+  max: 1.299056
+  min: 0.746323
+---
+interaction:
+- User: What are your operating hours?
+- Assistant: Every weekday from 9am to 5:30pm
+- User: Do you have any unicorn saddles in stock?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any unicorn saddles available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any unicorn saddles in stock?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any bike helmets?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any bike helmets available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any information about bike helmets?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any information about bike prices?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any bike prices available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any information on bike prices?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any unicorn saddles available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any unicorn saddles in stock?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any unicorn saddles in stock?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any other items related to unicorns?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any other items related to unicorns?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any other unicorn-related products?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any other unicorn-related products?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any other unicorn-related items for sale?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any other unicorn-related items for sale?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any horse saddles?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

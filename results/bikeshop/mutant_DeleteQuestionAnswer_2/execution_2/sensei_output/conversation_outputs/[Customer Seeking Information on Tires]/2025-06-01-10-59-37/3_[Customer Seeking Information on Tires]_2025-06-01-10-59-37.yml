@@ -1,0 +1,98 @@
+serial: 2025-06-01-10-59-37
+language: English
+context:
+- You've noticed your car's tires are wearing thin and need to be replaced soon.
+- You want to get an idea of pricing and options before committing to a purchase.
+- You are particularly interested in understanding the differences between various
+  tire types.
+ask_about:
+- Ask if the business offers tire replacements.
+- Inquire about the price of a tire, specifying the size as {{tire_size}}, the brand
+  as {{tire_brand}}, and the type as {{tire_type}}.
+- Ask about the types of tires available.
+- Inquire about the price for a set of four all-season tires.
+- tire_brand: Pirelli
+- tire_size: 195/65R15
+- tire_type: Winter/Snow
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- tire_replacement_confirmation: null
+- tire_price: null
+- tire_types_information: I'm sorry it's a little loud in my shop, can you say that
+    again?
+- all_season_tire_set_inquiry: I'm not sure about the prices for a set of four all-season
+    tires. However, I can provide information on the cost of a new tire, the price
+    of a new seat, and tips for bike maintenance.
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.00355965
+---
+conversation time: 58.804189
+assistant response time:
+- 0.830754
+- 3.879042
+- 0.969019
+- 0.944224
+- 0.86392
+- 0.854698
+- 0.91335
+- 0.929646
+- 0.880972
+- 0.87973
+- 1.039026
+- 0.846033
+- 4.460598
+- 3.184381
+- 4.411918
+- 3.844144
+response time report:
+  average: 1.858215
+  max: 4.460598
+  min: 0.830754
+---
+interaction:
+- User: Do you offer tire replacements?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you provide tire replacement services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have tire replacement services available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of tires do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of tire options do you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What varieties of tires can I choose from?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have winter tires available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: 'User: Can you tell me if you have winter tires in stock?'
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you stock winter tires?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have any all-season tires available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you offer all-season tires?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you have all-season tires for sale?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the prices for a set of four all-season tires?
+- Assistant: I’m not sure about the prices for a set of four all-season tires. However,
+    I can provide information on the cost of a new tire, the price of a new seat,
+    and tips for bike maintenance.
+- User: What is the price for a single Pirelli Winter/Snow tire in the size 195/65R15?
+- Assistant: I’m not sure about the price of a single Pirelli Winter/Snow tire in
+    the size 195/65R15. However, I can provide information on the cost of a new tire,
+    the price of a new seat, and tips for bike maintenance.
+- User: What is the price for a set of four Pirelli Winter/Snow tires in the size
+    195/65R15?
+- Assistant: I’m unable to provide the price for a set of four Pirelli Winter/Snow
+    tires in the size 195/65R15. However, I can assist with inquiries regarding the
+    cost of a new tire, the price of a new seat, and tips for bike maintenance.
+- User: What is the price for a single Pirelli all-season tire in the size 195/65R15?
+- Assistant: I’m not sure about the price of a single Pirelli all-season tire in the
+    size 195/65R15. However, I can provide information on the cost of a new tire,
+    the price of a new seat, and tips for bike maintenance.

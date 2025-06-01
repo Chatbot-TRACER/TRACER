@@ -1,0 +1,46 @@
+{
+    "specification": {
+        "modules": [
+            "make_appointment",
+            "bike_qa",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "repair",
+                "tune-up"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "bike_qa",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": [],
+            "unknown": [
+                "What is the price for a single Pirelli Winter/Snow tire in the size 195/65R15?",
+                "What is the price for a single Pirelli all-season tire in the size 195/65R15?",
+                "What are the prices for a set of four all-season tires?",
+                "What is the price for a set of four Pirelli Winter/Snow tires in the size 195/65R15?"
+            ]
+        },
+        "top-level": {}
+    }
+}

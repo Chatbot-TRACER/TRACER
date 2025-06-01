@@ -1,0 +1,104 @@
+serial: 2025-06-01-10-09-05
+language: English
+context:
+- 'personality: personalities/curious-user'
+- Your bicycle has been making some strange noises lately, and you suspect it needs
+  a tune-up or repair.
+- You rely on your bike for commuting, so it's important to get it fixed as soon as
+  possible, preferably within the next few days.
+- You have a fairly busy schedule, so you need to find a convenient time that fits
+  your availability.
+ask_about:
+- Inquire about available bike repair services and scheduling options.
+- Ask for the price of a tune-up.
+- Schedule an appointment for a repair, specifying the date and time as {{appointment_date}}
+  and {{appointment_time}}.
+- Attempt to reschedule the appointment and inquire about the shop's contact information
+  when informed that rescheduling is not possible.
+- Decline to provide contact information and ask for business hours.
+- appointment_date: Friday
+- appointment_time: 3:00 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- repair_services_info: I'm sorry it's a little loud in my shop, can you say that
+    again?
+- tune_up_price: null
+- appointment_details: null
+- rescheduling_policy: null
+- business_hours: Every weekday from 9am to 5:30pm
+errors:
+- 1001: 3 goals left to complete.
+total_cost($): 0.00546975
+---
+conversation time: 107.370759
+assistant response time:
+- 1.119114
+- 0.894264
+- 0.887248
+- 0.858074
+- 1.146674
+- 0.782507
+- 0.771172
+- 0.771996
+- 0.806269
+- 0.982062
+- 1.391186
+- 0.877878
+- 2.371369
+- 1.166611
+- 1.022529
+- 0.820264
+- 0.924182
+- 0.993553
+- 3.049396
+- 1.585468
+response time report:
+  average: 1.16109
+  max: 3.049396
+  min: 0.771172
+---
+interaction:
+- User: What bike repair services do you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services are available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of bike repair services do you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kind of bike repair services can I get at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the different bike repair services you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Can you tell me about the bike repair services you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services can I get at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Can you tell me about your shop's hours of operation?
+- Assistant: Every weekday from 9am to 5:30pm
+- User: What are your available bike repair services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of bike repair services do you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your business hours on weekends?
+- Assistant: Every weekday from 9am to 5:30pm
+- User: What are your business hours on weekends?
+- Assistant: Every weekday from 9am to 5:30pm
+- User: What are your available bike repair services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of bike repair services can I get at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your business hours on Saturdays?
+- Assistant: Every weekday from 9am to 5:30pm
+- User: What are your business hours on Sundays?
+- Assistant: Every weekday from 9am to 5:30pm

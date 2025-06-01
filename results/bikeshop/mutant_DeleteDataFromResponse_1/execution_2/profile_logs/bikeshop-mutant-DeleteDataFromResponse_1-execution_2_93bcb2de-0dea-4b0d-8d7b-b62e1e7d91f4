@@ -1,0 +1,50 @@
+{
+    "specification": {
+        "modules": [
+            "bike_qa",
+            "make_appointment",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "repair",
+                "tune-up"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a tune-up?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "top-level",
+            "bike_qa"
+        ],
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a tune-up?": [
+                "Which is the price of a tune-up?"
+            ],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": [],
+            "unknown": [
+                "What exactly is included in the bike tune-up?",
+                "What does the bike tune-up include?",
+                "What does the bike tune-up actually consist of?",
+                "What does the bike tune-up consist of?"
+            ]
+        },
+        "top-level": {}
+    }
+}

@@ -1,0 +1,63 @@
+{
+    "specification": {
+        "modules": [
+            "bike_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "repair",
+                "tune-up"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a tune-up?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "top-level",
+            "bike_qa",
+            "make_appointment"
+        ],
+        "make_appointment": {
+            "date": [
+                "29/10/2024"
+            ],
+            "time": [
+                "10:00:00"
+            ],
+            "service": [
+                "repair"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [
+                "Which is the price of a new tire?"
+            ],
+            "Which is the price of a tune-up?": [
+                "Which is the price of a tune-up?"
+            ],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": [
+                "What can I do to take care of my bike?"
+            ],
+            "unknown": [
+                "What specific steps should I follow to clean my bike properly?",
+                "Is there an additional cost for putting on a new tire?",
+                "What type of lubricant do you recommend for lubricating a bike chain?",
+                "What does a typical bike maintenance routine involve?",
+                "Can you tell me how much you charge for tire installation?",
+                "Is the $150 for a basic tune-up, or does it include additional services like checking the tires or lubricating the chain?"
+            ]
+        },
+        "top-level": {}
+    }
+}

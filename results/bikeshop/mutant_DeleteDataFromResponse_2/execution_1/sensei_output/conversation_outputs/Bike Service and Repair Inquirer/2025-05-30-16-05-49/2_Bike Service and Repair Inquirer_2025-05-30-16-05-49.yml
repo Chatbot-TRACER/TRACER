@@ -1,0 +1,150 @@
+serial: 2025-05-30-16-05-49
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- Your bicycle has been feeling sluggish lately, and you suspect the tires are worn
+  and the chain needs lubrication.
+- You rely on your bike for daily commuting and weekend rides, so keeping it in top
+  condition is a priority.
+- You'd like to get it serviced as soon as possible, ideally tomorrow morning.
+ask_about:
+- Ask what services the bike shop offers.
+- Ask how much a new tire costs.
+- Inquire about tire installation.
+- Ask to schedule a repair appointment for tomorrow at 10 AM.
+- Ask what a bike tune-up includes.
+- Ask for the price of a bike tune-up.
+- Ask for bike maintenance advice.
+- Ask what type of lubricant should be used on a bike chain.
+- Ask for bike lubrication instructions.
+- Ask to confirm appointment for tomorrow at 10 AM.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 30
+data_output:
+- available_services: null
+- tire_price: The response to the question, "What is the price of a new tire?" is
+- tune_up_details: 'The response to the question, "What does a bike tune-up include?"
+    is:'
+- tune_up_price: The response to the question, "What is the cost of a tune-up?" is
+- maintenance_advice: 'The response to the question, "How can I maintain my bike?"
+    is:'
+- lubrication_steps: null
+- appointment_details: 'Ok, I have scheduled your appointment for 29/10/2024 at 10:00:00
+    for a repair.
+
+    See you then!'
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.01215195
+---
+conversation time: 225.927199
+assistant response time:
+- 0.733331
+- 0.71754
+- 0.978241
+- 0.674704
+- 0.665162
+- 2.841578
+- 3.020557
+- 3.639156
+- 2.707951
+- 7.781906
+- 3.763078
+- 0.651608
+- 0.849608
+- 0.723048
+- 0.757031
+- 0.639615
+- 0.66823
+- 2.599579
+- 4.820183
+- 1.74375
+- 0.897116
+- 1.025691
+- 0.718581
+- 0.767444
+- 3.17715
+- 7.951797
+- 2.465124
+- 2.889894
+- 3.003813
+- 0.84334
+response time report:
+  average: 2.157193
+  max: 7.951797
+  min: 0.639615
+---
+interaction:
+- User: What services do you offer for bike repairs and maintenance?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair and maintenance services do you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair and maintenance services do you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What does a bike tune-up include?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the components of a bike tune-up?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the cost of a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a tune-up?" is
+- User: How much does a bike tune-up cost?
+- Assistant: The response to the question, "What is the cost of a tune-up?" is
+- User: What is included in a bike tune-up?
+- Assistant: 'The response to the question, "What does a bike tune-up include?" is:'
+- User: What is the price of a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a tune-up?" is
+- User: How much does a new tire cost?
+- Assistant: The response to the question, "What is the price of a new tire?" is
+- User: What is the cost of a new tire?
+- Assistant: The response to the question, "What is the price of a new tire?" is
+- User: How much do you charge for tire installation?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: How much do you charge for installing a new tire?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: How much do you charge for tire installation?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What type of lubricant should I use on my bike chain?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kind of lubricant is best for a bike chain?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the best types of lubricant for a bike chain?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike maintenance advice do you have for keeping my bike in good condition?
+- Assistant: 'The response to the question, "How can I maintain my bike?" is:'
+- User: What bike maintenance tips do you recommend for keeping my bike in good shape?
+- Assistant: The response to the question, "What bike maintenance tips do you suggest
+    for maintaining my bike in good condition?" is
+- User: Can I schedule a repair appointment for tomorrow at 10 AM?
+- Assistant: 'Ok, I have scheduled your appointment for 29/10/2024 at 10:00:00 for
+    a repair.
+
+    See you then!'
+- User: Can you confirm my appointment for tomorrow at 10 AM?
+- Assistant: 'Ok, I have scheduled your appointment for 29/10/2024 at 10:00:00 for
+    a repair.
+
+    See you then!'
+- User: Can you tell me what services you offer for bike repairs and maintenance?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair and maintenance services do you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What services do you offer for bike repairs and maintenance?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the components of a bike tune-up?
+- Assistant: 'The response to the question, "What are the components of a bike tune-up?"
+    is:'
+- User: What is included in a bike tune-up?
+- Assistant: 'The response to the question, "What does a bike tune-up include?" is:'
+- User: What is the price of a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is
+- User: How much do you charge for tire installation?
+- Assistant: The response to the question, "What is your fee for tire installation?"
+    is
+- User: How much do you charge for installing a new tire?
+- Assistant: The response to the question, "What is your fee for installing a new
+    tire?" is
+- User: How much do you charge for tire installation?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

@@ -1,0 +1,65 @@
+{
+    "specification": {
+        "modules": [
+            "make_appointment",
+            "top-level",
+            "bike_qa"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "repair",
+                "tune-up"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a tune-up?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "make_appointment",
+            "top-level",
+            "bike_qa"
+        ],
+        "make_appointment": {
+            "date": [
+                "29/10/2024"
+            ],
+            "time": [
+                "10:00:00"
+            ],
+            "service": [
+                "repair"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [
+                "Which is the price of a new tire?"
+            ],
+            "Which is the price of a tune-up?": [
+                "Which is the price of a tune-up?"
+            ],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": [
+                "What can I do to take care of my bike?"
+            ],
+            "unknown": [
+                "What are some tips for keeping my bike in good condition?",
+                "What are the recommended lubricants for a bike chain?",
+                "What are some specific maintenance tasks I should perform regularly to keep my bike in good shape?",
+                "What specific maintenance tasks should I regularly perform to keep my bike in good condition?",
+                "What are some specific tips for keeping my bike in good condition?",
+                "What specific maintenance tasks should I perform regularly to keep my bike in good shape?",
+                "What does a bike tune-up include?",
+                "What are the proper steps for lubricating a bike chain?"
+            ]
+        },
+        "top-level": {}
+    }
+}

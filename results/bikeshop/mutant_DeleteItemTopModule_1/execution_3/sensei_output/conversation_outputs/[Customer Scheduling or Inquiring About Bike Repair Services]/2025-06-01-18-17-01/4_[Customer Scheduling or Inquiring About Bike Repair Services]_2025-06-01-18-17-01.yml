@@ -1,0 +1,104 @@
+serial: 2025-06-01-18-17-01
+language: English
+context:
+- 'personality: personalities/curious-user'
+- Your bicycle has been making some strange noises lately, and you suspect it needs
+  a tune-up or repair.
+- You rely on your bike for commuting, so it's important to get it fixed as soon as
+  possible, preferably within the next few days.
+- You have a fairly busy schedule, so you need to find a convenient time that fits
+  your availability.
+ask_about:
+- Inquire about available bike repair services and scheduling options.
+- Ask for the price of a tune-up.
+- Schedule an appointment for a repair, specifying the date and time as {{appointment_date}}
+  and {{appointment_time}}.
+- Attempt to reschedule the appointment and inquire about the shop's contact information
+  when informed that rescheduling is not possible.
+- Decline to provide contact information and ask for business hours.
+- appointment_date: Next Monday
+- appointment_time: 9:30 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- repair_services_info: None
+- tune_up_price: null
+- appointment_details: null
+- rescheduling_policy: null
+- business_hours: I'm sorry it's a little loud in my shop, can you say that again?
+errors:
+- 1001: 3 goals left to complete.
+total_cost($): 0.005634
+---
+conversation time: 99.126556
+assistant response time:
+- 0.775048
+- 0.906025
+- 0.810214
+- 0.768436
+- 0.986335
+- 0.751515
+- 0.82622
+- 1.346316
+- 0.79927
+- 0.997939
+- 0.807185
+- 0.698285
+- 0.743538
+- 0.861474
+- 0.985463
+- 0.796082
+- 0.995865
+- 0.922859
+- 0.995162
+- 0.862656
+response time report:
+  average: 0.881794
+  max: 1.346316
+  min: 0.698285
+---
+interaction:
+- User: What bike repair services do you offer, and how can I schedule an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you provide, and what are the options
+    for scheduling an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kind of bike repair services do you have, and how can I set up an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services do you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kind of bicycle repair services can I get from you?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the available bike repair services you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services can I get?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your business hours?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What time do you open and close your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your shop's opening and closing hours?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What time do you open and close your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your shop's operating hours?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the hours that your shop is open for business?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What time does your shop open and close?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the hours your shop is open?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your shop's hours of operation?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What time can I bring my bike in for a repair?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the times I can bring my bike in for repair?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

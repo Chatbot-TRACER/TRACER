@@ -1,0 +1,115 @@
+serial: 2025-06-01-10-59-55
+language: English
+context:
+- 'personality: personalities/curious-user'
+- Your bicycle has been making some strange noises lately, and you suspect it needs
+  a tune-up or repair.
+- You rely on your bike for commuting, so it's important to get it fixed as soon as
+  possible, preferably within the next few days.
+- You have a fairly busy schedule, so you need to find a convenient time that fits
+  your availability.
+ask_about:
+- Inquire about available bike repair services and scheduling options.
+- Ask for the price of a tune-up.
+- Schedule an appointment for a repair, specifying the date and time as {{appointment_date}}
+  and {{appointment_time}}.
+- Attempt to reschedule the appointment and inquire about the shop's contact information
+  when informed that rescheduling is not possible.
+- Decline to provide contact information and ask for business hours.
+- appointment_date: Friday
+- appointment_time: 3:00 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- repair_services_info: The cost of a tune-up is $20. I have scheduled your appointment
+    for 01/11/2024 at 15:00:00 for a repair. Our business hours are every weekday
+    from 9am to 5:30pm.
+- tune_up_price: The cost of a tune-up is $20.
+- appointment_details: 'Ok, I have scheduled your appointment for 01/11/2024 at 15:00:00
+    for a repair.
+
+    See you then!'
+- rescheduling_policy: 'Ok, I have scheduled your appointment for 01/11/2024 at 15:00:00
+    for a repair.
+
+    See you then!'
+- business_hours: Our business hours are every weekday from 9am to 5:30pm.
+errors: []
+total_cost($): 0.0062946
+---
+conversation time: 131.559261
+assistant response time:
+- 1.037009
+- 0.838145
+- 0.841601
+- 3.94732
+- 1.379603
+- 0.7696
+- 1.058473
+- 1.117529
+- 1.047877
+- 1.212879
+- 1.886181
+- 0.860755
+- 1.085288
+- 0.980904
+- 0.877011
+- 0.904075
+- 0.98463
+- 0.818548
+- 1.15084
+- 0.870126
+response time report:
+  average: 1.183419
+  max: 3.94732
+  min: 0.7696
+---
+interaction:
+- User: What bike repair services do you offer, and how can I schedule an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services are available, and what are the options
+    for scheduling an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of bike repair services do you provide, and how can I go about
+    scheduling an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the prices for a standard bike tune-up?
+- Assistant: The cost of a tune-up is $20.
+- User: Is it possible to schedule an appointment for a repair on Friday at 3:00 PM?
+- Assistant: 'Ok, I have scheduled your appointment for 01/11/2024 at 15:00:00 for
+    a repair.
+
+    See you then!'
+- User: Can I get your contact information in case there are any changes to the appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your business hours?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: Are you open on weekends?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are you open on Saturdays or Sundays?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are you available on Saturdays or Sundays for bike repairs?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What other services do you offer besides bike repairs?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What additional services do you provide apart from bike repairs?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What other services do you have available besides bike repairs?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of accessories do you sell for bicycles?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of accessories do you offer for bicycles?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of accessories do you have for bicycles?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What brands of bicycle accessories do you carry?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What brands of bicycle accessories do you have in stock?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What brands of bicycle accessories do you currently have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike lights do you sell?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

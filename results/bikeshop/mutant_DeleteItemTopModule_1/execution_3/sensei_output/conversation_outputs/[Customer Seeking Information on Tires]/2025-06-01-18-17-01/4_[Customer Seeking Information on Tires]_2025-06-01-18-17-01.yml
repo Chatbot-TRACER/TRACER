@@ -1,0 +1,95 @@
+serial: 2025-06-01-18-17-01
+language: English
+context:
+- You've noticed your car's tires are wearing thin and need to be replaced soon.
+- You want to get an idea of pricing and options before committing to a purchase.
+- You are particularly interested in understanding the differences between various
+  tire types.
+ask_about:
+- Ask if the business offers tire replacements.
+- Inquire about the price of a tire, specifying the size as {{tire_size}}, the brand
+  as {{tire_brand}}, and the type as {{tire_type}}.
+- Ask about the types of tires available.
+- Inquire about the price for a set of four all-season tires.
+- tire_brand: Continental
+- tire_size: 275/60R20
+- tire_type: Run-Flat
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 16
+data_output:
+- tire_replacement_confirmation: null
+- tire_price: I'm unable to provide the price for a Continental Run-Flat tire in size
+    275/60R20. However, I can assist with inquiries regarding the cost of a new tire,
+    a tune-up, a new seat, and bike maintenance.
+- tire_types_information: I'm sorry it's a little loud in my shop, can you say that
+    again?
+- all_season_tire_set_inquiry: I’m unable to provide the price for a set of four all-season
+    tires.
+errors:
+- 1001: 1 goals left to complete.
+total_cost($): 0.0033375
+---
+conversation time: 67.737866
+assistant response time:
+- 1.098298
+- 1.104175
+- 1.145961
+- 0.787569
+- 1.036896
+- 0.927191
+- 1.372911
+- 0.975889
+- 0.962848
+- 1.212747
+- 0.987107
+- 1.339399
+- 3.438586
+- 0.909711
+- 4.073338
+- 0.993482
+response time report:
+  average: 1.397881
+  max: 4.073338
+  min: 0.787569
+---
+interaction:
+- User: Do you offer tire replacements?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you provide tire replacement services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you provide tire replacement services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you offer tire replacements?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you offer tire replacement services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you provide tire replacement services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the types of tires you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of tires do you have in stock?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of tires do you carry?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What brands of tires do you carry?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What brands of tires do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What brands of tires do you stock?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the price for a set of four all-season tires?
+- Assistant: I’m unable to provide the price for a set of four all-season tires. However,
+    I can help with questions regarding the cost of a new tire, a tune-up, a new seat,
+    and bike maintenance.
+- User: What is the price of a tire size 275/60R20, brand Continental, and type Run-Flat?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the cost of a tire with the size 275/60R20, from the brand Continental,
+    and categorized as Run-Flat?
+- Assistant: I’m unable to provide the price for a Continental Run-Flat tire in size
+    275/60R20. However, I can assist with inquiries regarding the cost of a new tire,
+    a tune-up, a new seat, and bike maintenance.
+- User: What are the features of the all-season tires you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

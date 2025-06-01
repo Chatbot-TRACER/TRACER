@@ -1,0 +1,103 @@
+serial: 2025-05-30-14-06-51
+language: English
+context:
+- 'personality: personalities/curious-user'
+- You are planning a visit to a local shop and need to gather some basic information
+  before heading over.
+- You have a few specific items in mind, but you're also open to exploring other related
+  products they might offer.
+- You are not very tech-savvy and sometimes make errors when interacting with online
+  systems.
+ask_about:
+- Ask for the shop's operating hours.
+- Inquire about the availability of unicorn saddles.
+- Ask 'Tell me more about the options.
+- State 'I'd like to schedule an appointment', then when prompted for date/time, respond
+  with unintelligible noise.
+- Ask about bike helmets, then when told they don't have info, ask about bike prices.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- business_hours: Every weekday from 9am to 5:30pm
+- unavailable_item_response: I'm sorry it's a little loud in my shop, can you say
+    that again?
+- clarification_request: Every weekday from 9am to 5:30pm
+- unintelligible_request_response: I'm sorry it's a little loud in my shop, can you
+    say that again?
+- alternative_information_options: I'm sorry it's a little loud in my shop, can you
+    say that again?
+errors: []
+total_cost($): 0.00567585
+---
+conversation time: 3624.762369
+assistant response time:
+- 1.11799
+- 0.751834
+- 0.864491
+- 0.771871
+- 0.732054
+- 1.284016
+- 1.224394
+- 0.844504
+- 0.734072
+- 0.950148
+- 0.932975
+- 0.860114
+- 0.969217
+- 0.887125
+- 2.821813
+- 1.003492
+- 1.019968
+- 0.901566
+- 0.949338
+- 0.876754
+response time report:
+  average: 1.024886
+  max: 2.821813
+  min: 0.732054
+---
+interaction:
+- User: What are the shop's operating hours?
+- Assistant: Every weekday from 9am to 5:30pm
+- User: Are unicorn saddles available at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any unicorn saddles in stock at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any unicorn saddles available for purchase at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any bike helmets available in your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any bike helmets for sale at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there bike helmets available for purchase at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there bike prices I can check at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any prices for bikes that I can find at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any bike prices I can check at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What about the availability of helmets for unicorns?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any helmets specifically designed for unicorns available at your
+    shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any unicorn helmets available for purchase at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any unicorn-themed accessories available at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any unicorn-themed accessories for sale at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any unicorn-themed items available for purchase at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any unicorn-themed products in stock at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any products related to unicorns available at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any items related to unicorns for sale at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any rainbow-colored items available at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

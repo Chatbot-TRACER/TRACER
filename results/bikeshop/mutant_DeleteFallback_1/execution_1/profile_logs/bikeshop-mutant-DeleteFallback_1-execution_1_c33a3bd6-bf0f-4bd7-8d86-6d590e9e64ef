@@ -1,0 +1,55 @@
+{
+    "specification": {
+        "modules": [
+            "bike_qa",
+            "top-level",
+            "make_appointment"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "repair",
+                "tune-up"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a tune-up?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "bike_qa",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [
+                "Which is the price of a new tire?"
+            ],
+            "Which is the price of a tune-up?": [
+                "Which is the price of a tune-up?"
+            ],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": [],
+            "unknown": [
+                "What does a bike tune-up include?",
+                "What does a basic bike tune-up typically include?",
+                "Is that price for a basic tune-up, or does it include any additional services?",
+                "What is the price of a bike tune-up?",
+                "What type of lubricant do you recommend for a bike chain?",
+                "Is the $20 price for just one tire, or does it include installation as well?",
+                "What type of lubricant should be used on a bike chain?"
+            ]
+        },
+        "top-level": {}
+    }
+}

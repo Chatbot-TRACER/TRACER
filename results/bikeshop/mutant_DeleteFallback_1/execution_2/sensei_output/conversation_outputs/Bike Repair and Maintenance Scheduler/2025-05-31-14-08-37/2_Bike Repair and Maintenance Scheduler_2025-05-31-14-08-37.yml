@@ -1,0 +1,137 @@
+serial: 2025-05-31-14-08-37
+language: English
+context:
+- 'personality: personalities/rude-user'
+- Your bike hasn't been running smoothly lately, and you rely on it for daily commuting.
+- You want to get it professionally serviced to ensure it's in good working order
+  before the weather gets worse.
+- You are looking for a reliable shop that offers comprehensive tune-up services and
+  can schedule an appointment quickly.
+ask_about:
+- Ask if tune-up services are offered.
+- If tune-up services are offered, ask for the price of a tune-up.
+- If the price is provided, ask what the tune-up includes.
+- Ask how long a tune-up takes.
+- Schedule a tune-up for tomorrow at 2pm.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- tune_up_offered: Yes, we offer tune-up services. How can I assist you further?
+- tune_up_price: The cost of a tune-up is $150.
+- tune_up_description: A tune-up typically includes a thorough inspection of your
+    bike, adjustments to the brakes and gears, lubrication of the chain and other
+    moving parts, and inflation of the tires. It's a great way to ensure your bike
+    is running smoothly and safely!
+- tune_up_duration: A tune-up usually takes about 1 to 2 hours, depending on the condition
+    of the bike and the specific adjustments needed.
+- appointment_confirmation: 'Ok, I have scheduled your appointment for 29/10/2024
+    at 14:00:00 for a tune-up.
+
+    See you then!'
+errors: []
+total_cost($): 0.0069459
+---
+conversation time: 174.743894
+assistant response time:
+- 1.286445
+- 1.096497
+- 1.266709
+- 1.028475
+- 3.145016
+- 1.361295
+- 2.642039
+- 1.384564
+- 1.306129
+- 1.462435
+- 1.230062
+- 1.326268
+- 1.169379
+- 10.559335
+- 1.705755
+- 1.549071
+- 1.399964
+- 1.59884
+- 1.65962
+- 3.81616
+response time report:
+  average: 2.099702
+  max: 10.559335
+  min: 1.028475
+---
+interaction:
+- User: Do you offer tune-up services?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you offer tune-up services?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you offer tune-up services?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you offer tune-up services?
+- Assistant: Yes, we offer tune-up services. How can I assist you further?
+- User: What’s the price of a tune-up?
+- Assistant: The cost of a tune-up is $150.
+- User: What does the tune-up include?
+- Assistant: A tune-up typically includes a thorough inspection of your bike, adjustments
+    to the brakes and gears, lubrication of the chain and other moving parts, and
+    inflation of the tires. It's a great way to ensure your bike is running smoothly
+    and safely!
+- User: How long does a tune-up take?
+- Assistant: A tune-up usually takes about 1 to 2 hours, depending on the condition
+    of the bike and the specific adjustments needed. If you have any other questions
+    or need to schedule a tune-up, feel free to ask!
+- User: Can I schedule a tune-up for tomorrow at 2pm?
+- Assistant: 'Ok, I have scheduled your appointment for 29/10/2024 at 14:00:00 for
+    a tune-up.
+
+    See you then!'
+- User: Can you confirm the address for the appointment?
+- Assistant: I can help you with that! However, I need to know the address you would
+    like to confirm for the appointment. Please provide the address.
+- User: What’s the address of your shop?
+- Assistant: I'm sorry, but I can't provide the address of the shop. Please let me
+    know if you would like to schedule an appointment or if you have any other questions!
+- User: What’s the address of your shop?
+- Assistant: I'm sorry, but I can only assist in English or Spanish. Could you please
+    switch to one of these languages?
+- User: What’s the address of your shop?
+- Assistant: I'm sorry, but I can't provide the address of the shop. However, I can
+    help you with other questions or schedule an appointment if you'd like!
+- User: What’s the address of your shop?
+- Assistant: I'm sorry, but I can't provide the address of the shop. Please let me
+    know if there's anything else I can assist you with!
+- User: What’s the address of your shop?
+- Assistant: I'm sorry, but I can only assist with scheduling appointments or answering
+    questions about bikes. Please let me know if you would like to schedule a tune-up
+    or have any bike-related questions!
+- User: What's the address of your shop?
+- Assistant: I'm sorry, but I can't provide the address of the shop. However, I can
+    help you with scheduling your appointment or any other questions you may have.
+    What can I do for you?
+- User: What's the address of your shop?
+- Assistant: I'm sorry, but I can't provide the address of the shop. However, I can
+    help you with scheduling an appointment or answering any other questions you may
+    have. What can I do for you?
+- User: What's the address of your shop?
+- Assistant: I'm sorry, but I can't provide the address of the shop. However, I can
+    assist you with scheduling your appointment or answering any other questions you
+    may have. What can I do for you?
+- User: What's the address of your shop?
+- Assistant: I'm sorry, but I can't provide the address of the shop. However, I can
+    help you with other questions or schedule an appointment. What would you like
+    to do?
+- User: What's the address of your shop?
+- Assistant: I'm sorry, but I can't provide the address of the shop. However, I can
+    help you with scheduling an appointment or answering any other questions you may
+    have. What can I do for you?
+- User: What's the address of your shop?
+- Assistant: I'm sorry, but I can't provide the address of my shop. However, I can
+    assist you with scheduling your appointment or answering any other questions you
+    may have. What can I do for you?

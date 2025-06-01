@@ -1,0 +1,105 @@
+serial: 2025-05-30-16-06-05
+language: English
+context:
+- 'personality: personalities/curious-user'
+- Your bicycle has been making some strange noises lately, and you suspect it needs
+  a tune-up or repair.
+- You rely on your bike for commuting, so it's important to get it fixed as soon as
+  possible, preferably within the next few days.
+- You have a fairly busy schedule, so you need to find a convenient time that fits
+  your availability.
+ask_about:
+- Inquire about available bike repair services and scheduling options.
+- Ask for the price of a tune-up.
+- Schedule an appointment for a repair, specifying the date and time as {{appointment_date}}
+  and {{appointment_time}}.
+- Attempt to reschedule the appointment and inquire about the shop's contact information
+  when informed that rescheduling is not possible.
+- Decline to provide contact information and ask for business hours.
+- appointment_date: Friday
+- appointment_time: 3:00 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- repair_services_info: None
+- tune_up_price: The response to the question, "What is the cost of a tune-up?" is
+- appointment_details: null
+- rescheduling_policy: null
+- business_hours: None
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.00587685
+---
+conversation time: 162.206973
+assistant response time:
+- 1.063018
+- 1.103134
+- 0.88246
+- 3.491892
+- 2.857613
+- 3.371634
+- 3.006271
+- 4.142758
+- 2.87028
+- 3.998894
+- 3.550765
+- 4.184827
+- 4.026791
+- 4.283494
+- 2.96219
+- 3.108732
+- 3.341124
+- 3.35797
+- 4.072224
+- 3.40642
+response time report:
+  average: 3.154124
+  max: 4.283494
+  min: 0.88246
+---
+interaction:
+- User: What bike repair services do you offer, and how can I schedule an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you provide, and what are the options
+    for scheduling an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services are available, and how can I go about scheduling
+    an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the prices for a tune-up?
+- Assistant: The response to the question, "What is the cost of a tune-up?" is
+- User: How much does a tune-up cost?
+- Assistant: The response to the question, "What is the cost of a tune-up?" is
+- User: Can you tell me the price of a tune-up for my bike?
+- Assistant: The response to the question, "What is the cost of a tune-up?" is
+- User: What is the cost of a tune-up for my bike?
+- Assistant: The response to the question, "What is the cost of a tune-up?" is
+- User: What is the price for a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is
+- User: What is the cost of a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is
+- User: What is the price for a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is
+- User: What is the price for a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is
+- User: What is the cost of a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is
+- User: What is the price for a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is
+- User: What is the cost of a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is
+- User: Can you tell me the price for a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is
+- User: What is the price for a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is
+- User: What is the cost of a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is
+- User: Can you provide the price for a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is
+- User: What is the cost of a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is
+- User: What is the cost of a bike tune-up?
+- Assistant: The response to the question, "What is the cost of a bike tune-up?" is

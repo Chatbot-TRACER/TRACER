@@ -1,0 +1,115 @@
+serial: 2025-05-30-14-06-51
+language: English
+context:
+- 'personality: personalities/curious-user'
+- Your bicycle has been making some strange noises lately, and you suspect it needs
+  a tune-up or repair.
+- You rely on your bike for commuting, so it's important to get it fixed as soon as
+  possible, preferably within the next few days.
+- You have a fairly busy schedule, so you need to find a convenient time that fits
+  your availability.
+ask_about:
+- Inquire about available bike repair services and scheduling options.
+- Ask for the price of a tune-up.
+- Schedule an appointment for a repair, specifying the date and time as {{appointment_date}}
+  and {{appointment_time}}.
+- Attempt to reschedule the appointment and inquire about the shop's contact information
+  when informed that rescheduling is not possible.
+- Decline to provide contact information and ask for business hours.
+- appointment_date: Today
+- appointment_time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- repair_services_info: 'The answer to the question Which is the price of a tune-up?
+    is 150$. Ok, I have scheduled your appointment for 28/10/2024 at 10:00:00 for
+    a repair.
+
+    See you then! Our business hours are every weekday from 9am to 5:30pm.'
+- tune_up_price: The answer to the question Which is the price of a tune-up? is 150$
+- appointment_details: 'Ok, I have scheduled your appointment for 28/10/2024 at 10:00:00
+    for a repair.
+
+    See you then!'
+- rescheduling_policy: I need to reschedule my appointment. What are your business
+    hours?
+- business_hours: Our business hours are every weekday from 9am to 5:30pm.
+errors: []
+total_cost($): 0.0063411
+---
+conversation time: 116.449655
+assistant response time:
+- 0.982362
+- 0.94156
+- 1.056928
+- 0.952344
+- 0.880339
+- 0.978765
+- 2.245153
+- 1.353777
+- 1.183983
+- 0.913277
+- 0.806821
+- 1.058291
+- 1.541297
+- 0.828687
+- 1.010851
+- 1.146065
+- 1.276727
+- 2.345903
+- 0.848463
+- 0.96575
+response time report:
+  average: 1.165867
+  max: 2.345903
+  min: 0.806821
+---
+interaction:
+- User: What bike repair services do you offer, and how can I schedule an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you provide, and what are the options
+    for scheduling an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of bike repair services do you have, and how can I go about scheduling
+    an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the available bike repair services you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services are available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the prices for a basic tune-up?
+- Assistant: The answer to the question Which is the price of a tune-up? is 150$
+- User: Can I schedule an appointment for a repair today at 10:00 AM?
+- Assistant: 'Ok, I have scheduled your appointment for 28/10/2024 at 10:00:00 for
+    a repair.
+
+    See you then!'
+- User: I need to reschedule my appointment. What are your business hours?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: Can you provide me with your contact information?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is your phone number or email address?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is your contact information, like a phone number or email address?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your business hours?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: What other repair services do you offer besides tune-ups?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What additional bike repair services do you provide apart from tune-ups?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What other bike repair services can you assist me with besides tune-ups?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repairs can you do other than tune-ups?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of bike repair services do you provide apart from tune-ups?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What other bike repair services do you have besides tune-ups?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the different types of bike repairs you can perform other than tune-ups?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

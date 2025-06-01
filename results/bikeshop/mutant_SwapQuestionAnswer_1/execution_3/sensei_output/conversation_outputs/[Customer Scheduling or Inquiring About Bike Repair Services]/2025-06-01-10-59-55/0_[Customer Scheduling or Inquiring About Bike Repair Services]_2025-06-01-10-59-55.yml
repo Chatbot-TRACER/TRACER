@@ -1,0 +1,112 @@
+serial: 2025-06-01-10-59-55
+language: English
+context:
+- 'personality: personalities/curious-user'
+- Your bicycle has been making some strange noises lately, and you suspect it needs
+  a tune-up or repair.
+- You rely on your bike for commuting, so it's important to get it fixed as soon as
+  possible, preferably within the next few days.
+- You have a fairly busy schedule, so you need to find a convenient time that fits
+  your availability.
+ask_about:
+- Inquire about available bike repair services and scheduling options.
+- Ask for the price of a tune-up.
+- Schedule an appointment for a repair, specifying the date and time as {{appointment_date}}
+  and {{appointment_time}}.
+- Attempt to reschedule the appointment and inquire about the shop's contact information
+  when informed that rescheduling is not possible.
+- Decline to provide contact information and ask for business hours.
+- appointment_date: Today
+- appointment_time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- repair_services_info: The cost of a tune-up is $20. I have scheduled your appointment
+    for 28/10/2024 at 10:00:00 for a repair. Our business hours are every weekday
+    from 9am to 5:30pm. We are not open on weekends.
+- tune_up_price: The cost of a tune-up is $20.
+- appointment_details: 'Ok, I have scheduled your appointment for 28/10/2024 at 10:00:00
+    for a repair.
+
+    See you then!'
+- rescheduling_policy: I'm sorry it's a little loud in my shop, can you say that again?
+- business_hours: Our business hours are every weekday from 9am to 5:30pm.
+errors: []
+total_cost($): 0.0059961
+---
+conversation time: 130.821413
+assistant response time:
+- 1.124335
+- 1.006687
+- 1.327706
+- 1.108312
+- 0.7228
+- 1.806605
+- 2.656377
+- 1.339441
+- 1.350886
+- 0.773879
+- 1.438646
+- 1.240966
+- 1.417203
+- 1.230062
+- 1.094396
+- 1.140174
+- 1.166962
+- 1.448317
+- 1.161611
+- 1.382954
+response time report:
+  average: 1.296915
+  max: 2.656377
+  min: 0.7228
+---
+interaction:
+- User: Can you tell me what bike repair services you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of bike repair services are available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repairs can I get done at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services can I get at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kind of bike repair services do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Can you tell me the price for a tune-up?
+- Assistant: The cost of a tune-up is $20.
+- User: Can I schedule an appointment for a repair today at 10:00 AM?
+- Assistant: 'Ok, I have scheduled your appointment for 28/10/2024 at 10:00:00 for
+    a repair.
+
+    See you then!'
+- User: I need to reschedule my appointment. Can you provide me with your contact
+    information?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Can you give me your contact details so I can reschedule my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your business hours?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: Are you open on weekends?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are you open on Saturdays and Sundays?
+- Assistant: We are open every weekday from 9am to 5:30pm. Unfortunately, we are not
+    open on weekends.
+- User: What time do you open on weekdays?
+- Assistant: We are open every weekday from 9am to 5:30pm.
+- User: What time do you close on weekdays?
+- Assistant: We close every weekday at 5:30pm.
+- User: Are you available for bike repairs on weekdays after 5:30 PM?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are bike repairs available after 5:30 PM on weekdays?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are bike repair services offered after 5:30 PM on weekdays?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What time do you open on Saturdays?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are you open on Saturdays?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

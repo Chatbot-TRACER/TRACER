@@ -1,0 +1,45 @@
+{
+    "specification": {
+        "modules": [
+            "make_appointment",
+            "bike_qa",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "repair",
+                "tune-up"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "bike_qa",
+            "top-level"
+        ],
+        "make_appointment": {
+            "date": [],
+            "time": [],
+            "service": []
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": [],
+            "unknown": [
+                "What are the different types of tires you have available?",
+                "What is the price for a single Bridgestone All-Terrain tire, size 265/70R17?",
+                "What is the price for a set of four all-season tires?"
+            ]
+        },
+        "top-level": {}
+    }
+}

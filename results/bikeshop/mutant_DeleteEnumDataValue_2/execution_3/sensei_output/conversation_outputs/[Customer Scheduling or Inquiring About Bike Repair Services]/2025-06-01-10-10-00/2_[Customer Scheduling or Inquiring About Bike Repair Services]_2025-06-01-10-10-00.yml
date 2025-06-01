@@ -1,0 +1,107 @@
+serial: 2025-06-01-10-10-00
+language: English
+context:
+- 'personality: personalities/curious-user'
+- Your bicycle has been making some strange noises lately, and you suspect it needs
+  a tune-up or repair.
+- You rely on your bike for commuting, so it's important to get it fixed as soon as
+  possible, preferably within the next few days.
+- You have a fairly busy schedule, so you need to find a convenient time that fits
+  your availability.
+ask_about:
+- Inquire about available bike repair services and scheduling options.
+- Ask for the price of a tune-up.
+- Schedule an appointment for a repair, specifying the date and time as {{appointment_date}}
+  and {{appointment_time}}.
+- Attempt to reschedule the appointment and inquire about the shop's contact information
+  when informed that rescheduling is not possible.
+- Decline to provide contact information and ask for business hours.
+- appointment_date: Friday
+- appointment_time: 3:00 PM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- repair_services_info: None
+- tune_up_price: null
+- appointment_details: null
+- rescheduling_policy: null
+- business_hours: None
+errors:
+- 1001: 3 goals left to complete.
+total_cost($): 0.00572235
+---
+conversation time: 97.596449
+assistant response time:
+- 1.374089
+- 0.957893
+- 0.768975
+- 0.91003
+- 0.772279
+- 1.081988
+- 0.8057
+- 0.959344
+- 0.944369
+- 0.734676
+- 0.904854
+- 0.968117
+- 0.923522
+- 0.830113
+- 1.380275
+- 0.779604
+- 0.885451
+- 0.92349
+- 3.648553
+- 0.999379
+response time report:
+  average: 1.077635
+  max: 3.648553
+  min: 0.734676
+---
+interaction:
+- User: What bike repair services do you offer, and what are the scheduling options?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you provide, and how can I schedule
+    an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of bicycle repair services do you have available, and how can I
+    set up an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the different bike repair services you offer, and how can I make
+    an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services are available, and what are the options for scheduling
+    an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bicycle repair services do you have, and how can I book an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the different bike repair services you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of bike repair services do you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Can you please tell me about the bike repair services you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Can you provide details about the bike repair services you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What specific bike repair services do you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the bike repair services you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services can you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the different bike repair services you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services do you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What specific bike repair services can I get from you?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the bike repair services you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services can I get from you?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

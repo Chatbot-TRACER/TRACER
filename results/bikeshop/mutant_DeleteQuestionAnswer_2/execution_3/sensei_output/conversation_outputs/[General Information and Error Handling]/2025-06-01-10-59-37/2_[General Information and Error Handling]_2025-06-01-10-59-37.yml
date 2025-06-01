@@ -1,0 +1,106 @@
+serial: 2025-06-01-10-59-37
+language: English
+context:
+- 'personality: personalities/curious-user'
+- You are planning a visit to a local shop and need to gather some basic information
+  before heading over.
+- You have a few specific items in mind, but you're also open to exploring other related
+  products they might offer.
+- You are not very tech-savvy and sometimes make errors when interacting with online
+  systems.
+ask_about:
+- Ask for the shop's operating hours.
+- Inquire about the availability of unicorn saddles.
+- Ask 'Tell me more about the options.
+- State 'I'd like to schedule an appointment', then when prompted for date/time, respond
+  with unintelligible noise.
+- Ask about bike helmets, then when told they don't have info, ask about bike prices.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- business_hours: Every weekday from 9am to 5:30pm
+- unavailable_item_response: I'm sorry it's a little loud in my shop, can you say
+    that again?
+- clarification_request: Every weekday from 9am to 5:30pm
+- unintelligible_request_response: I'm sorry it's a little loud in my shop, can you
+    say that again?
+- alternative_information_options: I'm sorry it's a little loud in my shop, can you
+    say that again?
+errors: []
+total_cost($): 0.0054501
+---
+conversation time: 85.766415
+assistant response time:
+- 0.987607
+- 0.756214
+- 0.687136
+- 0.880275
+- 1.097475
+- 1.103668
+- 0.794468
+- 0.830394
+- 0.893256
+- 0.789218
+- 0.91242
+- 0.803699
+- 0.892982
+- 0.751518
+- 1.121631
+- 0.725018
+- 0.830715
+- 1.001051
+- 0.75083
+- 0.874847
+response time report:
+  average: 0.874221
+  max: 1.121631
+  min: 0.687136
+---
+interaction:
+- User: What are the shop's operating hours?
+- Assistant: Every weekday from 9am to 5:30pm
+- User: Are unicorn saddles available at your shop?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any unicorn saddles in stock?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any unicorn saddles available for sale?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any bike helmets available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any bike helmets for sale?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any bike helmets in stock?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any bike prices I can check?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any bike prices I can look at?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any bike prices available for me to check?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any discounts on bike accessories?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any discounts on bike gear?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any special offers on cycling equipment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any sales on outdoor gear?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any promotions on outdoor equipment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any deals on outdoor supplies?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any special events happening in the shop this week?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any special events going on in the shop this week?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any upcoming events at the shop this week?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are there any workshops or classes scheduled for this week?
+- Assistant: '```
+
+    I''m sorry it''s a little loud in my shop, can you say that again?
+
+    ```'

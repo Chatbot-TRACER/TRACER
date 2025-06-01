@@ -1,0 +1,118 @@
+serial: 2025-05-30-16-06-05
+language: English
+context:
+- 'personality: personalities/curious-user'
+- Your bicycle has been making some strange noises lately, and you suspect it needs
+  a tune-up or repair.
+- You rely on your bike for commuting, so it's important to get it fixed as soon as
+  possible, preferably within the next few days.
+- You have a fairly busy schedule, so you need to find a convenient time that fits
+  your availability.
+ask_about:
+- Inquire about available bike repair services and scheduling options.
+- Ask for the price of a tune-up.
+- Schedule an appointment for a repair, specifying the date and time as {{appointment_date}}
+  and {{appointment_time}}.
+- Attempt to reschedule the appointment and inquire about the shop's contact information
+  when informed that rescheduling is not possible.
+- Decline to provide contact information and ask for business hours.
+- appointment_date: Today
+- appointment_time: 10:00 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- repair_services_info: I'm sorry it's a little loud in my shop, can you say that
+    again?
+- tune_up_price: The response to the question, "What is the cost of a tune-up?" is
+- appointment_details: 'Ok, I have scheduled your appointment for 28/10/2024 at 10:00:00
+    for a repair.
+
+    See you then!'
+- rescheduling_policy: I'm sorry it's a little loud in my shop, can you say that again?
+- business_hours: Our business hours are every weekday from 9am to 5:30pm.
+errors: []
+total_cost($): 0.00632085
+---
+conversation time: 118.497314
+assistant response time:
+- 0.828722
+- 0.947387
+- 1.136365
+- 1.177698
+- 0.884455
+- 0.894295
+- 3.71138
+- 1.232616
+- 0.911519
+- 0.842277
+- 2.316491
+- 1.078804
+- 0.82167
+- 0.944152
+- 3.428372
+- 2.933412
+- 3.62722
+- 3.890109
+- 3.350712
+- 3.844993
+response time report:
+  average: 1.940132
+  max: 3.890109
+  min: 0.82167
+---
+interaction:
+- User: What bike repair services do you offer, and how can I schedule an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you provide, and how can I go about
+    scheduling an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kind of bike repair services do you have available, and what are the
+    options for scheduling an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services can I choose from?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services are available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the price for a basic tune-up?
+- Assistant: The response to the question, "What is the cost of a tune-up?" is
+- User: I’d like to schedule an appointment for a repair today at 10:00 AM. Is that
+    available?
+- Assistant: 'Ok, I have scheduled your appointment for 28/10/2024 at 10:00:00 for
+    a repair.
+
+    See you then!'
+- User: I need to reschedule my appointment. Can you provide me with your contact
+    information?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Can you give me your contact details so I can reach out about rescheduling
+    my appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your business hours?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: What services do you offer for bike repairs?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services can I get?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services do you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the cost for a full bike tune-up?
+- Assistant: The response to the question, "What is the cost of a tune-up?" is
+- User: What is the price for a full bike tune-up?
+- Assistant: The response to the question, "What is the cost of a tune-up?" is
+- User: What services are included in a full bike tune-up?
+- Assistant: 'The response to the question, "What services are part of a complete
+    bike tune-up?" is:'
+- User: What services are included in a full bike tune-up?
+- Assistant: 'The response to the question, "What services are part of a complete
+    bike tune-up?" is:'
+- User: What services are included in a full bike tune-up?
+- Assistant: 'The response to the question, "What services are part of a complete
+    bike tune-up?" is:'
+- User: What services are included in a full bike tune-up?
+- Assistant: 'The response to the question, "What services are part of a complete
+    bike tune-up?" is:'

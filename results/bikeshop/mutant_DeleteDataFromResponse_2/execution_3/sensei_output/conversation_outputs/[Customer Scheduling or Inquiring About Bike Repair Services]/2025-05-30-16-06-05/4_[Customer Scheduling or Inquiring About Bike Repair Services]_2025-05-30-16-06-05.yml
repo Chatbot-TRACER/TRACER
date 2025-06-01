@@ -1,0 +1,123 @@
+serial: 2025-05-30-16-06-05
+language: English
+context:
+- 'personality: personalities/curious-user'
+- Your bicycle has been making some strange noises lately, and you suspect it needs
+  a tune-up or repair.
+- You rely on your bike for commuting, so it's important to get it fixed as soon as
+  possible, preferably within the next few days.
+- You have a fairly busy schedule, so you need to find a convenient time that fits
+  your availability.
+ask_about:
+- Inquire about available bike repair services and scheduling options.
+- Ask for the price of a tune-up.
+- Schedule an appointment for a repair, specifying the date and time as {{appointment_date}}
+  and {{appointment_time}}.
+- Attempt to reschedule the appointment and inquire about the shop's contact information
+  when informed that rescheduling is not possible.
+- Decline to provide contact information and ask for business hours.
+- appointment_date: Next Monday
+- appointment_time: 9:30 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- repair_services_info: The response to the question, "What is the cost of a tune-up?"
+    is $75 for a basic tune-up, which includes adjusting the brakes and gears, lubricating
+    the chain, and checking the tires. Appointment scheduled for 28/10/2024 at 09:00:00
+    for a tune-up. Rescheduled to 04/11/2024 at 09:30:00 for a tune-up. Business hours
+    are every weekday from 9am to 5:30pm. Closed on weekends.
+- tune_up_price: $75 for a basic tune-up, which includes adjusting the brakes and
+    gears, lubricating the chain, and checking the tires.
+- appointment_details: 'Ok, I have scheduled your appointment for 04/11/2024 at 09:30:00
+    for a tune-up.
+
+    See you then!'
+- rescheduling_policy: 'Ok, I have scheduled your appointment for 04/11/2024 at 09:30:00
+    for a tune-up.
+
+    See you then!'
+- business_hours: Our business hours are every weekday from 9am to 5:30pm.
+errors: []
+total_cost($): 0.00678705
+---
+conversation time: 119.949447
+assistant response time:
+- 0.693586
+- 0.693232
+- 0.746925
+- 2.656335
+- 1.007775
+- 0.97042
+- 0.930167
+- 0.880854
+- 0.744457
+- 0.787653
+- 0.777777
+- 0.952882
+- 0.808547
+- 0.795023
+- 2.913627
+- 0.817589
+- 0.899371
+- 1.734119
+- 0.849749
+- 1.188057
+response time report:
+  average: 1.092407
+  max: 2.913627
+  min: 0.693232
+---
+interaction:
+- User: What bike repair services do you offer, and how can I schedule an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you provide, and what are the options
+    for scheduling an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What kinds of bicycle repair services do you have, and how can I book an appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the prices for a basic tune-up?
+- Assistant: The response to the question, "What is the cost of a tune-up?" is
+- User: $75 for a basic tune-up, which includes adjusting the brakes and gears, lubricating
+    the chain, and checking the tires. Would you like to schedule an appointment for
+    that?
+- Assistant: 'Ok, I have scheduled your appointment for 28/10/2024 at 09:00:00 for
+    a tune-up.
+
+    See you then!'
+- User: Can I reschedule my appointment to next Monday at 9:30 AM instead?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Can I change my appointment to next Monday at 9:30 AM instead?
+- Assistant: 'Ok, I have scheduled your appointment for 04/11/2024 at 09:30:00 for
+    a tune-up.
+
+    See you then!'
+- User: What are your business hours?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: What is your contact information in case I need to reach you?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the best way to get in touch with you if I have questions?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the best way to contact you if I have any questions?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your business hours on weekends?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm. We are closed
+    on weekends.
+- User: What are your business hours on holidays?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your holiday business hours?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your holiday hours for business?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your holiday hours for business?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your holiday hours for business?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your holiday hours for business?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your holiday hours for business?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your business hours during the holidays?
+- Assistant: Every weekday from 9am to 5:30pm

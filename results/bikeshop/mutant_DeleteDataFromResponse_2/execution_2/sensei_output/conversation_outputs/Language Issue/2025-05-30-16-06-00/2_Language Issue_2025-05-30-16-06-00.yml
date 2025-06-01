@@ -1,0 +1,61 @@
+serial: 2025-05-30-16-06-00
+language: English
+context:
+- You are traveling abroad and need to find a local bike shop for some cycling-related
+  inquiries.
+- You are not fluent in the local language (English or Spanish) and prefer to communicate
+  in your native language for clarity.
+ask_about:
+- Ask about the brands of road bikes that the shop carries in a non-English language.
+- Ask about the price of a tune-up in a non-English language.
+- Ask about the brands of tires that are available in a non-English language.
+- Ask about what services the shop offers in a non-English language.
+- Ask what types of bikes are available.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- language_support_response: I'm sorry, but I can only assist in English or Spanish.
+    Could you please switch to one of these languages?
+- rephrase_request: I'm sorry it's a little loud in my shop, can you say that again?
+errors:
+- 504: No response was received from the server in less than 20
+total_cost($): 0.0014997
+---
+conversation time: 55.014748
+assistant response time:
+- 0.729999
+- 0.876659
+- 0.746125
+- 0.706414
+- 0.726585
+- 0.735708
+- 0.746885
+- 0.800831
+- 20.025447
+response time report:
+  average: 2.899405
+  max: 20.025447
+  min: 0.706414
+---
+interaction:
+- User: ¿Quáles son las marcas de bicicletas de carretera que tienen en la tienda?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: ¿Me puedes decir qué marcas de bicicletas de carretera tienen disponibles?
+- Assistant: I'm sorry, it's a little loud in my shop, can you say that again?
+- User: ¿Podrías decirme qué marcas de bicicletas de carretera tienen en la tienda?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: ¿Cuánto cuesta un servicio de ajuste en la tienda?
+- Assistant: I'm sorry, but could you please switch to English or Spanish?
+- User: ¿Me puedes decir cuánto cuesta un servicio de ajuste en la tienda?
+- Assistant: I'm sorry, but could you please switch to English or Spanish?
+- User: ¿Podrías decirme qué marcas de neumáticos tienen disponibles?
+- Assistant: I'm sorry, it's a little loud in my shop, can you say that again?
+- User: ¿Podrías decirme qué marcas de neumáticos tienen en la tienda?
+- Assistant: I'm sorry, but I can only assist in English or Spanish. Could you please
+    switch to one of these languages?
+- User: ¿Me puedes decir qué servicios ofrece la tienda?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: ¿Podrías decirme qué tipos de bicicletas tienen disponibles?

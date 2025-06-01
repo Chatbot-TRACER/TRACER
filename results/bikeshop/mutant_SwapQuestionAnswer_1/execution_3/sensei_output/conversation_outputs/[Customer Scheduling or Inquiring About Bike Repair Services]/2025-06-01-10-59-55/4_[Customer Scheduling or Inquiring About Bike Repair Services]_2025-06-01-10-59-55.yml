@@ -1,0 +1,115 @@
+serial: 2025-06-01-10-59-55
+language: English
+context:
+- 'personality: personalities/curious-user'
+- Your bicycle has been making some strange noises lately, and you suspect it needs
+  a tune-up or repair.
+- You rely on your bike for commuting, so it's important to get it fixed as soon as
+  possible, preferably within the next few days.
+- You have a fairly busy schedule, so you need to find a convenient time that fits
+  your availability.
+ask_about:
+- Inquire about available bike repair services and scheduling options.
+- Ask for the price of a tune-up.
+- Schedule an appointment for a repair, specifying the date and time as {{appointment_date}}
+  and {{appointment_time}}.
+- Attempt to reschedule the appointment and inquire about the shop's contact information
+  when informed that rescheduling is not possible.
+- Decline to provide contact information and ask for business hours.
+- appointment_date: Next Monday
+- appointment_time: 9:30 AM
+conversation:
+- interaction_style:
+  - single questions
+- number: 6
+- steps: 20
+data_output:
+- repair_services_info: The cost of a tune-up is $20. Appointment for a repair has
+    been scheduled for 04/11/2024 at 09:30:00. Business hours are every weekday from
+    9am to 5:30pm.
+- tune_up_price: The cost of a tune-up is $20.
+- appointment_details: 'Ok, I have scheduled your appointment for 04/11/2024 at 09:30:00
+    for a repair.
+
+    See you then!'
+- rescheduling_policy: 'Ok, I have scheduled your appointment for 04/11/2024 at 09:30:00
+    for a repair.
+
+    See you then!'
+- business_hours: Our business hours are every weekday from 9am to 5:30pm.
+errors: []
+total_cost($): 0.0060732
+---
+conversation time: 130.3868
+assistant response time:
+- 0.732318
+- 0.821344
+- 0.870427
+- 2.93833
+- 1.492997
+- 0.938358
+- 1.205001
+- 1.144416
+- 1.176705
+- 1.097546
+- 1.530076
+- 0.843296
+- 1.135153
+- 1.077916
+- 1.510067
+- 1.26105
+- 1.177341
+- 3.132682
+- 1.269752
+- 1.136001
+response time report:
+  average: 1.324538
+  max: 3.132682
+  min: 0.732318
+---
+interaction:
+- User: Can you tell me what bike repair services you offer?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What types of bike repair services do you have available?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What bike repair services do you provide?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are the prices for a basic tune-up?
+- Assistant: The cost of a tune-up is $20.
+- User: Can I schedule an appointment for a repair next Monday at 9:30 AM?
+- Assistant: 'Ok, I have scheduled your appointment for 04/11/2024 at 09:30:00 for
+    a repair.
+
+    See you then!'
+- User: Can I get your contact information in case I need to reach you about the appointment?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your business hours?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: Are you open on weekends?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are you open on Saturdays or Sundays?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Are you available on Saturdays or Sundays for bike repairs?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What days do you offer bike repair services?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: What days do you offer bike repair services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What days are you open for bike repairs?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What are your business hours for bike repairs?
+- Assistant: Our business hours are every weekday from 9am to 5:30pm.
+- User: Are you open on Saturdays?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What days do you provide bike repair services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What days do you offer bike repair services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What is the price for a basic tune-up?
+- Assistant: The cost for a tune-up is $20.
+- User: Can you tell me if you have any availability for bike repairs on Saturdays?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What days are you available for bike repairs?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?

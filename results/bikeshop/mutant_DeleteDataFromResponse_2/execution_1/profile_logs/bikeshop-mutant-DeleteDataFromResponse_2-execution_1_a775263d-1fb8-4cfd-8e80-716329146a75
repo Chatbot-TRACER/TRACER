@@ -1,0 +1,63 @@
+{
+    "specification": {
+        "modules": [
+            "make_appointment",
+            "top-level",
+            "bike_qa"
+        ],
+        "make_appointment": {
+            "date": "date",
+            "time": "time",
+            "service": [
+                "repair",
+                "tune-up"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [],
+            "Which is the price of a tune-up?": [],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": []
+        },
+        "top-level": {}
+    },
+    "footprint": {
+        "modules": [
+            "make_appointment",
+            "top-level",
+            "bike_qa"
+        ],
+        "make_appointment": {
+            "date": [
+                "29/10/2024"
+            ],
+            "time": [
+                "10:00:00"
+            ],
+            "service": [
+                "repair"
+            ]
+        },
+        "bike_qa": {
+            "Which is the price of a new tire?": [
+                "Which is the price of a new tire?"
+            ],
+            "Which is the price of a tune-up?": [
+                "Which is the price of a tune-up?"
+            ],
+            "Which is the price of a new seat?": [],
+            "What can I do to take care of my bike?": [
+                "What can I do to take care of my bike?"
+            ],
+            "unknown": [
+                "What bike maintenance tips do you recommend for keeping my bike in good shape?",
+                "How much do you charge for installing a new tire?",
+                "What are the components of a bike tune-up?",
+                "What is included in a bike tune-up?",
+                "What is the price of a bike tune-up?",
+                "How much do you charge for tire installation?"
+            ]
+        },
+        "top-level": {}
+    }
+}

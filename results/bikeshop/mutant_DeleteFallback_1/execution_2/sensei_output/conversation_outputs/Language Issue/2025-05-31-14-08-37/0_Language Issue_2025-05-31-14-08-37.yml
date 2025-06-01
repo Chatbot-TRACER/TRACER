@@ -1,0 +1,90 @@
+serial: 2025-05-31-14-08-37
+language: English
+context:
+- You are traveling abroad and need to find a local bike shop for some cycling-related
+  inquiries.
+- You are not fluent in the local language (English or Spanish) and prefer to communicate
+  in your native language for clarity.
+ask_about:
+- Ask about the brands of road bikes that the shop carries in a non-English language.
+- Ask about the price of a tune-up in a non-English language.
+- Ask about the brands of tires that are available in a non-English language.
+- Ask about what services the shop offers in a non-English language.
+- Ask what types of bikes are available.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 15
+data_output:
+- language_support_response: The cost for a tune-up is $150.
+- rephrase_request: The cost for a tune-up is $150.
+errors: []
+total_cost($): 0.0034401
+---
+conversation time: 117.814861
+assistant response time:
+- 0.89812
+- 1.334421
+- 3.16909
+- 10.187952
+- 1.040605
+- 1.449362
+- 1.13783
+- 2.716975
+- 1.165512
+- 1.20725
+- 1.22967
+- 1.0629
+- 3.006181
+- 1.23861
+- 1.066108
+response time report:
+  average: 2.127372
+  max: 10.187952
+  min: 0.89812
+---
+interaction:
+- User: ¿Cuáles son las marcas de bicicletas de carretera que tienen en la tienda?
+- Assistant: 'Please switch to English or Spanish so I can assist you better. '
+- User: ¿Puede decirme cuáles son las marcas de bicicletas de carretera que tienen
+    en la tienda?
+- Assistant: I'm sorry, but I can only assist you in English or Spanish. Could you
+    please switch to one of these languages?
+- User: ¿Puede decirme el precio de un ajuste en su tienda?
+- Assistant: The cost for a tune-up is $150.
+- User: ¿Cuáles son las marcas de llantas que tienen disponibles en la tienda?
+- Assistant: 'Por favor, cambie a uno de estos idiomas: inglés, español.'
+- User: ¿Puede decirme qué servicios ofrece la tienda?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: ¿Puede decirme qué tipos de bicicletas están disponibles en la tienda?
+- Assistant: 'Por favor, cambie a inglés o español para que pueda ayudarle. '
+- User: ¿Puede decirme cuáles son las marcas de bicicletas de carretera que tienen
+    en la tienda?
+- Assistant: I'm sorry, but I can only assist you in English or Spanish. Could you
+    please switch to one of these languages?
+- User: ¿Puede decirme el precio de un ajuste en su tienda?
+- Assistant: The cost for a tune-up is $150.
+- User: ¿Puede decirme cuáles son las marcas de llantas que tienen disponibles en
+    la tienda?
+- Assistant: I'm sorry, but I can only assist you in English or Spanish. Could you
+    please switch to one of these languages?
+- User: ¿Puede decirme qué servicios ofrece la tienda?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: ¿Puede decirme cuáles son las marcas de bicicletas de carretera que tienen
+    en la tienda?
+- Assistant: 'Por favor, cambie a inglés o español para que pueda ayudarle. '
+- User: ¿Puede decirme cuáles son las marcas de bicicletas de carretera que tienen
+    en la tienda?
+- Assistant: Por favor, cambie a inglés o español para que pueda ayudarle.
+- User: ¿Puede decirme el precio de un ajuste en su tienda?
+- Assistant: The cost for a tune-up is $150.
+- User: ¿Puede decirme cuáles son las marcas de llantas que tienen disponibles en
+    la tienda?
+- Assistant: Por favor, cambie a inglés o español para que pueda ayudarle.
+- User: ¿Puede decirme qué servicios ofrece la tienda?
+- Assistant: Por favor, cambie a inglés o español para que pueda ayudarle.

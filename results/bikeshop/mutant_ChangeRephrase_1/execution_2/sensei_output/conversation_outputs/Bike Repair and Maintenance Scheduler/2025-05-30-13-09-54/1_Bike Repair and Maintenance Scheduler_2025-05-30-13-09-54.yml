@@ -1,0 +1,128 @@
+serial: 2025-05-30-13-09-54
+language: English
+context:
+- 'personality: personalities/rude-user'
+- Your bike hasn't been running smoothly lately, and you rely on it for daily commuting.
+- You want to get it professionally serviced to ensure it's in good working order
+  before the weather gets worse.
+- You are looking for a reliable shop that offers comprehensive tune-up services and
+  can schedule an appointment quickly.
+ask_about:
+- Ask if tune-up services are offered.
+- If tune-up services are offered, ask for the price of a tune-up.
+- If the price is provided, ask what the tune-up includes.
+- Ask how long a tune-up takes.
+- Schedule a tune-up for tomorrow at 2pm.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 20
+data_output:
+- tune_up_offered: Yes, we offer bike tune-up services. What can I do for you?
+- tune_up_price: The answer to the question Which is the price of a tune-up? is 150$
+- tune_up_description: I do not know. I can answer questions about the price of a
+    new tire, the price of a tune-up, the price of a new seat, and how to take care
+    of a bike.
+- tune_up_duration: null
+- appointment_confirmation: null
+errors:
+- 1001: 2 goals left to complete.
+total_cost($): 0.0055698
+---
+conversation time: 103.908093
+assistant response time:
+- 1.353337
+- 1.251506
+- 1.161686
+- 1.874708
+- 1.174238
+- 1.34341
+- 1.161596
+- 1.060122
+- 1.148028
+- 1.362894
+- 1.168317
+- 1.329951
+- 1.245991
+- 1.313683
+- 1.414325
+- 1.314486
+- 2.253399
+- 1.109009
+- 2.869485
+- 2.789738
+response time report:
+  average: 1.484995
+  max: 2.869485
+  min: 1.060122
+---
+interaction:
+- User: Do you offer tune-up services for bikes?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you offer tune-up services for bikes?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you offer tune-up services for bikes?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you offer tune-up services for bikes?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you provide bike tune-up services?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you provide bike tune-up services?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you provide bike tune-up services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you offer bike tune-up services?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you offer bike tune-up services?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: Do you provide bike tune-up services?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you offer bike tune-up services?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you offer bike tune-up services?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you provide bike tune-up services?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you offer bike tune-up services?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you offer bike tune-up services?
+- Assistant: 'Welcome to my bike shop. I''m the owner and I''m happy to help you.
+
+    What can I do for you?'
+- User: Do you offer bike tune-up services?
+- Assistant: Yes, we offer bike tune-up services. What can I do for you?
+- User: What’s the price for a bike tune-up?
+- Assistant: The answer to the question Which is the price of a tune-up? is 150$
+- User: What does the bike tune-up include for that price?
+- Assistant: I'm sorry it's a little loud in my shop, can you say that again?
+- User: What does the bike tune-up include for that price?
+- Assistant: The answer to the question What does the bike tune-up include for that
+    price? is I do not know. I can answer questions about the price of a new tire,
+    the price of a tune-up, the price of a new seat, and how to take care of a bike.
+- User: What does the bike tune-up include for that price?
+- Assistant: The answer to the question What does the bike tune-up include for that
+    price? is I do not know. I can answer questions about the price of a new tire,
+    the price of a tune-up, the price of a new seat, and how to take care of a bike.
