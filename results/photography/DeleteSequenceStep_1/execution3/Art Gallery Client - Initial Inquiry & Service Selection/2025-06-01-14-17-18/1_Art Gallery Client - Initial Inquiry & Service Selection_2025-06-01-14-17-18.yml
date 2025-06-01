@@ -1,0 +1,40 @@
+serial: 2025-06-01-14-17-18
+language: English
+context:
+- 'personality: personalities/skeptical-user'
+- The gallery is preparing a new exhibition and needs high-quality photographs of
+  its artwork for the catalog and promotional materials.
+- You are responsible for finding a professional photography service that can accurately
+  capture the details and colors of the paintings.
+- The gallery needs the photography done quickly to meet the printing deadline for
+  the catalog.
+ask_about:
+- Inquire about the services offered by the art gallery photography studio.
+- Ask for more details about photography services for art galleries.
+- Inquire about the pricing for photographing 10 paintings.
+- 'Provide details for the price estimate: photography, 10 paintings, pictures.'
+- Ask about scheduling an appointment for the photography session.
+conversation:
+- interaction_style:
+  - single questions
+- number: 3
+- steps: 16
+data_output:
+- service_details: null
+- price_estimate_response: null
+- appointment_scheduling_information: null
+errors:
+- 500: Server error
+- 1001: 3 goals left to complete.
+---
+conversation time: 3.438312
+assistant response time:
+- 0.013341
+response time report:
+  average: 0.013341
+  max: 0.013341
+  min: 0.013341
+---
+interaction:
+- User: What specific services does your photography studio offer for art galleries?
+- Assistant: 'Error: chatbot server error'
