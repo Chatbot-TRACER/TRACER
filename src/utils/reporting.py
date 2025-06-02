@@ -48,8 +48,15 @@ def export_graph(
     if not nodes:
         return
 
+    # Adjust DPI for SVG format to prevent oversized output
+    adjusted_dpi = dpi
+    if fmt.lower() == "svg":
+        # For SVG, use 72 DPI since it's a vector format
+        # High DPI values cause extremely large physical dimensions and scaling issues
+        adjusted_dpi = 72  # Use 72 DPI for optimal SVG display
+
     dot = graphviz.Digraph(format=fmt)
-    _set_graph_attributes(dot, graph_font_size, dpi, compact, top_down)
+    _set_graph_attributes(dot, graph_font_size, adjusted_dpi, compact, top_down)
 
     # Start node
     node_dim = 0.5
