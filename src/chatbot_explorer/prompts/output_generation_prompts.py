@@ -91,6 +91,14 @@ FUNCTIONALITIES ASSIGNED TO THIS PROFILE (these define what the chatbot can do):
 
 7. **Naming Convention**: Use descriptive names that clearly indicate what specific information is being captured (e.g., `confirmed_appointment_date`, `order_total_price`, `selected_item_name`).
 
+8. **IMPORTANT - Variable Placeholder Rule**: When writing output descriptions, do NOT include variable placeholders with curly braces like `{{variable_name}}`. Instead, refer to the concept generically. For example:
+   - WRONG: "Confirms the selected item size ({{item_size}})"
+   - CORRECT: "Confirms the selected item size"
+   - WRONG: "The service ID ({{service_id}}) chosen by the user"
+   - CORRECT: "The service ID chosen by the user"
+   - WRONG: "Shows the booking date ({{booking_date}}) requested"
+   - CORRECT: "Shows the booking date requested"
+
 **Examples of Granular Outputs:**
 - Instead of "booking_summary" → `reservation_confirmation_number`, `check_in_date`, `check_out_date`, `room_type`, `guest_count`, `total_price`
 - Instead of "order_details" → `ordered_item_name`, `item_quantity`, `item_unit_price`, `order_total`, `estimated_delivery_date`, `order_confirmation_id`
