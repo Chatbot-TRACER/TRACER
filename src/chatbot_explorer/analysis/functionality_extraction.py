@@ -35,11 +35,11 @@ def _parse_parameter_string(params_str: str) -> list[ParameterDefinition]:
     start = 0
     paren_level = 0
     for i, char in enumerate(params_str):
-        if char == '(':
+        if char == "(":
             paren_level += 1
-        elif char == ')':
+        elif char == ")":
             paren_level -= 1
-        elif char == ',' and paren_level == 0:
+        elif char == "," and paren_level == 0:
             param_entries.append(params_str[start:i].strip())
             start = i + 1
     # Add the last parameter
@@ -48,15 +48,15 @@ def _parse_parameter_string(params_str: str) -> list[ParameterDefinition]:
 
     for param_entry in param_entries:
         # Extract parameter name and options (if any)
-        param_info, *description_parts = param_entry.split(':', 1)
+        param_info, *description_parts = param_entry.split(":", 1)
         param_description = description_parts[0].strip() if description_parts else ""
 
         # Extract name and options
-        if '(' in param_info and ')' in param_info:
-            parts = param_info.split('(', 1)
+        if "(" in param_info and ")" in param_info:
+            parts = param_info.split("(", 1)
             param_name = parts[0].strip()
-            options_str = parts[1].split(')', 1)[0].strip()
-            options = [opt.strip() for opt in options_str.split('/') if opt.strip()]
+            options_str = parts[1].split(")", 1)[0].strip()
+            options = [opt.strip() for opt in options_str.split("/") if opt.strip()]
         else:
             param_name = param_info.strip()
             options = []

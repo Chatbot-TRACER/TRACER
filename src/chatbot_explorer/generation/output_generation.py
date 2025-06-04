@@ -1,12 +1,10 @@
 """Generates structured output definitions based on user profiles and functionalities."""
 
-import re
 import logging
 from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
-from chatbot_explorer.constants import VARIABLE_PATTERN
 from chatbot_explorer.prompts.output_generation_prompts import get_outputs_prompt
 from chatbot_explorer.utils.logging_utils import get_logger
 
@@ -116,7 +114,7 @@ def generate_outputs(
 
         outputs_response = llm.invoke(outputs_prompt)
         response_content = ""
-        if hasattr(outputs_response, 'content'):
+        if hasattr(outputs_response, "content"):
             response_content = outputs_response.content.strip()
         else:
             response_content = str(outputs_response).strip()

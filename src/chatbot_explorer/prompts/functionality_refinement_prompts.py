@@ -2,7 +2,6 @@
 
 import json
 from typing import Any
-import re
 
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 

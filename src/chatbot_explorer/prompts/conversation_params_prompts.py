@@ -9,7 +9,6 @@ reference these types.
 
 from typing import Any, TypedDict
 
-
 # --- Data Structures for Prompt Arguments ---
 
 

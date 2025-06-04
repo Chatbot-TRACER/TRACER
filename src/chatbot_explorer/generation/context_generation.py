@@ -1,6 +1,5 @@
 """Module to generate the context for the profiles."""
 
-import re
 from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
@@ -37,7 +36,7 @@ def generate_context(
 
         llm_response_obj = llm.invoke(context_prompt_str)
         context_content = ""
-        if hasattr(llm_response_obj, 'content'):
+        if hasattr(llm_response_obj, "content"):
             context_content = llm_response_obj.content.strip()
         else:
             context_content = str(llm_response_obj).strip()
