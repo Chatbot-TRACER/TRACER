@@ -1,6 +1,5 @@
-
-import re
 from typing import Any
+
 
 def get_outputs_prompt(
     profile: dict[str, Any],
@@ -21,14 +20,16 @@ def get_outputs_prompt(
         elif isinstance(goal_item, dict):
             for var_name, var_def in goal_item.items():
                 if isinstance(var_def, dict):
-                    data_preview = str(var_def.get('data', 'N/A'))
-                    if isinstance(var_def.get('data'), list):
-                        actual_data_list = var_def.get('data', [])
+                    data_preview = str(var_def.get("data", "N/A"))
+                    if isinstance(var_def.get("data"), list):
+                        actual_data_list = var_def.get("data", [])
                         if len(actual_data_list) > 3:
-                            data_preview = f"{str(actual_data_list[:3])[:-1]}, ... (Total: {len(actual_data_list)} items)]"
+                            data_preview = (
+                                f"{str(actual_data_list[:3])[:-1]}, ... (Total: {len(actual_data_list)} items)]"
+                            )
                         else:
                             data_preview = str(actual_data_list)
-                    elif isinstance(var_def.get('data'), dict):
+                    elif isinstance(var_def.get("data"), dict):
                         data_preview = f"min: {var_def['data'].get('min')}, max: {var_def['data'].get('max')}, step: {var_def['data'].get('step')}"
 
                     variable_details_list.append(
@@ -38,20 +39,22 @@ def get_outputs_prompt(
     goals_and_vars_for_prompt_str = "\\n".join(raw_string_goals)
     if variable_details_list:
         variable_definitions_for_prompt_str = (
-            "\\n\\nIMPORTANT VARIABLE CONTEXT (variables like `{{variable_name}}` in goals will iterate through values like these):\\n" +
-            "\\n".join(variable_details_list)
+            "\\n\\nIMPORTANT VARIABLE CONTEXT (variables like `{{variable_name}}` in goals will iterate through values like these):\\n"
+            + "\\n".join(variable_details_list)
         )
 
-    if not raw_string_goals and not variable_details_list :
+    if not raw_string_goals and not variable_details_list:
         goals_and_vars_for_prompt_str = "- (No specific string goals or variables with options defined. Define generic outputs based on role and functionalities.)\\n"
     elif not raw_string_goals and variable_details_list:
-        goals_and_vars_for_prompt_str = "- (Primary interaction driven by variable iterations. Define outputs to verify these.)\\n"
+        goals_and_vars_for_prompt_str = (
+            "- (Primary interaction driven by variable iterations. Define outputs to verify these.)\\n"
+        )
 
     functionalities_str = "\\n".join([f"- {f_desc_str}" for f_desc_str in profile_functionality_details])
 
     return f"""
 You are an AI assistant designing test verification outputs for a chatbot user profile.
-Your task is to identify a MINIMAL and SUFFICIENT set of 'outputs' to extract from the chatbot's responses. These outputs verify that the chatbot correctly addressed the user's overall intent and specific goal-driven interactions, including those involving `{{variables}}`.
+Your task is to identify GRANULAR and SPECIFIC outputs to extract from the chatbot's responses. These outputs should verify individual pieces of information and confirmations, allowing precise detection of what the chatbot might be missing or getting wrong.
 
 USER PROFILE:
 Name: {profile_name}
@@ -66,34 +69,41 @@ FUNCTIONALITIES ASSIGNED TO THIS PROFILE (these define what the chatbot can do):
 
 {language_instruction}
 
-**Your Task: Define FEW, HIGH-IMPACT VERIFIABLE OUTPUTS**
+**Your Task: Define GRANULAR, SPECIFIC VERIFIABLE OUTPUTS**
 
-1.  Review ALL user goals for this profile. Identify the **major pieces of information the chatbot is expected to provide** or the **key states it should confirm** as a result of the entire goal sequence. A single chatbot response (and thus a single output definition) might validate aspects of multiple user goals.
-2.  **Focus on Critical Information & Confirmations:**
-    *   What are the most important things the chatbot says that indicate success or provide crucial data? (e.g., a final order summary, a booking confirmation number, a list of requested options, an answer to a direct question).
-    *   Define outputs for these critical points.
-3.  **AGGRESSIVELY CONSOLIDATE:**
-    *   If the chatbot provides a **summary or comprehensive confirmation** (e.g., an order summary detailing item type, size, quantity, and accessories after several interaction steps), define **ONE primary output** for that entire summary.
-    *   **AVOID separate outputs for intermediate confirmations if they are encapsulated in a final, more complete confirmation.** For example, if the user selects an item, then a size, then a color, and the chatbot provides a final summary "You selected a large blue Gizmo", prioritize an output for the "final_gizmo_summary" rather than separate outputs for "item_confirmed", "size_confirmed", "color_confirmed".
-    *   If one output field can capture the verification for multiple related goal aspects or variable iterations, PREFER THAT.
-4.  **Output Definitions for Iterated Variables:**
-    *   If a goal uses an iterated variable (e.g., `Request details for `{{service_id}}`), the single generic output field defined should capture the relevant chatbot response for the current iteration.
-    *   **Naming Convention:** Generic (e.g., `service_id_response_details`).
-    *   **Description for Extraction:** Clearly state WHAT to extract. Indicate it corresponds to the *specific value of the `{{variable_name}}`* used in that test instance. Provide extraction hints. DO NOT include `{{variable_name}}` in the DESCRIPTION field itself.
-        *   GOOD Example: `output_name: item_specific_attribute_value`
-            `DESCRIPTION: The chatbot's stated value for a specific attribute (e.g., color, material) of the item that corresponds to the current '{{item_id}}' variable used in the goal. Look for phrases like 'Attribute for [item_id_value]: [attribute_value]'.`
-5.  **Data Types:** Assign ONE appropriate data type from: `int`, `float`, `money`, `str`, `string`, `time`, `date`.
-6.  **Focus:** Outputs are information THE CHATBOT PROVIDES.
-7.  **Minimize Outputs:** Generate the **absolute minimum number of output fields** required to comprehensively verify that the chatbot has successfully processed the user's goals and provided the necessary information, especially considering the final state or summary after a series of interactions.
+1. **Break Down Complex Information**: Instead of creating one output for "order_summary" or "appointment_confirmation", create separate outputs for each critical piece of information:
+   - For orders: separate outputs for each item, quantity, price, total, order_id, delivery_date, etc.
+   - For appointments: separate outputs for date, time, service_type, provider_name, location, etc.
+   - For bookings: separate outputs for confirmation_number, check_in_date, check_out_date, room_type, guest_count, etc.
+
+2. **Focus on Individual Data Points**: Each output should verify ONE specific piece of information that the chatbot should provide. This allows precise identification of missing or incorrect details.
+
+3. **Consider All Goal Components**: Review each user goal and identify ALL the individual pieces of information the chatbot needs to confirm or provide throughout the interaction sequence.
+
+4. **Variable-Based Outputs**: For goals with variables like `{{service_id}}` or `{{item_id}}`, create outputs that capture specific information about the current variable value being tested.
+
+5. **Essential vs Optional Information**: Prioritize outputs for:
+   - Required confirmations (dates, times, IDs, prices)
+   - Critical details that indicate successful processing
+   - Key information users need to verify their requests
+
+6. **Data Types**: Assign appropriate data types from this exact list: `int`, `float`, `money`, `str`, `string`, `time`, `date`. Do NOT use any other types like 'boolean', 'bool', etc. For yes/no values, use `str` type.
+
+7. **Naming Convention**: Use descriptive names that clearly indicate what specific information is being captured (e.g., `confirmed_appointment_date`, `order_total_price`, `selected_item_name`).
+
+**Examples of Granular Outputs:**
+- Instead of "booking_summary" → `reservation_confirmation_number`, `check_in_date`, `check_out_date`, `room_type`, `guest_count`, `total_price`
+- Instead of "order_details" → `ordered_item_name`, `item_quantity`, `item_unit_price`, `order_total`, `estimated_delivery_date`, `order_confirmation_id`
+- Instead of "appointment_info" → `appointment_date`, `appointment_time`, `service_type`, `provider_name`, `appointment_duration`
 
 **Output Format (Strictly follow this for EACH output):**
 OUTPUT: output_name_1
 TYPE: output_type_1
-DESCRIPTION: A concise, static description of the information the chatbot is expected to provide.
+DESCRIPTION: A concise description of the specific piece of information the chatbot should provide.
 
 OUTPUT: output_name_2
 TYPE: output_type_2
 DESCRIPTION: ...
 
-Generate the necessary output definitions. Aim for the MOST CONSOLIDATED yet comprehensive set. Do NOT include any explanatory text before the first "OUTPUT:" line or after the last description.
+Generate comprehensive granular output definitions that allow verification of each critical piece of information separately. Do NOT include any explanatory text before the first "OUTPUT:" line or after the last description.
 """
