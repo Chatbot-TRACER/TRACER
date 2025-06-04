@@ -1,17 +1,11 @@
 """Node for generating conversation parameters (number, cost, style) for user profiles."""
 
-import contextlib
 import random
-from typing import Any, TypedDict
+from typing import Any
 
 from langchain_core.language_models.base import BaseLanguageModel
 
 # Note: We're not using these prompt functions anymore, but we need the type definitions
-from chatbot_explorer.prompts.conversation_params_prompts import (
-    PromptLanguageSupport,
-    PromptPreviousParams,
-    PromptProfileContext,
-)
 from chatbot_explorer.schemas.graph_state_model import State
 from chatbot_explorer.utils.logging_utils import get_logger
 
@@ -32,7 +26,7 @@ AVAILABLE_INTERACTION_STYLES = [
     "change your mind",
     "make spelling mistakes",
     "single question",
-    "all questions"
+    "all questions",
 ]
 
 # --- Helper Functions for extract_profile_variables ---
@@ -43,11 +37,13 @@ def _get_profile_variables(profile: dict[str, Any]) -> list[str]:
     variables = []
 
     # Check for variables at the top level (original behavior)
-    variables.extend([
-        var_name
-        for var_name, var_def in profile.items()
-        if isinstance(var_def, dict) and "function" in var_def and "data" in var_def
-    ])
+    variables.extend(
+        [
+            var_name
+            for var_name, var_def in profile.items()
+            if isinstance(var_def, dict) and "function" in var_def and "data" in var_def
+        ]
+    )
 
     # Also check for variables nested within the 'goals' list
     if "goals" in profile and isinstance(profile["goals"], list):
@@ -87,7 +83,12 @@ def _get_variable_def(profile: dict[str, Any], var_name: str) -> dict | None:
                         return value
 
                 # Or if the item directly has the var_name key
-                if var_name in item and isinstance(item[var_name], dict) and "function" in item[var_name] and "data" in item[var_name]:
+                if (
+                    var_name in item
+                    and isinstance(item[var_name], dict)
+                    and "function" in item[var_name]
+                    and "data" in item[var_name]
+                ):
                     return item[var_name]
 
     return None
@@ -104,14 +105,12 @@ def _get_max_variable_size(profile: dict[str, Any]) -> int:
             data = var_def.get("data", [])
             if isinstance(data, list):
                 current_size = len(data)
-                if current_size > max_size:
-                    max_size = current_size
+                max_size = max(max_size, current_size)
             elif isinstance(data, dict) and all(k in data for k in ["min", "max", "step"]) and data["step"] != 0:
                 # Handle range-defined variables
                 steps = (data["max"] - data["min"]) / data["step"] + 1
                 current_size = int(steps) if steps >= 1 else 1
-                if current_size > max_size:
-                    max_size = current_size
+                max_size = max(max_size, current_size)
 
     return max_size
 
@@ -338,7 +337,7 @@ def generate_deterministic_parameters(
         logger.debug("============= PROFILE STRUCTURE DEBUG =============")
         for key, value in profile.items():
             if key == "chatbot" and isinstance(value, dict):
-                logger.debug(f"chatbot:")
+                logger.debug("chatbot:")
                 for chat_key, chat_value in value.items():
                     if chat_key == "output":
                         logger.debug(f"  output: (type: {type(chat_value)})")
@@ -378,7 +377,7 @@ def generate_deterministic_parameters(
             if total_combinations < 10:
                 number_value = "all_combinations"
             else:
-                number_value = f"sample(0.3)"
+                number_value = "sample(0.3)"
         elif max_var_size > 1:
             # If we have variables with data, use the maximum size
             number_value = max_var_size
@@ -409,15 +408,17 @@ def generate_deterministic_parameters(
         # Ensure the cost is at least a minimum amount
         max_cost = max(max_cost, 0.5)
 
-        # Always use all_answered goal style with limit based on goals count
+        # Always use steps instead of all_answered since all_answered may finish the execution earlier
         base_goal_limit = (num_goals + num_outputs) * 2
         min_limit = MIN_GOAL_LIMIT
         max_limit = MAX_GOAL_LIMIT
         goal_limit = min(max(min_limit, base_goal_limit), max_limit)
 
-        logger.debug(f"Goal limit calculation: min({max_limit}, max({min_limit}, ({num_goals} goals + {num_outputs} outputs) * 2)) = {goal_limit}")
+        logger.debug(
+            f"Goal limit calculation: min({max_limit}, max({min_limit}, ({num_goals} goals + {num_outputs} outputs) * 2)) = {goal_limit}"
+        )
 
-        goal_style = {"all_answered": {"export": False, "limit": goal_limit}}
+        goal_style = {"steps": goal_limit}
 
         # Select 1-2 random interaction styles
         num_styles = random.randint(1, 2)
@@ -428,7 +429,7 @@ def generate_deterministic_parameters(
             "number": number_value,
             "max_cost": max_cost,
             "goal_style": goal_style,
-            "interaction_style": interaction_styles
+            "interaction_style": interaction_styles,
         }
 
         # Log what we've generated
@@ -440,7 +441,7 @@ def generate_deterministic_parameters(
 
         if variables:
             logger.debug(
-                "Parameters: number=%s (from %d variables), cost=%.2f, goal=all_answered (limit: %d)%s",
+                "Parameters: number=%s (from %d variables), cost=%.2f, goal=steps %d %s",
                 number_value,
                 len(variables),
                 max_cost,
@@ -449,7 +450,7 @@ def generate_deterministic_parameters(
             )
         else:
             logger.debug(
-                "Parameters: number=%s (no variables), cost=%.2f, goal=all_answered (limit: %d)%s",
+                "Parameters: number=%s (no variables), cost=%.2f, goal=steps %d %s",
                 number_value,
                 max_cost,
                 goal_limit,
