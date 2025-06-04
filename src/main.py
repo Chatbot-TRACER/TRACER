@@ -9,7 +9,15 @@ from typing import Any
 from chatbot_explorer.agent import ChatbotExplorationAgent
 from chatbot_explorer.utils.logging_utils import get_logger, setup_logging
 from connectors.chatbot_connectors import Chatbot, ChatbotAdaUam, ChatbotTaskyto
-from reporting import GraphRenderOptions, ReportData, export_graph, save_profiles, write_report
+from reporting import (
+    ExecutionResults,
+    GraphRenderOptions,
+    ReportConfig,
+    ReportData,
+    export_graph,
+    save_profiles,
+    write_report,
+)
 from utils.cli import parse_arguments
 
 logger = get_logger()
@@ -61,10 +69,10 @@ def _initialize_agent(model_name: str) -> ChatbotExplorationAgent:
     logger.info("Initializing Chatbot Exploration Agent with model: %s...", model_name)
     try:
         agent = ChatbotExplorationAgent(model_name)
-    except ImportError as e:
-        logger.error("Missing dependency: %s", str(e))
+    except ImportError:
+        logger.exception("Missing dependency")
         if "gemini" in model_name.lower():
-            logger.error(
+            logger.exception(
                 "To use Gemini models, install the required packages:"
                 "\npip install langchain-google-genai google-generativeai"
             )
@@ -73,12 +81,12 @@ def _initialize_agent(model_name: str) -> ChatbotExplorationAgent:
         logger.exception("Fatal Error initializing Chatbot Exploration Agent:")
 
         if model_name.lower().startswith("gemini"):
-            logger.error(
+            logger.exception(
                 "For Gemini models, ensure the GOOGLE_API_KEY environment variable is set."
                 "\nGet an API key at https://makersuite.google.com/app/apikey"
             )
         else:
-            logger.error("Please ensure API keys are set correctly and the model name is valid.")
+            logger.exception("Please ensure API keys are set correctly and the model name is valid.")
 
         sys.exit(1)
     else:
@@ -184,56 +192,42 @@ def _run_analysis_phase(
         return results
 
 
-def _generate_reports(
-    output_dir: str,
-    exploration_results: dict[str, Any],
-    analysis_results: dict[str, Any],
-    token_usage: dict[str, Any],
-    *,
-    graph_font_size: int = 12,
-    compact: bool = False,
-    top_down: bool = False,
-) -> None:
+def _generate_reports(results: ExecutionResults, config: ReportConfig) -> None:
     """Saves generated profiles, writes the final report, and generates the workflow graph image.
 
     Args:
-        output_dir (str): The directory to save output files.
-        exploration_results (Dict[str, Any]): Results from the exploration phase.
-        analysis_results (Dict[str, Any]): Results from the analysis phase.
-        token_usage (Dict[str, Any]): Token usage statistics.
-        graph_font_size (int): Font size to use for graph text elements.
-        compact (bool): Whether to generate a more compact graph layout.
-        top_down (bool): Whether to generate a top-down graph instead of left-to-right.
+        results (ExecutionResults): Container with all execution results.
+        config (ReportConfig): Configuration for report generation.
     """
-    built_profiles = analysis_results.get("built_profiles", [])
-    functionality_dicts = analysis_results.get("discovered_functionalities", {})
-    supported_languages = exploration_results.get("supported_languages", ["N/A"])
-    fallback_message = exploration_results.get("fallback_message", "N/A")
+    built_profiles = results.analysis_results.get("built_profiles", [])
+    functionality_dicts = results.analysis_results.get("discovered_functionalities", {})
+    supported_languages = results.exploration_results.get("supported_languages", ["N/A"])
+    fallback_message = results.exploration_results.get("fallback_message", "N/A")
 
     logger.info("\n--------------------------------")
     logger.info("---   Final Report Summary   ---")
     logger.info("--------------------------------\n")
 
-    save_profiles(built_profiles, output_dir)
+    save_profiles(built_profiles, config.output_dir)
 
     report_data = ReportData(
         structured_functionalities=functionality_dicts,
         supported_languages=supported_languages,
         fallback_message=fallback_message,
-        token_usage=token_usage,
+        token_usage=results.token_usage,
     )
 
-    write_report(output_dir, report_data)
+    write_report(config.output_dir, report_data)
 
     if functionality_dicts:
-        graph_output_base = Path(output_dir) / "workflow_graph"
+        graph_output_base = Path(config.output_dir) / "workflow_graph"
         try:
             options = GraphRenderOptions(
                 fmt="pdf",
-                graph_font_size=graph_font_size,
+                graph_font_size=config.graph_font_size,
                 dpi=300,
-                compact=compact,
-                top_down=top_down,
+                compact=config.compact,
+                top_down=config.top_down,
             )
             export_graph(functionality_dicts, str(graph_output_base), options)
         except Exception:
@@ -242,22 +236,8 @@ def _generate_reports(
         logger.info("--- Skipping workflow graph image (no functionalities discovered) ---")
 
 
-def _format_duration(seconds: float) -> str:
-    """Formats a duration in seconds into HH:MM:SS string."""
-    seconds = int(seconds)
-    hours = seconds // 3600
-    minutes = (seconds % 3600) // 60
-    secs = seconds % 60
-    return f"{hours:02d}:{minutes:02d}:{secs:02d}"
-
-
-def main() -> None:
-    """Coordinates the setup, execution, and reporting for the Chatbot Explorer."""
-    app_start_time = time.monotonic()
-    # 1. Parse arguments, validate inputs, create output dir
-    args = _setup_configuration()
-
-    # 2. Log Configuration Summary
+def _log_configuration_summary(args: Namespace) -> None:
+    """Logs the configuration summary."""
     logger.verbose("\n=== Chatbot Explorer Configuration ===")
     logger.verbose("Chatbot Technology:\t%s", args.technology)
     logger.verbose("Chatbot URL:\t\t%s", args.url)
@@ -271,40 +251,9 @@ def main() -> None:
     logger.verbose("Nested forward chains:\t%s", "Yes" if args.nested_forward else "No")
     logger.verbose("======================================\n")
 
-    # 4. Initialization
-    agent = _initialize_agent(args.model)
-    the_chatbot = _instantiate_connector(args.technology, args.url)
 
-    # 5. Run Exploration
-    exploration_results = _run_exploration_phase(agent, the_chatbot, args.sessions, args.turns)
-
-    # 6. Run Analysis
-    analysis_results = _run_analysis_phase(agent, exploration_results, nested_forward=args.nested_forward)
-
-    # Get token usage summary
-    token_usage = agent.token_tracker.get_summary()
-
-    # Calculate total application execution time and add to token_usage
-    app_end_time = time.monotonic()
-    total_app_duration_seconds = app_end_time - app_start_time
-    formatted_app_duration = _format_duration(total_app_duration_seconds)
-    token_usage["total_application_execution_time"] = {
-        "seconds": total_app_duration_seconds,
-        "formatted": formatted_app_duration,
-    }
-
-    # 7. Generate Reports
-    _generate_reports(
-        args.output,
-        exploration_results,
-        analysis_results,
-        token_usage,  # Now includes execution time
-        graph_font_size=args.graph_font_size,
-        compact=args.compact,
-        top_down=args.top_down,
-    )
-
-    # 8. Display Final Token Usage Summary
+def _log_token_usage_summary(token_usage: dict[str, Any]) -> None:
+    """Logs the final token usage summary."""
     exploration_data = token_usage.get("exploration_phase", {})
     analysis_data = token_usage.get("analysis_phase", {})
 
@@ -341,7 +290,56 @@ def main() -> None:
     ):
         logger.info("Total execution time: %s (HH:MM:SS)", token_usage["total_application_execution_time"]["formatted"])
 
-    # 9. Finish
+
+def _format_duration(seconds: float) -> str:
+    """Formats a duration in seconds into HH:MM:SS string."""
+    seconds = int(seconds)
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    secs = seconds % 60
+    return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+
+
+def main() -> None:
+    """Coordinates the setup, execution, and reporting for the Chatbot Explorer."""
+    app_start_time = time.monotonic()
+
+    # Setup and configuration
+    args = _setup_configuration()
+    _log_configuration_summary(args)
+
+    # Initialize components
+    agent = _initialize_agent(args.model)
+    the_chatbot = _instantiate_connector(args.technology, args.url)
+
+    # Execute phases
+    exploration_results = _run_exploration_phase(agent, the_chatbot, args.sessions, args.turns)
+    analysis_results = _run_analysis_phase(agent, exploration_results, nested_forward=args.nested_forward)
+
+    # Calculate execution time and prepare results
+    app_end_time = time.monotonic()
+    total_app_duration_seconds = app_end_time - app_start_time
+    formatted_app_duration = _format_duration(total_app_duration_seconds)
+
+    token_usage = agent.token_tracker.get_summary()
+    token_usage["total_application_execution_time"] = {
+        "seconds": total_app_duration_seconds,
+        "formatted": formatted_app_duration,
+    }
+
+    # Generate reports
+    results = ExecutionResults(exploration_results, analysis_results, token_usage)
+    config = ReportConfig(
+        output_dir=args.output,
+        graph_font_size=args.graph_font_size,
+        compact=args.compact,
+        top_down=args.top_down,
+    )
+    _generate_reports(results, config)
+
+    # Final logging and cleanup
+    _log_token_usage_summary(token_usage)
+
     logger.info("\n---------------------------------")
     logger.info("--- Chatbot Explorer Finished ---")
     logger.info("---------------------------------")

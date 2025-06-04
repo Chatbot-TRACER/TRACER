@@ -1,13 +1,7 @@
-"""Configuration classes and factory functions for graph generation.
-
-This module defines dataclasses for configuring various aspects of graph
-visualizations, such as font sizes, text truncation, layout, styling,
-and rendering options. It also provides factory functions to create
-these configurations based on high-level settings like graph font size
-and compactness.
-"""
+"""Configuration classes and factory functions for graph generation."""
 
 from dataclasses import dataclass, field
+from typing import Any
 
 import graphviz
 
@@ -116,6 +110,25 @@ class GraphBuildContext:
     processed_nodes: set[str] = field(default_factory=set)
     processed_edges: set[tuple[str, str]] = field(default_factory=set)
     node_clusters: dict[str, graphviz.Digraph] = field(default_factory=dict)
+
+
+@dataclass
+class ReportConfig:
+    """Configuration for report generation."""
+
+    output_dir: str
+    graph_font_size: int = 12
+    compact: bool = False
+    top_down: bool = False
+
+
+@dataclass
+class ExecutionResults:
+    """Container for execution phase results."""
+
+    exploration_results: dict[str, Any]
+    analysis_results: dict[str, Any]
+    token_usage: dict[str, Any]
 
 
 @dataclass
