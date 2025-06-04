@@ -142,7 +142,28 @@ class GraphBuildContext:
     node_clusters: dict[str, graphviz.Digraph] = field(default_factory=dict)
 
 
-def create_font_size_config(graph_font_size: int, compact: bool) -> FontSizeConfig:
+@dataclass
+class GraphRenderOptions:
+    """Options for graph rendering."""
+
+    fmt: str = "pdf"
+    graph_font_size: int = 12
+    dpi: int = 300
+    compact: bool = False
+    top_down: bool = False
+
+
+@dataclass
+class AddNodeOptions:
+    """Options for adding nodes to graph."""
+
+    graph_font_size: int = 12
+    compact: bool = False
+    target_graph: graphviz.Digraph | None = None
+    category_for_label: str | None = None
+
+
+def create_font_size_config(graph_font_size: int, *, compact: bool) -> FontSizeConfig:
     """Create font size configuration based on graph settings.
 
     Args:
@@ -165,7 +186,7 @@ def create_font_size_config(graph_font_size: int, compact: bool) -> FontSizeConf
     )
 
 
-def create_truncation_config(graph_font_size: int, compact: bool) -> TruncationConfig:
+def create_truncation_config(graph_font_size: int, *, compact: bool) -> TruncationConfig:
     """Create text truncation configuration based on font size and layout.
 
     Args:
@@ -212,7 +233,7 @@ def create_truncation_config(graph_font_size: int, compact: bool) -> TruncationC
     )
 
 
-def create_layout_config(graph_font_size: int, compact: bool) -> GraphLayoutConfig:
+def create_layout_config(graph_font_size: int, *, compact: bool) -> GraphLayoutConfig:
     """Create graph layout configuration based on font size and compactness.
 
     Args:
@@ -320,11 +341,7 @@ def get_node_style(depth: int) -> dict[str, str]:
 def export_graph(
     nodes: list[FunctionalityNode],
     output_path: str,
-    fmt: str = "pdf",
-    graph_font_size: int = 12,
-    dpi: int = 300,
-    compact: bool = False,
-    top_down: bool = False,
+    options: GraphRenderOptions | None = None,
 ) -> None:
     """Create and render a directed graph of chatbot functionality.
 
@@ -335,25 +352,34 @@ def export_graph(
     Args:
         nodes: List of functionality nodes to visualize
         output_path: Path where the graph should be saved (without extension)
-        fmt: Output format (pdf, png, svg, etc.)
-        graph_font_size: Base font size for text elements
-        dpi: Resolution in dots per inch for raster formats
-        compact: Whether to use a more compact layout
-        top_down: Whether to use top-down layout instead of left-right
+        options: Graph rendering options. If None, uses default options.
 
     Raises:
         RuntimeError: If Graphviz is not installed or accessible
     """
+    if options is None:
+        options = GraphRenderOptions()
+    _render_graph_with_options(nodes, output_path, options)
+
+
+def _render_graph_with_options(
+    nodes: list[FunctionalityNode],
+    output_path: str,
+    options: GraphRenderOptions,
+) -> None:
+    """Internal function to render graph with options dataclass."""
     if not nodes:
         logger.warning("No nodes provided for graph generation")
         return
 
     # Adjust DPI for specific formats
-    adjusted_dpi = adjust_dpi_for_format(fmt, dpi)
+    adjusted_dpi = adjust_dpi_for_format(options.fmt, options.dpi)
 
     # Create and configure the main graph
-    dot = graphviz.Digraph(format=fmt)
-    configure_graph_attributes(dot, graph_font_size, adjusted_dpi, compact, top_down)
+    dot = graphviz.Digraph(format=options.fmt)
+    configure_graph_attributes(
+        dot, options.graph_font_size, adjusted_dpi, compact=options.compact, top_down=options.top_down
+    )
 
     # Create start node
     create_start_node(dot)
@@ -363,14 +389,14 @@ def export_graph(
 
     # Group nodes by category and create clusters
     nodes_by_category = group_nodes_by_category(nodes)
-    process_categories(context, nodes_by_category, graph_font_size, compact)
+    process_categories(context, nodes_by_category, options.graph_font_size, compact=options.compact)
 
     # Render the graph
     render_graph(dot, output_path)
 
 
 def configure_graph_attributes(
-    dot: graphviz.Digraph, graph_font_size: int, dpi: int, compact: bool, top_down: bool
+    dot: graphviz.Digraph, graph_font_size: int, dpi: int, *, compact: bool, top_down: bool
 ) -> None:
     """Configure graph attributes for styling and layout.
 
@@ -382,7 +408,7 @@ def configure_graph_attributes(
         top_down: Whether to use top-down orientation
     """
     style_config = GraphStyleConfig()
-    layout_config = create_layout_config(graph_font_size, compact)
+    layout_config = create_layout_config(graph_font_size, compact=compact)
 
     # Set graph orientation
     rankdir = "TB" if top_down else "LR"
@@ -448,6 +474,7 @@ def process_categories(
     context: GraphBuildContext,
     nodes_by_category: dict[str, list[FunctionalityNode]],
     graph_font_size: int,
+    *,
     compact: bool,
 ) -> None:
     """Process all categories and add them to the graph.
@@ -460,9 +487,9 @@ def process_categories(
     """
     for category, category_nodes in nodes_by_category.items():
         if should_create_cluster(category_nodes, len(nodes_by_category)):
-            process_clustered_category(context, category, category_nodes, graph_font_size, compact)
+            process_clustered_category(context, category, category_nodes, graph_font_size, compact=compact)
         else:
-            process_unclustered_category(context, category_nodes, graph_font_size, compact)
+            process_unclustered_category(context, category_nodes, graph_font_size, compact=compact)
 
 
 def process_clustered_category(
@@ -470,6 +497,7 @@ def process_clustered_category(
     category: str,
     category_nodes: list[FunctionalityNode],
     graph_font_size: int,
+    *,
     compact: bool,
 ) -> None:
     """Process a category that should be clustered.
@@ -485,22 +513,25 @@ def process_clustered_category(
     context.node_clusters[category] = category_graph
 
     for root_node in category_nodes:
+        options = AddNodeOptions(
+            graph_font_size=graph_font_size,
+            compact=compact,
+            target_graph=category_graph,
+            category_for_label=None,
+        )
         add_nodes(
             ctx=context,
             node=root_node,
             parent="start",
             depth=0,
-            graph_font_size=graph_font_size,
-            compact=compact,
-            target_graph=category_graph,
-            category_for_label=None,
+            options=options,
         )
 
     context.graph.subgraph(category_graph)
 
 
 def process_unclustered_category(
-    context: GraphBuildContext, category_nodes: list[FunctionalityNode], graph_font_size: int, compact: bool
+    context: GraphBuildContext, category_nodes: list[FunctionalityNode], graph_font_size: int, *, compact: bool
 ) -> None:
     """Process a category that should not be clustered.
 
@@ -511,15 +542,18 @@ def process_unclustered_category(
         compact: Whether to use compact layout
     """
     for root_node in category_nodes:
+        options = AddNodeOptions(
+            graph_font_size=graph_font_size,
+            compact=compact,
+            target_graph=context.graph,
+            category_for_label=root_node.get("suggested_category"),
+        )
         add_nodes(
             ctx=context,
             node=root_node,
             parent="start",
             depth=0,
-            graph_font_size=graph_font_size,
-            compact=compact,
-            target_graph=context.graph,
-            category_for_label=root_node.get("suggested_category"),
+            options=options,
         )
 
 
@@ -535,9 +569,8 @@ def render_graph(dot: graphviz.Digraph, output_path: str) -> None:
     """
     try:
         # Suppress Graphviz warnings/errors to devnull
-        with open(os.devnull, "w", encoding="utf-8") as fnull:
-            with redirect_stderr(fnull):
-                dot.render(output_path, cleanup=True)
+        with Path(os.devnull).open("w", encoding="utf-8") as fnull, redirect_stderr(fnull):
+            dot.render(output_path, cleanup=True)
     except graphviz.backend.execute.ExecutableNotFound as exc:
         error_msg = "Graphviz 'dot' executable not found. Ensure Graphviz is installed and in your system's PATH."
         raise RuntimeError(error_msg) from exc
@@ -548,11 +581,7 @@ def add_nodes(
     node: FunctionalityNode,
     parent: str,
     depth: int,
-    graph_font_size: int = 12,
-    *,
-    compact: bool = False,
-    target_graph: graphviz.Digraph | None = None,
-    category_for_label: str | None = None,
+    options: AddNodeOptions,
 ) -> None:
     """Recursively add nodes and edges to the graph.
 
@@ -561,21 +590,22 @@ def add_nodes(
         node: Functionality node to add
         parent: Name of parent node
         depth: Depth level in graph
-        graph_font_size: Font size for graph elements
-        compact: Whether to use compact layout
-        target_graph: Graph to add node to
-        category_for_label: Category to display in label
+        options: Options for node addition
     """
     name = node.get("name")
     if not name or name in ctx.processed_nodes:
         return
 
     # Use the target_graph if provided, otherwise use the main graph
-    if target_graph is None:
-        target_graph = ctx.graph
+    target_graph = options.target_graph if options.target_graph is not None else ctx.graph
 
     # Build HTML label
-    html_table = build_label(node, graph_font_size, compact, category_to_display=category_for_label)
+    html_table = build_label(
+        node,
+        graph_font_size=options.graph_font_size,
+        compact=options.compact,
+        category_to_display=options.category_for_label,
+    )
     label = f"<{html_table}>"
 
     target_graph.node(name, label=label, **get_node_style(depth))
@@ -589,20 +619,22 @@ def add_nodes(
         ctx.processed_edges.add((parent, name))
 
     for child in node.get("children", []):
-        child_category_for_label = child.get("suggested_category")
+        child_options = AddNodeOptions(
+            graph_font_size=options.graph_font_size,
+            compact=options.compact,
+            target_graph=ctx.graph,
+            category_for_label=child.get("suggested_category"),
+        )
         add_nodes(
             ctx,
             child,
             parent=name,
             depth=depth + 1,
-            graph_font_size=graph_font_size,
-            compact=compact,
-            target_graph=ctx.graph,
-            category_for_label=child_category_for_label,
+            options=child_options,
         )
 
 
-def truncate_text(text: str | None, max_length: int, already_escaped: bool = False) -> str:
+def truncate_text(text: str | None, max_length: int, *, already_escaped: bool = False) -> str:
     """Truncate text to a maximum length, adding ellipsis if truncated.
 
     Args:
@@ -626,6 +658,7 @@ def build_node_title(
     font_config: FontSizeConfig,
     trunc_config: TruncationConfig,
     category_to_display: str | None = None,
+    *,
     compact: bool = False,
 ) -> list[str]:
     """Build the title section of a node label.
@@ -662,7 +695,7 @@ def build_node_title(
 
 
 def build_parameters_section(
-    node: FunctionalityNode, font_config: FontSizeConfig, trunc_config: TruncationConfig, compact: bool = False
+    node: FunctionalityNode, font_config: FontSizeConfig, trunc_config: TruncationConfig, *, compact: bool = False
 ) -> list[str]:
     """Build the parameters section of a node label.
 
@@ -895,7 +928,7 @@ def format_parameter_with_description(param_name: str, param_desc: str) -> str:
 
 
 def build_outputs_section(
-    node: FunctionalityNode, font_config: FontSizeConfig, trunc_config: TruncationConfig, compact: bool = False
+    node: FunctionalityNode, font_config: FontSizeConfig, trunc_config: TruncationConfig, *, compact: bool = False
 ) -> list[str]:
     """Build the outputs section of a node label.
 
@@ -953,7 +986,43 @@ def build_outputs_section(
     return []
 
 
-def format_output(output_data: Any, trunc_config: TruncationConfig) -> str:
+def _format_category_only(o_category: str, trunc_config: TruncationConfig) -> str:
+    """Format output with category only."""
+    if len(o_category) > trunc_config.output_combined_max_length:
+        o_category = o_category[: trunc_config.output_combined_max_length - 3] + "..."
+    return f"<b>{html.escape(o_category.replace('_', ' '))}</b>"
+
+
+def _format_description_only(o_desc: str, trunc_config: TruncationConfig) -> str:
+    """Format output with description only."""
+    if len(o_desc) > trunc_config.output_combined_max_length:
+        o_desc = o_desc[: trunc_config.output_combined_max_length - 3] + "..."
+    return html.escape(o_desc)
+
+
+def _format_category_and_description(o_category: str, o_desc: str, trunc_config: TruncationConfig) -> str:
+    """Format output with both category and description."""
+    full_line = f"{o_category}: {o_desc}"
+
+    # Truncate the entire line if it's too long
+    if len(full_line) > trunc_config.output_combined_max_length:
+        category_part = f"{o_category}: "
+        if len(category_part) < trunc_config.output_combined_max_length - 3:
+            remaining_space = trunc_config.output_combined_max_length - len(category_part) - 3
+            o_desc = o_desc[:remaining_space] + "..."
+        else:
+            # If category itself is too long, truncate the whole thing
+            full_line = full_line[: trunc_config.output_combined_max_length - 3] + "..."
+            escaped_category = html.escape(o_category.replace("_", " "))
+            escaped_rest = html.escape(full_line[len(o_category) :])
+            return f"<b>{escaped_category}</b>{escaped_rest}"
+
+    escaped_category = html.escape(o_category.replace("_", " "))
+    escaped_desc = html.escape(o_desc)
+    return f"<b>{escaped_category}</b>: {escaped_desc}"
+
+
+def format_output(output_data: dict | str | None, trunc_config: TruncationConfig) -> str:
     """Format an output item for display.
 
     Args:
@@ -969,32 +1038,10 @@ def format_output(output_data: Any, trunc_config: TruncationConfig) -> str:
 
         if o_category or o_desc:
             if o_category and o_desc:
-                full_line = f"{o_category}: {o_desc}"
-
-                # Truncate the entire line if it's too long
-                if len(full_line) > trunc_config.output_combined_max_length:
-                    category_part = f"{o_category}: "
-                    if len(category_part) < trunc_config.output_combined_max_length - 3:
-                        remaining_space = trunc_config.output_combined_max_length - len(category_part) - 3
-                        o_desc = o_desc[:remaining_space] + "..."
-                    else:
-                        # If category itself is too long, truncate the whole thing
-                        full_line = full_line[: trunc_config.output_combined_max_length - 3] + "..."
-                        escaped_category = html.escape(o_category.replace("_", " "))
-                        escaped_rest = html.escape(full_line[len(o_category) :])
-                        return f"<b>{escaped_category}</b>{escaped_rest}"
-
-                escaped_category = html.escape(o_category.replace("_", " "))
-                escaped_desc = html.escape(o_desc)
-                return f"<b>{escaped_category}</b>: {escaped_desc}"
-
+                return _format_category_and_description(o_category, o_desc, trunc_config)
             if o_category:
-                if len(o_category) > trunc_config.output_combined_max_length:
-                    o_category = o_category[: trunc_config.output_combined_max_length - 3] + "..."
-                return f"<b>{html.escape(o_category.replace('_', ' '))}</b>"
-            if len(o_desc) > trunc_config.output_combined_max_length:
-                o_desc = o_desc[: trunc_config.output_combined_max_length - 3] + "..."
-            return html.escape(o_desc)
+                return _format_category_only(o_category, trunc_config)
+            return _format_description_only(o_desc, trunc_config)
     elif output_data is not None:
         # Non-dict outputs - just display as normal text, no bold
         full_line = str(output_data)
@@ -1006,7 +1053,7 @@ def format_output(output_data: Any, trunc_config: TruncationConfig) -> str:
 
 
 def build_label(
-    node: FunctionalityNode, graph_font_size: int = 12, compact: bool = False, category_to_display: str | None = None
+    node: FunctionalityNode, *, graph_font_size: int = 12, compact: bool = False, category_to_display: str | None = None
 ) -> str:
     """Build an HTML table with name, description, parameters, and outputs.
 
@@ -1019,18 +1066,18 @@ def build_label(
     Returns:
         str: HTML table string for the node label
     """
-    font_config = create_font_size_config(graph_font_size, compact)
-    trunc_config = create_truncation_config(graph_font_size, compact)
+    font_config = create_font_size_config(graph_font_size, compact=compact)
+    trunc_config = create_truncation_config(graph_font_size, compact=compact)
 
     # Build title section
-    rows = build_node_title(node, font_config, trunc_config, category_to_display, compact)
+    rows = build_node_title(node, font_config, trunc_config, category_to_display, compact=compact)
 
     # Build parameters section
-    param_rows = build_parameters_section(node, font_config, trunc_config, compact)
+    param_rows = build_parameters_section(node, font_config, trunc_config, compact=compact)
     rows.extend(param_rows)
 
     # Build outputs section
-    output_rows = build_outputs_section(node, font_config, trunc_config, compact)
+    output_rows = build_outputs_section(node, font_config, trunc_config, compact=compact)
     rows.extend(output_rows)
 
     # Return inner HTML for table (without extra brackets)
@@ -1042,36 +1089,44 @@ def build_label(
 # ------------------------------------------------ #
 
 
+@dataclass
+class ReportData:
+    """Data structure for report generation."""
+
+    structured_functionalities: list[FunctionalityNode]
+    supported_languages: list[str]
+    fallback_message: str | None
+    token_usage: dict[str, Any] | None = None
+
+
 def write_report(
     output_dir: str,
-    structured_functionalities: list[FunctionalityNode],
-    limitations: list[str],
-    supported_languages: list[str],
-    fallback_message: str | None,
-    token_usage: dict[str, Any] = None,
+    report_data: ReportData,
 ) -> None:
     """Write analysis results to multiple report files.
 
     Args:
         output_dir: Directory to write the report files to
-        structured_functionalities: List of functionalities representing the workflow structure
-        limitations: List of discovered limitations
-        supported_languages: List of detected supported languages
-        fallback_message: Detected fallback message, or None if not found
-        token_usage: Token usage statistics from LLM calls
+        report_data: Report data containing functionalities and metadata
     """
     output_path = Path(output_dir)
 
     # Write main report in Markdown format
-    write_main_report(output_path, structured_functionalities, supported_languages, fallback_message, token_usage)
+    write_main_report(
+        output_path,
+        report_data.structured_functionalities,
+        report_data.supported_languages,
+        report_data.fallback_message,
+        report_data.token_usage,
+    )
 
     # Write raw JSON data to separate file
-    write_json_data(output_path, structured_functionalities)
+    write_json_data(output_path, report_data.structured_functionalities)
 
 
-# -------------------------------------------------- #
-# -------------------- PROFILES -------------------- #
-# -------------------------------------------------- #
+# --------------------------------------------------
+# -------------------- PROFILES --------------------
+# --------------------------------------------------
 
 
 def save_profiles(built_profiles: list[dict], output_dir: str) -> None:
@@ -1141,7 +1196,7 @@ def write_main_report(
     structured_functionalities: list[FunctionalityNode],
     supported_languages: list[str],
     fallback_message: str | None,
-    token_usage: dict[str, Any] = None,
+    token_usage: dict[str, Any] | None = None,
 ) -> None:
     """Write the main analysis report in Markdown format."""
     report_path = output_path / "README.md"
@@ -1192,11 +1247,11 @@ def write_category_overview(f: TextIO, functionalities: list[FunctionalityNode])
     collect_by_category(functionalities)
 
     # Sort categories and write overview
-    sorted_categories = get_sorted_categories(categories.keys())
+    sorted_categories = get_sorted_categories(list(categories.keys()))
     write_category_sections(f, categories, sorted_categories)
 
 
-def get_sorted_categories(category_names) -> list[str]:
+def get_sorted_categories(category_names: list[str]) -> list[str]:
     """Sort categories alphabetically with Uncategorized last."""
     sorted_categories = sorted(category_names)
     if "Uncategorized" in sorted_categories:
@@ -1248,7 +1303,7 @@ def write_executive_summary(f: TextIO, functionalities: list[FunctionalityNode],
     total_functions = 0
     categories = set()
 
-    def count_functions(nodes):
+    def count_functions(nodes: list[FunctionalityNode]) -> None:
         nonlocal total_functions
         for node in nodes:
             if isinstance(node, dict):
@@ -1280,7 +1335,7 @@ def write_functionality_overview(f: TextIO, functionalities: list[FunctionalityN
     # Group by category and collect all functions (including children)
     categories = {}
 
-    def collect_by_category(nodes):
+    def collect_by_category(nodes: list[FunctionalityNode]) -> None:
         for node in nodes:
             if isinstance(node, dict):
                 category = node.get("suggested_category", "Uncategorized")
@@ -1405,7 +1460,7 @@ def write_performance_stats(f: TextIO, token_usage: dict[str, Any]) -> None:
     f.write("## 📈 Performance Statistics\n\n")
 
     # Format numbers with commas
-    def fmt_num(num):
+    def fmt_num(num: float | str) -> str:
         return f"{num:,}" if isinstance(num, (int, float)) else str(num)
 
     # Overview table
@@ -1474,5 +1529,5 @@ def write_json_data(output_path: Path, functionalities: list[FunctionalityNode])
         with json_path.open("w", encoding="utf-8") as f:
             json.dump(functionalities, f, indent=2, ensure_ascii=False)
         logger.info("JSON data written to: %s", json_path)
-    except (TypeError, OSError) as e:
-        logger.error("Failed to write JSON data: %s", e)
+    except (TypeError, OSError):
+        logger.exception("Failed to write JSON data")

@@ -148,7 +148,7 @@ def _run_exploration_phase(
 
 
 def _run_analysis_phase(
-    agent: ChatbotExplorationAgent, exploration_results: dict[str, Any], nested_forward: bool = False
+    agent: ChatbotExplorationAgent, exploration_results: dict[str, Any], *, nested_forward: bool = False
 ) -> dict[str, Any]:
     """Runs the analysis phase using the agent and exploration results.
 
@@ -189,6 +189,7 @@ def _generate_reports(
     exploration_results: dict[str, Any],
     analysis_results: dict[str, Any],
     token_usage: dict[str, Any],
+    *,
     graph_font_size: int = 12,
     compact: bool = False,
     top_down: bool = False,
@@ -206,7 +207,6 @@ def _generate_reports(
     """
     built_profiles = analysis_results.get("built_profiles", [])
     functionality_dicts = analysis_results.get("discovered_functionalities", {})
-    limitations = analysis_results.get("discovered_limitations", [])
     supported_languages = exploration_results.get("supported_languages", ["N/A"])
     fallback_message = exploration_results.get("fallback_message", "N/A")
 
@@ -216,27 +216,31 @@ def _generate_reports(
 
     save_profiles(built_profiles, output_dir)
 
-    write_report(
-        output_dir,
+    # Create report data structure
+    from utils.reporting import ReportData
+
+    report_data = ReportData(
         structured_functionalities=functionality_dicts,
-        limitations=limitations,
         supported_languages=supported_languages,
         fallback_message=fallback_message,
         token_usage=token_usage,
     )
 
+    write_report(output_dir, report_data)
+
     if functionality_dicts:
         graph_output_base = Path(output_dir) / "workflow_graph"
         try:
-            export_graph(
-                functionality_dicts,
-                str(graph_output_base),
-                "pdf",
+            from utils.reporting import GraphRenderOptions
+
+            options = GraphRenderOptions(
+                fmt="pdf",
                 graph_font_size=graph_font_size,
                 dpi=300,
                 compact=compact,
                 top_down=top_down,
             )
+            export_graph(functionality_dicts, str(graph_output_base), options)
         except Exception:
             logger.exception("Failed to generate workflow graph image")
     else:
@@ -280,7 +284,7 @@ def main() -> None:
     exploration_results = _run_exploration_phase(agent, the_chatbot, args.sessions, args.turns)
 
     # 6. Run Analysis
-    analysis_results = _run_analysis_phase(agent, exploration_results, args.nested_forward)
+    analysis_results = _run_analysis_phase(agent, exploration_results, nested_forward=args.nested_forward)
 
     # Get token usage summary
     token_usage = agent.token_tracker.get_summary()
@@ -300,13 +304,12 @@ def main() -> None:
         exploration_results,
         analysis_results,
         token_usage,  # Now includes execution time
-        args.graph_font_size,
-        args.compact,
-        args.top_down,
+        graph_font_size=args.graph_font_size,
+        compact=args.compact,
+        top_down=args.top_down,
     )
 
     # 8. Display Final Token Usage Summary
-    cost_details = token_usage.get("cost_details", {})
     exploration_data = token_usage.get("exploration_phase", {})
     analysis_data = token_usage.get("analysis_phase", {})
 
