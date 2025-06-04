@@ -9,7 +9,7 @@ from typing import Any
 from chatbot_explorer.agent import ChatbotExplorationAgent
 from chatbot_explorer.utils.logging_utils import get_logger, setup_logging
 from connectors.chatbot_connectors import Chatbot, ChatbotAdaUam, ChatbotTaskyto
-from reporting import export_graph, save_profiles, write_report
+from reporting import GraphRenderOptions, ReportData, export_graph, save_profiles, write_report
 from utils.cli import parse_arguments
 
 logger = get_logger()
@@ -216,9 +216,6 @@ def _generate_reports(
 
     save_profiles(built_profiles, output_dir)
 
-    # Create report data structure
-    from utils.reporting import ReportData
-
     report_data = ReportData(
         structured_functionalities=functionality_dicts,
         supported_languages=supported_languages,
@@ -231,8 +228,6 @@ def _generate_reports(
     if functionality_dicts:
         graph_output_base = Path(output_dir) / "workflow_graph"
         try:
-            from utils.reporting import GraphRenderOptions
-
             options = GraphRenderOptions(
                 fmt="pdf",
                 graph_font_size=graph_font_size,

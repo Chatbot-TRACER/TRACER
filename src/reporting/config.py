@@ -11,8 +11,18 @@ from dataclasses import dataclass, field
 
 import graphviz
 
-# Assuming constants will be moved to a constants.py file in the same directory
-from .constants import LARGE_FONT_THRESHOLD, MEDIUM_FONT_THRESHOLD
+from .constants import COMPACT_LAYOUT, LARGE_FONT_LAYOUT, LARGE_FONT_THRESHOLD, MEDIUM_FONT_THRESHOLD
+
+
+@dataclass
+class GraphRenderOptions:
+    """Options for graph rendering."""
+
+    fmt: str = "pdf"
+    graph_font_size: int = 12
+    dpi: int = 300
+    compact: bool = False
+    top_down: bool = False
 
 
 @dataclass
@@ -210,11 +220,7 @@ def create_layout_config(graph_font_size: int, *, compact: bool) -> GraphLayoutC
         GraphLayoutConfig: Configuration object with layout parameters.
     """
     if graph_font_size >= LARGE_FONT_THRESHOLD:
-        return GraphLayoutConfig(
-            pad="0.3", nodesep="0.3", ranksep="0.5", splines="ortho", overlap="compress", node_margin="0.1,0.08"
-        )
+        return GraphLayoutConfig(**LARGE_FONT_LAYOUT)
     if compact:
-        return GraphLayoutConfig(
-            pad="0.4", nodesep="0.4", ranksep="0.7", splines="ortho", overlap="compress", node_margin="0.15,0.1"
-        )
+        return GraphLayoutConfig(**COMPACT_LAYOUT)
     return GraphLayoutConfig()  # Use defaults

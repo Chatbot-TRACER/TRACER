@@ -25,3 +25,22 @@ COLOR_SCHEMES: dict[int, dict[str, str]] = {
     8: {"fillcolor": "#E8EAF6:#C5CAE9", "color": "#3F51B5"},  # Indigo theme
     9: {"fillcolor": "#F1F8E9:#DCEDC8", "color": "#8BC34A"},  # Light Green theme
 }
+
+# Layout configuration constants
+LARGE_FONT_LAYOUT = {
+    "pad": "0.3",
+    "nodesep": "0.3",
+    "ranksep": "0.5",
+    "node_margin": "0.1,0.08",
+    "splines": "ortho",
+    "overlap": "compress",
+}
+
+COMPACT_LAYOUT = {
+    "pad": "0.4",
+    "nodesep": "0.4",
+    "ranksep": "0.7",
+    "node_margin": "0.15,0.1",
+    "splines": "ortho",
+    "overlap": "compress",
+}
