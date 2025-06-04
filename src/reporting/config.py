@@ -119,17 +119,6 @@ class GraphBuildContext:
 
 
 @dataclass
-class GraphRenderOptions:
-    """Options for graph rendering."""
-
-    fmt: str = "pdf"
-    graph_font_size: int = 12
-    dpi: int = 300
-    compact: bool = False
-    top_down: bool = False
-
-
-@dataclass
 class AddNodeOptions:
     """Options for adding nodes to graph."""
 

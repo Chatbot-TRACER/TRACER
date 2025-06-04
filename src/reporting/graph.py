@@ -1,4 +1,3 @@
-# reporting/graph.py
 """Utilities for generating graph visualizations of chatbot functionality."""
 
 import html
@@ -11,7 +10,6 @@ import graphviz
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 from chatbot_explorer.utils.logging_utils import get_logger
 
-# Assuming config.py and constants.py are in the same 'reporting' directory
 from .config import (
     AddNodeOptions,
     FontSizeConfig,
@@ -578,17 +576,17 @@ def build_standard_parameters(
             param_html = format_parameter_standard(p_data, trunc_config)
             if param_html:
                 actual_param_rows.append(
-                    f'<tr><td><font point-size="{font_config.normal_font_size}">  {param_html}</font></td></tr>'
+                    f'<tr><td><font point-size="{font_config.normal_font_size}">  {param_html}</font></td></tr>'
                 )
         elif p_data is not None:
             actual_param_rows.append(
-                f'<tr><td><font point-size="{font_config.normal_font_size}">  <b>{html.escape(str(p_data))}</b></font></td></tr>'
+                f'<tr><td><font point-size="{font_config.normal_font_size}">  <b>{html.escape(str(p_data))}</b></font></td></tr>'
             )
     if actual_param_rows:
         rows = [
-            '<tr><td><font point-size="1"> </font></td></tr>',
+            '<tr><td><font point-size="1"> </font></td></tr>',
             "<HR/>",
-            '<tr><td><font point-size="1"> </font></td></tr>',
+            '<tr><td><font point-size="1"> </font></td></tr>',
             f'<tr><td><font point-size="{font_config.normal_font_size}"><u>Parameters</u></font></td></tr>',
         ]
         rows.extend(actual_param_rows)

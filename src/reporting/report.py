@@ -1,4 +1,3 @@
-# reporting/report.py
 """Utilities for generating markdown reports from chatbot exploration."""
 
 import json
@@ -9,7 +8,6 @@ from typing import Any, TextIO
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 from chatbot_explorer.utils.logging_utils import get_logger
 
-# Assuming constants.py is in the same 'reporting' directory
 from .constants import MAX_DESCRIPTION_LENGTH, MAX_FUNCTIONS_PER_CATEGORY
 
 logger = get_logger()
@@ -168,7 +166,7 @@ def write_functionality_overview(f: TextIO, functionalities: list[FunctionalityN
                 category = item_node.get("suggested_category", "Uncategorized")
                 if category not in categories_map:
                     categories_map[category] = []
-                categories_map[category].append(item_node)  # type: ignore
+                categories_map[category].append(item_node)
                 collect_by_category_recursive(item_node.get("children", []))
 
     collect_by_category_recursive(functionalities)
@@ -179,7 +177,7 @@ def write_functionality_overview(f: TextIO, functionalities: list[FunctionalityN
         icon = "📂" if category_name != "Uncategorized" else "📄"
         f.write(f"### {icon} {category_name} ({len(category_nodes)} functions)\n\n")
         for node_item in category_nodes:
-            write_detailed_function_info(f, node_item)  # type: ignore
+            write_detailed_function_info(f, node_item)
         f.write("\n")
 
 
