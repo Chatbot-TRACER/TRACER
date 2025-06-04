@@ -1,6 +1,5 @@
 """Node for generating conversation parameters (number, cost, style) for user profiles."""
 
-import random
 from typing import Any
 
 from langchain_core.language_models.base import BaseLanguageModel
@@ -11,23 +10,12 @@ from chatbot_explorer.utils.logging_utils import get_logger
 
 logger = get_logger()
 
-MAX_DISPLAYED_STYLES = 2
-
 # Global constants for deterministic parameter generation
 DEFAULT_RUNS_NO_VARIABLES = 3
 DEFAULT_RUNS_NON_FORWARD_VARIABLES = 3
 BASE_COST_PER_CONVERSATION = 0.15
 MIN_GOAL_LIMIT = 15
 MAX_GOAL_LIMIT = 30
-
-# Available interaction styles for randomization
-AVAILABLE_INTERACTION_STYLES = [
-    "long phrases",
-    "change your mind",
-    "make spelling mistakes",
-    "single question",
-    "all questions",
-]
 
 # --- Helper Functions for extract_profile_variables ---
 
@@ -420,9 +408,8 @@ def generate_deterministic_parameters(
 
         goal_style = {"steps": goal_limit}
 
-        # Select 1-2 random interaction styles
-        num_styles = random.randint(1, 2)
-        interaction_styles = random.sample(AVAILABLE_INTERACTION_STYLES, num_styles)
+        # Always use "single question" as interaction style
+        interaction_styles = ["single question"]
 
         # Build the conversation parameters
         conversation_params = {
@@ -433,9 +420,7 @@ def generate_deterministic_parameters(
         }
 
         # Log what we've generated
-        style_summary = f", styles: {', '.join(interaction_styles[:MAX_DISPLAYED_STYLES])}"
-        if len(interaction_styles) > MAX_DISPLAYED_STYLES:
-            style_summary += f" +{len(interaction_styles) - MAX_DISPLAYED_STYLES} more"
+        style_summary = ", styles: single question"
 
         logger.info(" ✅ Generated conversation parameters %d/%d: '%s'", i, total_profiles, profile_name)
 
