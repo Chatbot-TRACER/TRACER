@@ -342,6 +342,12 @@ def render_graph(dot: graphviz.Digraph, output_path: str) -> None:
         # Suppress Graphviz warnings/errors to devnull
         with Path(os.devnull).open("w", encoding="utf-8") as fnull, redirect_stderr(fnull):
             dot.render(output_path, cleanup=True)
+        
+        # Log successful graph generation with format
+        graph_format = dot.format or "pdf"
+        final_output_path = f"{output_path}.{graph_format}"
+        logger.info("Workflow graph saved to: %s", final_output_path)
+        
     except graphviz.backend.execute.ExecutableNotFound as exc:
         error_msg = "Graphviz 'dot' executable not found. Ensure Graphviz is installed and in your system's PATH."
         raise RuntimeError(error_msg) from exc

@@ -20,7 +20,9 @@ def save_profiles(built_profiles: list[dict], output_dir: str) -> None:
         logger.info("No user profiles to save")
         return
 
-    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    # Create profiles subdirectory
+    profiles_dir = Path(output_dir) / "profiles"
+    profiles_dir.mkdir(parents=True, exist_ok=True)
 
     saved_count = 0
     error_count = 0
@@ -38,7 +40,7 @@ def save_profiles(built_profiles: list[dict], output_dir: str) -> None:
 
         safe_filename_base = "".join(c if c.isalnum() or c in ("_", "-") else "_" for c in filename_base)
         filename = f"{safe_filename_base}.yaml"
-        filepath = Path(output_dir) / filename
+        filepath = profiles_dir / filename
 
         try:
             with filepath.open("w", encoding="utf-8") as yf:
@@ -62,4 +64,4 @@ def save_profiles(built_profiles: list[dict], output_dir: str) -> None:
     if error_count:
         logger.warning("Saved %d profiles with %d errors", saved_count, error_count)
     else:
-        logger.info("Successfully saved %d profiles to: %s/", saved_count, output_dir)
+        logger.info("Successfully saved %d profiles to: %s/", saved_count, profiles_dir)
