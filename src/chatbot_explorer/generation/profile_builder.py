@@ -54,8 +54,9 @@ def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_l
     profile_for_variables = {k: v for k, v in profile.items() if k != "name" or k not in used_variables}
 
     # Add all variable definitions except "name"
-    yaml_goals.extend({var_name: profile_for_variables[var_name]} for var_name in used_variables
-                      if var_name in profile_for_variables)
+    yaml_goals.extend(
+        {var_name: profile_for_variables[var_name]} for var_name in used_variables if var_name in profile_for_variables
+    )
 
     # Add the name variable definition if it exists in the original goals
     if existing_name_var_def:

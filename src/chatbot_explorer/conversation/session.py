@@ -714,7 +714,9 @@ def run_exploration_session(
     if new_conversation_success:
         logger.debug("Created new conversation for session %d", session_num + 1)
     else:
-        logger.warning("Failed to create new conversation for session %d, continuing with existing conversation", session_num + 1)
+        logger.warning(
+            "Failed to create new conversation for session %d, continuing with existing conversation", session_num + 1
+        )
 
     # --- Setup Session ---
     session_focus = get_session_focus(current_node)

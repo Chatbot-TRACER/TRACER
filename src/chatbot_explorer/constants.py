@@ -11,7 +11,7 @@ VARIABLE_PATTERNS = {
     "time": ["time", "hora"],
     "type": ["type", "tipo"],
     "number_of": ["number_of", "cantidad", "numero"],
-    "price": ["price", "cost", "precio", "costo"]
+    "price": ["price", "cost", "precio", "costo"],
 }
 
 # Personalities to choose one for the profile

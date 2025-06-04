@@ -67,8 +67,10 @@ def _parse_parameter_string(params_str: str) -> list[ParameterDefinition]:
         # Create a ParameterDefinition object with a meaningful description
         param = ParameterDefinition(
             name=param_name,
-            description=param_description if param_description else f"Specifies the {param_name} value for this functionality",
-            options=options
+            description=param_description
+            if param_description
+            else f"Specifies the {param_name} value for this functionality",
+            options=options,
         )
         parameters.append(param)
 
@@ -99,10 +101,7 @@ def _parse_output_options_string(output_str: str) -> list[OutputOptions]:
             continue
 
         # Create an OutputOptions object
-        output_option = OutputOptions(
-            category=category_name,
-            description=description.strip()
-        )
+        output_option = OutputOptions(category=category_name, description=description.strip())
         output_options.append(output_option)
 
     return output_options

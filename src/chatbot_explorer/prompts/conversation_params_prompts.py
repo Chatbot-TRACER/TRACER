@@ -51,6 +51,7 @@ class PromptLanguageSupport(TypedDict):
     supported_languages_text: str
     languages_example: str
 
+
 # Note: All prompt functions have been removed as they are no longer used.
 # The parameter generation now uses a deterministic approach defined in
 # conversation_params_node.py.

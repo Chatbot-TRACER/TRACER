@@ -11,6 +11,7 @@ logger = get_logger()
 
 MAX_CONTEXT_PREVIEW_LENGTH = 70
 
+
 def generate_context(
     profiles: list[dict[str, Any]],
     llm: BaseLanguageModel,
@@ -33,14 +34,12 @@ def generate_context(
             language_instruction=language_instruction,
         )
 
-
         llm_response_obj = llm.invoke(context_prompt_str)
         context_content = ""
         if hasattr(llm_response_obj, "content"):
             context_content = llm_response_obj.content.strip()
         else:
             context_content = str(llm_response_obj).strip()
-
 
         context_entries = []
         for line in context_content.split("\n"):
@@ -70,7 +69,12 @@ def generate_context(
             "    Generated/updated context for profile '%s'. Total context entries: %d. First entry preview: %s",
             profile_name,
             len(context_entries),
-            (context_entries[0][:MAX_CONTEXT_PREVIEW_LENGTH] + ("..." if len(context_entries[0]) > MAX_CONTEXT_PREVIEW_LENGTH else "")) if context_entries else "N/A",
+            (
+                context_entries[0][:MAX_CONTEXT_PREVIEW_LENGTH]
+                + ("..." if len(context_entries[0]) > MAX_CONTEXT_PREVIEW_LENGTH else "")
+            )
+            if context_entries
+            else "N/A",
         )
 
     return profiles
