@@ -1,9 +1,12 @@
-"""Reporting package for chatbot exploration.
+"""Reporting utilities for chatbot exploration."""
 
-This package provides utilities for:
-- Generating visual graph representations of chatbot functionality (graph.py)
-- Creating detailed markdown reports (report.py)
-- Managing user profiles (profiles.py)
-- Configuration for reporting outputs (config.py)
-- Constants used across the reporting modules (constants.py)
-"""
+from .graph import export_graph
+from .profiles import save_profiles
+from .report import ReportData, write_report
+
+__all__ = [
+    "ReportData",
+    "export_graph",
+    "save_profiles",
+    "write_report",
+]

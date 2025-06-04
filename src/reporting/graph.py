@@ -1,26 +1,18 @@
-"""Utilities for generating reports and visualizations from chatbot exploration.
-
-This module provides comprehensive functionality for:
-- Creating visual graph representations of chatbot functionality
-- Generating detailed markdown report
-- Saving user profiles in YAML format
-- Managing graph layout and styling configurations
-"""
+# reporting/graph.py
+"""Utilities for generating graph visualizations of chatbot functionality."""
 
 import html
-import json
 import os
 from contextlib import redirect_stderr
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, TextIO
 
 import graphviz
-import yaml
 
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 from chatbot_explorer.utils.logging_utils import get_logger
-from reporting.config import (
+
+# Assuming config.py and constants.py are in the same 'reporting' directory
+from .config import (
     AddNodeOptions,
     FontSizeConfig,
     GraphBuildContext,
@@ -31,11 +23,9 @@ from reporting.config import (
     create_layout_config,
     create_truncation_config,
 )
-from reporting.constants import (
+from .constants import (
     COLOR_SCHEMES,
     DEFAULT_LINE_MAX_LENGTH,
-    MAX_DESCRIPTION_LENGTH,
-    MAX_FUNCTIONS_PER_CATEGORY,
     START_NODE_DIMENSION,
     SVG_DPI,
 )
@@ -161,26 +151,18 @@ def _render_graph_with_options(
         logger.warning("No nodes provided for graph generation")
         return
 
-    # Adjust DPI for specific formats
     adjusted_dpi = adjust_dpi_for_format(options.fmt, options.dpi)
 
-    # Create and configure the main graph
     dot = graphviz.Digraph(format=options.fmt)
     configure_graph_attributes(
         dot, options.graph_font_size, adjusted_dpi, compact=options.compact, top_down=options.top_down
     )
 
-    # Create start node
     create_start_node(dot)
-
-    # Initialize graph building context
     context = GraphBuildContext(graph=dot)
-
-    # Group nodes by category and create clusters
     nodes_by_category = group_nodes_by_category(nodes)
     process_categories(context, nodes_by_category, options.graph_font_size, compact=options.compact)
 
-    # Render the graph
     render_graph(dot, output_path)
 
 
@@ -583,41 +565,28 @@ def format_parameter_compact(param_name: str, param_options: list, trunc_config:
 def build_standard_parameters(
     node: FunctionalityNode, font_config: FontSizeConfig, trunc_config: TruncationConfig
 ) -> list[str]:
-    """Build standard parameters display.
-
-    Args:
-        node: Functionality node
-        font_config: Font size configuration
-        trunc_config: Text truncation configuration
-
-    Returns:
-        list[str]: HTML table rows for standard parameters
-    """
+    """Build standard parameters display."""
     actual_param_rows = []
-
     for p_data in node.get("parameters") or []:
         if isinstance(p_data, dict):
             param_html = format_parameter_standard(p_data, trunc_config)
             if param_html:
                 actual_param_rows.append(
-                    f'<tr><td><font point-size="{font_config.normal_font_size}">&nbsp;&nbsp;{param_html}</font></td></tr>'
+                    f'<tr><td><font point-size="{font_config.normal_font_size}">  {param_html}</font></td></tr>'
                 )
         elif p_data is not None:
-            # Fallback for non-dict parameters
             actual_param_rows.append(
-                f'<tr><td><font point-size="{font_config.normal_font_size}">&nbsp;&nbsp;<b>{html.escape(str(p_data))}</b></font></td></tr>'
+                f'<tr><td><font point-size="{font_config.normal_font_size}">  <b>{html.escape(str(p_data))}</b></font></td></tr>'
             )
-
     if actual_param_rows:
         rows = [
-            '<tr><td><font point-size="1">&nbsp;</font></td></tr>',  # Space before section
-            "<HR/>",  # Horizontal rule
-            '<tr><td><font point-size="1">&nbsp;</font></td></tr>',  # Space after section
+            '<tr><td><font point-size="1"> </font></td></tr>',
+            "<HR/>",
+            '<tr><td><font point-size="1"> </font></td></tr>',
             f'<tr><td><font point-size="{font_config.normal_font_size}"><u>Parameters</u></font></td></tr>',
         ]
         rows.extend(actual_param_rows)
         return rows
-
     return []
 
 
@@ -871,452 +840,3 @@ def build_label(
 
     # Return inner HTML for table (without extra brackets)
     return '<table border="0" cellborder="0" cellspacing="0">' + "".join(rows) + "</table>"
-
-
-# ------------------------------------------------ #
-# -------------------- REPORT -------------------- #
-# ------------------------------------------------ #
-
-
-@dataclass
-class ReportData:
-    """Data structure for report generation."""
-
-    structured_functionalities: list[FunctionalityNode]
-    supported_languages: list[str]
-    fallback_message: str | None
-    token_usage: dict[str, Any] | None = None
-
-
-def write_report(
-    output_dir: str,
-    report_data: ReportData,
-) -> None:
-    """Write analysis results to multiple report files.
-
-    Args:
-        output_dir: Directory to write the report files to
-        report_data: Report data containing functionalities and metadata
-    """
-    output_path = Path(output_dir)
-
-    # Write main report in Markdown format
-    write_main_report(
-        output_path,
-        report_data.structured_functionalities,
-        report_data.supported_languages,
-        report_data.fallback_message,
-        report_data.token_usage,
-    )
-
-    # Write raw JSON data to separate file
-    write_json_data(output_path, report_data.structured_functionalities)
-
-
-# --------------------------------------------------
-# -------------------- PROFILES --------------------
-# --------------------------------------------------
-
-
-def save_profiles(built_profiles: list[dict], output_dir: str) -> None:
-    """Save user profiles as YAML files in the specified directory.
-
-    Args:
-        built_profiles: List of dictionaries representing user profiles
-        output_dir: Directory to write the profile files to
-    """
-    if not built_profiles:
-        logger.info("No user profiles to save")
-        return
-
-    # Ensure output directory exists
-    Path(output_dir).mkdir(parents=True, exist_ok=True)
-
-    saved_count = 0
-    error_count = 0
-    for profile in built_profiles:
-        # Generate a safe filename from the test_name
-        test_name = profile.get("test_name", f"profile_{hash(str(profile))}")  # Use hash as fallback
-
-        if isinstance(test_name, dict):
-            if test_name.get("function") == "random()" and "data" in test_name and test_name["data"]:
-                # Use the first data element for a more descriptive random name
-                base_name = str(test_name["data"][0])
-                filename_base = f"random_profile_{base_name.lower().replace(' ', '_')}"
-            else:
-                # Fallback for other dict structures
-                filename_base = f"profile_{hash(str(test_name))}"
-        else:
-            # Sanitize string test names for filenames
-            filename_base = str(test_name).lower().replace(" ", "_").replace(",", "").replace("&", "and")
-
-        # Basic sanitization to remove potentially problematic characters
-        safe_filename_base = "".join(c if c.isalnum() or c in ("_", "-") else "_" for c in filename_base)
-        filename = f"{safe_filename_base}.yaml"
-
-        filepath = Path(output_dir) / filename
-        try:
-            with filepath.open("w", encoding="utf-8") as yf:
-                yaml.dump(
-                    profile,
-                    yf,
-                    sort_keys=False,
-                    allow_unicode=True,
-                    default_flow_style=False,
-                    width=1000,
-                )
-            saved_count += 1
-            logger.debug("Saved profile: %s", filename)
-        except yaml.YAMLError:
-            logger.exception("Failed to create YAML for profile '%s'.", test_name)
-            error_count += 1
-        except OSError:
-            logger.exception("Failed to write file '%s'.", filename)
-            error_count += 1
-
-    if error_count:
-        logger.warning("Saved %d profiles with %d errors", saved_count, error_count)
-    else:
-        logger.info("Successfully saved %d profiles to: %s/", saved_count, output_dir)
-
-
-def write_main_report(
-    output_path: Path,
-    structured_functionalities: list[FunctionalityNode],
-    supported_languages: list[str],
-    fallback_message: str | None,
-    token_usage: dict[str, Any] | None = None,
-) -> None:
-    """Write the main analysis report in Markdown format."""
-    report_path = output_path / "README.md"
-
-    try:
-        with report_path.open("w", encoding="utf-8") as f:
-            f.write("# Chatbot Functionality Analysis\n\n")
-
-            # Executive Summary
-            write_executive_summary(f, structured_functionalities, supported_languages)
-
-            # Functionality Overview
-            write_functionality_overview(f, structured_functionalities)
-
-            # Technical Details
-            write_technical_details(f, supported_languages, fallback_message)
-
-            # Performance Statistics
-            if token_usage:
-                write_performance_stats(f, token_usage)
-
-            # Files Reference
-            write_files_reference(f)
-
-        logger.info("Main report written to: %s", report_path)
-    except OSError:
-        logger.exception("Failed to write main report file.")
-
-
-def write_category_overview(f: TextIO, functionalities: list[FunctionalityNode]) -> None:
-    """Write a category-based overview of main functions."""
-    if not functionalities:
-        f.write("No functionalities to overview.\n\n")
-        return
-
-    # Group all functions (including children) by category
-    categories: dict[str, list[dict]] = {}
-
-    def collect_by_category(nodes: list[FunctionalityNode]) -> None:
-        for node in nodes:
-            if isinstance(node, dict):
-                category = node.get("suggested_category", "Uncategorized")
-                if category not in categories:
-                    categories[category] = []
-                categories[category].append(node)
-                collect_by_category(node.get("children", []))
-
-    collect_by_category(functionalities)
-
-    # Sort categories and write overview
-    sorted_categories = get_sorted_categories(list(categories.keys()))
-    write_category_sections(f, categories, sorted_categories)
-
-
-def get_sorted_categories(category_names: list[str]) -> list[str]:
-    """Sort categories alphabetically with Uncategorized last."""
-    sorted_categories = sorted(category_names)
-    if "Uncategorized" in sorted_categories:
-        sorted_categories.remove("Uncategorized")
-        sorted_categories.append("Uncategorized")
-    return sorted_categories
-
-
-def write_category_sections(f: TextIO, categories: dict[str, list[dict]], sorted_categories: list[str]) -> None:
-    """Write the sections for each category."""
-    for category in sorted_categories:
-        nodes = categories[category]
-        icon = "📂" if category != "Uncategorized" else "📄"
-
-        # Category header with count
-        f.write(f"**{icon} {category}** ({len(nodes)} functions)\n")
-
-        # Show representative functions
-        write_category_functions(f, nodes)
-        f.write("\n")
-
-
-def write_category_functions(f: TextIO, nodes: list[dict]) -> None:
-    """Write functions for a category with truncation if needed."""
-    display_nodes = nodes[:MAX_FUNCTIONS_PER_CATEGORY]
-    for node in display_nodes:
-        name = node.get("name", "Unnamed").replace("_", " ").title()
-        desc = node.get("description", "No description")
-        # Truncate long descriptions
-        if len(desc) > MAX_DESCRIPTION_LENGTH:
-            desc = desc[: MAX_DESCRIPTION_LENGTH - 3] + "..."
-        f.write(f"- *{name}*: {desc}\n")
-
-    # Show "and X more..." if there are more functions
-    remaining_count = len(nodes) - MAX_FUNCTIONS_PER_CATEGORY
-    if remaining_count > 0:
-        f.write(f"- *...and {remaining_count} more functions*\n")
-
-
-def write_executive_summary(f: TextIO, functionalities: list[FunctionalityNode], languages: list[str]) -> None:
-    """Write executive summary section."""
-    f.write("## 📊 TRACER Report\n\n")
-
-    if not functionalities:
-        f.write("❌ **No functionalities discovered**\n\n")
-        return
-
-    # Count functionalities
-    total_functions = 0
-    categories = set()
-
-    def count_functions(nodes: list[FunctionalityNode]) -> None:
-        nonlocal total_functions
-        for node in nodes:
-            if isinstance(node, dict):
-                total_functions += 1
-                if node.get("suggested_category"):
-                    categories.add(node.get("suggested_category"))
-                count_functions(node.get("children", []))
-
-    count_functions(functionalities)
-
-    f.write(f"✅ **{total_functions} functionalities** discovered across **{len(categories)} categories**\n\n")
-
-    if languages:
-        f.write(f"🌐 **Languages supported:** {', '.join(languages)}\n\n")
-
-    # Category overview with key functions
-    f.write("### 🎯 Functionality Overview\n\n")
-    write_category_overview(f, functionalities)
-
-
-def write_functionality_overview(f: TextIO, functionalities: list[FunctionalityNode]) -> None:
-    """Write comprehensive functionality overview grouped by category with full details."""
-    f.write("## 🗂️ Functionality Details\n\n")
-
-    if not functionalities:
-        f.write("No functionalities to categorize.\n\n")
-        return
-
-    # Group by category and collect all functions (including children)
-    categories = {}
-
-    def collect_by_category(nodes: list[FunctionalityNode]) -> None:
-        for node in nodes:
-            if isinstance(node, dict):
-                category = node.get("suggested_category", "Uncategorized")
-                if category not in categories:
-                    categories[category] = []
-                categories[category].append(node)
-                collect_by_category(node.get("children", []))
-
-    collect_by_category(functionalities)
-
-    # Sort categories, put Uncategorized last
-    sorted_categories = sorted(categories.keys())
-    if "Uncategorized" in sorted_categories:
-        sorted_categories.remove("Uncategorized")
-        sorted_categories.append("Uncategorized")
-
-    for category in sorted_categories:
-        nodes = categories[category]
-        icon = "📂" if category != "Uncategorized" else "📄"
-        f.write(f"### {icon} {category} ({len(nodes)} functions)\n\n")
-
-        for node in nodes:
-            write_detailed_function_info(f, node)
-        f.write("\n")
-
-
-def write_detailed_function_info(f: TextIO, node: dict) -> None:
-    """Write detailed information for a single function."""
-    name = node.get("name", "Unnamed").replace("_", " ").title()
-    desc = node.get("description", "No description")
-
-    # Write function header
-    f.write(f"#### 🔧 {name}\n\n")
-    f.write(f"**Description:** {desc}\n\n")
-
-    # Write parameters, outputs, and relationships
-    write_function_parameters(f, node)
-    write_function_outputs(f, node)
-    write_function_relationships(f, node)
-
-    f.write("---\n\n")
-
-
-def write_function_parameters(f: TextIO, node: dict) -> None:
-    """Write parameters section for a function."""
-    parameters = node.get("parameters", [])
-    if parameters and any(param for param in parameters if param is not None):
-        f.write("**Parameters:**\n")
-        for param in parameters:
-            if param is not None:
-                param_name = param.get("name", "Unknown")
-                param_desc = param.get("description", "No description")
-                param_options = param.get("options", [])
-
-                f.write(f"- `{param_name}`: {param_desc}")
-                if param_options:
-                    options_str = ", ".join(f"`{opt}`" for opt in param_options)
-                    f.write(f" *Options: {options_str}*")
-                f.write("\n")
-        f.write("\n")
-    else:
-        f.write("**Parameters:** None\n\n")
-
-
-def write_function_outputs(f: TextIO, node: dict) -> None:
-    """Write outputs section for a function."""
-    outputs = node.get("outputs", [])
-    if outputs and any(output for output in outputs if output is not None):
-        f.write("**Outputs:**\n")
-        for output in outputs:
-            if output is not None:
-                output_category = output.get("category", "Unknown")
-                output_desc = output.get("description", "No description")
-                f.write(f"- `{output_category}`: {output_desc}\n")
-        f.write("\n")
-    else:
-        f.write("**Outputs:** None\n\n")
-
-
-def write_function_relationships(f: TextIO, node: dict) -> None:
-    """Write parent-child relationships for a function."""
-    parent_names = node.get("parent_names", [])
-    children = node.get("children", [])
-
-    if parent_names:
-        parents_str = ", ".join(f"`{parent.replace('_', ' ').title()}`" for parent in parent_names)
-        f.write(f"**Parent Functions:** {parents_str}\n\n")
-
-    if children:
-        f.write("**Child Functions:**\n")
-        for child in children:
-            if isinstance(child, dict):
-                child_name = child.get("name", "Unknown").replace("_", " ").title()
-                child_desc = child.get("description", "No description")
-                f.write(f"- `{child_name}`: {child_desc}\n")
-        f.write("\n")
-
-
-def write_technical_details(f: TextIO, languages: list[str], fallback_message: str | None) -> None:
-    """Write technical details section."""
-    f.write("## ⚙️ Technical Details\n\n")
-
-    # Language Support
-    f.write("### 🌐 Language Support\n\n")
-    if languages:
-        for lang in languages:
-            f.write(f"- {lang}\n")
-    else:
-        f.write("No specific language support detected.\n")
-    f.write("\n")
-
-    # Fallback Behavior
-    f.write("### 🔄 Fallback Behavior\n\n")
-    if fallback_message:
-        f.write(f"```\n{fallback_message}\n```\n\n")
-    else:
-        f.write("No fallback message detected.\n\n")
-
-
-def write_performance_stats(f: TextIO, token_usage: dict[str, Any]) -> None:
-    """Write performance statistics section."""
-    f.write("## 📈 Performance Statistics\n\n")
-
-    # Format numbers with commas
-    def fmt_num(num: float | str) -> str:
-        return f"{num:,}" if isinstance(num, (int, float)) else str(num)
-
-    # Overview table
-    f.write("### Overview\n\n")
-    f.write("| Metric | Value |\n")
-    f.write("|--------|-------|\n")
-    f.write(f"| Total LLM Calls | {fmt_num(token_usage.get('total_llm_calls', 'N/A'))} |\n")
-    f.write(f"| Successful Calls | {fmt_num(token_usage.get('successful_llm_calls', 'N/A'))} |\n")
-    f.write(f"| Failed Calls | {fmt_num(token_usage.get('failed_llm_calls', 'N/A'))} |\n")
-    f.write(f"| Total Tokens | {fmt_num(token_usage.get('total_tokens_consumed', 'N/A'))} |\n")
-
-    if "estimated_cost" in token_usage:
-        f.write(f"| Estimated Cost | ${token_usage.get('estimated_cost', 0):.4f} USD |\n")
-
-    if "total_application_execution_time" in token_usage:
-        exec_time = token_usage["total_application_execution_time"]
-        if isinstance(exec_time, dict) and "formatted" in exec_time:
-            f.write(f"| Execution Time | {exec_time['formatted']} |\n")
-
-    f.write("\n")
-
-    # Phase breakdown
-    f.write("### Phase Breakdown\n\n")
-
-    phases = [
-        ("Exploration", token_usage.get("exploration_phase", {})),
-        ("Analysis", token_usage.get("analysis_phase", {})),
-    ]
-
-    f.write("| Phase | Prompt Tokens | Completion Tokens | Total Tokens | Cost |\n")
-    f.write("|-------|---------------|-------------------|--------------|------|\n")
-
-    for phase_name, phase_data in phases:
-        prompt_tokens = fmt_num(phase_data.get("prompt_tokens", "N/A"))
-        completion_tokens = fmt_num(phase_data.get("completion_tokens", "N/A"))
-        total_tokens = fmt_num(phase_data.get("total_tokens", "N/A"))
-        cost = f"${phase_data.get('estimated_cost', 0):.4f}" if "estimated_cost" in phase_data else "N/A"
-
-        f.write(f"| {phase_name} | {prompt_tokens} | {completion_tokens} | {total_tokens} | {cost} |\n")
-
-    f.write("\n")
-
-    # Model information
-    if token_usage.get("models_used"):
-        f.write("### Models Used\n\n")
-        for model in token_usage["models_used"]:
-            f.write(f"- {model}\n")
-        f.write("\n")
-
-
-def write_files_reference(f: TextIO) -> None:
-    """Write files reference section."""
-    f.write("## 📁 Generated Files\n\n")
-    f.write("This analysis generated the following files:\n\n")
-    f.write("- **`README.md`** - This main report with comprehensive functionality analysis\n")
-    f.write("- **`functionalities.json`** - Raw JSON data structure\n")
-    f.write("- **`workflow_graph.pdf`** - Visual graph of functionality relationships\n")
-    f.write("- **`profiles/`** - Directory containing user profile YAML files\n\n")
-
-
-def write_json_data(output_path: Path, functionalities: list[FunctionalityNode]) -> None:
-    """Write raw JSON data to separate file."""
-    json_path = output_path / "functionalities.json"
-
-    try:
-        with json_path.open("w", encoding="utf-8") as f:
-            json.dump(functionalities, f, indent=2, ensure_ascii=False)
-        logger.info("JSON data written to: %s", json_path)
-    except (TypeError, OSError):
-        logger.exception("Failed to write JSON data")

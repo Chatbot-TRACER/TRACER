@@ -9,8 +9,8 @@ from typing import Any
 from chatbot_explorer.agent import ChatbotExplorationAgent
 from chatbot_explorer.utils.logging_utils import get_logger, setup_logging
 from connectors.chatbot_connectors import Chatbot, ChatbotAdaUam, ChatbotTaskyto
+from reporting import export_graph, save_profiles, write_report
 from utils.cli import parse_arguments
-from utils.reporting import export_graph, save_profiles, write_report
 
 logger = get_logger()
 
