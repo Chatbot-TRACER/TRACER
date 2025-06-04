@@ -11,7 +11,7 @@ import html
 import json
 import os
 from contextlib import redirect_stderr
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, TextIO
 
@@ -20,238 +20,27 @@ import yaml
 
 from chatbot_explorer.schemas.functionality_node_model import FunctionalityNode
 from chatbot_explorer.utils.logging_utils import get_logger
+from reporting.config import (
+    AddNodeOptions,
+    FontSizeConfig,
+    GraphBuildContext,
+    GraphRenderOptions,
+    GraphStyleConfig,
+    TruncationConfig,
+    create_font_size_config,
+    create_layout_config,
+    create_truncation_config,
+)
+from reporting.constants import (
+    COLOR_SCHEMES,
+    DEFAULT_LINE_MAX_LENGTH,
+    MAX_DESCRIPTION_LENGTH,
+    MAX_FUNCTIONS_PER_CATEGORY,
+    START_NODE_DIMENSION,
+    SVG_DPI,
+)
 
 logger = get_logger()
-
-# Constants for report formatting
-MAX_FUNCTIONS_PER_CATEGORY = 5
-MAX_DESCRIPTION_LENGTH = 80
-
-# Graph configuration and styling constants
-LARGE_FONT_THRESHOLD = 20
-MEDIUM_FONT_THRESHOLD = 16
-SVG_DPI = 72
-START_NODE_DIMENSION = 0.5
-DEFAULT_LINE_MAX_LENGTH = 55
-
-# Color schemes for different depth levels
-COLOR_SCHEMES = {
-    0: {"fillcolor": "#E3F2FD:#BBDEFB", "color": "#2196F3"},  # Blue theme
-    1: {"fillcolor": "#E8F5E9:#C8E6C9", "color": "#4CAF50"},  # Green theme
-    2: {"fillcolor": "#FFF8E1:#FFECB3", "color": "#FFC107"},  # Amber theme
-    3: {"fillcolor": "#FFEBEE:#FFCDD2", "color": "#F44336"},  # Red theme
-    4: {"fillcolor": "#F3E5F5:#E1BEE7", "color": "#9C27B0"},  # Purple theme
-    5: {"fillcolor": "#E0F7FA:#B2EBF2", "color": "#00BCD4"},  # Cyan theme
-    6: {"fillcolor": "#FFFDE7:#FFF9C4", "color": "#FFEB3B"},  # Yellow theme
-    7: {"fillcolor": "#FBE9E7:#FFCCBC", "color": "#FF5722"},  # Deep Orange theme
-    8: {"fillcolor": "#E8EAF6:#C5CAE9", "color": "#3F51B5"},  # Indigo theme
-    9: {"fillcolor": "#F1F8E9:#DCEDC8", "color": "#8BC34A"},  # Light Green theme
-}
-
-
-@dataclass
-class FontSizeConfig:
-    """Configuration for font sizes in graph nodes.
-
-    Attributes:
-        title_font_size: Font size for node titles
-        normal_font_size: Font size for normal text
-        small_font_size: Font size for small text and metadata
-    """
-
-    title_font_size: int
-    normal_font_size: int
-    small_font_size: int
-
-
-@dataclass
-class TruncationConfig:
-    """Configuration for text truncation in graph nodes.
-
-    Attributes:
-        title_max_length: Maximum length for node titles
-        desc_max_length: Maximum length for descriptions
-        param_max_length: Maximum length for parameter names
-        output_combined_max_length: Maximum length for combined output text
-        max_params: Maximum number of parameters to show
-        max_outputs: Maximum number of outputs to show
-        max_options: Maximum number of parameter options to show
-    """
-
-    title_max_length: int = 30
-    desc_max_length: int = 50
-    param_max_length: int = 25
-    output_combined_max_length: int = 40
-    max_params: int = 3
-    max_outputs: int = 3
-    max_options: int = 2
-
-
-@dataclass
-class GraphStyleConfig:
-    """Configuration for graph visual styling.
-
-    Attributes:
-        bgcolor: Background color for the graph
-        fontcolor: Text color for nodes and labels
-        edge_color: Color for graph edges
-        font_family: Font family for text elements
-    """
-
-    bgcolor: str = "#ffffff"
-    fontcolor: str = "#333333"
-    edge_color: str = "#9DB2BF"
-    font_family: str = "Helvetica Neue, Helvetica, Arial, sans-serif"
-
-
-@dataclass
-class GraphLayoutConfig:
-    """Configuration for graph layout parameters.
-
-    Attributes:
-        pad: Padding around the graph
-        nodesep: Separation between nodes at the same rank
-        ranksep: Separation between ranks
-        splines: Type of spline for edges
-        overlap: How to handle node overlaps
-        node_margin: Margin inside nodes
-    """
-
-    pad: str = "0.7"
-    nodesep: str = "0.8"
-    ranksep: str = "1.3"
-    splines: str = "curved"
-    overlap: str = "false"
-    node_margin: str = "0.2,0.15"
-
-
-@dataclass
-class GraphBuildContext:
-    """Context for tracking graph building state.
-
-    Attributes:
-        graph: The main Graphviz Digraph object
-        processed_nodes: Set of node names that have been processed
-        processed_edges: Set of edge tuples that have been processed
-        node_clusters: Dictionary mapping category names to their subgraphs
-    """
-
-    graph: graphviz.Digraph
-    processed_nodes: set[str] = field(default_factory=set)
-    processed_edges: set[tuple[str, str]] = field(default_factory=set)
-    node_clusters: dict[str, graphviz.Digraph] = field(default_factory=dict)
-
-
-@dataclass
-class GraphRenderOptions:
-    """Options for graph rendering."""
-
-    fmt: str = "pdf"
-    graph_font_size: int = 12
-    dpi: int = 300
-    compact: bool = False
-    top_down: bool = False
-
-
-@dataclass
-class AddNodeOptions:
-    """Options for adding nodes to graph."""
-
-    graph_font_size: int = 12
-    compact: bool = False
-    target_graph: graphviz.Digraph | None = None
-    category_for_label: str | None = None
-
-
-def create_font_size_config(graph_font_size: int, *, compact: bool) -> FontSizeConfig:
-    """Create font size configuration based on graph settings.
-
-    Args:
-        graph_font_size: Base font size for the graph
-        compact: Whether to use compact layout
-
-    Returns:
-        FontSizeConfig: Configuration object with calculated font sizes
-    """
-    if compact:
-        return FontSizeConfig(
-            title_font_size=graph_font_size + 1,
-            normal_font_size=max(graph_font_size - 1, 8),
-            small_font_size=max(graph_font_size - 2, 7),
-        )
-    return FontSizeConfig(
-        title_font_size=graph_font_size + 2,
-        normal_font_size=graph_font_size,
-        small_font_size=max(graph_font_size - 1, 8),
-    )
-
-
-def create_truncation_config(graph_font_size: int, *, compact: bool) -> TruncationConfig:
-    """Create text truncation configuration based on font size and layout.
-
-    Args:
-        graph_font_size: Base font size for the graph
-        compact: Whether to use compact layout
-
-    Returns:
-        TruncationConfig: Configuration object with truncation limits
-    """
-    if graph_font_size >= LARGE_FONT_THRESHOLD:
-        return TruncationConfig(
-            title_max_length=25,
-            desc_max_length=25,
-            output_combined_max_length=30,
-            max_params=2,
-            max_options=2,
-            max_outputs=2,
-        )
-    if graph_font_size >= MEDIUM_FONT_THRESHOLD:
-        return TruncationConfig(
-            title_max_length=30,
-            desc_max_length=35,
-            output_combined_max_length=40,
-            max_params=3,
-            max_options=3,
-            max_outputs=2,
-        )
-    if compact:
-        return TruncationConfig(
-            title_max_length=40,
-            desc_max_length=45,
-            output_combined_max_length=50,
-            max_params=3,
-            max_options=3,
-            max_outputs=3,
-        )
-    return TruncationConfig(
-        title_max_length=60,
-        desc_max_length=70,
-        output_combined_max_length=70,
-        max_params=4,
-        max_options=4,
-        max_outputs=3,
-    )
-
-
-def create_layout_config(graph_font_size: int, *, compact: bool) -> GraphLayoutConfig:
-    """Create graph layout configuration based on font size and compactness.
-
-    Args:
-        graph_font_size: Base font size for the graph
-        compact: Whether to use compact layout
-
-    Returns:
-        GraphLayoutConfig: Configuration object with layout parameters
-    """
-    if graph_font_size >= LARGE_FONT_THRESHOLD:
-        return GraphLayoutConfig(
-            pad="0.3", nodesep="0.3", ranksep="0.5", splines="ortho", overlap="compress", node_margin="0.1,0.08"
-        )
-    if compact:
-        return GraphLayoutConfig(
-            pad="0.4", nodesep="0.4", ranksep="0.7", splines="ortho", overlap="compress", node_margin="0.15,0.1"
-        )
-    return GraphLayoutConfig()  # Use defaults
 
 
 def adjust_dpi_for_format(fmt: str, dpi: int) -> int:
