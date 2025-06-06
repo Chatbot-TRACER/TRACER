@@ -11,6 +11,14 @@ authors = [
 ]
 readme = "README.md"
 requires-python = ">=3.11"
+keywords = ["chatbot", "testing", "automation", "ai"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
 dependencies = [
     "bs4>=0.0.2",
     "colorama>=0.4.6",
@@ -21,6 +29,11 @@ dependencies = [
     "langchain-openai>=0.3.17",
     "langgraph>=0.4.5",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Chatbot-TRACER/TRACER"
+Repository = "https://github.com/Chatbot-TRACER/TRACER"
+Issues = "https://github.com/Chatbot-TRACER/TRACER/issues"
 
 [project.scripts]
 tracer = "tracer.main:main"
@@ -36,9 +49,6 @@ dev = [
 
 [tool.setuptools.packages.find]
 include = ["tracer*"]
-
-[tool.setuptools.package-data]
-tracer = ["dev-scripts/*.sh"]
 
 [tool.ruff]
 # default is too small
