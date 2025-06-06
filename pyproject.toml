@@ -3,11 +3,11 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name= "TRACER"
+name = "chatbot-tracer"
 version = "0.1.0"
 description = "A tool to model chatbots and create profiles to test them."
 authors = [
-	{ name = "Iván Sotillo", email = "ivan.delhorno@uam.es" }
+    { name = "Iván Sotillo", email = "ivan.delhorno@uam.es" }
 ]
 readme = "README.md"
 requires-python = ">=3.11"
@@ -23,26 +23,29 @@ dependencies = [
 ]
 
 [project.scripts]
-TRACER = "main:main"
+tracer = "tracer.main:main"
+tracer-coverage-analyzer = "tracer.scripts.coverage_analyzer:main"
+tracer-coverage-merger = "tracer.scripts.coverage_merger:main"
+tracer-graph-generator = "tracer.scripts.graph_generator:main"
+tracer-validation = "tracer.scripts.validation_script:main"
 
-
-[tool.setuptools]
-
-package-dir = {"" = "src"}
-py-modules = ["main"]
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.1.0",
+]
 
 [tool.setuptools.packages.find]
-where = ["src"]
+include = ["tracer*"]
 
+[tool.setuptools.package-data]
+tracer = ["dev-scripts/*.sh"]
 
 [tool.ruff]
-
 # default is too small
 line-length = 120
 target-version = "py311"
 
 [tool.ruff.lint]
-
 # E: pycode style (error)
 # W: pycode style (warning)
 # F: Pyflakes
@@ -50,24 +53,19 @@ target-version = "py311"
 # ANN: type annotations
 # D: docstrings
 # B: bugbear
-
 select = [
     "ALL"
 ]
-
 ignore = [
     "E501", # line too long
     # "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107", # Common missing docstring rules
     "COM812", # Creates incompatibility with formatter
     "T201", # Doesnt let you use prints
-
 ]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-
 [tool.ruff.format]
-
 quote-style = "double"
 indent-style = "space"
