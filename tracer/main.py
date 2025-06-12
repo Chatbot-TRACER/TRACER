@@ -7,8 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from tracer.agent import ChatbotExplorationAgent
-from tracer.utils.logging_utils import get_logger, setup_logging
-from tracer.connectors.chatbot_connectors import Chatbot, ChatbotAdaUam, ChatbotTaskyto
+from tracer.connectors.chatbot_connectors import Chatbot, ChatbotFactory
 from tracer.reporting import (
     ExecutionResults,
     GraphRenderOptions,
@@ -19,6 +18,7 @@ from tracer.reporting import (
     write_report,
 )
 from tracer.utils.cli import parse_arguments
+from tracer.utils.logging_utils import get_logger, setup_logging
 
 logger = get_logger()
 
@@ -108,12 +108,24 @@ def _instantiate_connector(technology: str, url: str) -> Chatbot:
         SystemExit: If the technology name is unknown (should be caught earlier).
     """
     logger.info("Instantiating connector for technology: %s", technology)
-    if technology == "taskyto":
-        return ChatbotTaskyto(url)
-    if technology == "ada-uam":
-        return ChatbotAdaUam(url)
-    logger.error("Internal Error: Attempted to instantiate unknown technology '%s'", technology)
-    sys.exit(1)
+
+    try:
+        if technology == "taskyto":
+            return ChatbotFactory.create_chatbot("taskyto", base_url=url)
+        if technology == "ada-uam":
+            # ChatbotAdaUam is pre-configured and doesn't need URL
+            return ChatbotFactory.create_chatbot("ada_uam")
+        # Try using the factory with the technology name directly
+        return ChatbotFactory.create_chatbot(technology, base_url=url)
+    except ValueError:
+        logger.exception("Failed to instantiate connector for technology '%s'", technology)
+        # Avoid accessing private member; fallback to static list or add a public method in ChatbotFactory
+        available_types = getattr(ChatbotFactory, "list_available_types", lambda: ["taskyto", "ada_uam"])()
+        logger.exception("Available chatbot types: %s", ", ".join(available_types))
+        sys.exit(1)
+    except Exception:
+        logger.exception("Unexpected error instantiating connector for technology '%s'", technology)
+        sys.exit(1)
 
 
 def _run_exploration_phase(

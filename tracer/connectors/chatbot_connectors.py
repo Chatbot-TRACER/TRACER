@@ -1,329 +1,506 @@
-"""Provides connector classes for interacting with different chatbot APIs."""
+"""Provides an extensible framework for chatbot API connectors."""
 
-from typing import Any, TypedDict
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any, ClassVar
+from urllib.parse import urljoin
 
 import requests
 
-# Define a common return type for execute_with_input
+# Type aliases
 ChatbotResponse = tuple[bool, str | None]
+Headers = dict[str, str]
+Payload = dict[str, Any]
 
 
-class Chatbot:
-    """Base class for chatbot connectors."""
+class RequestMethod(Enum):
+    """Supported HTTP methods."""
 
-    def __init__(self, url: str) -> None:
-        """Initializes the base Chatbot connector.
+    GET = "GET"
+    POST = "POST"
+    PUT = "PUT"
+    DELETE = "DELETE"
+
+
+@dataclass
+class EndpointConfig:
+    """Configuration for API endpoints."""
+
+    path: str
+    method: RequestMethod = RequestMethod.POST
+    headers: Headers = field(default_factory=dict)
+    timeout: int = 20
+
+
+@dataclass
+class ChatbotConfig:
+    """Base configuration for chatbot connectors."""
+
+    base_url: str
+    timeout: int = 20
+    fallback_message: str = "I do not understand you"
+    headers: Headers = field(default_factory=dict)
+
+    def get_full_url(self, endpoint: str) -> str:
+        """Construct full URL from base URL and endpoint."""
+        return urljoin(self.base_url, endpoint.lstrip("/"))
+
+
+class ResponseProcessor(ABC):
+    """Abstract base class for processing chatbot responses."""
+
+    @abstractmethod
+    def process(self, response_json: dict[str, Any]) -> str:
+        """Process the JSON response and extract meaningful text.
 
         Args:
-            url: The base URL for the chatbot API.
-        """
-        self.url: str = url
-        self.fallback: str = "I do not understand you"  # Default fallback
-
-    def execute_with_input(self, user_msg: str) -> ChatbotResponse:
-        """Sends a message to the chatbot and returns the response.
-
-        This method should be implemented by subclasses.
-
-        Args:
-            user_msg: The message from the user.
+            response_json: The JSON response from the API
 
         Returns:
-            A tuple containing:
-                - bool: True if the interaction was successful, False otherwise.
-                - str | None: The chatbot's response text, or an error message/None.
+            Processed response text
         """
-        msg = "Subclasses must implement execute_with_input"
-        raise NotImplementedError(msg)
+
+
+class SimpleTextProcessor(ResponseProcessor):
+    """Simple processor that extracts text from a specified field."""
+
+    def __init__(self, text_field: str = "message") -> None:
+        """Initialize the processor with the field to extract text from.
+
+        Args:
+            text_field: The field name to extract text from in the response JSON.
+        """
+        self.text_field = text_field
+
+    def process(self, response_json: dict[str, Any]) -> str:
+        """Extract text from the specified field in the response JSON.
+
+        Args:
+            response_json: The JSON response from the API.
+
+        Returns:
+            Extracted text from the specified field, or an empty string if not found.
+        """
+        return response_json.get(self.text_field, "")
+
+
+class Chatbot(ABC):
+    """Abstract base class for chatbot connectors with common functionality."""
+
+    def __init__(self, config: ChatbotConfig) -> None:
+        """Initialize the chatbot connector.
+
+        Args:
+            config: The configuration for the chatbot connector.
+        """
+        self.config = config
+        self.session = requests.Session()
+        self.conversation_id: str | None = None
+        self._setup_session()
+
+    def _setup_session(self) -> None:
+        """Set up the requests session with default headers."""
+        self.session.headers.update(self.config.headers)
+
+    @abstractmethod
+    def get_endpoints(self) -> dict[str, EndpointConfig]:
+        """Return endpoint configurations for this chatbot.
+
+        Returns:
+            Dictionary mapping endpoint names to their configurations
+        """
+
+    @abstractmethod
+    def get_response_processor(self) -> ResponseProcessor:
+        """Return the response processor for this chatbot."""
+
+    @abstractmethod
+    def prepare_message_payload(self, user_msg: str) -> Payload:
+        """Prepare the payload for sending a message.
+
+        Args:
+            user_msg: The user's message
+
+        Returns:
+            Payload dictionary for the API request
+        """
 
     def create_new_conversation(self) -> bool:
-        """Creates a new conversation with the chatbot.
+        """Create a new conversation.
 
-        Subclasses should implement this method to create a new conversation
-        for each session rather than reusing the same conversation.
+        Default implementation that can be overridden by subclasses.
 
         Returns:
-            bool: True if a new conversation was created successfully, False otherwise.
+            True if successful, False otherwise
         """
-        msg = "Subclasses must implement create_new_conversation"
-        raise NotImplementedError(msg)
+        endpoints = self.get_endpoints()
+        if "new_conversation" not in endpoints:
+            # If no new conversation endpoint, just reset the conversation ID
+            self.conversation_id = None
+            return True
+
+        endpoint_config = endpoints["new_conversation"]
+        url = self.config.get_full_url(endpoint_config.path)
+
+        try:
+            response = self._make_request(url, endpoint_config, {})
+            if response:
+                # Try to extract conversation ID if provided
+                self.conversation_id = response.get("id") or response.get("conversation_id")
+                return True
+        except requests.RequestException as e:
+            print(f"Error creating new conversation: {e}")
+
+        return False
+
+    def execute_with_input(self, user_msg: str) -> ChatbotResponse:
+        """Send a message to the chatbot and get the response.
+
+        Args:
+            user_msg: The user's message
+
+        Returns:
+            Tuple of (success, response_text)
+        """
+        # Ensure we have a conversation if needed
+        if self.conversation_id is None and self._requires_conversation_id() and not self.create_new_conversation():
+            return False, "Failed to initialize conversation"
+
+        endpoints = self.get_endpoints()
+        if "send_message" not in endpoints:
+            return False, "Send message endpoint not configured"
+
+        endpoint_config = endpoints["send_message"]
+        url = self.config.get_full_url(endpoint_config.path)
+        payload = self.prepare_message_payload(user_msg)
+
+        try:
+            response_json = self._make_request(url, endpoint_config, payload)
+        except (requests.Timeout, requests.ConnectionError, requests.HTTPError, requests.RequestException) as e:
+            error_map = {
+                requests.Timeout: "timeout",
+                requests.ConnectionError: "connection error",
+                requests.HTTPError: f"HTTP error: {e}",
+                requests.RequestException: f"request error: {e}",
+            }
+            error_message = error_map.get(type(e), f"request error: {e}")
+            return False, error_message
+
+        if response_json:
+            processor = self.get_response_processor()
+            response_text = processor.process(response_json)
+            return True, response_text
+
+        return False, "No response received"
+
+    def _requires_conversation_id(self) -> bool:
+        """Check if this chatbot requires a conversation ID.
+
+        Can be overridden by subclasses.
+        """
+        return True
+
+    def _make_request(self, url: str, endpoint_config: EndpointConfig, payload: Payload) -> dict[str, Any] | None:
+        """Make an HTTP request with error handling.
+
+        Args:
+            url: The request URL
+            endpoint_config: Endpoint configuration
+            payload: Request payload
+
+        Returns:
+            JSON response or None if failed
+        """
+        headers = {**self.session.headers, **endpoint_config.headers}
+
+        if endpoint_config.method == RequestMethod.GET:
+            response = self.session.get(url, params=payload, headers=headers, timeout=endpoint_config.timeout)
+        else:
+            response = self.session.request(
+                endpoint_config.method.value, url, json=payload, headers=headers, timeout=endpoint_config.timeout
+            )
+
+        response.raise_for_status()
+        return response.json()
+
+
+# Specific implementations
+
+
+class TaskytoResponseProcessor(ResponseProcessor):
+    """Response processor for Taskyto chatbot."""
+
+    def process(self, response_json: dict[str, Any]) -> str:
+        """Extract the message from the Taskyto response JSON.
+
+        Args:
+            response_json: The JSON response from the API.
+
+        Returns:
+            The message string from the response.
+        """
+        return response_json.get("message", "")
+
+
+class TaskytoConfig(ChatbotConfig):
+    """Configuration specific to Taskyto chatbot."""
 
 
 class ChatbotTaskyto(Chatbot):
     """Connector for the Taskyto chatbot API."""
 
-    def __init__(self, url: str) -> None:
-        """Initializes the Taskyto connector."""
-        super().__init__(url)
-        self.id: str | None = None
-        self.timeout: int = 20
-
-    def _get_new_conversation_id(self) -> str | None:
-        """Attempts to get a new conversation ID from the Taskyto API."""
-        try:
-            post_response = requests.post(self.url + "/conversation/new", timeout=self.timeout)
-            post_response.raise_for_status()
-            post_response_json = post_response.json()
-            return post_response_json.get("id")
-        except requests.exceptions.RequestException as e:
-            print(f"Error getting new conversation ID: {e}")
-        except requests.exceptions.JSONDecodeError:
-            print("Error decoding JSON response for new conversation ID.")
-        return None
-
-    def create_new_conversation(self) -> bool:
-        """Creates a new conversation with the Taskyto chatbot.
-
-        Clears the existing conversation ID and forces a new one to be created
-        on the next execute_with_input call.
-
-        Returns:
-            bool: True if successful (operation is always successful as it just resets ID).
-        """
-        self.id = None
-        return True
-
-    def execute_with_input(self, user_msg: str) -> ChatbotResponse:
-        """Sends a message to the Taskyto chatbot and gets the response.
-
-        Handles obtaining a conversation ID if one doesn't exist.
+    def __init__(self, base_url: str, timeout: int = 20) -> None:
+        """Initialize the Taskyto chatbot connector.
 
         Args:
-            user_msg: The message from the user.
-
-        Returns:
-            A tuple containing:
-                - bool: True if the interaction was successful, False otherwise.
-                - str | None: The chatbot's response text, or an error message/None.
+            base_url: The base URL for the Taskyto API.
+            timeout: Request timeout in seconds.
         """
-        if self.id is None:
-            self.id = self._get_new_conversation_id()
-            if self.id is None:
-                return False, "Failed to initialize conversation"
+        config = TaskytoConfig(base_url=base_url, timeout=timeout)
+        super().__init__(config)
 
-        new_data = {"id": self.id, "message": user_msg}
-        success = False
-        response_data: str | None = None
+    def get_endpoints(self) -> dict[str, EndpointConfig]:
+        """Return endpoint configurations for Taskyto chatbot."""
+        return {
+            "new_conversation": EndpointConfig(
+                path="/conversation/new", method=RequestMethod.POST, timeout=self.config.timeout
+            ),
+            "send_message": EndpointConfig(
+                path="/conversation/user_message", method=RequestMethod.POST, timeout=self.config.timeout
+            ),
+        }
 
-        try:
-            post_response = requests.post(
-                self.url + "/conversation/user_message",
-                json=new_data,
-                timeout=self.timeout,
-            )
-            post_response.raise_for_status()
-            post_response_json = post_response.json()
-            response_data = post_response_json.get("message")
-            success = True
+    def get_response_processor(self) -> ResponseProcessor:
+        """Return the response processor for Taskyto chatbot."""
+        return TaskytoResponseProcessor()
 
-        except requests.Timeout:
-            response_data = "timeout"
-        except requests.exceptions.ConnectionError:
-            response_data = "connection error"
-        except requests.exceptions.HTTPError as http_err:
-            try:
-                error_detail = http_err.response.json().get("error", str(http_err))
-                response_data = f"HTTP error: {error_detail}"
-            except requests.exceptions.JSONDecodeError:
-                response_data = f"HTTP error: {http_err}"
-        except requests.exceptions.JSONDecodeError:
-            response_data = "invalid JSON response"
-        except requests.exceptions.RequestException as req_err:
-            response_data = f"request error: {req_err}"
-
-        return success, response_data
-
-
-class MillionBotConfig(TypedDict):
-    """Configuration parameters for the MillionBot connector.
-
-    Args:
-        bot_id: The ID of the target bot.
-        conversation_id: The ID for the conversation session.
-        url: The URL associated with the chat context (e.g., webpage).
-        sender: The sender ID.
-        api_key: The API key for authorization.
-        language: The language code (e.g., 'es').
-    """
-
-    bot_id: str
-    conversation_id: str
-    url: str
-    sender: str
-    api_key: str
-    language: str
-
-
-class MillionBot(Chatbot):
-    """Connector for chatbots using the 1MillionBot API."""
-
-    def __init__(self, url: str) -> None:
-        """Initializes the MillionBot connector."""
-        super().__init__(url)
-        self.headers: dict[str, str] = {}
-        self.payload: dict[str, Any] = {}
-        self.id: str | None = None
-        self.reset_url: str | None = None
-        self.reset_payload: dict[str, Any] | None = None
-        self.timeout: int = 10
-        self.config: MillionBotConfig | None = None
-
-    def init_chatbot(self, config: MillionBotConfig) -> None:
-        """Configures the connector with specific MillionBot details.
+    def prepare_message_payload(self, user_msg: str) -> Payload:
+        """Prepare the payload for sending a message to Taskyto.
 
         Args:
-            config: A dictionary containing the necessary configuration parameters.
-        """
-        self.url = "https://api.1millionbot.com/api/public/messages"
-        self.headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"API-KEY {config['api_key']}",
-        }
-        self.payload = {
-            "conversation": config["conversation_id"],
-            "sender_type": "User",
-            "sender": config["sender"],
-            "bot": config["bot_id"],
-            "language": config["language"],
-            "url": config["url"],
-            "message": {"text": "Hola"},
-        }
-        self.reset_url = "https://api.1millionbot.com/api/public/live/status"
-        self.reset_payload = {
-            "bot": config["bot_id"],
-            "conversation": config["conversation_id"],
-            "status": {
-                "origin": config["url"],
-                "online": False,
-                "typing": False,
-                "deleted": True,
-                "attended": {},
-                "userName": "ChatbotExplorer",  # Generic user name
-            },
-        }
-        self.config = config
-
-    def create_new_conversation(self) -> bool:
-        """Creates a new conversation with the MillionBot chatbot.
+            user_msg: The user's message.
 
         Returns:
-            bool: True if the conversation was successfully created, False otherwise.
+            Payload dictionary for the API request.
         """
-        # TODO: Implement this
-        return True
+        return {"id": self.conversation_id, "message": user_msg}
 
-    def _reset_conversation(self) -> bool:
-        """Sends a reset request to the MillionBot API if needed."""
-        if self.reset_url and self.reset_payload:
-            try:
-                response = requests.post(
-                    self.reset_url, headers=self.headers, json=self.reset_payload, timeout=self.timeout
-                )
-                response.raise_for_status()
-                self.reset_payload = None  # Clear after successful reset
-            except requests.exceptions.RequestException as e:
-                print(f"Error resetting conversation: {e}")
-                return False
-            else:
-                return True
-        return True  # No reset needed or possible
 
-    def _process_response(self, response_json: dict[str, Any]) -> str:
-        """Processes the JSON response from MillionBot to extract text and buttons."""
+class MillionBotResponseProcessor(ResponseProcessor):
+    """Response processor for MillionBot API."""
+
+    def process(self, response_json: dict[str, Any]) -> str:
+        """Process the MillionBot response JSON and extract text and buttons.
+
+        Args:
+            response_json: The JSON response from the API.
+
+        Returns:
+            The processed response text including available buttons if present.
+        """
         text_response = ""
         for answer in response_json.get("response", []):
             if "text" in answer:
                 text_response += answer["text"] + "\n"
             elif "payload" in answer:
-                buttons_text = "\n\nAVAILABLE BUTTONS:\n\n"
-                payload = answer["payload"]
-                if "cards" in payload:
-                    for card in payload.get("cards", []):
-                        if "buttons" in card:
-                            buttons_text += self._translate_buttons(card.get("buttons", []))
-                elif "buttons" in payload:
-                    buttons_text += self._translate_buttons(payload.get("buttons", []))
-                # Only add button text if buttons were actually found
-                if buttons_text.strip() != "AVAILABLE BUTTONS:":
-                    text_response += buttons_text
+                buttons_text = self._process_buttons(answer["payload"])
+                if buttons_text:
+                    text_response += f"\n\nAVAILABLE BUTTONS:\n\n{buttons_text}"
 
         return text_response.strip()
 
-    def execute_with_input(self, user_msg: str) -> ChatbotResponse:
-        """Sends a message to the MillionBot chatbot and gets the response.
+    def _process_buttons(self, payload: dict[str, Any]) -> str:
+        """Process buttons from payload."""
+        buttons_text = ""
 
-        Handles resetting the conversation state before the first message.
+        # Handle cards with buttons
+        if "cards" in payload:
+            for card in payload.get("cards", []):
+                if "buttons" in card:
+                    buttons_text += self._format_buttons(card.get("buttons", []))
 
-        Args:
-            user_msg: The message from the user.
+        # Handle direct buttons
+        elif "buttons" in payload:
+            buttons_text += self._format_buttons(payload.get("buttons", []))
 
-        Returns:
-            A tuple containing:
-                - bool: True if the interaction was successful, False otherwise.
-                - str | None: The chatbot's response text, or an error message/None.
-        """
-        success = False
-        response_data: str | None = None
+        return buttons_text
 
-        if not self._reset_conversation():
-            print("Warning: Proceeding after failed conversation reset.")
-            return False, "Failed to reset conversation"
-
-        self.payload["message"]["text"] = user_msg
-        try:
-            response = requests.post(self.url, headers=self.headers, json=self.payload, timeout=self.timeout)
-            response.raise_for_status()
-            response_json = response.json()
-            response_data = self._process_response(response_json)
-            success = True
-
-        except requests.Timeout:
-            response_data = "timeout"
-        except requests.exceptions.ConnectionError:
-            response_data = "connection error"
-        except requests.exceptions.HTTPError as http_err:
-            try:
-                error_detail = http_err.response.json().get("error", str(http_err))
-                print(f"Server error: {error_detail}")
-                response_data = f"HTTP error: {error_detail}"
-            except requests.exceptions.JSONDecodeError:
-                print(f"Server error: {http_err}")
-                response_data = f"HTTP error: {http_err}"
-        except requests.exceptions.JSONDecodeError:
-            response_data = "invalid JSON response"
-        except requests.exceptions.RequestException as req_err:
-            print(f"Request error: {req_err}")
-            response_data = f"request error: {req_err}"
-
-        return success, response_data
-
-    def _translate_buttons(self, buttons_list: list[dict[str, Any]]) -> str:
-        """Helper method to format button information into a string."""
-        text_response = ""
+    def _format_buttons(self, buttons_list: list) -> str:
+        """Format button list into text."""
+        text = ""
         for button in buttons_list:
             button_text = button.get("text", "<No Text>")
             button_value = button.get("value", "<No Value>")
-            text_response += f"- BUTTON TEXT: {button_text} ACTION/LINK: {button_value}\n"
-        return text_response
+            text += f"- BUTTON TEXT: {button_text} ACTION/LINK: {button_value}\n"
+        return text
+
+
+@dataclass
+class MillionBotConfig(ChatbotConfig):
+    """Configuration for MillionBot chatbots."""
+
+    bot_id: str = ""
+    conversation_id: str = ""
+    url_context: str = ""
+    sender: str = ""
+    api_key: str = ""
+    language: str = "en"
+
+    def __post_init__(self) -> None:
+        """Set up headers with API key after initialization."""
+        self.headers = {"Content-Type": "application/json", "Authorization": f"API-KEY {self.api_key}"}
+
+
+class MillionBot(Chatbot):
+    """Connector for chatbots using the 1MillionBot API."""
+
+    def __init__(self, config: MillionBotConfig) -> None:
+        """Initialize the MillionBot connector.
+
+        Args:
+            config: The configuration for the MillionBot chatbot.
+        """
+        super().__init__(config)
+        self.mb_config = config
+        self.reset_needed = True
+
+    def get_endpoints(self) -> dict[str, EndpointConfig]:
+        """Return endpoint configurations for MillionBot chatbot."""
+        return {
+            "send_message": EndpointConfig(
+                path="/api/public/messages", method=RequestMethod.POST, timeout=self.config.timeout
+            ),
+            "reset_conversation": EndpointConfig(
+                path="/api/public/live/status", method=RequestMethod.POST, timeout=self.config.timeout
+            ),
+        }
+
+    def get_response_processor(self) -> ResponseProcessor:
+        """Return the response processor for MillionBot chatbot."""
+        return MillionBotResponseProcessor()
+
+    def prepare_message_payload(self, user_msg: str) -> Payload:
+        """Prepare the payload for sending a message to MillionBot.
+
+        Args:
+            user_msg: The user's message.
+
+        Returns:
+            Payload dictionary for the API request.
+        """
+        return {
+            "conversation": self.mb_config.conversation_id,
+            "sender_type": "User",
+            "sender": self.mb_config.sender,
+            "bot": self.mb_config.bot_id,
+            "language": self.mb_config.language,
+            "url": self.mb_config.url_context,
+            "message": {"text": user_msg},
+        }
+
+    def _requires_conversation_id(self) -> bool:
+        return False  # MillionBot uses config-based conversation ID
+
+    def create_new_conversation(self) -> bool:
+        """Reset conversation state."""
+        self.reset_needed = True
+        return True
+
+    def execute_with_input(self, user_msg: str) -> ChatbotResponse:
+        """Send message with conversation reset if needed."""
+        if self.reset_needed and not self._reset_conversation():
+            return False, "Failed to reset conversation"
+
+        return super().execute_with_input(user_msg)
+
+    def _reset_conversation(self) -> bool:
+        """Reset the conversation state."""
+        endpoints = self.get_endpoints()
+        if "reset_conversation" not in endpoints:
+            return True
+
+        endpoint_config = endpoints["reset_conversation"]
+        url = self.config.get_full_url(endpoint_config.path)
+
+        reset_payload = {
+            "bot": self.mb_config.bot_id,
+            "conversation": self.mb_config.conversation_id,
+            "status": {
+                "origin": self.mb_config.url_context,
+                "online": False,
+                "typing": False,
+                "deleted": True,
+                "attended": {},
+                "userName": "ChatbotExplorer",
+            },
+        }
+
+        try:
+            self._make_request(url, endpoint_config, reset_payload)
+            self.reset_needed = False
+        except requests.RequestException as e:
+            print(f"Error resetting conversation: {e}")
+            return False
+        else:
+            return True
 
 
 class ChatbotAdaUam(MillionBot):
-    """Specific connector configuration for the ADA UAM chatbot."""
+    """Pre-configured connector for the ADA UAM chatbot."""
 
-    def __init__(self, url: str | None = None) -> None:
-        """Initializes the ADA UAM connector.
+    def __init__(self) -> None:
+        """Initialize the ADA UAM chatbot connector."""
+        config = MillionBotConfig(
+            base_url="https://api.1millionbot.com",
+            bot_id="60a3be81f9a6b98f7659a6f9",
+            conversation_id="670577afe0d59bbc894897b2",
+            url_context="https://www.uam.es/uam/tecnologias-informacion",
+            sender="670577af4e61b2bc9462703f",
+            api_key="60553d58c41f5dfa095b34b5",
+            language="es",
+        )
+        super().__init__(config)
+
+
+# Factory for easy chatbot creation
+class ChatbotFactory:
+    """Factory class for creating chatbot instances."""
+
+    _chatbot_classes: ClassVar[dict[str, type]] = {
+        "taskyto": ChatbotTaskyto,
+        "millionbot": MillionBot,
+        "ada_uam": ChatbotAdaUam,
+    }
+
+    @classmethod
+    def register_chatbot(cls, name: str, chatbot_class: type) -> None:
+        """Register a new chatbot type.
 
         Args:
-            url: The base URL (optional, MillionBot overrides it).
+            name: Name identifier for the chatbot
+            chatbot_class: The chatbot class
         """
-        super().__init__(url or "https://api.1millionbot.com")
-        # Define configuration using the TypedDict
-        config: MillionBotConfig = {
-            "bot_id": "60a3be81f9a6b98f7659a6f9",
-            "conversation_id": "670577afe0d59bbc894897b2",
-            "url": "https://www.uam.es/uam/tecnologias-informacion",
-            "sender": "670577af4e61b2bc9462703f",
-            "api_key": "60553d58c41f5dfa095b34b5",
-            "language": "es",
-        }
-        self.init_chatbot(config)
+        cls._chatbot_classes[name] = chatbot_class
+
+    @classmethod
+    def create_chatbot(cls, chatbot_type: str, **kwargs: dict[str, Any]) -> Chatbot:
+        """Create a chatbot instance.
+
+        Args:
+            chatbot_type: Type of chatbot to create
+            **kwargs: Arguments to pass to the chatbot constructor
+
+        Returns:
+            Chatbot instance
+
+        Raises:
+            ValueError: If chatbot type is not registered
+        """
+        if chatbot_type not in cls._chatbot_classes:
+            available = ", ".join(cls._chatbot_classes.keys())
+            error_msg = f"Unknown chatbot type: {chatbot_type}. Available: {available}"
+            raise ValueError(error_msg)
+
+        chatbot_class = cls._chatbot_classes[chatbot_type]
+        return chatbot_class(**kwargs)
