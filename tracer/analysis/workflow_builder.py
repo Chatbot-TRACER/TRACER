@@ -7,6 +7,7 @@ from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
+from tracer.constants import MIN_PRINTABLE_ASCII_CODE
 from tracer.conversation.conversation_utils import format_conversation
 from tracer.prompts.workflow_prompts import (
     create_informational_prompt,
@@ -73,32 +74,16 @@ def build_node_hierarchy(structured_nodes_info: list[dict[str, Any]]) -> list[di
     return root_nodes
 
 
-def build_workflow_structure(
-    flat_functionality_dicts: list[dict[str, Any]],
-    conversation_history: list[Any],
-    chatbot_type: str,
-    llm: BaseLanguageModel,
-) -> list[dict[str, Any]]:
-    """Build a hierarchical structure of chatbot functionalities.
+def _build_functionality_list_string(flat_functionality_dicts: list[dict[str, Any]]) -> str:
+    """Build a formatted string representation of functionality list.
 
     Args:
         flat_functionality_dicts: List of functionality dictionaries
-        conversation_history: List of conversation sessions
-        chatbot_type: Classification of the bot ("transactional" or "informational")
-        llm: The language model instance
 
     Returns:
-        List[Dict[str, Any]]: Structured hierarchy with parent-child relationships
+        str: Formatted string representation of functionalities
     """
-    logger.info("\n=== Building Workflow Structure ===\n")
-
-    if not flat_functionality_dicts:
-        logger.warning("Skipping structure building: No functionalities found")
-        return []
-
-    # Prepare functionality list string for prompt
-    func_details_list = []
-    func_list_str = "\n".join(
+    return "\n".join(
         [
             (
                 f"- Name: {f.get('name', 'N/A')}\n"
@@ -129,9 +114,17 @@ def build_workflow_structure(
             for f in flat_functionality_dicts
         ],
     )
-    logger.debug("Prepared functionality list with %d entries", len(flat_functionality_dicts))
 
-    # Extract conversation snippets
+
+def _extract_conversation_snippets(conversation_history: list[Any]) -> str:
+    """Extract conversation snippets from the conversation history.
+
+    Args:
+        conversation_history: List of conversation sessions
+
+    Returns:
+        str: Formatted conversation snippets string
+    """
     snippets = []
     total_snippet_length = 0
     max_total_snippet_length = 7000
@@ -160,6 +153,65 @@ def build_workflow_structure(
 
     conversation_snippets = "\n".join(snippets) or "No conversation history available."
     logger.debug("Prepared %d conversation snippets (%d total characters)", len(snippets), total_snippet_length)
+    return conversation_snippets
+
+
+def _clean_json_string(json_str: str) -> str:
+    """Clean and fix common JSON issues from LLM responses.
+
+    Args:
+        json_str: Raw JSON string from LLM
+
+    Returns:
+        str: Cleaned JSON string
+    """
+    # Clean up potential JSON issues
+    json_str = re.sub(r"//.*?(\n|$)", "\n", json_str)  # Remove comments
+    json_str = re.sub(r",(\s*[\]}])", r"\1", json_str)  # Remove trailing commas
+
+    # Replace problematic URL control characters
+    json_str = re.sub(r"https?://[^\s\"\']+", lambda m: re.sub(r"[^\x20-\x7E]", "", m.group(0)), json_str)
+
+    # Remove all control characters that might cause JSON parsing to fail
+    # This includes ALL non-printable ASCII chars (0-31) except allowed whitespace
+    json_str = "".join(ch for ch in json_str if ord(ch) >= MIN_PRINTABLE_ASCII_CODE or ch in ["\n", "\r", "\t"])
+
+    # Try to escape unescaped backslashes in strings (common LLM error)
+    json_str = re.sub(r'(?<!\\)\\(?!["\\])', r"\\\\", json_str)
+
+    # Fix Unicode escape sequences that might be malformed
+    return re.sub(r"\\u([0-9a-fA-F]{0,3}[^0-9a-fA-F])", r"\\\\u\1", json_str)
+
+
+def build_workflow_structure(
+    flat_functionality_dicts: list[dict[str, Any]],
+    conversation_history: list[Any],
+    chatbot_type: str,
+    llm: BaseLanguageModel,
+) -> list[dict[str, Any]]:
+    """Build a hierarchical structure of chatbot functionalities.
+
+    Args:
+        flat_functionality_dicts: List of functionality dictionaries
+        conversation_history: List of conversation sessions
+        chatbot_type: Classification of the bot ("transactional" or "informational")
+        llm: The language model instance
+
+    Returns:
+        List[Dict[str, Any]]: Structured hierarchy with parent-child relationships
+    """
+    logger.info("\n=== Building Workflow Structure ===\n")
+
+    if not flat_functionality_dicts:
+        logger.warning("Skipping structure building: No functionalities found")
+        return []
+
+    # Prepare functionality list string for prompt
+    func_list_str = _build_functionality_list_string(flat_functionality_dicts)
+    logger.debug("Prepared functionality list with %d entries", len(flat_functionality_dicts))
+
+    # Extract conversation snippets
+    conversation_snippets = _extract_conversation_snippets(conversation_history)
 
     # Select appropriate prompt based on chatbot type
     if chatbot_type == "transactional":
@@ -175,26 +227,10 @@ def build_workflow_structure(
         response_content = response.content
 
         json_str = extract_json_from_response(response_content)
-
-        # Log the raw JSON string for debugging issues
         logger.debug("Raw JSON (first 200 chars): %s...", json_str[:200] if json_str else "Empty")
 
-        # Clean up potential JSON issues
-        json_str = re.sub(r"//.*?(\n|$)", "\n", json_str)  # Remove comments
-        json_str = re.sub(r",(\s*[\]}])", r"\1", json_str)  # Remove trailing commas
-
-        # Replace problematic URL control characters
-        json_str = re.sub(r"https?://[^\s\"\']+", lambda m: re.sub(r"[^\x20-\x7E]", "", m.group(0)), json_str)
-
-        # Remove all control characters that might cause JSON parsing to fail
-        # This includes ALL non-printable ASCII chars (0-31) except allowed whitespace
-        json_str = "".join(ch for ch in json_str if ord(ch) >= 32 or ch in ["\n", "\r", "\t"])
-
-        # Try to escape unescaped backslashes in strings (common LLM error)
-        json_str = re.sub(r'(?<!\\)\\(?!["\\])', r"\\\\", json_str)
-
-        # Fix Unicode escape sequences that might be malformed
-        json_str = re.sub(r"\\u([0-9a-fA-F]{0,3}[^0-9a-fA-F])", r"\\\\u\1", json_str)
+        # Clean up the JSON string
+        json_str = _clean_json_string(json_str)
 
         try:
             structured_nodes_info = _parse_and_validate_json_list(json_str)
@@ -202,7 +238,7 @@ def build_workflow_structure(
         except json.JSONDecodeError as e:
             # Provide more context about the error location
             error_location = max(0, e.pos - 30), min(len(json_str), e.pos + 30)
-            logger.error(
+            logger.exception(
                 "JSON decode error at position %d: %s\nNear text: '...%s...'",
                 e.pos,
                 e.msg,
