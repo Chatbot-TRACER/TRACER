@@ -60,11 +60,10 @@ class MillionBotResponseProcessor(ResponseProcessor):
 
     def _format_buttons(self, buttons_list: list) -> str:
         """Format button list into text."""
-        text = ""
-        for button in buttons_list:
-            button_text = button.get("text", "<No Text>")
-            button_value = button.get("value", "<No Value>")
-            text += f"- BUTTON TEXT: {button_text} ACTION/LINK: {button_value}\n"
+        text = "\n".join(
+            f"- BUTTON TEXT: {button.get('text', '<No Text>')} ACTION/LINK: {button.get('value', '<No Value>')}"
+            for button in buttons_list
+        )
         return text
 
 
