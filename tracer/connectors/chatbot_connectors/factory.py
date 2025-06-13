@@ -50,3 +50,23 @@ class ChatbotFactory:
 
         chatbot_class = cls._chatbot_classes[chatbot_type]
         return chatbot_class(**kwargs)
+
+    @classmethod
+    def get_chatbot_class(cls, chatbot_type: str) -> type:
+        """Get the chatbot class for a given type.
+
+        Args:
+            chatbot_type: Type of chatbot to get class for
+
+        Returns:
+            The chatbot class
+
+        Raises:
+            ValueError: If chatbot type is not registered
+        """
+        if chatbot_type not in cls._chatbot_classes:
+            available = ", ".join(cls._chatbot_classes.keys())
+            error_msg = f"Unknown chatbot type: {chatbot_type}. Available: {available}"
+            raise ValueError(error_msg)
+
+        return cls._chatbot_classes[chatbot_type]

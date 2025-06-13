@@ -3,6 +3,7 @@
 import sys
 import time
 from argparse import Namespace
+from inspect import signature
 from pathlib import Path
 from typing import Any
 
@@ -110,12 +111,17 @@ def _instantiate_connector(technology: str, url: str) -> Chatbot:
     logger.info("Instantiating connector for technology: %s", technology)
 
     try:
-        # Try creating with base_url first (most chatbots need it)
-        try:
+        # Check if technology is available and get the chatbot class
+        chatbot_class = ChatbotFactory.get_chatbot_class(technology)
+
+        # Check if the chatbot constructor accepts base_url parameter
+        chatbot_sig = signature(chatbot_class.__init__)
+        if "base_url" in chatbot_sig.parameters:
             return ChatbotFactory.create_chatbot(technology, base_url=url)
-        except TypeError:
-            # If base_url is not accepted, try without it
-            return ChatbotFactory.create_chatbot(technology)
+
+        logger.info("Chatbot '%s' does not accept base_url parameter, creating without it", technology)
+        return ChatbotFactory.create_chatbot(technology)
+
     except ValueError:
         logger.exception("Failed to instantiate connector for technology '%s'", technology)
         available_types = ChatbotFactory.get_available_types()
