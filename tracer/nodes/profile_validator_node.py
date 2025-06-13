@@ -6,8 +6,8 @@ from langchain_core.language_models import BaseLanguageModel
 
 from tracer.generation.profile_builder import validate_and_fix_profile
 from tracer.schemas.graph_state_model import State
-from tracer.utils.logging_utils import get_logger
 from tracer.scripts.validation_script import YamlValidator
+from tracer.utils.logging_utils import get_logger
 
 logger = get_logger()
 
