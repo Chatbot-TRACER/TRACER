@@ -14,6 +14,12 @@ from tracer.analysis.functionality_refinement import (
     merge_similar_functionalities,
     validate_parent_child_relationship,
 )
+from tracer.connectors.chatbot_connectors import Chatbot
+from tracer.constants import (
+    CONTEXT_MESSAGES_COUNT,
+    MIN_CORRECTED_MESSAGE_LENGTH,
+    MIN_EXPLORER_RESPONSE_LENGTH,
+)
 from tracer.prompts.session_prompts import (
     explorer_checker_prompt,
     get_correction_prompt,
@@ -29,7 +35,6 @@ from tracer.prompts.session_prompts import (
 from tracer.schemas.functionality_node_model import FunctionalityNode
 from tracer.utils.html_cleaner import clean_html_response
 from tracer.utils.logging_utils import get_logger
-from tracer.connectors.chatbot_connectors import Chatbot
 
 from .conversation_utils import _get_all_nodes
 from .fallback_detection import (
@@ -184,9 +189,7 @@ def _remove_node_from_graph(node_name: str, graph_state: ExplorationGraphState) 
     logger.debug("Attempting to remove node '%s' from graph", node_name)
 
     # Helper function to recursively find and remove a node
-    def _find_and_remove_node(
-        nodes: list[FunctionalityNode], target_name: str, parent: FunctionalityNode = None
-    ) -> tuple[bool, list[FunctionalityNode]]:
+    def _find_and_remove_node(nodes: list[FunctionalityNode], target_name: str) -> tuple[bool, list[FunctionalityNode]]:
         remaining_nodes = []
         found = False
 
@@ -208,7 +211,7 @@ def _remove_node_from_graph(node_name: str, graph_state: ExplorationGraphState) 
 
             # Process this node's children
             if node.children:
-                child_found, remaining_children = _find_and_remove_node(node.children, target_name, node)
+                child_found, remaining_children = _find_and_remove_node(node.children, target_name)
                 found = found or child_found
 
                 # Update the node's children list with remaining children
@@ -257,135 +260,233 @@ def _analyze_session_and_update_nodes(
     session_added_or_merged_log_messages = []
 
     if newly_extracted_nodes_raw:
-        logger.debug(
-            ">>> Raw Extracted Nodes from this Session (%d)",
-            len(newly_extracted_nodes_raw),
-        )
-        for node in newly_extracted_nodes_raw:
-            logger.debug(" • %s", node.name)
+        # Create processing context
+        context: NodeProcessingContext = {
+            "current_node": current_node,
+            "graph_state": graph_state,
+            "llm": llm,
+            "nodes_in_graph_before_this_session_processing": [],
+            "already_merged_with_existing_names": set(),
+        }
 
-        # 1. Merge similar nodes discovered within this session's extractions
-        logger.debug(">>> Performing Session-Local Merge on %d raw extracted nodes...", len(newly_extracted_nodes_raw))
-        processed_new_nodes_this_session = merge_similar_functionalities(newly_extracted_nodes_raw, llm)
-        logger.debug(
-            "<<< Nodes after Session-Local Merge (%d)",
-            len(processed_new_nodes_this_session),
-        )
-        for node in processed_new_nodes_this_session:
-            logger.debug(" • %s", node.name)
-
-        nodes_in_graph_before_this_session_processing = []
-        for root in graph_state["root_nodes"]:
-            nodes_in_graph_before_this_session_processing.extend(_get_all_nodes(root))
-
-        # To avoid repeated checks against the same existing nodes if multiple new nodes are similar to them
-        already_merged_with_existing_names = set()
-
-        for new_node_candidate in processed_new_nodes_this_session:
-            logger.debug("--- Processing node for addition/merge: '%s' ---", new_node_candidate.name)
-
-            # Check for duplicates against nodes ALREADY IN THE GRAPH from previous sessions
-            is_dup, matching_existing_node_obj = is_duplicate_functionality(
-                new_node_candidate,
-                nodes_in_graph_before_this_session_processing,  # Check only against established graph nodes
-                llm,
-            )
-
-            if is_dup and matching_existing_node_obj:
-                if matching_existing_node_obj.name in already_merged_with_existing_names:
-                    logger.debug(
-                        "Node '%s' is a duplicate of '%s', which has already been targeted for a merge this session. Skipping.",
-                        new_node_candidate.name,
-                        matching_existing_node_obj.name,
-                    )
-                    continue
-
-                logger.debug(
-                    "Node '%s' is a duplicate of existing node '%s'. Attempting to merge them.",
-                    new_node_candidate.name,
-                    matching_existing_node_obj.name,
-                )
-
-                merge_candidates = [new_node_candidate, matching_existing_node_obj]
-                merged_result_list = _process_node_group_for_merge(merge_candidates, llm)
-
-                if len(merged_result_list) == 1 and merged_result_list[0].name != matching_existing_node_obj.name:
-                    merged_node = merged_result_list[0]
-                    logger.debug(
-                        "Successfully merged '%s' and '%s' into '%s'. Updating graph.",
-                        new_node_candidate.name,
-                        matching_existing_node_obj.name,
-                        merged_node.name,
-                    )
-
-                    # Simplistic approach for now: Remove old, add new (potentially as root, hierarchy fixed later)
-                    _remove_node_from_graph(matching_existing_node_obj.name, graph_state)
-                    _add_new_node_to_graph(merged_node, None, graph_state, llm)
-                    session_added_or_merged_log_messages.append(
-                        f"MERGED {new_node_candidate.name} with {matching_existing_node_obj.name} into {merged_node.name}"
-                    )
-                    already_merged_with_existing_names.add(
-                        matching_existing_node_obj.name
-                    )  # Mark as processed for merge
-                    nodes_in_graph_before_this_session_processing.append(
-                        merged_node
-                    )  # Add to list for subsequent checks
-                    if matching_existing_node_obj in nodes_in_graph_before_this_session_processing:
-                        nodes_in_graph_before_this_session_processing.remove(matching_existing_node_obj)
-
-                elif len(merged_result_list) == 1 and merged_result_list[0].name == matching_existing_node_obj.name:
-                    logger.debug(
-                        "Merge attempt between '%s' and '%s' resulted in keeping existing '%s' (no change or new info deemed better).",
-                        new_node_candidate.name,
-                        matching_existing_node_obj.name,
-                        matching_existing_node_obj.name,
-                    )
-                    session_added_or_merged_log_messages.append(
-                        f"CONSIDERED_MERGE {new_node_candidate.name} with {matching_existing_node_obj.name}, existing kept."
-                    )
-                    already_merged_with_existing_names.add(matching_existing_node_obj.name)
-
-                else:
-                    logger.debug(
-                        "Merge attempt between '%s' and '%s' decided to keep them separate. Adding '%s' as new.",
-                        new_node_candidate.name,
-                        matching_existing_node_obj.name,
-                        new_node_candidate.name,
-                    )
-                    was_added = _add_new_node_to_graph(new_node_candidate, current_node, graph_state, llm)
-                    if was_added:
-                        session_added_or_merged_log_messages.append(f"ADDED_NEW {new_node_candidate.name}")
-                        nodes_in_graph_before_this_session_processing.append(new_node_candidate)
-
-            elif not is_dup:
-                logger.debug(
-                    "Node '%s' is NOT a duplicate of any existing graph node. Attempting to add as new.",
-                    new_node_candidate.name,
-                )
-                was_added = _add_new_node_to_graph(new_node_candidate, current_node, graph_state, llm)
-                if was_added:
-                    session_added_or_merged_log_messages.append(f"ADDED_NEW {new_node_candidate.name}")
-                    nodes_in_graph_before_this_session_processing.append(new_node_candidate)
-            else:
-                logger.warning(
-                    "Node '%s' flagged as duplicate by LLM, but no specific matching node identified. Skipping for safety.",
-                    new_node_candidate.name,
-                )
-
-        # Global merge of root nodes after session additions.
-        if graph_state["root_nodes"]:
-            logger.debug(">>> Performing Post-Session Merge on all %d Root Nodes...", len(graph_state["root_nodes"]))
-            original_root_count = len(graph_state["root_nodes"])
-            graph_state["root_nodes"] = merge_similar_functionalities(list(graph_state["root_nodes"]), llm)
-            logger.debug(
-                "<<< Root Nodes after Post-Session Merge (%d from %d).",
-                len(graph_state["root_nodes"]),
-                original_root_count,
-            )
+        session_added_or_merged_log_messages = _process_newly_extracted_nodes(newly_extracted_nodes_raw, context)
 
     if current_node:
         graph_state["explored_nodes"].add(current_node.name)
 
+    _log_session_summary(session_added_or_merged_log_messages)
+
+    return conversation_history_dict, graph_state
+
+
+class NodeProcessingContext(TypedDict):
+    """Context for processing nodes during session analysis."""
+
+    current_node: FunctionalityNode | None
+    graph_state: ExplorationGraphState
+    llm: BaseLanguageModel
+    nodes_in_graph_before_this_session_processing: list[FunctionalityNode]
+    already_merged_with_existing_names: set[str]
+
+
+def _process_newly_extracted_nodes(
+    newly_extracted_nodes_raw: list[FunctionalityNode],
+    context: NodeProcessingContext,
+) -> list[str]:
+    """Process newly extracted nodes by merging and adding them to the graph.
+
+    Args:
+        newly_extracted_nodes_raw: Raw extracted nodes from this session
+        context: Processing context containing all necessary data
+
+    Returns:
+        List of log messages describing what was added or merged
+    """
+    session_added_or_merged_log_messages = []
+
+    logger.debug(
+        ">>> Raw Extracted Nodes from this Session (%d)",
+        len(newly_extracted_nodes_raw),
+    )
+    for node in newly_extracted_nodes_raw:
+        logger.debug(" • %s", node.name)
+
+    # 1. Merge similar nodes discovered within this session's extractions
+    logger.debug(">>> Performing Session-Local Merge on %d raw extracted nodes...", len(newly_extracted_nodes_raw))
+    processed_new_nodes_this_session = merge_similar_functionalities(newly_extracted_nodes_raw, context["llm"])
+    logger.debug(
+        "<<< Nodes after Session-Local Merge (%d)",
+        len(processed_new_nodes_this_session),
+    )
+    for node in processed_new_nodes_this_session:
+        logger.debug(" • %s", node.name)
+
+    # Initialize nodes list from graph state
+    for root in context["graph_state"]["root_nodes"]:
+        context["nodes_in_graph_before_this_session_processing"].extend(_get_all_nodes(root))
+
+    for new_node_candidate in processed_new_nodes_this_session:
+        log_messages = _process_single_node_candidate(new_node_candidate, context)
+        session_added_or_merged_log_messages.extend(log_messages)
+
+    # Global merge of root nodes after session additions.
+    if context["graph_state"]["root_nodes"]:
+        logger.debug(
+            ">>> Performing Post-Session Merge on all %d Root Nodes...", len(context["graph_state"]["root_nodes"])
+        )
+        original_root_count = len(context["graph_state"]["root_nodes"])
+        context["graph_state"]["root_nodes"] = merge_similar_functionalities(
+            list(context["graph_state"]["root_nodes"]), context["llm"]
+        )
+        logger.debug(
+            "<<< Root Nodes after Post-Session Merge (%d from %d).",
+            len(context["graph_state"]["root_nodes"]),
+            original_root_count,
+        )
+
+    return session_added_or_merged_log_messages
+
+
+def _process_single_node_candidate(
+    new_node_candidate: FunctionalityNode,
+    context: NodeProcessingContext,
+) -> list[str]:
+    """Process a single node candidate for addition or merging.
+
+    Args:
+        new_node_candidate: The node candidate to process
+        context: Processing context containing all necessary data
+
+    Returns:
+        List of log messages describing what was done
+    """
+    session_added_or_merged_log_messages = []
+
+    logger.debug("--- Processing node for addition/merge: '%s' ---", new_node_candidate.name)
+
+    # Check for duplicates against nodes ALREADY IN THE GRAPH from previous sessions
+    is_dup, matching_existing_node_obj = is_duplicate_functionality(
+        new_node_candidate,
+        context["nodes_in_graph_before_this_session_processing"],  # Check only against established graph nodes
+        context["llm"],
+    )
+
+    if is_dup and matching_existing_node_obj:
+        log_messages = _handle_duplicate_node(new_node_candidate, matching_existing_node_obj, context)
+        session_added_or_merged_log_messages.extend(log_messages)
+    elif not is_dup:
+        logger.debug(
+            "Node '%s' is NOT a duplicate of any existing graph node. Attempting to add as new.",
+            new_node_candidate.name,
+        )
+        was_added = _add_new_node_to_graph(
+            new_node_candidate, context["current_node"], context["graph_state"], context["llm"]
+        )
+        if was_added:
+            session_added_or_merged_log_messages.append(f"ADDED_NEW {new_node_candidate.name}")
+            context["nodes_in_graph_before_this_session_processing"].append(new_node_candidate)
+    else:
+        logger.warning(
+            "Node '%s' flagged as duplicate by LLM, but no specific matching node identified. Skipping for safety.",
+            new_node_candidate.name,
+        )
+
+    return session_added_or_merged_log_messages
+
+
+def _handle_duplicate_node(
+    new_node_candidate: FunctionalityNode,
+    matching_existing_node_obj: FunctionalityNode,
+    context: NodeProcessingContext,
+) -> list[str]:
+    """Handle a duplicate node by merging or skipping.
+
+    Args:
+        new_node_candidate: The new node candidate
+        matching_existing_node_obj: The existing node it matches
+        context: Processing context containing all necessary data
+
+    Returns:
+        List of log messages describing what was done
+    """
+    session_added_or_merged_log_messages = []
+
+    if matching_existing_node_obj.name in context["already_merged_with_existing_names"]:
+        logger.debug(
+            "Node '%s' is a duplicate of '%s', which has already been targeted for a merge this session. Skipping.",
+            new_node_candidate.name,
+            matching_existing_node_obj.name,
+        )
+        return session_added_or_merged_log_messages
+
+    logger.debug(
+        "Node '%s' is a duplicate of existing node '%s'. Attempting to merge them.",
+        new_node_candidate.name,
+        matching_existing_node_obj.name,
+    )
+
+    merge_candidates = [new_node_candidate, matching_existing_node_obj]
+    merged_result_list = _process_node_group_for_merge(merge_candidates, context["llm"])
+
+    if len(merged_result_list) == 1 and merged_result_list[0].name != matching_existing_node_obj.name:
+        merged_node = merged_result_list[0]
+        logger.debug(
+            "Successfully merged '%s' and '%s' into '%s'. Updating graph.",
+            new_node_candidate.name,
+            matching_existing_node_obj.name,
+            merged_node.name,
+        )
+
+        # Simplistic approach for now: Remove old, add new (potentially as root, hierarchy fixed later)
+        _remove_node_from_graph(matching_existing_node_obj.name, context["graph_state"])
+        _add_new_node_to_graph(merged_node, None, context["graph_state"], context["llm"])
+        session_added_or_merged_log_messages.append(
+            f"MERGED {new_node_candidate.name} with {matching_existing_node_obj.name} into {merged_node.name}"
+        )
+        context["already_merged_with_existing_names"].add(
+            matching_existing_node_obj.name
+        )  # Mark as processed for merge
+        context["nodes_in_graph_before_this_session_processing"].append(
+            merged_node
+        )  # Add to list for subsequent checks
+        if matching_existing_node_obj in context["nodes_in_graph_before_this_session_processing"]:
+            context["nodes_in_graph_before_this_session_processing"].remove(matching_existing_node_obj)
+
+    elif len(merged_result_list) == 1 and merged_result_list[0].name == matching_existing_node_obj.name:
+        logger.debug(
+            "Merge attempt between '%s' and '%s' resulted in keeping existing '%s' (no change or new info deemed better).",
+            new_node_candidate.name,
+            matching_existing_node_obj.name,
+            matching_existing_node_obj.name,
+        )
+        session_added_or_merged_log_messages.append(
+            f"CONSIDERED_MERGE {new_node_candidate.name} with {matching_existing_node_obj.name}, existing kept."
+        )
+        context["already_merged_with_existing_names"].add(matching_existing_node_obj.name)
+
+    else:
+        logger.debug(
+            "Merge attempt between '%s' and '%s' decided to keep them separate. Adding '%s' as new.",
+            new_node_candidate.name,
+            matching_existing_node_obj.name,
+            new_node_candidate.name,
+        )
+        was_added = _add_new_node_to_graph(
+            new_node_candidate, context["current_node"], context["graph_state"], context["llm"]
+        )
+        if was_added:
+            session_added_or_merged_log_messages.append(f"ADDED_NEW {new_node_candidate.name}")
+            context["nodes_in_graph_before_this_session_processing"].append(new_node_candidate)
+
+    return session_added_or_merged_log_messages
+
+
+def _log_session_summary(session_added_or_merged_log_messages: list[str]) -> None:
+    """Log the session summary.
+
+    Args:
+        session_added_or_merged_log_messages: List of log messages from the session
+    """
     logger.info("--- Session Summary ---")
     if session_added_or_merged_log_messages:
         logger.info("Session processing resulted in %d additions/merges:", len(session_added_or_merged_log_messages))
@@ -396,8 +497,6 @@ def _analyze_session_and_update_nodes(
     logger.debug("----------------------------------------------------------------------")
     logger.debug("Ending Node Analysis for Session.")
     logger.debug("----------------------------------------------------------------------\n")
-
-    return conversation_history_dict, graph_state
 
 
 def _get_explorer_next_message(
@@ -539,6 +638,109 @@ def _update_loop_state_after_interaction(
     return new_consecutive_failures, new_force_topic_change_next_turn
 
 
+def _check_explorer_impersonation(
+    turn_count: int,
+    explorer_response_content: str,
+    conversation_history_lc: list[BaseMessage],
+    llm: BaseLanguageModel,
+) -> str:
+    """Check if explorer is acting like a chatbot and correct if needed.
+
+    Args:
+        turn_count: Current turn number
+        explorer_response_content: Explorer's response to check
+        conversation_history_lc: Conversation history for context
+        llm: Language model for checking and correction
+
+    Returns:
+        Corrected explorer response content
+    """
+    # Check if explorer is acting like a chatbot using LLM
+    if turn_count > 1 and len(explorer_response_content) > MIN_EXPLORER_RESPONSE_LENGTH:
+        try:
+            check_prompt = [
+                SystemMessage(content=explorer_checker_prompt()),
+                HumanMessage(content=explorer_response_content),
+            ]
+
+            check_result = llm.invoke(check_prompt)
+            is_chatbot_like = "YES" in check_result.content.upper() and "NO" not in check_result.content.upper()
+
+            if is_chatbot_like:
+                logger.warning("Explorer appears to be acting like a chatbot. Sending correction.")
+                # Get last few messages for context
+                latest_messages = (
+                    conversation_history_lc[-CONTEXT_MESSAGES_COUNT:]
+                    if len(conversation_history_lc) >= CONTEXT_MESSAGES_COUNT
+                    else conversation_history_lc
+                )
+
+                correction_prompt = [
+                    SystemMessage(content=get_correction_prompt()),
+                    *latest_messages,
+                    HumanMessage(
+                        content=f"Original response: {explorer_response_content}\n\nRewrite this as a human user would say it:"
+                    ),
+                ]
+
+                fixed_response = llm.invoke(correction_prompt)
+                corrected_message = fixed_response.content.strip()
+
+                if (
+                    corrected_message
+                    and len(corrected_message) > MIN_CORRECTED_MESSAGE_LENGTH
+                    and corrected_message != explorer_response_content
+                ):
+                    logger.debug("Corrected explorer message from chatbot-like to user-like")
+                    return corrected_message
+        except Exception:
+            logger.exception("Error in chatbot impersonation detection/correction")
+            # Continue with original message if check fails
+
+    return explorer_response_content
+
+
+def _should_continue_conversation(
+    turn_count: int,
+    max_turns: int,
+    explorer_response_content: str,
+    final_chatbot_message: str,
+    outcome: InteractionOutcome,
+) -> bool:
+    """Check if the conversation should continue.
+
+    Args:
+        turn_count: Current turn count
+        max_turns: Maximum turns allowed
+        explorer_response_content: Explorer's response
+        final_chatbot_message: Chatbot's final message
+        outcome: Interaction outcome
+
+    Returns:
+        True if conversation should continue, False otherwise
+    """
+    # Check max turns
+    if turn_count >= max_turns:
+        logger.debug("Reached maximum turns (%d). Ending session.", max_turns)
+        return False
+
+    # Check if explorer finished
+    if "EXPLORATION COMPLETE" in explorer_response_content.upper():
+        logger.debug("Explorer has finished session exploration")
+        return False
+
+    # Check communication error
+    if outcome == InteractionOutcome.COMM_ERROR:
+        return False
+
+    # Check if chatbot ended conversation
+    if final_chatbot_message.lower() in ["quit", "exit", "q", "bye", "goodbye"]:
+        logger.debug("Chatbot ended the conversation. Ending session.")
+        return False
+
+    return True
+
+
 def _run_conversation_loop(
     max_turns: int,
     context: ConversationContext,
@@ -578,45 +780,10 @@ def _run_conversation_loop(
         if explorer_response_content is None:
             break  # Error message logged inside helper
 
-        # Check if explorer is acting like a chatbot using LLM
-        if turn_count > 1 and len(explorer_response_content) > 10:
-            try:
-                check_prompt = [
-                    SystemMessage(content=explorer_checker_prompt()),
-                    HumanMessage(content=explorer_response_content),
-                ]
-
-                check_result = llm.invoke(check_prompt)
-                is_chatbot_like = "YES" in check_result.content.upper() and "NO" not in check_result.content.upper()
-
-                if is_chatbot_like:
-                    logger.warning("Explorer appears to be acting like a chatbot. Sending correction.")
-                    # Get last few messages for context
-                    latest_messages = (
-                        conversation_history_lc[-4:] if len(conversation_history_lc) >= 4 else conversation_history_lc
-                    )
-
-                    correction_prompt = [
-                        SystemMessage(content=get_correction_prompt()),
-                        *latest_messages,
-                        HumanMessage(
-                            content=f"Original response: {explorer_response_content}\n\nRewrite this as a human user would say it:"
-                        ),
-                    ]
-
-                    fixed_response = llm.invoke(correction_prompt)
-                    corrected_message = fixed_response.content.strip()
-
-                    if (
-                        corrected_message
-                        and len(corrected_message) > 5
-                        and corrected_message != explorer_response_content
-                    ):
-                        logger.debug("Corrected explorer message from chatbot-like to user-like")
-                        explorer_response_content = corrected_message
-            except Exception:
-                logger.exception("Error in chatbot impersonation detection/correction")
-                # Continue with original message if check fails
+        # Check if explorer is acting like a chatbot and correct if needed
+        explorer_response_content = _check_explorer_impersonation(
+            turn_count, explorer_response_content, conversation_history_lc, llm
+        )
 
         logger.verbose(
             "Explorer: %s",
@@ -624,6 +791,7 @@ def _run_conversation_loop(
             + ("..." if len(explorer_response_content) > MAX_LOG_MESSAGE_LENGTH else ""),
         )
 
+        # Check if exploration is complete before adding to history
         if "EXPLORATION COMPLETE" in explorer_response_content.upper():
             logger.debug("Explorer has finished session exploration")
             conversation_history_lc.append(AIMessage(content=explorer_response_content))
@@ -651,14 +819,11 @@ def _run_conversation_loop(
             current_consecutive_failures=consecutive_failures,
         )
 
-        # Break loop immediately if communication failed
-        if outcome == InteractionOutcome.COMM_ERROR:
-            # Error message logged inside _update_loop_state_after_interaction
-            break
-
-        # 7. Check if Chatbot Ended Conversation
-        if final_chatbot_message.lower() in ["quit", "exit", "q", "bye", "goodbye"]:
-            logger.debug("Chatbot ended the conversation. Ending session.")
+        # 7. Check if Conversation Should Continue
+        should_continue = _should_continue_conversation(
+            turn_count, max_turns, explorer_response_content, final_chatbot_message, outcome
+        )
+        if not should_continue:
             break
 
         # 8. Increment Turn Count

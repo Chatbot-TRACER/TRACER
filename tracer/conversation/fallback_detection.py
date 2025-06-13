@@ -4,13 +4,13 @@ import re
 
 from langchain_core.language_models import BaseLanguageModel
 
+from tracer.connectors.chatbot_connectors import Chatbot
 from tracer.prompts.fallback_detection_prompts import (
     get_fallback_identification_prompt,
     get_semantic_fallback_check_prompt,
 )
 from tracer.utils.html_cleaner import clean_html_response
 from tracer.utils.logging_utils import get_logger
-from tracer.connectors.chatbot_connectors import Chatbot
 
 logger = get_logger()
 
