@@ -110,15 +110,12 @@ def _instantiate_connector(technology: str, url: str) -> Chatbot:
     logger.info("Instantiating connector for technology: %s", technology)
 
     try:
-        if technology == "taskyto":
-            return ChatbotFactory.create_chatbot("taskyto", base_url=url)
-        if technology == "ada_uam":
-            # ChatbotAdaUam is pre-configured and doesn't need URL
-            return ChatbotFactory.create_chatbot("ada_uam")
-        if technology == "rasa":
-            return ChatbotFactory.create_chatbot("rasa", base_url=url)
-        # Try using the factory with the technology name directly
-        return ChatbotFactory.create_chatbot(technology, base_url=url)
+        # Try creating with base_url first (most chatbots need it)
+        try:
+            return ChatbotFactory.create_chatbot(technology, base_url=url)
+        except TypeError:
+            # If base_url is not accepted, try without it
+            return ChatbotFactory.create_chatbot(technology)
     except ValueError:
         logger.exception("Failed to instantiate connector for technology '%s'", technology)
         available_types = ChatbotFactory.get_available_types()
