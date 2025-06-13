@@ -14,6 +14,9 @@ from tracer.connectors.chatbot_connectors.core import (
     RequestMethod,
     ResponseProcessor,
 )
+from tracer.utils.logging_utils import get_logger
+
+logger = get_logger()
 
 
 class MillionBotResponseProcessor(ResponseProcessor):
@@ -168,8 +171,8 @@ class MillionBot(Chatbot):
         try:
             self._make_request(url, endpoint_config, reset_payload)
             self.reset_needed = False
-        except requests.RequestException as e:
-            print(f"Error resetting conversation: {e}")
+        except requests.RequestException:
+            logger.exception("Error resetting conversation")
             return False
         else:
             return True
