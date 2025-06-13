@@ -30,3 +30,6 @@ AVAILABLE_PERSONALITIES = [
     "sarcastic-user",
     "skeptical-user",
 ]
+
+# Minimum number of nodes required for deduplication
+MIN_NODES_FOR_DEDUPLICATION = 2
