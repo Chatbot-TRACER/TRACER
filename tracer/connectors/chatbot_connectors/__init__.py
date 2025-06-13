@@ -23,7 +23,7 @@ ChatbotFactory.register_chatbot("rasa", RasaChatbot)
 
 __all__ = [
     "Chatbot",
-    "ChatbotChatbotAdaUam",
+    "ChatbotAdaUam",
     "ChatbotConfig",
     "ChatbotFactory",
     "ChatbotResponse",
