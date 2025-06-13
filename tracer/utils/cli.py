@@ -15,7 +15,6 @@ def parse_arguments() -> Namespace:
     default_output_dir = "output"
     default_technology = "taskyto"
     default_graph_font_size = 12
-    default_graph_direction = "LR"
 
     parser.add_argument(
         "-v",
