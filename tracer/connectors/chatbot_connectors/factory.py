@@ -21,6 +21,15 @@ class ChatbotFactory:
         cls._chatbot_classes[name] = chatbot_class
 
     @classmethod
+    def get_available_types(cls) -> list[str]:
+        """Get list of available chatbot types.
+
+        Returns:
+            List of registered chatbot type names
+        """
+        return list(cls._chatbot_classes.keys())
+
+    @classmethod
     def create_chatbot(cls, chatbot_type: str, **kwargs: dict[str, Any]) -> Chatbot:
         """Create a chatbot instance.
 

@@ -40,7 +40,7 @@ def _setup_configuration() -> Namespace:
     if args.verbose > 0:
         setup_logging(args.verbose)
 
-    valid_technologies = ["taskyto", "ada-uam", "rasa"]
+    valid_technologies = ChatbotFactory.get_available_types()
 
     if args.technology not in valid_technologies:
         logger.error("Invalid technology '%s'. Must be one of: %s", args.technology, valid_technologies)
@@ -112,7 +112,7 @@ def _instantiate_connector(technology: str, url: str) -> Chatbot:
     try:
         if technology == "taskyto":
             return ChatbotFactory.create_chatbot("taskyto", base_url=url)
-        if technology == "ada-uam":
+        if technology == "ada_uam":
             # ChatbotAdaUam is pre-configured and doesn't need URL
             return ChatbotFactory.create_chatbot("ada_uam")
         if technology == "rasa":
@@ -121,8 +121,7 @@ def _instantiate_connector(technology: str, url: str) -> Chatbot:
         return ChatbotFactory.create_chatbot(technology, base_url=url)
     except ValueError:
         logger.exception("Failed to instantiate connector for technology '%s'", technology)
-        # Avoid accessing private member; fallback to static list or add a public method in ChatbotFactory
-        available_types = ["taskyto", "ada-uam", "rasa"]
+        available_types = ChatbotFactory.get_available_types()
         logger.exception("Available chatbot types: %s", ", ".join(available_types))
         sys.exit(1)
     except Exception:
