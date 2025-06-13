@@ -8,6 +8,10 @@ from urllib.parse import urljoin
 
 import requests
 
+from tracer.utils.logging_utils import get_logger
+
+logger = get_logger()
+
 # Type aliases
 ChatbotResponse = tuple[bool, str | None]
 Headers = dict[str, str]
@@ -149,8 +153,8 @@ class Chatbot(ABC):
                 # Try to extract conversation ID if provided
                 self.conversation_id = response.get("id") or response.get("conversation_id")
                 return True
-        except requests.RequestException as e:
-            print(f"Error creating new conversation: {e}")
+        except requests.RequestException:
+            logger.exception("Error creating new conversation")
 
         return False
 
