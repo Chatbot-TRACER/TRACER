@@ -7,7 +7,7 @@ from langchain_core.language_models import BaseLanguageModel
 
 from tracer.generation.context_generation import generate_context
 from tracer.generation.output_generation import generate_outputs
-from tracer.generation.variable_definition import generate_variable_definitions
+from tracer.generation.variable import VariableDefinitionConfig, generate_variable_definitions
 from tracer.prompts.profile_generation_prompts import (
     ProfileGoalContext,
     ProfileGroupingContext,
@@ -284,13 +284,17 @@ def _generate_profile_variables(
     profile: dict[str, Any], config: ProfileGenerationConfig, *, nested_forward: bool
 ) -> None:
     """Generates variable definitions for a profile."""
+    variable_config = VariableDefinitionConfig(
+        supported_languages=config["supported_languages"],
+        functionality_structure=config["workflow_structure"],
+        max_retries=3,
+        nested_forward=nested_forward,
+    )
+
     temp_profiles = generate_variable_definitions(
         [profile],
         config["llm"],
-        config["supported_languages"],
-        config["workflow_structure"],
-        max_retries=3,
-        nested_forward=nested_forward,
+        config=variable_config,
     )
     if temp_profiles:
         profile.update(temp_profiles[0])
