@@ -9,11 +9,11 @@ then generates the graph with the specified parameters.
 
 import argparse
 import json
-import os
 import sys
+from pathlib import Path
 
 # Add the root directory to PATH
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
 
 # Import internal modules
 from tracer.utils.logging_utils import get_logger
@@ -30,7 +30,7 @@ def extract_json_from_report(report_path: str) -> list:
     json_section_marker = "## FUNCTIONALITIES (Raw JSON Structure)"
     next_section_marker = "##"
 
-    with open(report_path, encoding="utf-8") as f:
+    with Path(report_path).open(encoding="utf-8") as f:
         content = f.read()
 
     # Extract the section between JSON marker and the next section
@@ -46,17 +46,18 @@ def extract_json_from_report(report_path: str) -> list:
 
         try:
             return json.loads(json_str)
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse JSON from report: {e}")
+        except json.JSONDecodeError:
+            logger.exception("Failed to parse JSON from report")
             raise
     else:
-        raise ValueError(f"Could not find JSON section marker '{json_section_marker}' in the report file")
+        error_msg = f"Could not find JSON section marker '{json_section_marker}' in the report file"
+        raise ValueError(error_msg)
 
 
 def load_json_data(path: str) -> list:
     """Load JSON data from a file, either a report or a direct JSON file."""
     if path.endswith(".json"):
-        with open(path, encoding="utf-8") as f:
+        with Path(path).open(encoding="utf-8") as f:
             return json.load(f)
     else:
         # Assume it's a report file
@@ -65,12 +66,12 @@ def load_json_data(path: str) -> list:
 
 def save_json_data(nodes: list, output_path: str) -> None:
     """Save the JSON data to a file."""
-    with open(output_path, "w", encoding="utf-8") as f:
+    with Path(output_path).open("w", encoding="utf-8") as f:
         json.dump(nodes, f, indent=2, ensure_ascii=False)
-    logger.info(f"JSON data saved to {output_path}")
+    logger.info("JSON data saved to %s", output_path)
 
 
-def export_graph(nodes: list, **kwargs) -> None:
+def export_graph(nodes: list, **kwargs: str | int | bool) -> None:
     """Wrapper around the export_graph function from reporting.py.
 
     This function handles the case where nodes are plain dictionaries
@@ -79,7 +80,7 @@ def export_graph(nodes: list, **kwargs) -> None:
     return _export_graph(nodes, **kwargs)
 
 
-def main():
+def main() -> None:
     """Main function to parse arguments and generate the graph."""
     parser = argparse.ArgumentParser(description="Generate a graph from JSON data")
     parser.add_argument(
@@ -97,7 +98,7 @@ def main():
 
     try:
         # Load the JSON data
-        logger.info(f"Loading JSON data from {args.input}")
+        logger.info("Loading JSON data from %s", args.input)
         nodes = load_json_data(args.input)
 
         if not nodes:
@@ -109,15 +110,16 @@ def main():
             save_json_data(nodes, args.save_json)
 
         # Generate the graph
-        logger.info(f"Generating graph with font size {args.font_size}, DPI {args.dpi}")
-        logger.info(f"Output format: {args.format}")
-        logger.info(f"Compact mode: {args.compact}")
-        logger.info(f"Top-down layout: {args.top_down}")
+        logger.info("Generating graph with font size %d, DPI %d", args.font_size, args.dpi)
+        logger.info("Output format: %s", args.format)
+        logger.info("Compact mode: %s", args.compact)
+        logger.info("Top-down layout: %s", args.top_down)
 
         # Create output directory if it doesn't exist
-        output_dir = os.path.dirname(args.output)
-        if output_dir:
-            os.makedirs(output_dir, exist_ok=True)
+        output_path = Path(args.output)
+        output_dir = output_path.parent
+        if output_dir != Path():
+            output_dir.mkdir(parents=True, exist_ok=True)
 
         export_graph(
             nodes=nodes,
@@ -129,13 +131,13 @@ def main():
             top_down=args.top_down,
         )
 
-        logger.info(f"Graph generated successfully: {args.output}.{args.format}")
+        logger.info("Graph generated successfully: %s.%s", args.output, args.format)
 
-    except Exception as e:
-        logger.error(f"Error generating graph: {e}")
-        import traceback
-
-        logger.error(traceback.format_exc())
+    except (FileNotFoundError, json.JSONDecodeError, ValueError):
+        logger.exception("Error generating graph")
+        sys.exit(1)
+    except Exception:
+        logger.exception("Unexpected error generating graph")
         sys.exit(1)
 
 
