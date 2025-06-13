@@ -1,6 +1,6 @@
 # TRACER
 
-[![CI](https://github.com/Chatbot-TRACER/TRACER/actions/workflows/ci.yaml/badge.svg)](https://github.com/Chatbot-TRACER/TRACER/actions/workflows/ci.yaml)
+[![CI](https://github.com/Chatbot-TRACER/TRACER/actions/workflows/ci.yml/badge.svg)](https://github.com/Chatbot-TRACER/TRACER/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/Chatbot-TRACER/TRACER)](https://github.com/Chatbot-TRACER/TRACER/blob/main/LICENSE)
 [![PyPI version](https://img.shields.io/pypi/v/chatbot-tracer)](https://pypi.org/project/chatbot-tracer/)
 
