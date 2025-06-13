@@ -7,8 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from tracer.agent import ChatbotExplorationAgent
-from tracer.utils.logging_utils import get_logger, setup_logging
-from tracer.connectors.chatbot_connectors import Chatbot, ChatbotAdaUam, ChatbotTaskyto
+from tracer.connectors.chatbot_connectors import Chatbot, ChatbotFactory
 from tracer.reporting import (
     ExecutionResults,
     GraphRenderOptions,
@@ -19,6 +18,7 @@ from tracer.reporting import (
     write_report,
 )
 from tracer.utils.cli import parse_arguments
+from tracer.utils.logging_utils import get_logger, setup_logging
 
 logger = get_logger()
 
@@ -40,7 +40,7 @@ def _setup_configuration() -> Namespace:
     if args.verbose > 0:
         setup_logging(args.verbose)
 
-    valid_technologies = ["taskyto", "ada-uam"]
+    valid_technologies = ChatbotFactory.get_available_types()
 
     if args.technology not in valid_technologies:
         logger.error("Invalid technology '%s'. Must be one of: %s", args.technology, valid_technologies)
@@ -105,15 +105,27 @@ def _instantiate_connector(technology: str, url: str) -> Chatbot:
         Chatbot: An instance of the appropriate connector class.
 
     Raises:
-        SystemExit: If the technology name is unknown (should be caught earlier).
+        SystemExit: If the technology name is unknown or instantiation fails.
     """
     logger.info("Instantiating connector for technology: %s", technology)
-    if technology == "taskyto":
-        return ChatbotTaskyto(url)
-    if technology == "ada-uam":
-        return ChatbotAdaUam(url)
-    logger.error("Internal Error: Attempted to instantiate unknown technology '%s'", technology)
-    sys.exit(1)
+
+    try:
+        # Use the factory to check if URL is required and create the chatbot
+        if ChatbotFactory.requires_url(technology):
+            logger.info("Creating chatbot '%s' with base URL: %s", technology, url)
+            return ChatbotFactory.create_chatbot(technology, base_url=url)
+
+        logger.info("Creating chatbot '%s' without URL (pre-configured)", technology)
+        return ChatbotFactory.create_chatbot(technology)
+
+    except ValueError:
+        logger.exception("Failed to instantiate connector for technology '%s'", technology)
+        available_types = ChatbotFactory.get_available_types()
+        logger.exception("Available chatbot types: %s", ", ".join(available_types))
+        sys.exit(1)
+    except Exception:
+        logger.exception("Unexpected error instantiating connector for technology '%s'", technology)
+        sys.exit(1)
 
 
 def _run_exploration_phase(
