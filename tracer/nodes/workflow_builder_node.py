@@ -48,54 +48,58 @@ def count_all_nodes(nodes_list: list[dict]) -> int:
     return len(visited_node_names)
 
 
-def get_workflow_paths(nodes: list[dict], prefix: str = "", visited_paths: set | None = None) -> list[str]:
+def get_workflow_paths(nodes: list[dict], prefix: str = "", visited_nodes: set | None = None) -> list[str]:
     """Recursively generates a list of workflow paths from a hierarchical node structure.
 
-    Handles potential cycles/DAGs by tracking visited parent-child relationships for display.
+    Handles potential cycles/DAGs by tracking visited nodes in the current path to prevent infinite loops.
 
     Args:
         nodes (list): List of node dictionaries.
         prefix (str, optional): String prefix for indentation. Defaults to "".
-        visited_paths (set, optional): A set to track visited (parent_name, child_name)
-                                       tuples to avoid infinite loops in logs for DAGs.
-                                       Should be initialized as None in the top-level call.
+        visited_nodes (set, optional): A set to track visited node names in the current path
+                                      to avoid infinite loops. Should be initialized as None
+                                      in the top-level call.
 
     Returns:
         list[str]: A list of formatted path strings.
     """
-    if visited_paths is None:
-        visited_paths = set()
+    if visited_nodes is None:
+        visited_nodes = set()
 
     paths = []
 
     for node in nodes:
+        node_name = node.get("name", "")
         current_path = _build_current_path(node, prefix)
-        _check_circular_reference(current_path, visited_paths)
 
-        visited_paths.add(current_path)
+        # Check for circular reference using node name (not path)
+        if node_name and node_name in visited_nodes:
+            # This is a back-reference - add a marker and continue without recursing
+            paths.append(f"{current_path} (*)")
+            continue
+
+        # Add this node to visited set for this path
+        if node_name:
+            visited_nodes.add(node_name)
 
         if _has_children(node):
-            child_paths = get_workflow_paths(node["children"], current_path, visited_paths.copy())
+            # Recursively get child paths with the current visited_nodes set
+            child_paths = get_workflow_paths(node["children"], current_path, visited_nodes.copy())
             paths.extend(child_paths)
         else:
             paths.append(current_path)
 
-        visited_paths.remove(current_path)
+        # Remove this node from visited set when backtracking
+        if node_name:
+            visited_nodes.discard(node_name)
 
     return paths
 
 
 def _build_current_path(node: dict, prefix: str) -> str:
-    """Build the current path from node label and prefix."""
-    label = node.get("label", "")
-    return f"{prefix}/{label}" if prefix else label
-
-
-def _check_circular_reference(current_path: str, visited_paths: set) -> None:
-    """Check for circular references and raise error if found."""
-    if current_path in visited_paths:
-        error_msg = f"Circular reference detected: {current_path}"
-        raise RecursionError(error_msg)
+    """Build the current path from node name and prefix."""
+    name = node.get("name", "Unknown")
+    return f"{prefix}/{name}" if prefix else name
 
 
 def _has_children(node: dict) -> bool:
@@ -140,8 +144,8 @@ def workflow_builder_node(state: State, llm: BaseLanguageModel) -> dict[str, Any
         )
 
         # Log the paths using the modified path generator
-        # Pass None for visited_paths initially
-        workflow_paths = get_workflow_paths(structured_nodes, visited_paths=None)
+        # Pass None for visited_nodes initially
+        workflow_paths = get_workflow_paths(structured_nodes, visited_nodes=None)
         if workflow_paths:
             logger.info(
                 "\nWorkflow structure (paths shown once per parent; (*) indicates node visited via another path):"
