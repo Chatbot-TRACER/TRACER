@@ -112,12 +112,22 @@ def get_reminder_prompt() -> str:
 
 
 def explorer_checker_prompt() -> str:
+    """Generate prompt to check if a message sounds like an AI assistant rather than a human user.
+
+    Returns:
+        Prompt string for determining if text was written by an AI assistant
+    """
     return """Your task is to determine if the message text is written like an AI assistant/chatbot rather than a human user.
 Analyze this single message and respond ONLY with "YES" if it sounds like an AI assistant (e.g., offering services, apologizing for limitations, saying "I don't have access to...")
 or "NO" if it sounds like a normal human user asking questions or making selections. Be strict - if you're unsure, say "NO"."""
 
 
 def get_correction_prompt() -> str:
+    """Generate prompt to help rewrite AI assistant messages to sound like human user messages.
+
+    Returns:
+        Prompt string for correcting AI assistant messages to human user messages
+    """
     return """You are helping fix an issue where an AI explorer meant to simulate a human user has started acting like an AI assistant/chatbot instead.
 The explorer should be asking questions and making selections like a human user would.
 Your task is to rewrite the last message so it sounds like a human user, NOT an AI assistant.

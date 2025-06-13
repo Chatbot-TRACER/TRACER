@@ -5,6 +5,9 @@ import re
 # Regular expression pattern to find {{variables}} in text
 VARIABLE_PATTERN = re.compile(r"{{([^}]+)}}")
 
+# List truncation threshold for data preview
+LIST_TRUNCATION_THRESHOLD = 3
+
 # Variable type pattern definitions supporting English and Spanish
 VARIABLE_PATTERNS = {
     "date": ["date", "fecha"],

@@ -163,27 +163,15 @@ Make sure profile names and roles are descriptive. Ensure ALL input functionalit
 """
 
 
-def get_profile_goals_prompt(
-    profile: dict[str, Any],
-    all_structured_functionalities: list[dict[str, Any]],
-    context: ProfileGoalContext,
-) -> str:
-    """Returns the prompt for generating user-centric goals for a profile.
+def _extract_functionality_names(assigned_functionality_rich_strings: list[str]) -> list[str]:
+    """Extract functionality names from rich strings.
 
     Args:
-        profile: The specific profile dictionary (containing name, role, functionalities).
-        functionality_objects: A list of functionality objects related to the profile.
-        context: A dictionary containing various contextual strings for the prompt.
+        assigned_functionality_rich_strings: List of functionality strings with metadata
 
     Returns:
-        A formatted string representing the LLM prompt.
+        List of extracted functionality names or descriptions
     """
-    profile_name = profile.get("name", "Unnamed Profile")
-    profile_role = profile.get("role", "User")
-
-    # Functionalities assigned to THIS profile
-    assigned_functionality_rich_strings = profile.get("functionalities", [])
-
     assigned_func_names_or_descs_for_prompt = []
     for func_str in assigned_functionality_rich_strings:
         name_match = re.match(r"^([\w_]+):", func_str)
@@ -195,17 +183,23 @@ def get_profile_goals_prompt(
         else:
             assigned_func_names_or_descs_for_prompt.append(func_str[:100] + "...")  # Truncated
 
-    functionalities_section = "TARGET FUNCTIONALITIES FOR THIS PROFILE (focus on testing these):\n" + "\n".join(
-        [f"- {name_or_desc}" for name_or_desc in assigned_func_names_or_descs_for_prompt]
-    )
+    return assigned_func_names_or_descs_for_prompt
 
+
+def _build_parameter_details(
+    all_structured_functionalities: list[dict[str, Any]], profile_func_identifiers: list[str]
+) -> tuple[str, bool]:
+    """Build parameter details string for the prompt.
+
+    Args:
+        all_structured_functionalities: List of all functionality definitions
+        profile_func_identifiers: List of functionality identifiers for this profile
+
+    Returns:
+        Tuple of (parameter_details_string, found_parameters_flag)
+    """
     param_details_for_prompt = "\n\nPARAMETER DETAILS FOR TARGET FUNCTIONALITIES (use these EXACT parameter names as {{variable_name}} placeholders in goals):\n"
     found_params_for_profile = False
-
-    profile_func_identifiers = []
-    for rich_string in assigned_functionality_rich_strings:
-        temp_name = assigned_func_names_or_descs_for_prompt[assigned_functionality_rich_strings.index(rich_string)]
-        profile_func_identifiers.append(temp_name)
 
     for func_dict in all_structured_functionalities:
         func_name = func_dict.get("name")
@@ -231,15 +225,28 @@ def get_profile_goals_prompt(
             "\n\nNo specific input parameters identified for target functionalities; focus goals on triggering them.\n"
         )
 
+    return param_details_for_prompt, found_params_for_profile
+
+
+def _build_output_info(all_structured_functionalities: list[dict[str, Any]]) -> tuple[str, bool]:
+    """Build output information string for the prompt.
+
+    Args:
+        all_structured_functionalities: List of all functionality definitions
+
+    Returns:
+        Tuple of (output_info_string, found_output_flag)
+    """
     output_as_param_info = "\n\nCONTEXTUAL KNOWLEDGE - CHATBOT CAN PROVIDE THESE LISTS OF CHOICES (These can be used as inputs for subsequent goal steps):\n"
     found_output_as_param = False
+
     for func_dict in all_structured_functionalities:
         func_name = func_dict.get("name")
         for output_spec in func_dict.get("outputs", []):
             if isinstance(output_spec, dict):
                 output_category = output_spec.get("category")
-
                 output_desc = output_spec.get("description", "")
+
                 # Heuristic: if description contains commas or common list delimiters, it might be a list of options
                 potential_options = []
                 if output_desc and ("," in output_desc or ";" in output_desc or output_desc.count("\n") > 0):
@@ -254,6 +261,46 @@ def get_profile_goals_prompt(
 
     if not found_output_as_param:
         output_as_param_info = "\n\n(No specific list-like outputs identified from other functionalities that could serve as choices for inputs.)\n"
+
+    return output_as_param_info, found_output_as_param
+
+
+def get_profile_goals_prompt(
+    profile: dict[str, Any],
+    all_structured_functionalities: list[dict[str, Any]],
+    context: ProfileGoalContext,
+) -> str:
+    """Returns the prompt for generating user-centric goals for a profile.
+
+    Args:
+        profile: The specific profile dictionary (containing name, role, functionalities).
+        all_structured_functionalities: A list of functionality objects related to the profile.
+        context: A dictionary containing various contextual strings for the prompt.
+
+    Returns:
+        A formatted string representing the LLM prompt.
+    """
+    profile_name = profile.get("name", "Unnamed Profile")
+    profile_role = profile.get("role", "User")
+
+    # Functionalities assigned to THIS profile
+    assigned_functionality_rich_strings = profile.get("functionalities", [])
+    assigned_func_names_or_descs_for_prompt = _extract_functionality_names(assigned_functionality_rich_strings)
+
+    functionalities_section = "TARGET FUNCTIONALITIES FOR THIS PROFILE (focus on testing these):\n" + "\n".join(
+        [f"- {name_or_desc}" for name_or_desc in assigned_func_names_or_descs_for_prompt]
+    )
+
+    profile_func_identifiers = []
+    for rich_string in assigned_functionality_rich_strings:
+        temp_name = assigned_func_names_or_descs_for_prompt[assigned_functionality_rich_strings.index(rich_string)]
+        profile_func_identifiers.append(temp_name)
+
+    param_details_for_prompt, found_params_for_profile = _build_parameter_details(
+        all_structured_functionalities, profile_func_identifiers
+    )
+
+    output_as_param_info, found_output_as_param = _build_output_info(all_structured_functionalities)
 
     return f"""
 You are crafting a sequence of user goals for a specific test profile. These goals should guide a user simulator to test the assigned chatbot functionalities thoroughly, including their parameters and how they connect.

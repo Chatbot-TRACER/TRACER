@@ -124,6 +124,7 @@ def get_merge_prompt(group: list[FunctionalityNode]) -> str:
 
 def get_consolidate_outputs_prompt(output_details: list[dict[str, str]]) -> str:
     """Generates a prompt to consolidate a list of output specifications for a merged functionality node.
+
     Each dict in output_details should have "id", "category_name", "description".
     """
     output_list_str = json.dumps(output_details, indent=2)
@@ -178,6 +179,7 @@ Generate ONLY the JSON list of consolidated outputs.
 
 def get_consolidate_parameters_prompt(parameter_details: list[dict[str, Any]]) -> str:
     """Generates a prompt to consolidate a list of parameter specifications for a merged functionality node.
+
     Each dict in parameter_details should have "id", "name", "description", "options".
     """
     param_list_str = json.dumps(parameter_details, indent=2)
