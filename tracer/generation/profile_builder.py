@@ -8,35 +8,27 @@ from langchain_core.language_models import BaseLanguageModel
 
 from tracer.constants import AVAILABLE_PERSONALITIES, VARIABLE_PATTERN
 from tracer.prompts.profile_builder_prompts import get_yaml_fix_prompt
+from tracer.scripts.validation_script import YamlValidator
 from tracer.utils.logging_utils import get_logger
 from tracer.utils.parsing_utils import extract_yaml
-from tracer.scripts.validation_script import YamlValidator
 
 logger = get_logger()
 
 
-def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_language: str) -> dict[str, Any]:
-    """Create the YAML profile dictionary structure from a profile spec.
+def _extract_variables_and_clean_goals(goals_list: list[Any]) -> tuple[set[str], list[Any], str | None]:
+    """Extract variables from goals and clean the goals list.
 
     Args:
-        profile: Profile data including goals and parameters
-        fallback_message: The chatbot's fallback message
-        primary_language: Primary language for the user
+        goals_list: Original goals list from profile
 
     Returns:
-        Dict containing the structured YAML profile
+        Tuple of (used_variables, cleaned_goals, existing_name_var_def)
     """
-    # Find all {{variables}} used in the string goals
     used_variables = set()
-    original_goals_list = profile.get("goals", [])
-
-    # First, extract the profile name and any existing name variable definition
-    profile_name = profile.get("name", "Unnamed")
+    cleaned_goals = []
     existing_name_var_def = None
 
-    # Clean up goals list - remove any name variable definition if it exists
-    cleaned_goals = []
-    for goal_item in original_goals_list:
+    for goal_item in goals_list:
         if isinstance(goal_item, dict) and "name" in goal_item:
             # Save the existing name variable definition
             existing_name_var_def = goal_item["name"]
@@ -47,8 +39,24 @@ def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_l
                 variables_in_string_goal = VARIABLE_PATTERN.findall(goal_item)
                 used_variables.update(variables_in_string_goal)
 
-    # Create the goals list for YAML starting with cleaned goals
-    yaml_goals = cleaned_goals
+    return used_variables, cleaned_goals, existing_name_var_def
+
+
+def _build_yaml_goals(
+    cleaned_goals: list[Any], used_variables: set[str], profile: dict[str, Any], existing_name_var_def: str | None
+) -> list[Any]:
+    """Build the goals list for YAML with variable definitions.
+
+    Args:
+        cleaned_goals: Goals list without name variable definitions
+        used_variables: Set of variables found in string goals
+        profile: Original profile data
+        existing_name_var_def: Existing name variable definition if any
+
+    Returns:
+        Complete goals list for YAML
+    """
+    yaml_goals = cleaned_goals.copy()
 
     # Clean up the profile by removing any variable definition that might have the profile name
     profile_for_variables = {k: v for k, v in profile.items() if k != "name" or k not in used_variables}
@@ -62,14 +70,19 @@ def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_l
     if existing_name_var_def:
         yaml_goals.append({"name": existing_name_var_def})
 
-    if logger.isEnabledFor(10):
-        logger.debug("Building YAML for profile: %s", profile_name)
-        logger.debug("Used variables: %s", used_variables)
-        for var_name in used_variables:
-            if var_name in profile:
-                logger.debug(" → %s: %s", var_name, profile[var_name])
+    return yaml_goals
 
-    # Build the chatbot section
+
+def _build_chatbot_section(profile: dict[str, Any], fallback_message: str) -> dict[str, Any]:
+    """Build the chatbot section of the YAML profile.
+
+    Args:
+        profile: Profile data
+        fallback_message: The chatbot's fallback message
+
+    Returns:
+        Chatbot section dictionary
+    """
     chatbot_section = {
         "is_starter": False,  # Assuming chatbot doesn't start
         "fallback": fallback_message,
@@ -77,7 +90,18 @@ def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_l
     if "outputs" in profile:  # Add expected outputs if any
         chatbot_section["output"] = profile["outputs"]
 
-    # Build the user context list
+    return chatbot_section
+
+
+def _build_user_context(profile: dict[str, Any]) -> list[str]:
+    """Build the user context list with personality and other context items.
+
+    Args:
+        profile: Profile data containing context
+
+    Returns:
+        List of user context items
+    """
     user_context = []
 
     # Define the probability of including a personality
@@ -88,15 +112,50 @@ def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_l
         selected_personality = secrets.choice(AVAILABLE_PERSONALITIES)
         user_context.append(f"personality: personalities/{selected_personality}")
 
-    # Choose a random temperature
-    temperature = round(secrets.choice(range(30, 101)) / 100, 1)
-
     # Add other context items
     context = profile.get("context", [])
     if isinstance(context, str):
         user_context.append(context)
     else:
         user_context.extend(context)
+
+    return user_context
+
+
+def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_language: str) -> dict[str, Any]:
+    """Create the YAML profile dictionary structure from a profile spec.
+
+    Args:
+        profile: Profile data including goals and parameters
+        fallback_message: The chatbot's fallback message
+        primary_language: Primary language for the user
+
+    Returns:
+        Dict containing the structured YAML profile
+    """
+    original_goals_list = profile.get("goals", [])
+    profile_name = profile.get("name", "Unnamed")
+
+    # Extract variables and clean goals
+    used_variables, cleaned_goals, existing_name_var_def = _extract_variables_and_clean_goals(original_goals_list)
+
+    # Build YAML goals with variable definitions
+    yaml_goals = _build_yaml_goals(cleaned_goals, used_variables, profile, existing_name_var_def)
+
+    # Debug logging
+    if logger.isEnabledFor(10):
+        logger.debug("Building YAML for profile: %s", profile_name)
+        logger.debug("Used variables: %s", used_variables)
+        for var_name in used_variables:
+            if var_name in profile:
+                logger.debug(" → %s: %s", var_name, profile[var_name])
+
+    # Build sections
+    chatbot_section = _build_chatbot_section(profile, fallback_message)
+    user_context = _build_user_context(profile)
+
+    # Choose a random temperature
+    temperature = round(secrets.choice(range(30, 101)) / 100, 1)
 
     # Get conversation settings
     conversation_section = profile.get("conversation", {})

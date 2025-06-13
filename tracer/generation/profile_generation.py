@@ -155,10 +155,6 @@ def _generate_profile_groupings(
     """Given the chatbot's functionalities, generates user profiles using the LLM."""
     logger.verbose("Generating initial profile groupings")
 
-    num_functionalities = len(config["functionalities"])
-    min_profiles = 3
-    max_profiles = 10
-    suggested_profiles = max(min_profiles, min(max_profiles, num_functionalities))
     chatbot_type_context = f"CHATBOT TYPE: {config['chatbot_type'].upper()}\n"
 
     grouping_context: ProfileGroupingContext = {
@@ -225,7 +221,7 @@ def _generate_profile_goals(
     return goals
 
 
-def generate_profile_content(config: ProfileGenerationConfig, nested_forward: bool = False) -> list[dict[str, Any]]:
+def generate_profile_content(config: ProfileGenerationConfig, *, nested_forward: bool = False) -> list[dict[str, Any]]:
     """Generates the complete content for user profiles based on chatbot analysis.
 
     Args:
@@ -250,62 +246,109 @@ def generate_profile_content(config: ProfileGenerationConfig, nested_forward: bo
 
     logger.info("Generating profile parameters for %d profiles:\n", len(profiles))
 
-    # Process each profile with logging
+    # 3. Create context dictionary for processing
+    processing_context = {
+        "conv_context": conv_context,
+        "workflow_context": workflow_context,
+        "lang_instr_goal": lang_instr_goal,
+    }
+
+    # 4. Process each profile
     for i, profile in enumerate(profiles):
-        profile_name = profile.get("name", f"Profile {i + 1}")
-        logger.verbose("\n • Generating profile: %s", profile_name)
-
-        # Log profile details in verbose mode
-        if logger.isEnabledFor(15):  # VERBOSE level
-            role = profile.get("role", "No role defined")
-            funcs = profile.get("functionalities", [])
-            func_count = len(funcs)
-            logger.verbose("    Role: %s", role)
-            logger.verbose("    Assigned functionalities: %d", func_count)
-
-            if funcs and logger.isEnabledFor(10):  # DEBUG level
-                for j, func in enumerate(funcs[:3], 1):
-                    logger.debug("   - Functionality %d: %s", j, func)
-                if len(funcs) > MAX_DISPLAYED_FUNCS:
-                    logger.debug("   - ... plus %d more functionalities", len(funcs) - MAX_DISPLAYED_FUNCS)
-
-        # 3. Generate goals for each profile
-        profile["goals"] = _generate_profile_goals(profile, config, conv_context, workflow_context, lang_instr_goal)
-
-        # 4. Generate variable definitions based on goals
-        temp_profiles = generate_variable_definitions(
-            [profile],
-            config["llm"],
-            config["supported_languages"],
-            config["workflow_structure"],
-            max_retries=3,
-            nested_forward=nested_forward,
-        )
-        if temp_profiles:
-            profile.update(temp_profiles[0])
-
-        # 5. Generate context based on variables
-        temp_profiles = generate_context([profile], config["llm"], config["supported_languages"])
-        if temp_profiles:
-            profile.update(temp_profiles[0])
-
-        # 6. Generate output fields
-        logger.debug("Generating outputs for profile '%s'...", profile.get("name", "Unnamed profile"))
-        temp_profiles = generate_outputs([profile], config["llm"], config["supported_languages"])
-        if temp_profiles:
-            profile.update(temp_profiles[0])
-
-        # Show completion message
-        logger.info(" ✅ Completed content for profile: %s", profile.get("name", "Unnamed profile"))
-        if logger.isEnabledFor(10):  # DEBUG level
-            logger.debug("Final parameter values for profile '%s':", profile.get("name"))
-            for g in profile.get("goals", []):
-                if isinstance(g, dict):
-                    for var_name, var_def in g.items():
-                        if isinstance(var_def, dict) and "data" in var_def:
-                            data = var_def.get("data", [])
-                            if isinstance(data, list):
-                                logger.debug(" → %s: %s", var_name, data)
+        _process_single_profile(profile, i, config, processing_context, nested_forward=nested_forward)
 
     logger.debug("Completed generation of %d profiles", len(profiles))
     return profiles
+
+
+def _log_profile_details(profile: dict[str, Any], index: int) -> None:
+    """Logs profile details in verbose mode."""
+    profile_name = profile.get("name", f"Profile {index + 1}")
+    logger.verbose("\n • Generating profile: %s", profile_name)
+
+    if logger.isEnabledFor(15):  # VERBOSE level
+        role = profile.get("role", "No role defined")
+        funcs = profile.get("functionalities", [])
+        func_count = len(funcs)
+        logger.verbose("    Role: %s", role)
+        logger.verbose("    Assigned functionalities: %d", func_count)
+
+        if funcs and logger.isEnabledFor(10):  # DEBUG level
+            for j, func in enumerate(funcs[:3], 1):
+                logger.debug("   - Functionality %d: %s", j, func)
+            if len(funcs) > MAX_DISPLAYED_FUNCS:
+                logger.debug("   - ... plus %d more functionalities", len(funcs) - MAX_DISPLAYED_FUNCS)
+
+
+def _generate_profile_variables(
+    profile: dict[str, Any], config: ProfileGenerationConfig, *, nested_forward: bool
+) -> None:
+    """Generates variable definitions for a profile."""
+    temp_profiles = generate_variable_definitions(
+        [profile],
+        config["llm"],
+        config["supported_languages"],
+        config["workflow_structure"],
+        max_retries=3,
+        nested_forward=nested_forward,
+    )
+    if temp_profiles:
+        profile.update(temp_profiles[0])
+
+
+def _generate_profile_context(profile: dict[str, Any], config: ProfileGenerationConfig) -> None:
+    """Generates context for a profile based on variables."""
+    temp_profiles = generate_context([profile], config["llm"], config["supported_languages"])
+    if temp_profiles:
+        profile.update(temp_profiles[0])
+
+
+def _generate_profile_outputs(profile: dict[str, Any], config: ProfileGenerationConfig) -> None:
+    """Generates output fields for a profile."""
+    logger.debug("Generating outputs for profile '%s'...", profile.get("name", "Unnamed profile"))
+    temp_profiles = generate_outputs([profile], config["llm"], config["supported_languages"])
+    if temp_profiles:
+        profile.update(temp_profiles[0])
+
+
+def _log_profile_completion(profile: dict[str, Any]) -> None:
+    """Logs profile completion details."""
+    logger.info(" ✅ Completed content for profile: %s", profile.get("name", "Unnamed profile"))
+    if logger.isEnabledFor(10):  # DEBUG level
+        logger.debug("Final parameter values for profile '%s':", profile.get("name"))
+        for g in profile.get("goals", []):
+            if isinstance(g, dict):
+                for var_name, var_def in g.items():
+                    if isinstance(var_def, dict) and "data" in var_def:
+                        data = var_def.get("data", [])
+                        if isinstance(data, list):
+                            logger.debug(" → %s: %s", var_name, data)
+
+
+def _process_single_profile(
+    profile: dict[str, Any],
+    index: int,
+    config: ProfileGenerationConfig,
+    context: dict[str, str],
+    *,
+    nested_forward: bool,
+) -> None:
+    """Processes a single profile through all generation steps."""
+    _log_profile_details(profile, index)
+
+    # Generate goals for the profile
+    profile["goals"] = _generate_profile_goals(
+        profile, config, context["conv_context"], context["workflow_context"], context["lang_instr_goal"]
+    )
+
+    # Generate variable definitions based on goals
+    _generate_profile_variables(profile, config, nested_forward=nested_forward)
+
+    # Generate context based on variables
+    _generate_profile_context(profile, config)
+
+    # Generate output fields
+    _generate_profile_outputs(profile, config)
+
+    # Log completion
+    _log_profile_completion(profile)
