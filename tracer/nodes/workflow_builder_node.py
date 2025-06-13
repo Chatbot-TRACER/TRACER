@@ -48,7 +48,7 @@ def count_all_nodes(nodes_list: list[dict]) -> int:
     return len(visited_node_names)
 
 
-def get_workflow_paths(nodes: list[dict], prefix: str = "", visited_paths: set = None) -> list[str]:
+def get_workflow_paths(nodes: list[dict], prefix: str = "", visited_paths: set | None = None) -> list[str]:
     """Recursively generates a list of workflow paths from a hierarchical node structure.
 
     Handles potential cycles/DAGs by tracking visited parent-child relationships for display.
@@ -67,52 +67,40 @@ def get_workflow_paths(nodes: list[dict], prefix: str = "", visited_paths: set =
         visited_paths = set()
 
     paths = []
+
     for node in nodes:
-        node_name = node.get("name", "unnamed")
-        children = node.get("children", [])
+        current_path = _build_current_path(node, prefix)
+        _check_circular_reference(current_path, visited_paths)
 
-        # Format current node line
-        if children:
-            child_names_list = []
-            for child in children[:MAX_CHILDREN_DISPLAYED]:
-                child_name = child.get("name", "unnamed")
-                # Check if this specific parent->child path has been logged before
-                path_tuple = (node_name, child_name)
-                if path_tuple in visited_paths:
-                    child_names_list.append(f"{child_name} (*)")  # Mark as already shown path
-                else:
-                    child_names_list.append(child_name)
+        visited_paths.add(current_path)
 
-            child_names = ", ".join(child_names_list)
-
-            if len(children) > MAX_CHILDREN_DISPLAYED:
-                child_names += f", +{len(children) - MAX_CHILDREN_DISPLAYED} more"
-            path_info = f"{prefix}{node_name} → {child_names}"
+        if _has_children(node):
+            child_paths = get_workflow_paths(node["children"], current_path, visited_paths.copy())
+            paths.extend(child_paths)
         else:
-            path_info = f"{prefix}{node_name} (endpoint)"
+            paths.append(current_path)
 
-        paths.append(path_info)
-
-        # Recursively add child paths only if not visited before in this traversal
-        if children:
-            child_paths_to_add = []
-            current_children_nodes = []
-            for child in children:
-                child_name = child.get("name", "unnamed")
-                path_tuple = (node_name, child_name)
-                if path_tuple not in visited_paths:
-                    visited_paths.add(path_tuple)  # Mark this specific path as visited for display
-                    current_children_nodes.append(child)  # Only recurse through unvisited paths
-
-            if current_children_nodes:
-                # Pass the *same* visited_paths set down
-                child_paths_to_add.extend(
-                    get_workflow_paths(current_children_nodes, prefix=f"  {prefix}", visited_paths=visited_paths)
-                )
-
-            paths.extend(child_paths_to_add)
+        visited_paths.remove(current_path)
 
     return paths
+
+
+def _build_current_path(node: dict, prefix: str) -> str:
+    """Build the current path from node label and prefix."""
+    label = node.get("label", "")
+    return f"{prefix}/{label}" if prefix else label
+
+
+def _check_circular_reference(current_path: str, visited_paths: set) -> None:
+    """Check for circular references and raise error if found."""
+    if current_path in visited_paths:
+        error_msg = f"Circular reference detected: {current_path}"
+        raise RecursionError(error_msg)
+
+
+def _has_children(node: dict) -> bool:
+    """Check if node has children."""
+    return "children" in node and node["children"]
 
 
 def workflow_builder_node(state: State, llm: BaseLanguageModel) -> dict[str, Any]:
