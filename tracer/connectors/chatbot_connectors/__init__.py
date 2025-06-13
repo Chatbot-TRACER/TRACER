@@ -17,9 +17,11 @@ from .implementations.rasa import RasaChatbot, RasaConfig
 from .implementations.taskyto import ChatbotTaskyto, TaskytoConfig
 
 # Register all chatbot implementations with the factory
-ChatbotFactory.register_chatbot("taskyto", ChatbotTaskyto)
-ChatbotFactory.register_chatbot("ada_uam", ChatbotAdaUam)
-ChatbotFactory.register_chatbot("rasa", RasaChatbot)
+ChatbotFactory.register_chatbot("taskyto", ChatbotTaskyto, requires_url=True, description="Taskyto chatbot connector")
+ChatbotFactory.register_chatbot(
+    "ada_uam", ChatbotAdaUam, requires_url=False, description="Pre-configured ADA UAM chatbot"
+)
+ChatbotFactory.register_chatbot("rasa", RasaChatbot, requires_url=True, description="RASA chatbot connector")
 
 __all__ = [
     "Chatbot",

@@ -3,7 +3,6 @@
 import sys
 import time
 from argparse import Namespace
-from inspect import signature
 from pathlib import Path
 from typing import Any
 
@@ -106,20 +105,17 @@ def _instantiate_connector(technology: str, url: str) -> Chatbot:
         Chatbot: An instance of the appropriate connector class.
 
     Raises:
-        SystemExit: If the technology name is unknown (should be caught earlier).
+        SystemExit: If the technology name is unknown or instantiation fails.
     """
     logger.info("Instantiating connector for technology: %s", technology)
 
     try:
-        # Check if technology is available and get the chatbot class
-        chatbot_class = ChatbotFactory.get_chatbot_class(technology)
-
-        # Check if the chatbot constructor accepts base_url parameter
-        chatbot_sig = signature(chatbot_class.__init__)
-        if "base_url" in chatbot_sig.parameters:
+        # Use the factory to check if URL is required and create the chatbot
+        if ChatbotFactory.requires_url(technology):
+            logger.info("Creating chatbot '%s' with base URL: %s", technology, url)
             return ChatbotFactory.create_chatbot(technology, base_url=url)
 
-        logger.info("Chatbot '%s' does not accept base_url parameter, creating without it", technology)
+        logger.info("Creating chatbot '%s' without URL (pre-configured)", technology)
         return ChatbotFactory.create_chatbot(technology)
 
     except ValueError:
