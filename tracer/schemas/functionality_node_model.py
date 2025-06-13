@@ -36,6 +36,7 @@ class ParameterDefinition:
         )
 
     def __repr__(self) -> str:
+        """Return string representation of ParameterDefinition."""
         opts = f", options={self.options}" if self.options else ""
         return f"ParameterDefinition(name='{self.name}', description='{self.description}'{opts})"
 
@@ -69,6 +70,7 @@ class OutputOptions:
         )
 
     def __repr__(self) -> str:
+        """Return string representation of OutputOptions."""
         return f"OutputOptions(category='{self.category}', description='{self.description}')"
 
 
@@ -79,10 +81,10 @@ class FunctionalityNode:
         self,
         name: str,
         description: str,
+        *,
         parameters: list[ParameterDefinition] | None = None,
         outputs: list[OutputOptions] | None = None,
         parent: Optional["FunctionalityNode"] = None,
-        children: list["FunctionalityNode"] | None = None,
     ) -> None:
         """Initialize a FunctionalityNode.
 
@@ -92,14 +94,13 @@ class FunctionalityNode:
             parameters: Optional list of ParameterDefinition instances.
             outputs: Optional list of OutputOptions instances.
             parent: The parent node in the functionality hierarchy, if any.
-            children: A list of child nodes in the functionality hierarchy, if any.
         """
         self.name: str = name
         self.description: str = description
         self.parameters: list[ParameterDefinition] = parameters if parameters else []
         self.outputs: list[OutputOptions] = outputs if outputs else []
         self.parent: FunctionalityNode | None = parent
-        self.children: list[FunctionalityNode] = children if children is not None else []
+        self.children: list[FunctionalityNode] = []
 
     def add_child(self, child_node: "FunctionalityNode") -> None:
         """Adds a child node to this node."""
@@ -165,41 +166,58 @@ class FunctionalityNode:
         indent_unit = "  "
         current_indent = indent_unit * indent_level
 
-        # Node name and description preview
+        parts = [self._format_node_header(current_indent)]
+
+        if self.parameters:
+            parts.extend(self._format_parameters(current_indent, indent_unit))
+
+        if self.outputs:
+            parts.extend(self._format_outputs(current_indent, indent_unit))
+
+        if self.children:
+            parts.extend(self._format_children(current_indent, indent_unit, indent_level))
+
+        return "\n".join(parts)
+
+    def _format_node_header(self, current_indent: str) -> str:
+        """Format the node name and description header."""
         node_desc_text = ""
         if self.description:
             node_desc_text = self.description[:20].replace("\n", " ")
         desc_preview = f" (desc: '{node_desc_text}...')" if self.description else ""
-        parts = [f"{current_indent}{self.name}:{desc_preview}"]
+        return f"{current_indent}{self.name}:{desc_preview}"
 
-        # Parameters
-        if self.parameters:
-            parts.append(f"{current_indent}{indent_unit}Parameters:")
-            for param in self.parameters:
-                param_desc_text = ""
-                if param.description:
-                    param_desc_text = param.description[:20].replace("\n", " ")
-                param_desc_preview_str = f" (desc: '{param_desc_text}...')" if param.description else ""
-                parts.append(f"{current_indent}{indent_unit * 2}{param.name}:{param_desc_preview_str}")
-                if param.options:
-                    for option in param.options:
-                        parts.append(f"{current_indent}{indent_unit * 3}- {option}")
+    def _format_parameters(self, current_indent: str, indent_unit: str) -> list[str]:
+        """Format the parameters section."""
+        parts = [f"{current_indent}{indent_unit}Parameters:"]
 
-        # Output Options
-        if self.outputs:
-            parts.append(f"{current_indent}{indent_unit}Output Options:")
-            for output in self.outputs:
-                output_desc_text = ""
-                if output.description:
-                    output_desc_text = output.description[:20].replace("\n", " ")
-                output_desc_preview_str = f" (desc: '{output_desc_text}...')" if output.description else ""
-                parts.append(f"{current_indent}{indent_unit * 2}{output.category}:{output_desc_preview_str}")
+        for param in self.parameters:
+            param_desc_text = ""
+            if param.description:
+                param_desc_text = param.description[:20].replace("\n", " ")
+            param_desc_preview_str = f" (desc: '{param_desc_text}...')" if param.description else ""
+            parts.append(f"{current_indent}{indent_unit * 2}{param.name}:{param_desc_preview_str}")
 
-        # Children (recursive call)
-        if self.children:
-            parts.append(f"{current_indent}{indent_unit}Children:")
-            for child in self.children:
-                # Children are indented further relative to the current node's name
-                parts.append(child.to_detailed_string(indent_level + 2))
+            if param.options:
+                parts.extend(f"{current_indent}{indent_unit * 3}- {option}" for option in param.options)
 
-        return "\n".join(parts)
+        return parts
+
+    def _format_outputs(self, current_indent: str, indent_unit: str) -> list[str]:
+        """Format the output options section."""
+        parts = [f"{current_indent}{indent_unit}Output Options:"]
+
+        for output in self.outputs:
+            output_desc_text = ""
+            if output.description:
+                output_desc_text = output.description[:20].replace("\n", " ")
+            output_desc_preview_str = f" (desc: '{output_desc_text}...')" if output.description else ""
+            parts.append(f"{current_indent}{indent_unit * 2}{output.category}:{output_desc_preview_str}")
+
+        return parts
+
+    def _format_children(self, current_indent: str, indent_unit: str, indent_level: int) -> list[str]:
+        """Format the children section."""
+        parts = [f"{current_indent}{indent_unit}Children:"]
+        parts.extend(child.to_detailed_string(indent_level + 2) for child in self.children)
+        return parts

@@ -8,6 +8,8 @@ from langchain_core.language_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
 
+from tracer.constants import MIN_NODES_FOR_DEDUPLICATION
+
 try:
     from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -19,6 +21,7 @@ from tracer.analysis.functionality_refinement import (
     _process_node_group_for_merge,
     is_duplicate_functionality,
 )
+from tracer.connectors.chatbot_connectors import Chatbot
 from tracer.conversation.fallback_detection import extract_fallback_message
 from tracer.conversation.language_detection import extract_supported_languages
 from tracer.conversation.session import (
@@ -29,7 +32,6 @@ from tracer.conversation.session import (
 from tracer.schemas.functionality_node_model import FunctionalityNode
 from tracer.utils.logging_utils import get_logger
 from tracer.utils.token_tracker_callback import TokenUsageTracker
-from tracer.connectors.chatbot_connectors import Chatbot
 
 from .graphs.profile_graph import build_profile_generation_graph
 from .graphs.structure_graph import build_structure_graph
@@ -370,7 +372,7 @@ class ChatbotExplorationAgent:
         Returns:
             List of deduplicated functionality nodes
         """
-        if not nodes or len(nodes) < 2:
+        if not nodes or len(nodes) < MIN_NODES_FOR_DEDUPLICATION:
             return nodes
 
         logger.verbose("Starting aggressive deduplication of %d nodes", len(nodes))
@@ -392,7 +394,6 @@ class ChatbotExplorationAgent:
             # Process all remaining nodes
             while remaining_nodes:
                 current_node = remaining_nodes.pop(0)
-                merged_this_iter = False
 
                 # Compare with each other node
                 i = 0
@@ -434,7 +435,6 @@ class ChatbotExplorationAgent:
                             # Remove the other node from consideration
                             remaining_nodes.pop(i)
 
-                            merged_this_iter = True
                             any_merges_happened = True
                         else:
                             # Mark this pair as processed
@@ -460,7 +460,9 @@ class ChatbotExplorationAgent:
         )
         return remaining_nodes
 
-    def run_analysis(self, exploration_results: dict[str, Any], nested_forward: bool = False) -> dict[str, list[Any]]:
+    def run_analysis(
+        self, exploration_results: dict[str, Any], *, nested_forward: bool = False
+    ) -> dict[str, list[Any]]:
         """Runs the LangGraph analysis pipeline using pre-compiled graphs.
 
         Args:

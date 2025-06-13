@@ -2,6 +2,8 @@
 
 from typing import Any
 
+from tracer.constants import LIST_TRUNCATION_THRESHOLD
+
 
 def get_context_prompt(
     profile: dict[str, Any],
@@ -20,7 +22,10 @@ def get_context_prompt(
             for var_name, var_def in item.items():
                 if isinstance(var_def, dict) and "data" in var_def:
                     data_preview = str(var_def.get("data"))
-                    if isinstance(var_def.get("data"), list) and len(var_def.get("data", [])) > 3:
+                    if (
+                        isinstance(var_def.get("data"), list)
+                        and len(var_def.get("data", [])) > LIST_TRUNCATION_THRESHOLD
+                    ):
                         data_preview = f"{str(var_def.get('data', [])[:3])[:-1]}, ...]"  # Truncate list preview
                     elif isinstance(var_def.get("data"), dict):  # For numeric ranges
                         data_preview = f"min: {var_def['data'].get('min')}, max: {var_def['data'].get('max')}, step: {var_def['data'].get('step')}"

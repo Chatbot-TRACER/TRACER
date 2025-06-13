@@ -1,3 +1,9 @@
+"""Token usage tracking callback for LangChain LLM interactions.
+
+This module provides a callback handler that tracks token usage, costs, and model information
+across LLM calls, with support for different phases of analysis.
+"""
+
 from typing import Any
 from uuid import UUID
 
@@ -25,7 +31,14 @@ DEFAULT_COSTS = {
 
 
 class TokenUsageTracker(BaseCallbackHandler):
-    def __init__(self):
+    """Callback handler for tracking LLM token usage and costs.
+
+    Tracks token consumption across different phases of analysis and calculates
+    associated costs based on model pricing data.
+    """
+
+    def __init__(self) -> None:
+        """Initialize the token tracker with zero counters."""
         super().__init__()
         self.total_prompt_tokens = 0
         self.total_completion_tokens = 0
@@ -44,8 +57,8 @@ class TokenUsageTracker(BaseCallbackHandler):
         self.analysis_total_tokens = 0
         self._phase = "exploration"  # Start in exploration phase
 
-    def mark_analysis_phase(self):
-        """Mark the start of the analysis phase for token tracking"""
+    def mark_analysis_phase(self) -> None:
+        """Mark the start of the analysis phase for token tracking."""
         self._phase = "analysis"
         self.exploration_prompt_tokens = self.total_prompt_tokens
         self.exploration_completion_tokens = self.total_completion_tokens
@@ -59,8 +72,17 @@ class TokenUsageTracker(BaseCallbackHandler):
         *,
         run_id: UUID,
         parent_run_id: UUID | None = None,
-        **kwargs: Any,
+        **kwargs: dict[str, Any],
     ) -> None:
+        """Handle the start of an LLM call.
+
+        Args:
+            serialized: LLM configuration data
+            prompts: List of prompts being sent to the LLM
+            run_id: Unique identifier for this LLM run
+            parent_run_id: Parent run identifier if applicable
+            **kwargs: Additional keyword arguments
+        """
         self.call_count += 1
 
         # Track which model is being used
@@ -75,89 +97,146 @@ class TokenUsageTracker(BaseCallbackHandler):
             self.model_names_used.add(model_name_from_serialized_kwargs)
         elif "model_name" in serialized:  # General fallback from top-level of serialized
             self.model_names_used.add(serialized["model_name"])
-        # else:
-        # logger.debug(f"Model name not found in on_llm_start serialization: {serialized}")
+
         super().on_llm_start(serialized, prompts, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
 
-    def on_llm_end(
-        self, response: LLMResult, *, run_id: UUID, parent_run_id: UUID | None = None, **kwargs: Any
-    ) -> None:
-        super().on_llm_end(response, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
-        self.successful_calls += 1
+    def _extract_usage_from_aimessage(self, response: LLMResult) -> tuple[int, int, int, str] | None:
+        """Extract token usage from AIMessage usage_metadata.
 
-        prompt_tokens_api = 0
-        completion_tokens_api = 0
-        total_tokens_api = 0
-        source_of_tokens = "unknown"
+        Args:
+            response: The LLM response object
 
-        # Attempt 1: Check AIMessage.usage_metadata directly (primary for Gemini invoke results)
-        if response.generations and response.generations[0] and response.generations[0][0]:
-            first_generation_message = response.generations[0][0].message
-            if hasattr(first_generation_message, "usage_metadata") and first_generation_message.usage_metadata:
-                usage_data = first_generation_message.usage_metadata
+        Returns:
+            Tuple of (prompt_tokens, completion_tokens, total_tokens, source) or None
+        """
+        if (
+            response.generations
+            and response.generations[0]
+            and hasattr(response.generations[0][0].message, "usage_metadata")
+        ):
+            usage_data = response.generations[0][0].message.usage_metadata
+            if usage_data:
+                # Handle both dictionary-style and attribute-style access
+                input_tokens = 0
+                output_tokens = 0
+                total_tokens = 0
+
+                # Try dictionary-style access first (common with Google/Gemini)
                 if isinstance(usage_data, dict):
-                    prompt_tokens_api = usage_data.get("input_tokens", 0)
-                    completion_tokens_api = usage_data.get("output_tokens", 0)
-                    total_tokens_api = usage_data.get("total_tokens", 0)
-                    if (
-                        prompt_tokens_api or completion_tokens_api or total_tokens_api
-                    ):  # Check if any token info was actually found
-                        source_of_tokens = "AIMessage.usage_metadata (Google invoke style)"
-                        logger.debug(f"Found tokens directly in AIMessage.usage_metadata: {usage_data}")
+                    input_tokens = usage_data.get("input_tokens", 0)
+                    output_tokens = usage_data.get("output_tokens", 0)
+                    total_tokens = usage_data.get("total_tokens", input_tokens + output_tokens)
+                # Try attribute-style access as fallback
+                elif hasattr(usage_data, "input_tokens") and hasattr(usage_data, "output_tokens"):
+                    input_tokens = getattr(usage_data, "input_tokens", 0)
+                    output_tokens = getattr(usage_data, "output_tokens", 0)
+                    total_tokens = getattr(usage_data, "total_tokens", input_tokens + output_tokens)
 
-        # Attempt 2: Fallback to response.llm_output if no tokens found yet
-        if source_of_tokens == "unknown" and response.llm_output:
-            # OpenAI-style 'token_usage'
-            token_usage_openai = response.llm_output.get("token_usage", {})
-            if isinstance(token_usage_openai, dict) and token_usage_openai.get("total_tokens", 0) > 0:
-                prompt_tokens_api = token_usage_openai.get("prompt_tokens", 0)
-                completion_tokens_api = token_usage_openai.get("completion_tokens", 0)
-                total_tokens_api = token_usage_openai.get("total_tokens", 0)
-                source_of_tokens = "llm_output.token_usage (OpenAI-style)"
-
-            # Google-style 'usage_metadata' if nested in llm_output (and not found by OpenAI style)
-            if source_of_tokens == "unknown":  # Check if still not found
-                usage_metadata_from_llm_output = response.llm_output.get("usage_metadata", {})
-                if (
-                    isinstance(usage_metadata_from_llm_output, dict)
-                    and usage_metadata_from_llm_output.get("total_token_count", 0) > 0
-                ):
-                    prompt_tokens_api = usage_metadata_from_llm_output.get("prompt_token_count", 0)
-                    completion_tokens_api = usage_metadata_from_llm_output.get(
-                        "candidates_token_count", usage_metadata_from_llm_output.get("candidate_token_count", 0)
+                if input_tokens > 0 or output_tokens > 0:  # Accept even if one is zero
+                    source = "AIMessage.usage_metadata"
+                    logger.debug(
+                        "Found tokens in AIMessage.usage_metadata: input=%d, output=%d, total=%d",
+                        input_tokens,
+                        output_tokens,
+                        total_tokens,
                     )
-                    total_tokens_api = usage_metadata_from_llm_output.get("total_token_count", 0)
-                    source_of_tokens = "llm_output.usage_metadata (Google-style in llm_output)"
+                    return (input_tokens, output_tokens, total_tokens, source)
+        return None
 
-        # Final calculation for total_tokens if not provided directly but components are
-        if total_tokens_api == 0 and (prompt_tokens_api > 0 or completion_tokens_api > 0):
-            total_tokens_api = prompt_tokens_api + completion_tokens_api
+    def _extract_usage_from_llm_output(self, response: LLMResult) -> tuple[int, int, int, str] | None:
+        """Extract token usage from response.llm_output.
 
-        # Logging and accumulation
-        if source_of_tokens != "unknown" or prompt_tokens_api or completion_tokens_api or total_tokens_api:
+        Args:
+            response: The LLM response object
+
+        Returns:
+            Tuple of (prompt_tokens, completion_tokens, total_tokens, source) or None
+        """
+        if not response.llm_output:
+            return None
+
+        # Check various possible keys in llm_output
+        usage_keys = [
+            "token_usage",
+            "usage",
+            "tokenUsage",
+            "token_count",
+            "tokens",
+        ]
+
+        for key in usage_keys:
+            if key in response.llm_output:
+                usage_data = response.llm_output[key]
+                if isinstance(usage_data, dict):
+                    prompt_tokens = usage_data.get("prompt_tokens", 0)
+                    completion_tokens = usage_data.get("completion_tokens", 0)
+                    total_tokens = usage_data.get("total_tokens", prompt_tokens + completion_tokens)
+
+                    if prompt_tokens > 0 and completion_tokens > 0:
+                        return (
+                            prompt_tokens,
+                            completion_tokens,
+                            total_tokens,
+                            f"response.llm_output['{key}']",
+                        )
+        return None
+
+    def on_llm_end(
+        self,
+        response: LLMResult,
+        *,
+        run_id: UUID,
+        parent_run_id: UUID | None = None,
+        **kwargs: dict[str, Any],
+    ) -> None:
+        """Handle the end of an LLM call and extract token usage.
+
+        Args:
+            response: The LLM response containing generations and metadata
+            run_id: Unique identifier for this LLM run
+            parent_run_id: Parent run identifier if applicable
+            **kwargs: Additional keyword arguments
+        """
+        super().on_llm_end(response, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
+
+        # Try to extract token usage from different sources
+        usage_result = self._extract_usage_from_aimessage(response)
+        if not usage_result:
+            usage_result = self._extract_usage_from_llm_output(response)
+
+        if usage_result:
+            prompt_tokens_api, completion_tokens_api, total_tokens_api, source_of_tokens = usage_result
+
+            # Update counters
             self.total_prompt_tokens += prompt_tokens_api
             self.total_completion_tokens += completion_tokens_api
             self.total_tokens += total_tokens_api
-
-            # Track by phase
-            if self._phase == "exploration":
-                self.exploration_prompt_tokens += prompt_tokens_api
-                self.exploration_completion_tokens += completion_tokens_api
-                self.exploration_total_tokens += prompt_tokens_api + completion_tokens_api
-            else:  # analysis phase
-                self.analysis_prompt_tokens += prompt_tokens_api
-                self.analysis_completion_tokens += completion_tokens_api
-                self.analysis_total_tokens += prompt_tokens_api + completion_tokens_api
+            self.successful_calls += 1
 
             logger.debug(
-                f"LLM Call {self.successful_calls} End. Tokens This Call: {total_tokens_api} (P: {prompt_tokens_api}, C: {completion_tokens_api}) from '{source_of_tokens}'. Cumulative Total: {self.total_tokens}"
+                "LLM Call %d End. Tokens This Call: %d (P: %d, C: %d) from '%s'. Cumulative Total: %d",
+                self.successful_calls,
+                total_tokens_api,
+                prompt_tokens_api,
+                completion_tokens_api,
+                source_of_tokens,
+                self.total_tokens,
             )
-        else:  # No tokens found from any source
+        else:
+            # No tokens found from any source
             logger.warning(
-                f"LLM Call {self.successful_calls} End: Token usage information not found or all zeros. "
-                f"llm_output: {str(response.llm_output)[:200]}. "
-                f"AIMessage.usage_metadata: {str(getattr(response.generations[0][0].message, 'usage_metadata', None)) if response.generations and response.generations[0] else 'N/A'}. "
-                f"AIMessage.response_metadata: {str(getattr(response.generations[0][0].message, 'response_metadata', None)) if response.generations and response.generations[0] else 'N/A'}"
+                "LLM Call %d End: Token usage information not found or all zeros. "
+                "llm_output: %s. "
+                "AIMessage.usage_metadata: %s. "
+                "AIMessage.response_metadata: %s",
+                self.successful_calls,
+                str(response.llm_output)[:200],
+                str(getattr(response.generations[0][0].message, "usage_metadata", None))
+                if response.generations and response.generations[0]
+                else "N/A",
+                str(getattr(response.generations[0][0].message, "response_metadata", None))
+                if response.generations and response.generations[0]
+                else "N/A",
             )
 
         # Track model name if available
@@ -165,11 +244,26 @@ class TokenUsageTracker(BaseCallbackHandler):
             self.model_names_used.add(response.model_name)
 
     def on_llm_error(
-        self, error: Exception | KeyboardInterrupt, *, run_id: UUID, parent_run_id: UUID | None = None, **kwargs: Any
+        self,
+        error: Exception | KeyboardInterrupt,
+        *,
+        run_id: UUID,
+        parent_run_id: UUID | None = None,
+        **kwargs: dict[str, Any],
     ) -> None:
+        """Handle LLM errors and track failed calls.
+
+        Args:
+            error: The exception that occurred
+            run_id: Unique identifier for this LLM run
+            parent_run_id: Parent run identifier if applicable
+            **kwargs: Additional keyword arguments
+        """
         super().on_llm_error(error, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
         self.failed_calls += 1
-        logger.error(f"LLM Call Error. Total Calls: {self.call_count}, Failed: {self.failed_calls}. Error: {error}")
+        logger.error(
+            "LLM Call Error. Total Calls: %d, Failed: %d. Error: %s", self.call_count, self.failed_calls, error
+        )
 
     def calculate_cost(self) -> dict:
         """Calculate estimated cost based on token usage and models used."""
@@ -190,7 +284,7 @@ class TokenUsageTracker(BaseCallbackHandler):
             if not found_match_for_pricing and self.model_names_used:
                 # No specific pricing found for any of the used models.
                 # Report the first model from the set of used models. Pricing will use 'default' rates.
-                cost_model_reported = list(self.model_names_used)[0]
+                cost_model_reported = next(iter(self.model_names_used))
                 # pricing_key_for_lookup remains "default"
 
         cost_info = DEFAULT_COSTS.get(pricing_key_for_lookup, DEFAULT_COSTS["default"])
@@ -222,7 +316,7 @@ class TokenUsageTracker(BaseCallbackHandler):
         }
 
     def get_summary(self) -> dict:
-        """Get a summary of token usage statistics and costs"""
+        """Get a summary of token usage statistics and costs."""
         cost_data = self.calculate_cost()
 
         # Calculate analysis phase tokens (only what was used during analysis)
@@ -255,6 +349,7 @@ class TokenUsageTracker(BaseCallbackHandler):
         }
 
     def __str__(self) -> str:
+        """Return a string representation of the token usage tracker."""
         cost_data = self.calculate_cost()
         current_phase = "Exploration" if self._phase == "exploration" else "Analysis"
 

@@ -38,6 +38,84 @@ def get_all_descriptions(nodes: list[dict[str, Any]]) -> list[str]:
     return descriptions
 
 
+def _extract_parameter_info(parameters: list[dict[str, Any]]) -> list[str]:
+    """Extract parameter information from parameter list.
+
+    Args:
+        parameters: List of parameter dictionaries.
+
+    Returns:
+        List of formatted parameter strings.
+    """
+    param_info = []
+    for param in parameters:
+        if not isinstance(param, dict):
+            continue
+
+        param_name = param.get("name", "")
+        if not param_name:
+            continue
+
+        param_text = param_name
+        if param_desc := param.get("description", ""):
+            param_text += f": {param_desc}"
+        if param_options := param.get("options", []):
+            param_text += f" [options: {', '.join(param_options)}]"
+        param_info.append(param_text)
+
+    return param_info
+
+
+def _extract_output_info(outputs: list[dict[str, Any]]) -> list[str]:
+    """Extract output information from output list.
+
+    Args:
+        outputs: List of output dictionaries.
+
+    Returns:
+        List of formatted output strings.
+    """
+    output_info = []
+    for output in outputs:
+        if not isinstance(output, dict):
+            continue
+
+        category = output.get("category", "")
+        description = output.get("description", "")
+        if category and description:
+            output_info.append(f"{category}: {description}")
+
+    return output_info
+
+
+def _build_functionality_text(node: dict[str, Any]) -> str:
+    """Build functionality text with parameter and output information.
+
+    Args:
+        node: Node dictionary containing functionality information.
+
+    Returns:
+        Formatted functionality text string.
+    """
+    functionality_text = node["description"]
+
+    # Add parameter information
+    parameters = node.get("parameters", [])
+    if parameters and isinstance(parameters, list):
+        param_info = _extract_parameter_info(parameters)
+        if param_info:
+            functionality_text += f" (Inputs: {'; '.join(param_info)})"
+
+    # Add output information
+    outputs = node.get("outputs", [])
+    if outputs and isinstance(outputs, list):
+        output_info = _extract_output_info(outputs)
+        if output_info:
+            functionality_text += f" (Outputs: {'; '.join(output_info)})"
+
+    return functionality_text
+
+
 def get_functionalities_with_outputs(nodes: list[dict[str, Any]]) -> list[str]:
     """Recursively extracts descriptions and output options from functionality nodes.
 
@@ -50,43 +128,10 @@ def get_functionalities_with_outputs(nodes: list[dict[str, Any]]) -> list[str]:
         with its output information if available.
     """
     functionality_info = []
+
     for node in nodes:
         if node.get("description"):
-            functionality_text = node["description"]
-
-            # Add parameter information if available
-            if node.get("parameters") and isinstance(node["parameters"], list) and node["parameters"]:
-                param_info = []
-                for param in node["parameters"]:
-                    if isinstance(param, dict):
-                        param_name = param.get("name", "")
-                        param_desc = param.get("description", "")
-                        param_options = param.get("options", [])
-
-                        if param_name:
-                            param_text = f"{param_name}"
-                            if param_desc:
-                                param_text += f": {param_desc}"
-                            if param_options:
-                                param_text += f" [options: {', '.join(param_options)}]"
-                            param_info.append(param_text)
-
-                if param_info:
-                    functionality_text += f" (Inputs: {'; '.join(param_info)})"
-
-            # Add output information if available
-            if node.get("outputs") and isinstance(node["outputs"], list) and node["outputs"]:
-                output_info = []
-                for output in node["outputs"]:
-                    if isinstance(output, dict):
-                        category = output.get("category", "")
-                        description = output.get("description", "")
-                        if category and description:
-                            output_info.append(f"{category}: {description}")
-
-                if output_info:
-                    functionality_text += f" (Outputs: {'; '.join(output_info)})"
-
+            functionality_text = _build_functionality_text(node)
             functionality_info.append(functionality_text)
 
         # Recursively process children
@@ -142,7 +187,7 @@ def profile_generator_node(state: State, llm: BaseLanguageModel) -> dict[str, An
         ">>> Rich Functionality Strings Prepared for Profile Grouping (%d total):", len(functionalities_with_outputs)
     )
     for i, rich_string in enumerate(functionalities_with_outputs):
-        logger.debug(f"  RICH_FUNC_STRING[{i}]: {rich_string}")
+        logger.debug("  RICH_FUNC_STRING[%d]: %s", i, rich_string)
     logger.debug("<<< End of Rich Functionality Strings")
 
     # Get nested_forward parameter from state

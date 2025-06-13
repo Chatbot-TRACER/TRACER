@@ -96,12 +96,12 @@ def _parse_output_options_string(output_str: str) -> list[OutputOptions]:
     category_matches = category_pattern.findall(output_str)
 
     for category_name, description in category_matches:
-        category_name = category_name.strip()
-        if not category_name:
+        category = category_name.strip()
+        if not category:
             continue
 
         # Create an OutputOptions object
-        output_option = OutputOptions(category=category_name, description=description.strip())
+        output_option = OutputOptions(category=category, description=description.strip())
         output_options.append(output_option)
 
     return output_options

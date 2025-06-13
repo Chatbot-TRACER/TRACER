@@ -188,6 +188,17 @@ def get_clean_and_suggest_negative_option_prompt(
     profile_goals_context: str,
     language: str,
 ) -> str:
+    """Generate prompt to clean and suggest negative options for a variable.
+
+    Args:
+        dirty_options: List of raw options that need cleaning
+        variable_name: Name of the variable these options belong to
+        profile_goals_context: Context about the profile goals
+        language: Language for the response
+
+    Returns:
+        Formatted prompt string for cleaning and suggesting negative options
+    """
     options_str = "\n".join([f"- {opt}" for opt in dirty_options])
 
     return f"""

@@ -18,6 +18,123 @@ from tracer.utils.logging_utils import get_logger
 logger = get_logger()
 
 
+def _check_exact_duplicates(
+    node_to_check: FunctionalityNode, existing_nodes: list[FunctionalityNode]
+) -> tuple[bool, FunctionalityNode | None]:
+    """Check for exact string matches between nodes."""
+    for existing in existing_nodes:
+        if (
+            existing.name.lower() == node_to_check.name.lower()
+            or existing.description.lower() == node_to_check.description.lower()
+        ):
+            logger.debug("Found exact match duplicate: '%s' matches existing '%s'", node_to_check.name, existing.name)
+            return True, existing
+    return False, None
+
+
+def _clean_node_name(name: str) -> str:
+    """Clean up node name for comparison by removing descriptions and newlines."""
+    if "\n" in name or "description:" in name.lower():
+        return name.split("\n")[0].split("description:")[0].strip()
+    return name
+
+
+def _find_exact_match(existing_nodes: list[FunctionalityNode], target_name: str) -> FunctionalityNode | None:
+    """Find exact match by name (case-sensitive)."""
+    for existing in existing_nodes:
+        clean_name = _clean_node_name(existing.name)
+        if clean_name.upper() == target_name:
+            return existing
+    return None
+
+
+def _find_case_insensitive_match(existing_nodes: list[FunctionalityNode], target_name: str) -> FunctionalityNode | None:
+    """Find case-insensitive match by name."""
+    for existing in existing_nodes:
+        clean_name = _clean_node_name(existing.name)
+        if clean_name.upper() == target_name.upper():
+            return existing
+    return None
+
+
+def _find_fuzzy_match(existing_nodes: list[FunctionalityNode], target_name: str) -> FunctionalityNode | None:
+    """Find fuzzy match using substring matching."""
+    target_lower = target_name.lower()
+    for existing in existing_nodes:
+        clean_name = _clean_node_name(existing.name)
+        existing_lower = clean_name.lower()
+
+        if existing_lower in target_lower or target_lower in existing_lower:
+            logger.debug(
+                "Found fuzzy match: LLM identified '%s', matched with existing '%s'",
+                target_name,
+                existing.name,
+            )
+            return existing
+    return None
+
+
+def _perform_llm_duplicate_check(
+    node_to_check: FunctionalityNode, existing_nodes: list[FunctionalityNode], llm: BaseLanguageModel
+) -> tuple[bool, FunctionalityNode | None]:
+    """Perform LLM-based duplicate checking."""
+    existing_descriptions = [f"Name: {n.name}, Description: {n.description}" for n in existing_nodes]
+
+    duplicate_check_prompt = get_duplicate_check_prompt(
+        node=node_to_check,
+        existing_descriptions=existing_descriptions,
+    )
+
+    logger.debug("Checking if '%s' is semantically equivalent to any existing node", node_to_check.name)
+    response = llm.invoke(duplicate_check_prompt)
+    result_content = response.content.strip().upper()
+    logger.debug("LLM duplicate check response: %s", result_content[:100])
+
+    # Try to extract node name from response
+    match = re.search(r"DUPLICATE_OF:\s*([\w_]+)", result_content)
+    if not match:
+        match = re.search(r"DUPLICATE.*?[\'\"]*([A-Za-z0-9_]+)[\'\"]*", result_content)
+
+    if match:
+        existing_node_name = match.group(1)
+        logger.debug(
+            "LLM identified potential duplicate: '%s' might match '%s'", node_to_check.name, existing_node_name
+        )
+
+        # Try different matching strategies
+        matched_node = (
+            _find_exact_match(existing_nodes, existing_node_name)
+            or _find_case_insensitive_match(existing_nodes, existing_node_name)
+            or _find_fuzzy_match(existing_nodes, existing_node_name)
+        )
+
+        if matched_node:
+            logger.debug(
+                "LLM identified semantic duplicate: '%s' matches existing '%s'",
+                node_to_check.name,
+                matched_node.name,
+            )
+            return True, matched_node
+
+        logger.warning("LLM said DUPLICATE_OF '%s' but node not found in existing_nodes list.", existing_node_name)
+        return False, None
+
+    if "DUPLICATE" in result_content:
+        logger.warning(
+            "LLM said DUPLICATE but couldn't parse specific match name for '%s'. Trying to find a close match.",
+            node_to_check.name,
+        )
+        if existing_nodes:
+            logger.info(
+                "Using first existing node '%s' as a proxy match for '%s'",
+                existing_nodes[0].name,
+                node_to_check.name,
+            )
+            return True, existing_nodes[0]
+
+    return False, None
+
+
 def is_duplicate_functionality(
     node_to_check: FunctionalityNode, existing_nodes: list[FunctionalityNode], llm: BaseLanguageModel | None = None
 ) -> tuple[bool, FunctionalityNode | None]:
@@ -34,116 +151,16 @@ def is_duplicate_functionality(
         True if the node is considered a duplicate, False otherwise.
         If True, also returns the existing node it matches with.
     """
-    # Simple checks first
     logger.debug("Checking if '%s' is a duplicate against %d existing nodes", node_to_check.name, len(existing_nodes))
 
-    for existing in existing_nodes:
-        if (
-            existing.name.lower() == node_to_check.name.lower()
-            or existing.description.lower() == node_to_check.description.lower()
-        ):
-            logger.debug("Found exact match duplicate: '%s' matches existing '%s'", node_to_check.name, existing.name)
-            return True, existing
+    # Check for exact duplicates first
+    is_duplicate, duplicate_node = _check_exact_duplicates(node_to_check, existing_nodes)
+    if is_duplicate:
+        return True, duplicate_node
 
-    # Use LLM for smarter check if available and if there are nodes to compare against
+    # Use LLM for semantic checking if available
     if llm and existing_nodes:
-        nodes_to_check = existing_nodes
-        existing_descriptions = [f"Name: {n.name}, Description: {n.description}" for n in nodes_to_check]
-
-        duplicate_check_prompt = get_duplicate_check_prompt(
-            node=node_to_check,
-            existing_descriptions=existing_descriptions,
-        )
-
-        logger.debug("Checking if '%s' is semantically equivalent to any existing node", node_to_check.name)
-        response = llm.invoke(duplicate_check_prompt)
-        result_content = response.content.strip().upper()
-        logger.debug("LLM duplicate check response: %s", result_content[:100])
-
-        # First try exact format "DUPLICATE_OF: nodename"
-        match = re.search(r"DUPLICATE_OF:\s*([\w_]+)", result_content)
-        if not match:
-            # Try more flexible pattern to catch more variations
-            match = re.search(r"DUPLICATE.*?[\'\"]*([A-Za-z0-9_]+)[\'\"]*", result_content)
-
-        if match:
-            existing_node_name = match.group(1)
-            logger.debug(
-                "LLM identified potential duplicate: '%s' might match '%s'", node_to_check.name, existing_node_name
-            )
-
-            # Find the actual existing node object by this name
-            for existing in existing_nodes:
-                # Clean up the name for comparison if there's a newline or description
-                clean_existing_name = existing.name
-                if "\n" in clean_existing_name or "description:" in clean_existing_name.lower():
-                    clean_existing_name = clean_existing_name.split("\n")[0].split("description:")[0].strip()
-
-                if clean_existing_name.upper() == existing_node_name:
-                    logger.debug(
-                        "LLM identified semantic duplicate: '%s' matches existing '%s'",
-                        node_to_check.name,
-                        existing.name,
-                    )
-                    return True, existing  # Return the existing node object
-
-            # If no exact match, try case-insensitive match
-            for existing in existing_nodes:
-                # Clean up the name for comparison if there's a newline or description
-                clean_existing_name = existing.name
-                if "\n" in clean_existing_name or "description:" in clean_existing_name.lower():
-                    clean_existing_name = clean_existing_name.split("\n")[0].split("description:")[0].strip()
-
-                if clean_existing_name.upper() == existing_node_name.upper():
-                    logger.debug(
-                        "LLM identified semantic duplicate (case-insensitive): '%s' matches existing '%s'",
-                        node_to_check.name,
-                        existing.name,
-                    )
-                    return True, existing
-
-            # Try to find a fuzzy match based on string
-            best_match = None
-            for existing in existing_nodes:
-                # Clean up the name for comparison
-                clean_existing_name = existing.name
-                if "\n" in clean_existing_name or "description:" in clean_existing_name.lower():
-                    clean_existing_name = clean_existing_name.split("\n")[0].split("description:")[0].strip()
-
-                # Check if the identified name is a substring of an existing node or vice versa
-                existing_name_lower = clean_existing_name.lower()
-                identified_name_lower = existing_node_name.lower()
-
-                if existing_name_lower in identified_name_lower or identified_name_lower in existing_name_lower:
-                    best_match = existing
-                    logger.debug(
-                        "Found fuzzy match: LLM identified '%s', matched with existing '%s'",
-                        existing_node_name,
-                        existing.name,
-                    )
-                    return True, best_match
-
-            # If still no match found, log warning
-            logger.warning(
-                "LLM said DUPLICATE_OF '%s' but node not found in existing_nodes list.", existing_node_name
-            )  # Should not happen if prompt is good
-
-            return False, None  # Fallback, treat as unique if named node not found
-
-        if "DUPLICATE" in result_content:  # Generic duplicate if specific name isn't parsed
-            logger.warning(
-                "LLM said DUPLICATE but couldn't parse specific match name for '%s'. Trying to find a close match.",
-                node_to_check.name,
-            )
-            # Return the most similar node by name length ratio as a heuristic
-            if existing_nodes:
-                logger.info(
-                    "Using first existing node '%s' as a proxy match for '%s'",
-                    existing_nodes[0].name,
-                    node_to_check.name,
-                )
-                return True, existing_nodes[0]
-            return False, None
+        return _perform_llm_duplicate_check(node_to_check, existing_nodes, llm)
 
     return False, None
 
@@ -183,6 +200,247 @@ def validate_parent_child_relationship(
     return is_valid
 
 
+def _parse_merge_response(content: str) -> tuple[str | None, str | None]:
+    """Parse name and description from LLM merge response."""
+    best_name = None
+    best_desc = None
+    lines = content.splitlines()
+    for line in lines:
+        line_lower = line.lower()
+        if line_lower.startswith("name:") and best_name is None:
+            best_name = line.split(":", 1)[1].strip()
+        elif line_lower.startswith("description:") and best_desc is None:
+            best_desc = line.split(":", 1)[1].strip()
+    return best_name, best_desc
+
+
+def _collect_parameters_from_group(group: list[FunctionalityNode]) -> list[dict]:
+    """Collect all parameters from nodes in a group."""
+    all_params = []
+    for node_idx, node in enumerate(group):
+        for param_idx, param in enumerate(node.parameters):
+            if param and param.name:
+                all_params.append(
+                    {
+                        "id": f"NODE{node_idx}_PARAM{param_idx}",
+                        "name": param.name,
+                        "description": param.description or "",
+                        "options": param.options or [],
+                    }
+                )
+    return all_params
+
+
+def _create_single_parameter(param_data: dict, group: list[FunctionalityNode]) -> list[ParameterDefinition]:
+    """Create parameter list when only one parameter exists across the group."""
+    original_node_idx, original_param_idx = map(
+        int, param_data["id"].replace("NODE", "").replace("PARAM", "").split("_")
+    )
+    return [group[original_node_idx].parameters[original_param_idx]]
+
+
+def _extract_json_from_response(response: str, data_type: str) -> str | None:
+    """Extract JSON string from LLM response."""
+    # Try to find JSON within markdown code blocks
+    code_block_match = re.search(r"```json\s*([\s\S]*?)\s*```", response, re.IGNORECASE)
+    if code_block_match:
+        logger.debug("Extracted %s JSON from markdown code block.", data_type)
+        return code_block_match.group(1).strip()
+
+    # Try to find outermost list structure
+    first_bracket = response.find("[")
+    last_bracket = response.rfind("]")
+    if first_bracket != -1 and last_bracket != -1 and last_bracket > first_bracket:
+        logger.debug("Extracted %s JSON by finding outermost list brackets.", data_type)
+        return response[first_bracket : last_bracket + 1]
+
+    # Fallback: use stripped response
+    logger.debug("Using stripped raw response as %s JSON candidate.", data_type)
+    return response.strip()
+
+
+def _consolidate_parameters_with_llm(
+    all_params: list[dict], llm: BaseLanguageModel, node_name: str
+) -> list[ParameterDefinition]:
+    """Consolidate parameters using LLM."""
+    param_consolidation_prompt = get_consolidate_parameters_prompt(all_params)
+    logger.debug(
+        "Consolidating parameters for merged node '%s' using LLM. Input parameters count: %d",
+        node_name,
+        len(all_params),
+    )
+
+    raw_response = llm.invoke(param_consolidation_prompt).content
+    logger.debug("LLM response for parameter consolidation (raw): %s", raw_response)
+
+    extracted_json_str = _extract_json_from_response(raw_response, "parameter")
+
+    if not extracted_json_str:
+        logger.warning("Could not extract JSON from parameter consolidation response")
+        return []
+
+    try:
+        consolidated_params_list = json.loads(extracted_json_str)
+    except (json.JSONDecodeError, TypeError) as e:
+        logger.warning(
+            "Failed to parse JSON for parameter consolidation for node '%s'. Error: %s. Using fallback.", node_name, e
+        )
+        return []
+    else:
+        final_params = [
+            ParameterDefinition(
+                name=consol_param["canonical_name"],
+                description=consol_param["canonical_description"],
+                options=sorted(set(consol_param.get("options", []))),
+            )
+            for consol_param in consolidated_params_list
+            if (
+                isinstance(consol_param, dict)
+                and consol_param.get("canonical_name")
+                and "canonical_description" in consol_param
+            )
+        ]
+        logger.debug("Consolidated parameters for '%s': %s", node_name, [p.name for p in final_params])
+        return final_params
+
+
+def _create_fallback_parameters(group: list[FunctionalityNode]) -> list[ParameterDefinition]:
+    """Create parameters using simple union by name as fallback."""
+    param_by_name = {}
+    for node in group:
+        for param in node.parameters:
+            if param.name not in param_by_name:
+                param_by_name[param.name] = param
+            else:
+                existing_param = param_by_name[param.name]
+                combined_options = sorted(set(existing_param.options + param.options))
+                param_by_name[param.name] = ParameterDefinition(
+                    name=param.name,
+                    description=existing_param.description,
+                    options=combined_options,
+                )
+    return list(param_by_name.values())
+
+
+def _merge_parameters(
+    group: list[FunctionalityNode], llm: BaseLanguageModel, node_name: str
+) -> list[ParameterDefinition]:
+    """Merge parameters from a group of nodes."""
+    all_params = _collect_parameters_from_group(group)
+
+    if not all_params:
+        logger.debug("No parameters to merge for node '%s'", node_name)
+        return []
+
+    if len(all_params) == 1:
+        logger.debug("Only one parameter found across group for '%s'. Using it directly.", node_name)
+        return _create_single_parameter(all_params[0], group)
+
+    # Try LLM consolidation first
+    consolidated_params = _consolidate_parameters_with_llm(all_params, llm, node_name)
+    if consolidated_params:
+        return consolidated_params
+
+    # Fallback to simple union
+    logger.warning("Using simple union by name for parameters in node '%s'", node_name)
+    return _create_fallback_parameters(group)
+
+
+def _collect_outputs_from_group(group: list[FunctionalityNode]) -> list[OutputOptions]:
+    """Collect all outputs from nodes in a group."""
+    all_outputs = []
+    for node in group:
+        all_outputs.extend(node.outputs)
+    return all_outputs
+
+
+def _consolidate_outputs_with_llm(
+    output_details: list[dict], llm: BaseLanguageModel, node_name: str
+) -> list[OutputOptions]:
+    """Consolidate outputs using LLM."""
+    consolidation_prompt = get_consolidate_outputs_prompt(output_details)
+    logger.debug("Consolidating outputs for merged node '%s' using LLM. Input outputs: %s", node_name, output_details)
+
+    raw_response = llm.invoke(consolidation_prompt).content
+    logger.debug("LLM response for output consolidation (raw): %s", raw_response)
+
+    extracted_json_str = _extract_json_from_response(raw_response, "output")
+
+    if not extracted_json_str:
+        logger.warning("Could not extract JSON from output consolidation response")
+        return []
+
+    try:
+        consolidated_outputs_list = json.loads(extracted_json_str)
+    except (json.JSONDecodeError, TypeError) as e:
+        logger.warning(
+            "Failed to parse JSON for output consolidation for node '%s'. Error: %s. Using fallback.", node_name, e
+        )
+        return []
+    else:
+        final_outputs = [
+            OutputOptions(
+                category=consol_out["canonical_category"],
+                description=consol_out["canonical_description"],
+            )
+            for consol_out in consolidated_outputs_list
+            if (
+                isinstance(consol_out, dict)
+                and consol_out.get("canonical_category")
+                and consol_out.get("canonical_description")
+            )
+        ]
+        logger.debug("Consolidated outputs for '%s': %s", node_name, [o.category for o in final_outputs])
+        return final_outputs
+
+
+def _create_fallback_outputs(all_outputs: list[OutputOptions]) -> list[OutputOptions]:
+    """Create outputs using simple unique category union as fallback."""
+    output_by_category = {}
+    for output in all_outputs:
+        if output and output.category and output.category not in output_by_category:
+            output_by_category[output.category] = output
+    return list(output_by_category.values())
+
+
+def _merge_outputs(group: list[FunctionalityNode], llm: BaseLanguageModel, node_name: str) -> list[OutputOptions]:
+    """Merge outputs from a group of nodes."""
+    all_outputs = _collect_outputs_from_group(group)
+
+    if not all_outputs:
+        return []
+
+    if len(all_outputs) == 1:
+        return [all_outputs[0]]
+
+    # Prepare output details for LLM
+    output_details = [
+        {"id": f"OUT{i}", "category_name": output.category, "description": output.description}
+        for i, output in enumerate(all_outputs)
+        if output and output.category and output.description
+    ]
+
+    if not output_details:
+        return []
+
+    # Try LLM consolidation first
+    consolidated_outputs = _consolidate_outputs_with_llm(output_details, llm, node_name)
+    if consolidated_outputs:
+        return consolidated_outputs
+
+    # Fallback to simple union
+    logger.warning("Using simple union by category for outputs in node '%s'", node_name)
+    return _create_fallback_outputs(all_outputs)
+
+
+def _merge_children(group: list[FunctionalityNode], merged_node: FunctionalityNode) -> None:
+    """Merge children from all nodes in the group to the merged node."""
+    for node in group:
+        for child in node.children:
+            child.parent = merged_node
+            merged_node.add_child(child)
+
+
 def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLanguageModel) -> list[FunctionalityNode]:
     """Processes a group of nodes (assumed to have similar names) to potentially merge them into one.
 
@@ -209,248 +467,14 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
     content = merge_response.content.strip()
     logger.debug("Merge response content: '%s'", content)
 
-    if content.upper().startswith("MERGE"):
-        # Parse name and description from the MERGE response more robustly
-        best_name = None
-        best_desc = None
-        lines = content.splitlines()
-        for line in lines:
-            line_lower = line.lower()
-            if line_lower.startswith("name:"):
-                if best_name is None:  # Take the first occurrence
-                    best_name = line.split(":", 1)[1].strip()
-            elif line_lower.startswith("description:"):
-                if best_desc is None:  # Take the first occurrence
-                    best_desc = line.split(":", 1)[1].strip()
+    if not content.upper().startswith("MERGE"):
+        logger.debug("LLM suggested keeping %d nodes separate", len(group))
+        return group
 
-        if best_name and best_desc:
-            logger.debug("Parsed merged node - Name: '%s', Description: '%s'", best_name, best_desc)
+    # Parse name and description from the MERGE response
+    best_name, best_desc = _parse_merge_response(content)
 
-            merged_node = FunctionalityNode(name=best_name, description=best_desc, parameters=[], outputs=[])
-
-            # --- Parameter Merging ---
-            all_params_from_group = []
-            for node_idx, node in enumerate(group):
-                for param_idx, param in enumerate(node.parameters):
-                    if param and param.name:
-                        all_params_from_group.append(
-                            {
-                                "id": f"NODE{node_idx}_PARAM{param_idx}",
-                                "name": param.name,
-                                "description": param.description or "",
-                                "options": param.options or [],
-                            }
-                        )
-
-            if not all_params_from_group:
-                merged_node.parameters = []
-                logger.debug("No parameters to merge for node '%s'", best_name)
-            elif len(all_params_from_group) == 1 and all_params_from_group[0].get("id"):
-                original_node_idx, original_param_idx = map(
-                    int, all_params_from_group[0]["id"].replace("NODE", "").replace("PARAM", "").split("_")
-                )
-                merged_node.parameters = [group[original_node_idx].parameters[original_param_idx]]
-                logger.debug(
-                    "Only one parameter found across group for '%s'. Using it directly: %s",
-                    best_name,
-                    merged_node.parameters[0].name,
-                )
-            else:
-                param_consolidation_prompt = get_consolidate_parameters_prompt(all_params_from_group)
-                logger.debug(
-                    "Consolidating parameters for merged node '%s' using LLM. Input parameters count: %d",
-                    best_name,
-                    len(all_params_from_group),
-                )
-
-                raw_param_consolidation_response = llm.invoke(param_consolidation_prompt).content
-                logger.debug("LLM response for parameter consolidation (raw): %s", raw_param_consolidation_response)
-
-                extracted_json_str = None
-                code_block_match = re.search(
-                    r"```json\s*([\s\S]*?)\s*```", raw_param_consolidation_response, re.IGNORECASE
-                )
-                if code_block_match:
-                    extracted_json_str = code_block_match.group(1).strip()
-                    logger.debug("Extracted parameter JSON from markdown code block.")
-                else:
-                    first_bracket = raw_param_consolidation_response.find("[")
-                    last_bracket = raw_param_consolidation_response.rfind("]")
-                    if first_bracket != -1 and last_bracket != -1 and last_bracket > first_bracket:
-                        extracted_json_str = raw_param_consolidation_response[first_bracket : last_bracket + 1]
-                        logger.debug("Extracted parameter JSON by finding outermost list brackets.")
-
-                if not extracted_json_str:  # Fallback if no structure found yet
-                    extracted_json_str = raw_param_consolidation_response.strip()
-                    logger.debug("Using stripped raw response as parameter JSON candidate.")
-
-                final_params = []
-                if extracted_json_str:
-                    try:
-                        consolidated_params_list = json.loads(extracted_json_str)
-                        for consol_param in consolidated_params_list:
-                            if (
-                                isinstance(consol_param, dict)
-                                and consol_param.get("canonical_name")
-                                and "canonical_description" in consol_param
-                            ):  # desc can be empty string
-                                final_params.append(
-                                    ParameterDefinition(
-                                        name=consol_param["canonical_name"],
-                                        description=consol_param["canonical_description"],
-                                        options=sorted(list(set(consol_param.get("options", [])))),
-                                    )
-                                )
-                        merged_node.parameters = final_params
-                        logger.debug("Consolidated parameters for '%s': %s", best_name, [p.name for p in final_params])
-                    except (json.JSONDecodeError, TypeError) as e:
-                        logger.warning(
-                            "Failed to parse JSON for parameter consolidation for node '%s'. Error: %s. Extracted string: '%s'. Using simple union by name.",
-                            best_name,
-                            e,
-                            extracted_json_str,
-                        )
-                        # Fallback to old simple union by name
-                        param_by_name_fallback = {}
-                        for node_in_group_fb in group:
-                            for param_obj_fb in node_in_group_fb.parameters:
-                                if param_obj_fb.name not in param_by_name_fallback:
-                                    param_by_name_fallback[param_obj_fb.name] = param_obj_fb
-                                else:
-                                    existing_param_obj_fb = param_by_name_fallback[param_obj_fb.name]
-                                    combined_options_fb = sorted(
-                                        list(set(existing_param_obj_fb.options + param_obj_fb.options))
-                                    )
-                                    param_by_name_fallback[param_obj_fb.name] = ParameterDefinition(
-                                        name=param_obj_fb.name,
-                                        description=existing_param_obj_fb.description,
-                                        options=combined_options_fb,
-                                    )
-                        merged_node.parameters = list(param_by_name_fallback.values())
-                else:  # Extracted JSON string was empty
-                    logger.warning(
-                        "LLM response for parameter consolidation was empty or unextractable for node '%s'. Using simple union by name.",
-                        best_name,
-                    )
-                    # Fallback logic
-                    param_by_name_fallback = {}  # Duplicated fallback, consider refactoring if too verbose
-                    for node_in_group_fb in group:
-                        for param_obj_fb in node_in_group_fb.parameters:
-                            if param_obj_fb.name not in param_by_name_fallback:
-                                param_by_name_fallback[param_obj_fb.name] = param_obj_fb
-                            else:
-                                existing_param_obj_fb = param_by_name_fallback[param_obj_fb.name]
-                                combined_options_fb = sorted(
-                                    list(set(existing_param_obj_fb.options + param_obj_fb.options))
-                                )
-                                param_by_name_fallback[param_obj_fb.name] = ParameterDefinition(
-                                    name=param_obj_fb.name,
-                                    description=existing_param_obj_fb.description,
-                                    options=combined_options_fb,
-                                )
-                    merged_node.parameters = list(param_by_name_fallback.values())
-
-            # --- Improved Output Merging ---
-
-            all_outputs_from_group = []
-            for node in group:
-                all_outputs_from_group.extend(node.outputs)
-
-            if not all_outputs_from_group:
-                merged_node.outputs = []
-            elif len(all_outputs_from_group) == 1:  # Only one output in the whole group, just use it
-                merged_node.outputs = [all_outputs_from_group[0]]
-            else:
-                # If there are multiple outputs across the nodes being merged, try to consolidate them.
-                # This requires an LLM call to group semantically similar output categories.
-                output_details_for_llm = []
-                for i, out_opt in enumerate(all_outputs_from_group):
-                    if out_opt and out_opt.category and out_opt.description:  # Ensure valid OutputOptions object
-                        output_details_for_llm.append(
-                            {"id": f"OUT{i}", "category_name": out_opt.category, "description": out_opt.description}
-                        )
-
-                if output_details_for_llm:
-                    consolidation_prompt = get_consolidate_outputs_prompt(output_details_for_llm)
-                    logger.debug(
-                        "Consolidating outputs for merged node '%s' using LLM. Input outputs: %s",
-                        best_name,
-                        output_details_for_llm,
-                    )
-                    raw_consolidation_response = llm.invoke(consolidation_prompt).content
-                    logger.debug("LLM response for output consolidation (raw): %s", raw_consolidation_response)
-
-                    extracted_json_str = None
-                    # 1. Try to find JSON within markdown code blocks
-                    code_block_match = re.search(
-                        r"```json\s*([\s\S]*?)\s*```", raw_consolidation_response, re.IGNORECASE
-                    )
-                    if code_block_match:
-                        extracted_json_str = code_block_match.group(1).strip()
-                        logger.debug("Extracted output JSON from markdown code block.")
-                    else:
-                        # 2. If not in a code block, try to find the outermost list structure `[...]`
-                        first_bracket = raw_consolidation_response.find("[")
-                        last_bracket = raw_consolidation_response.rfind("]")
-                        if first_bracket != -1 and last_bracket != -1 and last_bracket > first_bracket:
-                            extracted_json_str = raw_consolidation_response[first_bracket : last_bracket + 1]
-                            logger.debug("Extracted output JSON by finding outermost list brackets.")
-                        else:
-                            # 3. Fallback: strip the raw response
-                            extracted_json_str = raw_consolidation_response.strip()
-                            logger.debug("Using stripped raw response as JSON candidate.")
-
-                    if not extracted_json_str:  # Handles empty or unextractable content
-                        logger.warning(
-                            "Could not extract a valid JSON string from LLM response for output consolidation. Raw response: %s",
-                            raw_consolidation_response,
-                        )
-                        # Fallback logic will be triggered by JSONDecodeError or if extracted_json_str is empty/None
-
-                    try:
-                        consolidated_outputs_list = json.loads(extracted_json_str)  # type: ignore[arg-type]
-                        final_outputs = []
-                        for consol_out in consolidated_outputs_list:
-                            if (
-                                isinstance(consol_out, dict)
-                                and consol_out.get("canonical_category")
-                                and consol_out.get("canonical_description")
-                            ):
-                                final_outputs.append(
-                                    OutputOptions(
-                                        category=consol_out["canonical_category"],
-                                        description=consol_out["canonical_description"],
-                                    )
-                                )
-                        merged_node.outputs = final_outputs
-                        logger.debug(
-                            "Consolidated outputs for '%s': %s", best_name, [o.category for o in final_outputs]
-                        )
-                    except (json.JSONDecodeError, TypeError) as e:
-                        logger.warning(
-                            "Failed to parse JSON for output consolidation for node '%s'. Error: %s. Extracted string: '%s'. Using simple union of unique categories.",
-                            best_name,
-                            e,
-                            extracted_json_str,
-                        )
-                        # Fallback to simple unique category union if LLM fails
-                        fallback_output_by_category = {}
-                        for out_opt in all_outputs_from_group:
-                            if out_opt and out_opt.category and out_opt.category not in fallback_output_by_category:
-                                fallback_output_by_category[out_opt.category] = out_opt
-                        merged_node.outputs = list(fallback_output_by_category.values())
-                else:  # No valid outputs to process
-                    merged_node.outputs = []
-
-            # Merge children too
-            for node in group:
-                for child in node.children:
-                    child.parent = merged_node
-                    merged_node.add_child(child)
-
-            logger.debug("Merged %d functionalities into '%s'", len(group), best_name)
-            return [merged_node]
-
+    if not (best_name and best_desc):
         logger.warning(
             "LLM suggested MERGE, but could not parse name/description for group: %s. Content: '%s'. Keeping first node '%s'",
             [n.name for n in group],
@@ -459,8 +483,18 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
         )
         return [group[0]]
 
-    logger.debug("LLM suggested keeping %d nodes separate", len(group))
-    return group
+    logger.debug("Parsed merged node - Name: '%s', Description: '%s'", best_name, best_desc)
+
+    # Create merged node
+    merged_node = FunctionalityNode(name=best_name, description=best_desc, parameters=[], outputs=[])
+
+    # Merge parameters, outputs, and children
+    merged_node.parameters = _merge_parameters(group, llm, best_name)
+    merged_node.outputs = _merge_outputs(group, llm, best_name)
+    _merge_children(group, merged_node)
+
+    logger.debug("Merged %d functionalities into '%s'", len(group), best_name)
+    return [merged_node]
 
 
 def merge_similar_functionalities(nodes: list[FunctionalityNode], llm: BaseLanguageModel) -> list[FunctionalityNode]:

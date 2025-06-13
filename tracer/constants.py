@@ -5,6 +5,9 @@ import re
 # Regular expression pattern to find {{variables}} in text
 VARIABLE_PATTERN = re.compile(r"{{([^}]+)}}")
 
+# List truncation threshold for data preview
+LIST_TRUNCATION_THRESHOLD = 3
+
 # Variable type pattern definitions supporting English and Spanish
 VARIABLE_PATTERNS = {
     "date": ["date", "fecha"],
@@ -27,3 +30,14 @@ AVAILABLE_PERSONALITIES = [
     "sarcastic-user",
     "skeptical-user",
 ]
+
+# Minimum number of nodes required for deduplication
+MIN_NODES_FOR_DEDUPLICATION = 2
+
+# Conversation loop constants
+MIN_EXPLORER_RESPONSE_LENGTH = 10
+CONTEXT_MESSAGES_COUNT = 4
+MIN_CORRECTED_MESSAGE_LENGTH = 5
+
+# JSON parsing constants
+MIN_PRINTABLE_ASCII_CODE = 32

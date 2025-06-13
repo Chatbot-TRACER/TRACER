@@ -1,16 +1,44 @@
+"""Module for generating output-related prompts for the TRACER system."""
+
 from typing import Any
 
+from tracer.constants import LIST_TRUNCATION_THRESHOLD
 
-def get_outputs_prompt(
-    profile: dict[str, Any],
-    profile_functionality_details: list[str],
-    language_instruction: str,
-) -> str:
-    profile_name = profile.get("name", "Unnamed Profile")
-    profile_role = profile.get("role", "Unknown Role")
 
-    goals_and_vars_for_prompt_str = ""
-    variable_definitions_for_prompt_str = ""
+def _format_data_preview(var_def: dict[str, Any]) -> str:
+    """Format variable data for preview display.
+
+    Args:
+        var_def: Variable definition dictionary containing data
+
+    Returns:
+        Formatted string preview of the variable data
+    """
+    data_preview = str(var_def.get("data", "N/A"))
+    if isinstance(var_def.get("data"), list):
+        actual_data_list = var_def.get("data", [])
+        if len(actual_data_list) > LIST_TRUNCATION_THRESHOLD:
+            data_preview = (
+                f"{str(actual_data_list[:LIST_TRUNCATION_THRESHOLD])[:-1]}, ... (Total: {len(actual_data_list)} items)]"
+            )
+        else:
+            data_preview = str(actual_data_list)
+    elif isinstance(var_def.get("data"), dict):
+        data = var_def["data"]
+        data_preview = f"min: {data.get('min')}, max: {data.get('max')}, step: {data.get('step')}"
+
+    return data_preview
+
+
+def _process_profile_goals(profile: dict[str, Any]) -> tuple[list[str], list[str]]:
+    """Process profile goals and extract string goals and variable details.
+
+    Args:
+        profile: Profile dictionary containing goals
+
+    Returns:
+        Tuple of (raw_string_goals, variable_details_list)
+    """
     raw_string_goals = []
     variable_details_list = []
 
@@ -20,23 +48,27 @@ def get_outputs_prompt(
         elif isinstance(goal_item, dict):
             for var_name, var_def in goal_item.items():
                 if isinstance(var_def, dict):
-                    data_preview = str(var_def.get("data", "N/A"))
-                    if isinstance(var_def.get("data"), list):
-                        actual_data_list = var_def.get("data", [])
-                        if len(actual_data_list) > 3:
-                            data_preview = (
-                                f"{str(actual_data_list[:3])[:-1]}, ... (Total: {len(actual_data_list)} items)]"
-                            )
-                        else:
-                            data_preview = str(actual_data_list)
-                    elif isinstance(var_def.get("data"), dict):
-                        data_preview = f"min: {var_def['data'].get('min')}, max: {var_def['data'].get('max')}, step: {var_def['data'].get('step')}"
-
+                    data_preview = _format_data_preview(var_def)
                     variable_details_list.append(
                         f"  - Note: A variable '{{{var_name}}}' is used in goals, iterating with function '{var_def.get('function')}' using data like: {data_preview}."
                     )
 
+    return raw_string_goals, variable_details_list
+
+
+def _format_goals_and_variables(raw_string_goals: list[str], variable_details_list: list[str]) -> tuple[str, str]:
+    """Format goals and variables for prompt display.
+
+    Args:
+        raw_string_goals: List of string goals
+        variable_details_list: List of variable details
+
+    Returns:
+        Tuple of (goals_string, variable_definitions_string)
+    """
     goals_and_vars_for_prompt_str = "\\n".join(raw_string_goals)
+    variable_definitions_for_prompt_str = ""
+
     if variable_details_list:
         variable_definitions_for_prompt_str = (
             "\\n\\nIMPORTANT VARIABLE CONTEXT (variables like `{{variable_name}}` in goals will iterate through values like these):\\n"
@@ -49,6 +81,32 @@ def get_outputs_prompt(
         goals_and_vars_for_prompt_str = (
             "- (Primary interaction driven by variable iterations. Define outputs to verify these.)\\n"
         )
+
+    return goals_and_vars_for_prompt_str, variable_definitions_for_prompt_str
+
+
+def get_outputs_prompt(
+    profile: dict[str, Any],
+    profile_functionality_details: list[str],
+    language_instruction: str,
+) -> str:
+    """Generate a prompt for creating outputs for a chatbot profile.
+
+    Args:
+        profile: The profile dictionary containing goals and other profile information
+        profile_functionality_details: List of functionality details for the profile
+        language_instruction: Instructions for the language to use in outputs
+
+    Returns:
+        A formatted string prompt for output generation
+    """
+    profile_name = profile.get("name", "Unnamed Profile")
+    profile_role = profile.get("role", "Unknown Role")
+
+    raw_string_goals, variable_details_list = _process_profile_goals(profile)
+    goals_and_vars_for_prompt_str, variable_definitions_for_prompt_str = _format_goals_and_variables(
+        raw_string_goals, variable_details_list
+    )
 
     functionalities_str = "\\n".join([f"- {f_desc_str}" for f_desc_str in profile_functionality_details])
 
