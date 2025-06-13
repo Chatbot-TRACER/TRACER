@@ -57,8 +57,29 @@ include = ["tracer*"]
 # default is too small
 line-length = 120
 target-version = "py311"
-
-[tool.ruff.lint]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "scripts",
+]
 # E: pycode style (error)
 # W: pycode style (warning)
 # F: Pyflakes
