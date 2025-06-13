@@ -115,21 +115,32 @@ class TokenUsageTracker(BaseCallbackHandler):
             and hasattr(response.generations[0][0].message, "usage_metadata")
         ):
             usage_data = response.generations[0][0].message.usage_metadata
-            if (
-                usage_data
-                and hasattr(usage_data, "input_tokens")
-                and hasattr(usage_data, "output_tokens")
-                and usage_data.input_tokens > 0
-                and usage_data.output_tokens > 0
-            ):
-                source = "AIMessage.usage_metadata (Google invoke style)"
-                logger.debug("Found tokens directly in AIMessage.usage_metadata: %s", usage_data)
-                return (
-                    usage_data.input_tokens,
-                    usage_data.output_tokens,
-                    usage_data.input_tokens + usage_data.output_tokens,
-                    source,
-                )
+            if usage_data:
+                # Handle both dictionary-style and attribute-style access
+                input_tokens = 0
+                output_tokens = 0
+                total_tokens = 0
+
+                # Try dictionary-style access first (common with Google/Gemini)
+                if isinstance(usage_data, dict):
+                    input_tokens = usage_data.get("input_tokens", 0)
+                    output_tokens = usage_data.get("output_tokens", 0)
+                    total_tokens = usage_data.get("total_tokens", input_tokens + output_tokens)
+                # Try attribute-style access as fallback
+                elif hasattr(usage_data, "input_tokens") and hasattr(usage_data, "output_tokens"):
+                    input_tokens = getattr(usage_data, "input_tokens", 0)
+                    output_tokens = getattr(usage_data, "output_tokens", 0)
+                    total_tokens = getattr(usage_data, "total_tokens", input_tokens + output_tokens)
+
+                if input_tokens > 0 or output_tokens > 0:  # Accept even if one is zero
+                    source = "AIMessage.usage_metadata"
+                    logger.debug(
+                        "Found tokens in AIMessage.usage_metadata: input=%d, output=%d, total=%d",
+                        input_tokens,
+                        output_tokens,
+                        total_tokens,
+                    )
+                    return (input_tokens, output_tokens, total_tokens, source)
         return None
 
     def _extract_usage_from_llm_output(self, response: LLMResult) -> tuple[int, int, int, str] | None:
