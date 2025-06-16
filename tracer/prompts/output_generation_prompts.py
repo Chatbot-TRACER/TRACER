@@ -111,65 +111,77 @@ def get_outputs_prompt(
     functionalities_str = "\\n".join([f"- {f_desc_str}" for f_desc_str in profile_functionality_details])
 
     return f"""
-You are an AI assistant designing test verification outputs for a chatbot user profile.
-Your task is to identify GRANULAR and SPECIFIC outputs to extract from the chatbot's responses. These outputs should verify individual pieces of information and confirmations, allowing precise detection of what the chatbot might be missing or getting wrong.
+You are designing test outputs to verify what information a chatbot extracts during conversations.
 
 USER PROFILE:
 Name: {profile_name}
 Role: {profile_role}
 
-USER GOALS (these will be executed, pay close attention to how `{{variables}}` are used):
+USER GOALS:
 {goals_and_vars_for_prompt_str}
 {variable_definitions_for_prompt_str}
 
-FUNCTIONALITIES ASSIGNED TO THIS PROFILE (these define what the chatbot can do):
+CHATBOT FUNCTIONALITIES:
 {functionalities_str}
 
 {language_instruction}
 
-**Your Task: Define GRANULAR, SPECIFIC VERIFIABLE OUTPUTS**
+**TASK: Define granular, verifiable outputs**
 
-1. **Break Down Complex Information**: Instead of creating one output for "order_summary" or "appointment_confirmation", create separate outputs for each critical piece of information:
-   - For orders: separate outputs for each item, quantity, price, total, order_id, delivery_date, etc.
-   - For appointments: separate outputs for date, time, service_type, provider_name, location, etc.
-   - For bookings: separate outputs for confirmation_number, check_in_date, check_out_date, room_type, guest_count, etc.
+Break down each interaction into individual data points the chatbot should capture. Each output verifies ONE specific piece of information.
 
-2. **Focus on Individual Data Points**: Each output should verify ONE specific piece of information that the chatbot should provide. This allows precise identification of missing or incorrect details.
+**TYPE SELECTION GUIDE:**
+- `string`: IDs, codes, names, addresses, descriptions, status values
+- `int`: Whole number counts (people, items when fractional impossible)
+- `float`: Quantities that can be decimal (weight, duration, ratings, measurements)
+- `money`: Prices, costs, totals, fees
+- `date`: Dates (YYYY-MM-DD format)
+- `time`: Times (HH:MM format)
 
-3. **Consider All Goal Components**: Review each user goal and identify ALL the individual pieces of information the chatbot needs to confirm or provide throughout the interaction sequence.
+**DESCRIPTION RULES:**
+- Keep descriptions SHORT (3-8 words)
+- Use format: "[noun] of the [context]" or "[what it represents]"
+- Be specific and direct
+- No variable placeholders like {{variable_name}}
 
-4. **Variable-Based Outputs**: For goals with variables like `{{service_id}}` or `{{item_id}}`, create outputs that capture specific information about the current variable value being tested.
+**GOOD EXAMPLES:**
+OUTPUT: transaction_id
+TYPE: string
+DESCRIPTION: Unique identifier for the transaction
 
-5. **Essential vs Optional Information**: Prioritize outputs for:
-   - Required confirmations (dates, times, IDs, prices)
-   - Critical details that indicate successful processing
-   - Key information users need to verify their requests
+OUTPUT: start_time
+TYPE: time
+DESCRIPTION: Scheduled start time
 
-6. **Data Types**: Assign appropriate data types from this exact list: `int`, `float`, `money`, `str`, `string`, `time`, `date`. Do NOT use any other types like 'boolean', 'bool', etc. For yes/no values, use `str` type.
+OUTPUT: item_quantity
+TYPE: float
+DESCRIPTION: Number of items requested
 
-7. **Naming Convention**: Use descriptive names that clearly indicate what specific information is being captured (e.g., `confirmed_appointment_date`, `order_total_price`, `selected_item_name`).
+OUTPUT: processing_fee
+TYPE: money
+DESCRIPTION: Administrative processing cost
 
-8. **IMPORTANT - Variable Placeholder Rule**: When writing output descriptions, do NOT include variable placeholders with curly braces like `{{variable_name}}`. Instead, refer to the concept generically. For example:
-   - WRONG: "Confirms the selected item size ({{item_size}})"
-   - CORRECT: "Confirms the selected item size"
-   - WRONG: "The service ID ({{service_id}}) chosen by the user"
-   - CORRECT: "The service ID chosen by the user"
-   - WRONG: "Shows the booking date ({{booking_date}}) requested"
-   - CORRECT: "Shows the booking date requested"
+OUTPUT: scheduled_date
+TYPE: date
+DESCRIPTION: Date for the scheduled event
 
-**Examples of Granular Outputs:**
-- Instead of "booking_summary" → `reservation_confirmation_number`, `check_in_date`, `check_out_date`, `room_type`, `guest_count`, `total_price`
-- Instead of "order_details" → `ordered_item_name`, `item_quantity`, `item_unit_price`, `order_total`, `estimated_delivery_date`, `order_confirmation_id`
-- Instead of "appointment_info" → `appointment_date`, `appointment_time`, `service_type`, `provider_name`, `appointment_duration`
+**BAD EXAMPLES:**
+- "A comprehensive description detailing the transaction reference number assigned by the system"
+- "The total duration ({{service_time}}) selected by the customer for their booking"
+- Using `int` for reference codes or `string` for numeric measurements
 
-**Output Format (Strictly follow this for EACH output):**
-OUTPUT: output_name_1
-TYPE: output_type_1
-DESCRIPTION: A concise description of the specific piece of information the chatbot should provide.
+**COVERAGE CHECKLIST:**
+- Identifiers (order IDs, confirmation numbers, reference codes)
+- Quantities and measurements (counts, weights, durations)
+- Financial information (prices, totals, fees, discounts)
+- Temporal data (dates, times, deadlines)
+- Selections (chosen options, preferences, specifications)
+- Confirmations (status updates, verifications)
 
-OUTPUT: output_name_2
-TYPE: output_type_2
-DESCRIPTION: ...
+**OUTPUT FORMAT:**
+OUTPUT: output_name
+TYPE: data_type
+DESCRIPTION: Brief description
 
-Generate comprehensive granular output definitions that allow verification of each critical piece of information separately. Do NOT include any explanatory text before the first "OUTPUT:" line or after the last description.
+Generate comprehensive outputs covering all critical information points. Start immediately with the first "OUTPUT:" line.
 """
