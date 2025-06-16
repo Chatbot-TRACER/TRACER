@@ -1,0 +1,26 @@
+name: Publish to PyPI via Tag
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  deploy:
+    name: "Build and publish release"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python and uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version-file: pyproject.toml
+
+      - name: Build package
+        run: uv build
+
+      - name: Publish package
+        run: uv publish
