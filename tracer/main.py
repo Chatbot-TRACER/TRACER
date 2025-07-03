@@ -234,22 +234,13 @@ def _generate_reports(results: ExecutionResults, config: ReportConfig) -> None:
     if functionality_dicts:
         graph_output_base = Path(config.output_dir) / "workflow_graph"
         try:
-            if config.graph_format == "all":
-                # Export in all available formats
-                formats = ["pdf", "png", "svg"]
-                for fmt in formats:
-                    options = GraphRenderOptions(
-                        fmt=fmt,
-                        graph_font_size=config.graph_font_size,
-                        dpi=300,
-                        compact=config.compact,
-                        top_down=config.top_down,
-                    )
-                    export_graph(functionality_dicts, str(graph_output_base), options)
-            else:
-                # Export in the specified format
+            # Determine which formats to export
+            formats = ["pdf", "png", "svg"] if config.graph_format == "all" else [config.graph_format]
+
+            # Export graphs in the specified format(s)
+            for fmt in formats:
                 options = GraphRenderOptions(
-                    fmt=config.graph_format,
+                    fmt=fmt,
                     graph_font_size=config.graph_font_size,
                     dpi=300,
                     compact=config.compact,
