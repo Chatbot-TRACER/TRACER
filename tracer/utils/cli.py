@@ -95,6 +95,14 @@ def parse_arguments() -> Namespace:
     )
 
     parser.add_argument(
+        "--graph-format",
+        type=str,
+        choices=["pdf", "png", "svg", "all"],
+        default="pdf",
+        help="Export format for the graph (default: pdf). Use 'all' to export in all formats",
+    )
+
+    parser.add_argument(
         "-nf",
         "--nested-forward",
         action="store_true",

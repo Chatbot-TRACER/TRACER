@@ -234,14 +234,28 @@ def _generate_reports(results: ExecutionResults, config: ReportConfig) -> None:
     if functionality_dicts:
         graph_output_base = Path(config.output_dir) / "workflow_graph"
         try:
-            options = GraphRenderOptions(
-                fmt="pdf",
-                graph_font_size=config.graph_font_size,
-                dpi=300,
-                compact=config.compact,
-                top_down=config.top_down,
-            )
-            export_graph(functionality_dicts, str(graph_output_base), options)
+            if config.graph_format == "all":
+                # Export in all available formats
+                formats = ["pdf", "png", "svg"]
+                for fmt in formats:
+                    options = GraphRenderOptions(
+                        fmt=fmt,
+                        graph_font_size=config.graph_font_size,
+                        dpi=300,
+                        compact=config.compact,
+                        top_down=config.top_down,
+                    )
+                    export_graph(functionality_dicts, str(graph_output_base), options)
+            else:
+                # Export in the specified format
+                options = GraphRenderOptions(
+                    fmt=config.graph_format,
+                    graph_font_size=config.graph_font_size,
+                    dpi=300,
+                    compact=config.compact,
+                    top_down=config.top_down,
+                )
+                export_graph(functionality_dicts, str(graph_output_base), options)
         except Exception:
             logger.exception("Failed to generate workflow graph image")
     else:
@@ -260,6 +274,7 @@ def _log_configuration_summary(args: Namespace) -> None:
     logger.verbose("Graph font size:\t\t%d", args.graph_font_size)
     logger.verbose("Compact graph:\t\t%s", "Yes" if args.compact else "No")
     logger.verbose("Graph orientation:\t%s", "Top-Down" if args.top_down else "Left-Right")
+    logger.verbose("Graph format:\t\t%s", args.graph_format)
     logger.verbose("Nested forward chains:\t%s", "Yes" if args.nested_forward else "No")
     logger.verbose("======================================\n")
 
@@ -346,6 +361,7 @@ def main() -> None:
         graph_font_size=args.graph_font_size,
         compact=args.compact,
         top_down=args.top_down,
+        graph_format=args.graph_format,
     )
     _generate_reports(results, config)
 
