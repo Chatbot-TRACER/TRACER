@@ -120,6 +120,7 @@ class ReportConfig:
     graph_font_size: int = 12
     compact: bool = False
     top_down: bool = False
+    graph_format: str = "pdf"
 
 
 @dataclass

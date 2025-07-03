@@ -318,8 +318,8 @@ def write_files_reference(f: TextIO) -> None:
     f.write("- **`README.md`** - This main report with comprehensive functionality analysis\n")
     f.write("- **`functionalities.json`** - Raw JSON data structure\n")
     f.write(
-        "- **`workflow_graph.pdf`** (or other format) - Visual graph of functionality relationships\n"
-    )  # Assuming graph is also generated
+        "- **`workflow_graph.*`** - Visual graph of functionality relationships (format depends on configuration: PDF, PNG, SVG, or all formats)\n"
+    )
     f.write("- **`profiles/`** - Directory containing user profile YAML files\n\n")
 
 

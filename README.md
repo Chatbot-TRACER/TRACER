@@ -141,6 +141,7 @@ All arguments are optional.
 - `-gfs`, `--graph-font-size`: Font size for the graph.
 - `c`, `--compact`: Compact mode for the graph.
 - `-td`, `--top-down`: Top-down layout for the graph.
+- `--graph-format`: Export format for the graph (choices: pdf, png, svg, all). Default is pdf. Use 'all' to export in all formats.
 - `-nf`, `--nested-forward`: All the variables will be nested, creates more exhaustive profiles but also the number of conversations grows exponentially.
 - `-h, --help`: Show help message and exit.
 
