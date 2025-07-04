@@ -4,9 +4,12 @@ import pprint
 import uuid
 from typing import Any, TypedDict
 
+import requests
+from google.api_core.exceptions import PermissionDenied
 from langchain_core.language_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
+from openai import AuthenticationError
 
 from tracer.constants import MIN_NODES_FOR_DEDUPLICATION
 
@@ -32,6 +35,7 @@ from tracer.conversation.session import (
 from tracer.schemas.functionality_node_model import FunctionalityNode
 from tracer.utils.logging_utils import get_logger
 from tracer.utils.token_tracker_callback import TokenUsageTracker
+from tracer.utils.tracer_error import TracerError
 
 from .graphs.profile_graph import build_profile_generation_graph
 from .graphs.structure_graph import build_structure_graph
@@ -86,6 +90,8 @@ class ChatbotExplorationAgent:
             ImportError: If trying to use Gemini/OpenAI models but the required package is not installed.
             ValueError: If the model name format is not recognized.
         """
+        llm: BaseChatModel
+
         # Check if this is a Gemini model
         if model_name.lower().startswith("gemini"):
             if not GEMINI_AVAILABLE:
@@ -94,24 +100,46 @@ class ChatbotExplorationAgent:
                 raise ImportError(gemini_error_msg)
 
             logger.info("Initializing Gemini model: %s", model_name)
-            return ChatGoogleGenerativeAI(model=model_name, callbacks=[self.token_tracker])
+            llm = ChatGoogleGenerativeAI(model=model_name, callbacks=[self.token_tracker])
+
+            try:
+                logger.debug("Performing health check on Gemini model...")
+                llm.invoke("test")
+            except PermissionDenied as e:
+                logger.exception("Gemini API key is invalid or lacks permissions. Please check your credentials.")
+                msg = "Gemini authentication failed."
+                raise TracerError(msg) from e
+            except Exception as e:
+                logger.exception("Failed to verify connection to Gemini")
+                msg = "Gemini health check failed."
+                raise TracerError(msg) from e
 
         # Handle OpenAI models
-        try:
-            logger.info("Initializing OpenAI model: %s", model_name)
-            return ChatOpenAI(model=model_name, callbacks=[self.token_tracker])
-        except ImportError as e:
-            openai_error_msg = (
-                "To use OpenAI models, please install the required package: pip install langchain-openai openai"
-            )
-            logger.exception("OpenAI support not available")
-            raise ImportError(openai_error_msg) from e
-        except Exception as e:
-            error_msg = (
-                f"Error initializing OpenAI model '{model_name}'. Please check your OpenAI API key and model name."
-            )
-            logger.exception("OpenAI initialization failed")
-            raise RuntimeError(error_msg) from e
+        else:
+            try:
+                logger.info("Initializing OpenAI model: %s", model_name)
+                llm = ChatOpenAI(model=model_name, callbacks=[self.token_tracker], request_timeout=60)
+
+                logger.debug("Performing health check on OpenAI model...")
+                llm.invoke("test")
+            except AuthenticationError as e:
+                logger.exception("OpenAI API key is invalid or has expired. Please check your credentials.")
+                msg = "OpenAI authentication failed."
+                raise TracerError(msg) from e
+            except ImportError as e:
+                openai_error_msg = (
+                    "To use OpenAI models, please install the required package: pip install langchain-openai openai"
+                )
+                logger.exception("OpenAI support not available")
+                raise ImportError(openai_error_msg) from e
+            except Exception as e:
+                error_msg = (
+                    f"Error initializing OpenAI model '{model_name}'. Please check your OpenAI API key and model name."
+                )
+                logger.exception("OpenAI initialization failed")
+                raise RuntimeError(error_msg) from e
+
+        return llm
 
     def run_exploration(self, chatbot_connector: Chatbot, max_sessions: int, max_turns: int) -> dict[str, Any]:
         """Runs the initial probing and the main exploration loop.
@@ -126,6 +154,13 @@ class ChatbotExplorationAgent:
             functionality nodes, supported languages, and fallback message).
         """
         logger.debug("Initializing exploration process")
+
+        try:
+            chatbot_connector.health_check()
+        except requests.RequestException:
+            logger.exception("Initial health check failed")
+            raise  # Re-raise to be caught by the main error handler
+
         # Initialize results storage
         conversation_sessions = []
         current_graph_state = self._initialize_graph_state()
@@ -182,41 +217,47 @@ class ChatbotExplorationAgent:
         initial_probe_query = "Hello"
         logger.debug("Sending initial language probe message: '%s'", initial_probe_query)
 
-        is_ok, probe_response = chatbot_connector.execute_with_input(initial_probe_query)
-        supported_languages = ["English"]  # Default
+        try:
+            is_ok, probe_response = chatbot_connector.execute_with_input(initial_probe_query)
+            supported_languages = ["English"]  # Default
 
-        if is_ok and probe_response:
-            logger.verbose("Initial response received: '%s...'", probe_response[:30])
-            try:
-                logger.debug("Analyzing response to detect supported languages")
-                detected_langs = extract_supported_languages(probe_response, self.llm)
-                if detected_langs:
-                    supported_languages = detected_langs
-                    logger.info("\nDetected initial language(s): %s", supported_languages)
-                else:
-                    logger.warning("Could not detect language from initial probe, defaulting to English")
-            except (ValueError, TypeError):
-                logger.exception("Error during initial language detection. Defaulting to English")
-        else:
-            logger.error("Could not get initial response from chatbot for language probe. Defaulting to English")
+            if is_ok and probe_response:
+                logger.verbose("Initial response received: '%s...'", probe_response[:30])
+                try:
+                    logger.debug("Analyzing response to detect supported languages")
+                    detected_langs = extract_supported_languages(probe_response, self.llm)
+                    if detected_langs:
+                        supported_languages = detected_langs
+                        logger.info("\nDetected initial language(s): %s", supported_languages)
+                    else:
+                        logger.warning("Could not detect language from initial probe, defaulting to English")
+                except (ValueError, TypeError):
+                    logger.exception("Error during initial language detection. Defaulting to English")
+            else:
+                logger.error("Could not get initial response from chatbot for language probe. Defaulting to English")
+
+        except requests.RequestException:
+            logger.exception("Connection error during language detection")
+            raise  # Re-raise to be caught by the main error handler
 
         return supported_languages
 
     def _detect_fallback(self, chatbot_connector: Chatbot) -> str | None:
-        """Detect the chatbot's fallback message."""
-        logger.verbose("\nDetecting chatbot fallback message")
-        fallback_message = None
-
+        """Detect the fallback message of the chatbot."""
+        logger.verbose("\nProbing Chatbot Fallback Response")
         try:
-            logger.debug("Executing fallback detection sequence")
             fallback_message = extract_fallback_message(chatbot_connector, self.llm)
-            if fallback_message:
-                fallback_preview_length = 30
-                logger.info('Detected fallback message: "%s..."', fallback_message[:fallback_preview_length])
-            else:
-                logger.warning("Could not detect a fallback message")
-        except (ValueError, KeyError, AttributeError):
-            logger.exception("Error during fallback detection. Proceeding without fallback")
+        except requests.RequestException:
+            logger.exception("Connection error during fallback detection")
+            raise  # Re-raise to be caught by the main error handler
+        except (ValueError, TypeError):
+            logger.exception("Could not determine fallback message due to an unexpected error")
+            fallback_message = None
+
+        if fallback_message:
+            logger.info("Detected fallback message: '%s...'", fallback_message[:30])
+        else:
+            logger.warning("Could not detect a fallback message for the chatbot.")
 
         return fallback_message
 

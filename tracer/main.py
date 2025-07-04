@@ -6,6 +6,8 @@ from argparse import Namespace
 from pathlib import Path
 from typing import Any
 
+import requests
+
 from tracer.agent import ChatbotExplorationAgent
 from tracer.connectors.chatbot_connectors import Chatbot, ChatbotFactory
 from tracer.reporting import (
@@ -19,6 +21,7 @@ from tracer.reporting import (
 )
 from tracer.utils.cli import parse_arguments
 from tracer.utils.logging_utils import get_logger, setup_logging
+from tracer.utils.tracer_error import TracerError
 
 logger = get_logger()
 
@@ -30,7 +33,7 @@ def _setup_configuration() -> Namespace:
         Namespace: The parsed and validated command line arguments.
 
     Raises:
-        SystemExit: If the specified technology is invalid.
+        TracerError: If the specified technology is invalid.
     """
     # Set up basic logging with default verbosity first
     setup_logging(0)  # Default to INFO level
@@ -44,7 +47,8 @@ def _setup_configuration() -> Namespace:
 
     if args.technology not in valid_technologies:
         logger.error("Invalid technology '%s'. Must be one of: %s", args.technology, valid_technologies)
-        sys.exit(1)
+        msg = "Invalid technology."
+        raise TracerError(msg)
 
     # Ensure output directory exists
     Path(args.output).mkdir(parents=True, exist_ok=True)
@@ -64,31 +68,20 @@ def _initialize_agent(model_name: str) -> ChatbotExplorationAgent:
         ChatbotExplorationAgent: The initialized agent instance.
 
     Raises:
-        SystemExit: If agent initialization fails.
+        TracerError: If agent initialization fails.
     """
     logger.info("Initializing Chatbot Exploration Agent with model: %s...", model_name)
     try:
         agent = ChatbotExplorationAgent(model_name)
-    except ImportError:
-        logger.exception("Missing dependency")
+    except ImportError as e:
+        logger.exception("Missing dependency for the selected model.")
         if "gemini" in model_name.lower():
             logger.exception(
                 "To use Gemini models, install the required packages:"
                 "\npip install langchain-google-genai google-generativeai"
             )
-        sys.exit(1)
-    except Exception:
-        logger.exception("Fatal Error initializing Chatbot Exploration Agent:")
-
-        if model_name.lower().startswith("gemini"):
-            logger.exception(
-                "For Gemini models, ensure the GOOGLE_API_KEY environment variable is set."
-                "\nGet an API key at https://makersuite.google.com/app/apikey"
-            )
-        else:
-            logger.exception("Please ensure API keys are set correctly and the model name is valid.")
-
-        sys.exit(1)
+        msg = "Missing dependency for selected model."
+        raise TracerError(msg) from e
     else:
         logger.info("Agent initialized successfully.")
         return agent
@@ -105,7 +98,7 @@ def _instantiate_connector(technology: str, url: str) -> Chatbot:
         Chatbot: An instance of the appropriate connector class.
 
     Raises:
-        SystemExit: If the technology name is unknown or instantiation fails.
+        TracerError: If the technology name is unknown or instantiation fails.
     """
     logger.info("Instantiating connector for technology: %s", technology)
 
@@ -118,14 +111,16 @@ def _instantiate_connector(technology: str, url: str) -> Chatbot:
         logger.info("Creating chatbot '%s' without URL (pre-configured)", technology)
         return ChatbotFactory.create_chatbot(technology)
 
-    except ValueError:
+    except ValueError as e:
         logger.exception("Failed to instantiate connector for technology '%s'", technology)
         available_types = ChatbotFactory.get_available_types()
         logger.exception("Available chatbot types: %s", ", ".join(available_types))
-        sys.exit(1)
-    except Exception:
+        msg = f"Failed to instantiate connector for '{technology}'."
+        raise TracerError(msg) from e
+    except Exception as e:
         logger.exception("Unexpected error instantiating connector for technology '%s'", technology)
-        sys.exit(1)
+        msg = f"Unexpected error instantiating connector for '{technology}'."
+        raise TracerError(msg) from e
 
 
 def _run_exploration_phase(
@@ -143,28 +138,24 @@ def _run_exploration_phase(
         Dict[str, Any]: The results collected during the exploration phase.
 
     Raises:
-        SystemExit: If a critical error occurs during exploration.
+        TracerError: If a critical error occurs during exploration.
+        requests.RequestException: If a connection error occurs.
     """
     logger.info("\n------------------------------------------")
     logger.info("--- Starting Chatbot Exploration Phase ---")
     logger.info("------------------------------------------")
 
-    try:
-        results = agent.run_exploration(
-            chatbot_connector=chatbot_connector,
-            max_sessions=max_sessions,
-            max_turns=max_turns,
-        )
+    results = agent.run_exploration(
+        chatbot_connector=chatbot_connector,
+        max_sessions=max_sessions,
+        max_turns=max_turns,
+    )
 
-        # Log token usage for exploration phase
-        logger.info("\n=== Token Usage in Exploration Phase ===")
-        logger.info(str(agent.token_tracker))
+    # Log token usage for exploration phase
+    logger.info("\n=== Token Usage in Exploration Phase ===")
+    logger.info(str(agent.token_tracker))
 
-    except Exception:
-        logger.exception("--- Fatal Error during Exploration Phase ---")
-        sys.exit(1)
-    else:
-        return results
+    return results
 
 
 def _run_analysis_phase(
@@ -181,7 +172,7 @@ def _run_analysis_phase(
         Dict[str, Any]: The results generated during the analysis phase.
 
     Raises:
-        SystemExit: If a critical error occurs during analysis.
+        TracerError: If a critical error occurs during analysis.
     """
     logger.info("\n-----------------------------------")
     logger.info("---   Starting Analysis Phase   ---")
@@ -190,18 +181,13 @@ def _run_analysis_phase(
     # Mark the beginning of analysis phase for token tracking
     agent.token_tracker.mark_analysis_phase()
 
-    try:
-        results = agent.run_analysis(exploration_results=exploration_results, nested_forward=nested_forward)
+    results = agent.run_analysis(exploration_results=exploration_results, nested_forward=nested_forward)
 
-        # Log token usage for analysis phase only
-        logger.info("\n=== Token Usage in Analysis Phase ===")
-        logger.info(str(agent.token_tracker))
+    # Log token usage for analysis phase only
+    logger.info("\n=== Token Usage in Analysis Phase ===")
+    logger.info(str(agent.token_tracker))
 
-    except Exception:
-        logger.exception("--- Fatal Error during Analysis Phase ---")
-        sys.exit(1)
-    else:
-        return results
+    return results
 
 
 def _generate_reports(results: ExecutionResults, config: ReportConfig) -> None:
@@ -247,8 +233,10 @@ def _generate_reports(results: ExecutionResults, config: ReportConfig) -> None:
                     top_down=config.top_down,
                 )
                 export_graph(functionality_dicts, str(graph_output_base), options)
-        except Exception:
+        except Exception as e:
             logger.exception("Failed to generate workflow graph image")
+            msg = "Failed to generate workflow graph image."
+            raise TracerError(msg) from e
     else:
         logger.info("--- Skipping workflow graph image (no functionalities discovered) ---")
 
@@ -318,7 +306,7 @@ def _format_duration(seconds: float) -> str:
     return f"{hours:02d}:{minutes:02d}:{secs:02d}"
 
 
-def main() -> None:
+def _run_tracer() -> None:
     """Coordinates the setup, execution, and reporting for the Chatbot Explorer."""
     app_start_time = time.monotonic()
 
@@ -362,6 +350,19 @@ def main() -> None:
     logger.info("\n---------------------------------")
     logger.info("--- Chatbot Explorer Finished ---")
     logger.info("---------------------------------")
+
+
+def main() -> None:
+    """Top-level entry point for the Tracer application."""
+    try:
+        _run_tracer()
+        logger.info("Tracer execution successful.")
+    except (TracerError, requests.RequestException):
+        logger.exception("Tracer execution failed")
+        sys.exit(1)
+    except Exception:
+        logger.exception("An unexpected critical error occurred.")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
