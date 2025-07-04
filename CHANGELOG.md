@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.10] - 2025-07-04
+
+### Fixed
+
+- **Logging**: Error and warning messages are now directed to standard error (stderr) while informational output remains on standard output (stdout). This prevents error traces from being mixed with regular logs and enables reliable shell redirection like `2>errors.log`.
+
 ## [0.2.9] - 2025-07-04
 
 ### Fixed

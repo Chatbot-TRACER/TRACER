@@ -10,6 +10,22 @@ LOGGER_NAME = "chatbot_explorer"
 VERBOSE_LEVEL_NUM = 15
 logging.addLevelName(VERBOSE_LEVEL_NUM, "VERBOSE")
 
+
+class BelowWarningFilter(logging.Filter):
+    """Filters log records to allow only those with levels below WARNING."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        """Determines if a record should be logged.
+
+        Args:
+            record (logging.LogRecord): The log record.
+
+        Returns:
+            bool: True if the record's level is below WARNING, False otherwise.
+        """
+        return record.levelno < logging.WARNING
+
+
 try:
     import colorama
 
@@ -132,11 +148,20 @@ def setup_logging(verbosity: int = 0) -> None:
     if logger.hasHandlers():
         logger.handlers.clear()
 
-    handler = logging.StreamHandler(sys.stdout)  # Log to standard output
     formatter = ConditionalFormatter()
-    handler.setFormatter(formatter)
 
-    logger.addHandler(handler)
+    # Handler for INFO, VERBOSE, DEBUG messages to stdout
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    stdout_handler.addFilter(BelowWarningFilter())
+    stdout_handler.setFormatter(formatter)
+
+    # Handler for WARNING, ERROR, CRITICAL messages to stderr
+    stderr_handler = logging.StreamHandler(sys.stderr)
+    stderr_handler.setLevel(logging.WARNING)
+    stderr_handler.setFormatter(formatter)
+
+    logger.addHandler(stdout_handler)
+    logger.addHandler(stderr_handler)
 
     # Prevent messages from propagating to the root logger
     # This is important to avoid double logging if root has default handlers
