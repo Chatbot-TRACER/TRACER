@@ -107,6 +107,34 @@ class Chatbot(ABC):
         """Set up the requests session with default headers."""
         self.session.headers.update(self.config.headers)
 
+    def health_check(self) -> None:
+        """Performs a health check on a given endpoint to ensure connectivity.
+
+        Raises:
+            requests.RequestException: If the health check fails.
+        """
+        endpoints = self.get_endpoints()
+        health_check_endpoint = endpoints.get("health_check")
+
+        # If no specific health check endpoint, try to create a new conversation
+        if not health_check_endpoint:
+            if "new_conversation" in endpoints:
+                health_check_endpoint = endpoints["new_conversation"]
+            else:
+                # If no new conversation endpoint, assume no health check is needed
+                return
+
+        url = self.config.get_full_url(health_check_endpoint.path)
+        logger.info("Performing health check on %s", url)
+
+        try:
+            # For health check, we often don't need a real payload, but this depends on the API.
+            # Here we assume an empty payload is sufficient for a health check.
+            self._make_request(url, health_check_endpoint, {})
+        except requests.RequestException:
+            logger.exception("Health check failed for %s", url)
+            raise  # Re-raise the exception to be caught by the caller
+
     @abstractmethod
     def get_endpoints(self) -> dict[str, EndpointConfig]:
         """Return endpoint configurations for this chatbot.
@@ -155,6 +183,7 @@ class Chatbot(ABC):
                 return True
         except requests.RequestException:
             logger.exception("Error creating new conversation")
+            return False
 
         return False
 
@@ -181,15 +210,9 @@ class Chatbot(ABC):
 
         try:
             response_json = self._make_request(url, endpoint_config, payload)
-        except (requests.Timeout, requests.ConnectionError, requests.HTTPError, requests.RequestException) as e:
-            error_map = {
-                requests.Timeout: "timeout",
-                requests.ConnectionError: "connection error",
-                requests.HTTPError: f"HTTP error: {e}",
-                requests.RequestException: f"request error: {e}",
-            }
-            error_message = error_map.get(type(e), f"request error: {e}")
-            return False, error_message
+        except requests.RequestException:
+            logger.exception("Chatbot request failed")
+            raise  # Re-raise the exception to be caught by the agent
 
         if response_json:
             processor = self.get_response_processor()
