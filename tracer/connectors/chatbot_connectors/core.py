@@ -9,6 +9,11 @@ from urllib.parse import urljoin
 import requests
 
 from tracer.utils.logging_utils import get_logger
+from tracer.utils.tracer_error import (
+    ConnectorAuthenticationError,
+    ConnectorConnectionError,
+    ConnectorResponseError,
+)
 
 logger = get_logger()
 
@@ -110,30 +115,76 @@ class Chatbot(ABC):
     def health_check(self) -> None:
         """Performs a health check on a given endpoint to ensure connectivity.
 
+        This method provides fail-early detection of connector issues including
+        connectivity, authentication, and configuration problems.
+
         Raises:
-            requests.RequestException: If the health check fails.
+            ConnectorConnectionError: If unable to connect to the endpoint
+            ConnectorAuthenticationError: If authentication fails
+            ConnectorResponseError: If the endpoint returns an invalid response
+            ConnectorConfigurationError: If the connector configuration is invalid
         """
         endpoints = self.get_endpoints()
         health_check_endpoint = endpoints.get("health_check")
 
-        # If no specific health check endpoint, try to create a new conversation
         if not health_check_endpoint:
-            if "new_conversation" in endpoints:
-                health_check_endpoint = endpoints["new_conversation"]
-            else:
-                # If no new conversation endpoint, assume no health check is needed
-                return
+            logger.debug("No health check endpoint available for %s connector", self.__class__.__name__)
+            return
 
         url = self.config.get_full_url(health_check_endpoint.path)
         logger.info("Performing health check on %s", url)
 
         try:
-            # For health check, we often don't need a real payload, but this depends on the API.
-            # Here we assume an empty payload is sufficient for a health check.
             self._make_request(url, health_check_endpoint, {})
-        except requests.RequestException:
-            logger.exception("Health check failed for %s", url)
-            raise  # Re-raise the exception to be caught by the caller
+            logger.info("Health check passed for %s", url)
+
+        except requests.exceptions.Timeout as exc:
+            raise ConnectorConnectionError(
+                connector_type=self.__class__.__name__,
+                url=url,
+                message=f"Timeout connecting to chatbot endpoint at {url}",
+            ) from exc
+
+        except requests.exceptions.ConnectionError as exc:
+            raise ConnectorConnectionError(
+                connector_type=self.__class__.__name__,
+                url=url,
+                message=f"Failed to connect to chatbot endpoint at {url}",
+                original_error=exc,
+            ) from exc
+
+        except requests.exceptions.HTTPError as exc:
+            status_code = exc.response.status_code
+            if status_code in {401, 403}:
+                raise ConnectorAuthenticationError(
+                    connector_type=self.__class__.__name__,
+                    url=url,
+                    status_code=status_code,
+                    response_text=exc.response.text,
+                ) from exc
+            raise ConnectorResponseError(
+                connector_type=self.__class__.__name__,
+                url=url,
+                status_code=status_code,
+                message=f"HTTP error from chatbot endpoint (HTTP {status_code})",
+                response_text=exc.response.text,
+            ) from exc
+
+        except requests.exceptions.JSONDecodeError as exc:
+            raise ConnectorResponseError(
+                connector_type=self.__class__.__name__,
+                url=url,
+                message="Invalid response format from chatbot endpoint",
+                original_error=exc,
+            ) from exc
+
+        except requests.RequestException as exc:
+            raise ConnectorConnectionError(
+                connector_type=self.__class__.__name__,
+                url=url,
+                message=f"Request failed for chatbot endpoint: {exc.__class__.__name__}",
+                original_error=exc,
+            ) from exc
 
     @abstractmethod
     def get_endpoints(self) -> dict[str, EndpointConfig]:

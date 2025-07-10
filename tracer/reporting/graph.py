@@ -8,7 +8,9 @@ from pathlib import Path
 import graphviz
 
 from tracer.schemas.functionality_node_model import FunctionalityNode
+from tracer.utils.graphviz_checker import check_graphviz_availability
 from tracer.utils.logging_utils import get_logger
+from tracer.utils.tracer_error import GraphvizNotInstalledError
 
 from .config import (
     AddNodeOptions,
@@ -132,8 +134,10 @@ def export_graph(
         options: Graph rendering options. If None, uses default options.
 
     Raises:
-        RuntimeError: If Graphviz is not installed or accessible
+        GraphvizNotInstalledError: If Graphviz is not installed or accessible
     """
+    check_graphviz_availability()
+
     if options is None:
         options = GraphRenderOptions()
     _render_graph_with_options(nodes, output_path, options)
@@ -334,7 +338,7 @@ def render_graph(dot: graphviz.Digraph, output_path: str) -> None:
         output_path: Output file path
 
     Raises:
-        RuntimeError: If Graphviz executable is not found
+        GraphvizNotInstalledError: If Graphviz executable is not found
     """
     try:
         # Suppress Graphviz warnings/errors to devnull
@@ -347,8 +351,9 @@ def render_graph(dot: graphviz.Digraph, output_path: str) -> None:
         logger.info("Workflow graph saved to: %s", final_output_path)
 
     except graphviz.backend.execute.ExecutableNotFound as exc:
-        error_msg = "Graphviz 'dot' executable not found. Ensure Graphviz is installed and in your system's PATH."
-        raise RuntimeError(error_msg) from exc
+        logger.exception("Graphviz 'dot' executable not found during graph rendering")
+        msg = "Graphviz 'dot' executable not found. Ensure Graphviz is installed and in your system's PATH."
+        raise GraphvizNotInstalledError(msg) from exc
 
 
 def add_nodes(
