@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.11] - 2025-07-10
+
+### Added
+
+- **Exception Hierarchy**: Introduced a structured exception hierarchy for Tracer, defining custom exceptions in `tracer/utils/tracer_error.py`.
+- **Graphviz Checks**: Added early failure detection for Graphviz availability, raising `GraphvizNotInstalledError` if not found.
+
+### Changed
+
+- **Error Handling**: Propagated and handled specific exceptions (`ConnectorError`, `LLMError`, etc.) in `tracer/main.py` for improved error flow.
+- **Connector Health Checks**: Updated connector health checks to raise granular `Connector*Error` types.
+- **Documentation**: Documented the new exception hierarchy in `docs/EXCEPTIONS.md`.
+
 ## [0.2.10] - 2025-07-04
 
 ### Fixed
