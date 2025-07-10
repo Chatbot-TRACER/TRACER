@@ -236,7 +236,7 @@ class Chatbot(ABC):
                 url,
             )
             msg = f"Failed to create new conversation for {self.__class__.__name__} at {url}"
-            raise ConnectorConnectionError(msg) from e
+            raise ConnectorConnectionError(msg, original_error=e) from e
         else:
             if response:
                 # Try to extract conversation ID if provided
@@ -271,7 +271,7 @@ class Chatbot(ABC):
         except requests.RequestException as e:
             logger.exception("Chatbot request failed for %s", self.__class__.__name__)
             msg = f"Chatbot request failed for {self.__class__.__name__} at {url}"
-            raise ConnectorConnectionError(msg) from e
+            raise ConnectorConnectionError(msg, original_error=e) from e
 
         if response_json:
             processor = self.get_response_processor()
