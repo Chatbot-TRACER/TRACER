@@ -229,15 +229,21 @@ class Chatbot(ABC):
 
         try:
             response = self._make_request(url, endpoint_config, {})
+        except requests.RequestException as e:
+            logger.exception(
+                "Failed to create new conversation for %s at %s",
+                self.__class__.__name__,
+                url,
+            )
+            msg = f"Failed to create new conversation for {self.__class__.__name__} at {url}"
+            raise ConnectorConnectionError(msg, original_error=e) from e
+        else:
             if response:
                 # Try to extract conversation ID if provided
                 self.conversation_id = response.get("id") or response.get("conversation_id")
                 return True
-        except requests.RequestException:
-            logger.exception("Error creating new conversation")
+            # Response was empty but request succeeded
             return False
-
-        return False
 
     def execute_with_input(self, user_msg: str) -> ChatbotResponse:
         """Send a message to the chatbot and get the response.
@@ -262,9 +268,10 @@ class Chatbot(ABC):
 
         try:
             response_json = self._make_request(url, endpoint_config, payload)
-        except requests.RequestException:
-            logger.exception("Chatbot request failed")
-            raise  # Re-raise the exception to be caught by the agent
+        except requests.RequestException as e:
+            logger.exception("Chatbot request failed for %s", self.__class__.__name__)
+            msg = f"Chatbot request failed for {self.__class__.__name__} at {url}"
+            raise ConnectorConnectionError(msg, original_error=e) from e
 
         if response_json:
             processor = self.get_response_processor()
