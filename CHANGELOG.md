@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.12] - 2025-07-10
+
+### Fixed
+
+- **Connector Stability**: Improved exception handling in chatbot connectors to prevent application hangs on connection errors. The application now raises a `ConnectorConnectionError` and exits gracefully.
+- **Code Quality**: Addressed multiple linting issues (`TRY300`, `TRY003`, `EM102`, `RUF002`, `ANN204`, `D107`, `ANN401`) for improved code quality and consistency.
+
 ## [0.2.11] - 2025-07-10
 
 ### Added
