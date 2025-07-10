@@ -8,6 +8,22 @@
 
 A tool for automatically exploring and analyzing chatbots, generating a model of the functionalities and user profiles for testing.
 
+## Installation
+
+The easiest way to install TRACER is from PyPI:
+
+```bash
+pip install chatbot-tracer
+```
+
+You must also have [Graphviz](https://graphviz.gitlab.io/download/) installed on your system for TRACER to work properly.
+
+This will install the latest released version and all required Python dependencies.
+
+---
+
+If you want to contribute or develop TRACER, see the section below.
+
 ## 1. Overview & Goals
 
 TRACER is a tool designed to automatically interact with and analyze target chatbots. It uses Large Language Models (LLMs) to conduct multiple conversational sessions, identify the chatbot's core functionalities, limitations, and interaction flows, and generate structured outputs for testing and analysis.
@@ -98,29 +114,6 @@ graph LR
 
 ## 4. Usage
 
-### Installation
-
-1. Ensure Python 3.11+ and Graphviz are installed.
-2. Clone the repository:
-
-    ```bash
-    git clone https://github.com/Chatbot-TRACER/TRACER.git
-    cd TRACER
-    ```
-
-3. Install the project:
-
-    ```bash
-    pip install .
-    ```
-
-4. Make sure to have the required environment variables set for OpenAI or Google Gemini models.
-
-    ```bash
-    export OPENAI_API_KEY=your_openai_api_key
-    export GOOGLE_API_KEY=your_google_api_key
-    ```
-
 Execution:
 
 ```bash
@@ -174,3 +167,50 @@ TRACER -t ada-uam -n 8 -s 12 -o generated_profiles/ada-uam -m gpt-4o-mini
 # Using Gemini models
 TRACER -t taskyto -n 10 -s 5 -o generated_profiles/taskyto -m gemini-2.0-flash
 ```
+
+## Development & Contributing
+
+If you want to contribute to TRACER or work on its development, follow these steps:
+
+1. Ensure Python 3.11+ and Graphviz are installed.
+2. Clone the repository:
+
+    ```bash
+    git clone https://github.com/Chatbot-TRACER/TRACER.git
+    cd TRACER
+    ```
+
+3. Install dependencies (choose one):
+
+    ```bash
+    pip install -r requirements.txt
+    # or, using uv (recommended for speed)
+    uv sync
+    ```
+
+4. (Optional, for CLI development) Install in editable mode to use the `tracer` command:
+
+    ```bash
+    pip install -e .
+    ```
+
+5. Make sure to have the required environment variables set for OpenAI or Google Gemini models.
+
+    ```bash
+    export OPENAI_API_KEY=your_openai_api_key
+    export GOOGLE_API_KEY=your_google_api_key
+    ```
+
+To run TRACER in development mode:
+
+- As a module (recommended for development):
+
+    ```bash
+    python -m tracer.main --help
+    ```
+
+- Or, if installed in editable mode, use the CLI:
+
+    ```bash
+    tracer --help
+    ```
