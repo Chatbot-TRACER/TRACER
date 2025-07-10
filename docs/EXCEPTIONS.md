@@ -10,6 +10,10 @@ The exceptions are organized in a hierarchy, with `TracerError` as the base clas
 
 - **`GraphvizNotInstalledError`**: This exception is raised when the Graphviz `dot` executable is not found in the system's PATH. This indicates that Graphviz is either not installed or not configured correctly.
 
-- **`ConnectorError`**: This is a base class for all errors related to chatbot connectors. It can be raised for a variety of connector-related issues, such as connection failures, invalid configurations, or authentication problems.
+- **`ConnectorError`**: This is the base class for all errors related to chatbot connectors. More specific connector errors inherit from this class:
+  - **`ConnectorConnectionError`**: Raised when the application is unable to establish a connection to the chatbot endpoint (e.g., network issues, incorrect URL, timeout).
+  - **`ConnectorAuthenticationError`**: Raised when authentication with the chatbot connector fails (e.g., invalid API key, expired token).
+  - **`ConnectorConfigurationError`**: Raised when the chatbot connector is configured incorrectly (e.g., missing required parameters, invalid settings).
+  - **`ConnectorResponseError`**: Raised when the chatbot connector receives an invalid or unexpected response from the chatbot API (e.g., malformed JSON, unexpected status code).
 
 - **`LLMError`**: This exception is raised for any errors that occur while interacting with the Language Model (LLM) API. This could include issues with API keys, network problems, or other API-related errors.

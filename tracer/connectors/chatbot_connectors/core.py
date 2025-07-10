@@ -1,5 +1,6 @@
 """Core classes and interfaces for chatbot connectors."""
 
+import json
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
@@ -170,7 +171,7 @@ class Chatbot(ABC):
                 response_text=exc.response.text,
             ) from exc
 
-        except requests.exceptions.JSONDecodeError as exc:
+        except json.JSONDecodeError as exc:
             raise ConnectorResponseError(
                 connector_type=self.__class__.__name__,
                 url=url,
