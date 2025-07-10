@@ -21,7 +21,12 @@ from tracer.reporting import (
 )
 from tracer.utils.cli import parse_arguments
 from tracer.utils.logging_utils import get_logger, setup_logging
-from tracer.utils.tracer_error import TracerError
+from tracer.utils.tracer_error import (
+    ConnectorError,
+    GraphvizNotInstalledError,
+    LLMError,
+    TracerError,
+)
 
 logger = get_logger()
 
@@ -98,7 +103,7 @@ def _instantiate_connector(technology: str, url: str) -> Chatbot:
         Chatbot: An instance of the appropriate connector class.
 
     Raises:
-        TracerError: If the technology name is unknown or instantiation fails.
+        ConnectorError: If the connector fails health check or has connectivity issues.
     """
     logger.info("Instantiating connector for technology: %s", technology)
 
@@ -106,21 +111,33 @@ def _instantiate_connector(technology: str, url: str) -> Chatbot:
         # Use the factory to check if URL is required and create the chatbot
         if ChatbotFactory.requires_url(technology):
             logger.info("Creating chatbot '%s' with base URL: %s", technology, url)
-            return ChatbotFactory.create_chatbot(technology, base_url=url)
+            chatbot = ChatbotFactory.create_chatbot(technology, base_url=url)
+        else:
+            logger.info("Creating chatbot '%s' without URL (pre-configured)", technology)
+            chatbot = ChatbotFactory.create_chatbot(technology)
 
-        logger.info("Creating chatbot '%s' without URL (pre-configured)", technology)
-        return ChatbotFactory.create_chatbot(technology)
+        # Perform health check
+        logger.info("Performing health check for chatbot connector...")
+        chatbot.health_check()
+        logger.info("Chatbot connector health check passed")
 
     except ValueError as e:
         logger.exception("Failed to instantiate connector for technology '%s'", technology)
         available_types = ChatbotFactory.get_available_types()
         logger.exception("Available chatbot types: %s", ", ".join(available_types))
         msg = f"Failed to instantiate connector for '{technology}'."
-        raise TracerError(msg) from e
+        raise ConnectorError(msg) from e
+
+    except ConnectorError:
+        logger.exception("Connector health check failed for technology '%s'", technology)
+        raise  # Re-raise the original ConnectorError to be caught by main
+
     except Exception as e:
         logger.exception("Unexpected error instantiating connector for technology '%s'", technology)
         msg = f"Unexpected error instantiating connector for '{technology}'."
-        raise TracerError(msg) from e
+        raise ConnectorError(msg) from e
+    else:
+        return chatbot
 
 
 def _run_exploration_phase(
@@ -357,11 +374,23 @@ def main() -> None:
     try:
         _run_tracer()
         logger.info("Tracer execution successful.")
-    except (TracerError, requests.RequestException):
+    except GraphvizNotInstalledError:
+        logger.exception("Graphviz dependency error")
+        sys.exit(1)
+    except ConnectorError:
+        logger.exception("Chatbot connector error")
+        sys.exit(1)
+    except LLMError:
+        logger.exception("Large Language Model API error")
+        sys.exit(1)
+    except TracerError:
         logger.exception("Tracer execution failed")
         sys.exit(1)
+    except requests.RequestException:
+        logger.exception("A connection error occurred")
+        sys.exit(1)
     except Exception:
-        logger.exception("An unexpected critical error occurred.")
+        logger.exception("An unexpected critical error occurred")
         sys.exit(1)
 
 
