@@ -2,13 +2,13 @@
 
 import html
 import os
+import shutil
 from contextlib import redirect_stderr
 from pathlib import Path
 
 import graphviz
 
 from tracer.schemas.functionality_node_model import FunctionalityNode
-from tracer.utils.graphviz_checker import check_graphviz_availability
 from tracer.utils.logging_utils import get_logger
 from tracer.utils.tracer_error import GraphvizNotInstalledError
 
@@ -31,6 +31,22 @@ from .constants import (
 )
 
 logger = get_logger()
+
+
+def check_graphviz_availability() -> None:
+    """Check if Graphviz is installed and accessible.
+
+    This function performs an early check to ensure that Graphviz's 'dot'
+    executable is available in the system's PATH. It uses a fail-early
+    approach to detect missing Graphviz installations.
+
+    Raises:
+        GraphvizNotInstalledError: If Graphviz is not installed or not accessible.
+    """
+    if not shutil.which("dot"):
+        logger.exception("Graphviz 'dot' executable not found.")
+        msg = "Graphviz is not installed or not found in PATH. Please install Graphviz to enable graph generation."
+        raise GraphvizNotInstalledError(msg)
 
 
 def adjust_dpi_for_format(fmt: str, dpi: int) -> int:
