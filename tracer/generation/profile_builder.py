@@ -122,7 +122,9 @@ def _build_user_context(profile: dict[str, Any]) -> list[str]:
     return user_context
 
 
-def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_language: str, model: str) -> dict[str, Any]:
+def build_profile_yaml(
+    profile: dict[str, Any], fallback_message: str, primary_language: str, model: str
+) -> dict[str, Any]:
     """Create the YAML profile dictionary structure from a profile spec.
 
     Args:

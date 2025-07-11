@@ -1,5 +1,6 @@
 """Coverage merger script for combining multiple coverage files into a single footprint."""
 
+import argparse
 import json
 from collections import defaultdict
 from pathlib import Path
@@ -110,8 +111,6 @@ def merge_files_from_list(file_list_path: str, output_path: str) -> str:
 
 def main() -> int | None:
     """Main entry point for the coverage merger script."""
-    import argparse
-
     parser = argparse.ArgumentParser(description="Merge chatbot coverage files")
     parser.add_argument("basename", nargs="?", help="Base name prefix of files to merge")
     parser.add_argument("-i", "--input-dir", default=".", help="Directory containing the coverage files to merge")

@@ -16,6 +16,8 @@ from tracer.prompts.variable_smart_defaults_prompts import (
 )
 from tracer.utils.logging_utils import get_logger
 
+from .variable_validation import validate_semantic_match
+
 logger = get_logger()
 
 # Constants for validation
@@ -60,9 +62,6 @@ def generate_smart_default_options(
 
         if not options_list:
             return None
-
-        # Import here to avoid circular imports
-        from .variable_validation import validate_semantic_match
 
         # Validate the generated options
         if not validate_semantic_match(variable_name, options_list, llm):

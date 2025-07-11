@@ -10,6 +10,8 @@ from langchain_core.language_models import BaseLanguageModel
 from tracer.constants import VARIABLE_PATTERN
 from tracer.utils.logging_utils import get_logger
 
+from .variable_matching import match_variables_to_data_sources_with_llm
+
 logger = get_logger()
 
 # Constants
@@ -56,9 +58,6 @@ def extract_parameter_options_for_profile(
         return {}
 
     _log_data_sources_summary(potential_data_sources, profile_name)
-
-    # Import here to avoid circular imports
-    from .variable_matching import match_variables_to_data_sources_with_llm
 
     # Use LLM to match goal_variables to these potential_data_sources
     if remaining_unmatched_vars := list(goal_variables):

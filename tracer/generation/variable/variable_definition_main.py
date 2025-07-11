@@ -11,7 +11,11 @@ from tracer.prompts.variable_definition_prompts import (
 )
 from tracer.utils.logging_utils import get_logger
 
-from .variable_definition_core import VariableDefinitionContext
+from .variable_definition_core import (
+    VariableDefinitionContext,
+    define_single_variable_with_retry,
+    update_goals_with_definition,
+)
 from .variable_parameter_extraction import extract_parameter_options_for_profile
 from .variable_smart_defaults import generate_smart_default_options
 
@@ -176,11 +180,6 @@ def _define_all_variables(
     llm = var_def_context["llm"]
     primary_language = var_def_context["primary_language"]
 
-    # Import here to avoid circular imports
-    from .variable_definition_core import (
-        update_goals_with_definition,
-    )
-
     for variable_name in sorted(all_variables):
         parsed_def = None
 
@@ -301,9 +300,6 @@ def _process_variable_without_options(
     if not parsed_def:
         # Fall back to general LLM definition
         logger.debug("No smart defaults for '%s'. Generating definition with LLM.", variable_name)
-
-        # Import here to avoid circular imports
-        from .variable_definition_core import define_single_variable_with_retry
 
         parsed_def = define_single_variable_with_retry(variable_name, var_def_context)
 

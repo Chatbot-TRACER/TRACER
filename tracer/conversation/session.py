@@ -508,7 +508,7 @@ def _get_explorer_next_message(
     try:
         max_history_turns_for_llm = 10
         # Include system prompt + recent turns
-        messages_for_llm = [conversation_history_lc[0]] + conversation_history_lc[-(max_history_turns_for_llm * 2) :]
+        messages_for_llm = [conversation_history_lc[0], *conversation_history_lc[-(max_history_turns_for_llm * 2) :]]
 
         # Add periodic reminder about explorer role to prevent acting like the chatbot
         reminder_prompt = get_reminder_prompt()
@@ -907,8 +907,6 @@ def run_exploration_session(
         conversation_history_lc.append(HumanMessage(content="[Chatbot communication error on initial message]"))
     else:
         # Clean HTML if present in the response
-        from tracer.utils.html_cleaner import clean_html_response
-
         original_message = chatbot_message  # Store for debugging if needed
         chatbot_message = clean_html_response(chatbot_message)
 

@@ -254,8 +254,7 @@ def write_technical_details(f: TextIO, languages: list[str], fallback_message: s
     f.write("## ⚙️ Technical Details\n\n")
     f.write("### 🌐 Language Support\n\n")
     if languages:
-        for lang in languages:
-            f.write(f"- {lang}\n")
+        f.writelines(f"- {lang}\n" for lang in languages)
     else:
         f.write("No specific language support detected.\n")
     f.write("\n")
@@ -306,8 +305,7 @@ def write_performance_stats(f: TextIO, token_usage: dict[str, Any]) -> None:
 
     if token_usage.get("models_used"):
         f.write("### Models Used\n\n")
-        for model in token_usage["models_used"]:
-            f.write(f"- {model}\n")
+        f.writelines(f"- {model}\n" for model in token_usage["models_used"])
         f.write("\n")
 
 
