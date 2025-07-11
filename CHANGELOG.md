@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-01-27
+
+### Added
+- **Separate Profile Model Support**: Introduced a new CLI argument `-pm/--profile-model` to specify a different model for profile generation. This allows users to use one model for exploration (e.g., a powerful model like `gpt-4o`) and a different model for profile generation (e.g., a cheaper model like `gpt-4o-mini`). If not specified, the profile model defaults to the same model used for exploration, maintaining backward compatibility.
+
+### Changed
+- **Model Configuration**: Updated the `-m/--model` argument description to clarify it's specifically for exploration. The configuration summary now displays both the exploration model and profile model for better transparency.
+- **Internal Architecture**: Enhanced the analysis pipeline to support separate model configurations, with the profile model parameter propagated through the analysis phase to ensure profiles are generated with the specified model.
+
 ## [0.2.13] - 2025-07-11
 
 ### Fixed
