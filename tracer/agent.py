@@ -590,6 +590,7 @@ class ChatbotExplorationAgent:
             fallback_message=exploration_results.get("fallback_message", ""),
             workflow_structure=None,
             nested_forward=nested_forward,
+            model=self.llm.model_name,
         )
 
         # Run Structure Inference
@@ -619,6 +620,7 @@ class ChatbotExplorationAgent:
         ]
         profile_initial_state["conversation_goals"] = []
         profile_initial_state["built_profiles"] = []
+        profile_initial_state["model"] = self.llm.model_name
 
         # Run Profile Generation
         logger.debug("Creating analysis thread for profile generation")

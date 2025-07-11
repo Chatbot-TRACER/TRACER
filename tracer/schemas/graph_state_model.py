@@ -29,6 +29,7 @@ class State(TypedDict):
         chatbot_type (str): The type of chatbot, which can be "transactional", "informational", or "unknown".
         workflow_structure (List[Dict[str, Any]]): A list of dictionaries representing the workflow structure for profile generation.
         nested_forward (bool): Whether to use nested forward() chaining in variable definitions.
+        model (str): The LLM model name to use for profile generation (e.g., "gpt-4o-mini", "gemini-2.0-flash").
     """
 
     messages: Annotated[list, add_messages]
@@ -44,3 +45,4 @@ class State(TypedDict):
     chatbot_type: str
     workflow_structure: list[dict[str, Any]]
     nested_forward: bool
+    model: str

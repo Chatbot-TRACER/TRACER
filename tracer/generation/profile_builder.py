@@ -122,13 +122,14 @@ def _build_user_context(profile: dict[str, Any]) -> list[str]:
     return user_context
 
 
-def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_language: str) -> dict[str, Any]:
+def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_language: str, model: str) -> dict[str, Any]:
     """Create the YAML profile dictionary structure from a profile spec.
 
     Args:
         profile: Profile data including goals and parameters
         fallback_message: The chatbot's fallback message
         primary_language: Primary language for the user
+        model: The LLM model name to use (e.g., "gpt-4o-mini", "gemini-2.0-flash")
 
     Returns:
         Dict containing the structured YAML profile
@@ -165,7 +166,7 @@ def build_profile_yaml(profile: dict[str, Any], fallback_message: str, primary_l
         "test_name": profile_name,
         "llm": {
             "temperature": temperature,
-            "model": "gpt-4o-mini",
+            "model": model,
             "format": {"type": "text"},
         },
         "user": {

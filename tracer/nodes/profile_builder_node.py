@@ -35,6 +35,9 @@ def profile_builder_node(state: State) -> dict[str, Any]:
     if state.get("supported_languages") and len(state["supported_languages"]) > 0:
         primary_language = state["supported_languages"][0]
 
+    # Get model from state (or use default if not provided)
+    model = state.get("model", "gpt-4o-mini")
+
     total_profiles = len(state["conversation_goals"])
 
     # Build YAML for each profile goal set
@@ -49,6 +52,7 @@ def profile_builder_node(state: State) -> dict[str, Any]:
                 profile,
                 fallback_message=fallback_message,
                 primary_language=primary_language,
+                model=model,
             )
             built_profiles.append(profile_yaml_content)
             successful += 1
