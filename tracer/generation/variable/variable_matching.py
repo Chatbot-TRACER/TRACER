@@ -8,6 +8,8 @@ from langchain_core.language_models import BaseLanguageModel
 from tracer.prompts.variable_definition_prompts import get_variable_to_datasource_matching_prompt
 from tracer.utils.logging_utils import get_logger
 
+from .variable_validation import validate_semantic_match
+
 logger = get_logger()
 
 
@@ -98,9 +100,6 @@ def _process_matched_source(
     if not matched_options:
         logger.warning("Data source DS%d has no options for variable '%s'", source_index + 1, variable_name)
         return {}
-
-    # Import here to avoid circular imports
-    from .variable_validation import validate_semantic_match
 
     # Validate that the matched options are semantically appropriate
     is_semantically_valid = validate_semantic_match(variable_name, matched_options, llm)

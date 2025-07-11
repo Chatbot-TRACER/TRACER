@@ -1,6 +1,11 @@
 """Coverage analyzer for TRACER project."""
 
+import argparse
+import io
 import json
+import re
+import sys
+import traceback
 from pathlib import Path
 
 # Coverage percentage thresholds
@@ -649,9 +654,6 @@ class CoverageAnalyzer:
     def save_readable_report(self, output_file: str | None = None) -> str:
         """Save a human-readable text report, stripping ANSI color codes."""
         out_path = self._get_output_path(output_file, "txt")
-        import io
-        import re
-        import sys
 
         # Remove the color codes from the txt
         ansi_escape_pattern = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
@@ -794,9 +796,6 @@ class CoverageAnalyzer:
 
 def main() -> None:
     """Main function to run coverage analysis from command line."""
-    import argparse
-    import sys
-
     parser = argparse.ArgumentParser(description="Analyze coverage data with refined structure.")
     parser.add_argument("coverage_file", help="Path to coverage file to analyze (e.g., merged_coverage.json)")
     parser.add_argument(
@@ -841,8 +840,6 @@ def main() -> None:
         sys.exit(1)
     except (OSError, ValueError, KeyError) as e:
         print(f"An unexpected error occurred: {e}", file=sys.stderr)
-        import traceback
-
         traceback.print_exc()
         sys.exit(1)
 

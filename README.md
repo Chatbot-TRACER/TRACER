@@ -128,7 +128,8 @@ All arguments are optional.
 - `-n, --turns`: Maximum turns per session (default: 8).
 - `-t, --technology`: Chatbot technology connector to use (default: `taskyto`). See available technologies below.
 - `-u, --url`: Chatbot URL (default: `http://localhost:5000`). Only necessary for technologies like `taskyto` that require an explicit endpoint. Others may have the URL embedded in their connector.
-- `-m, --model`: Model for analysis and generation (default: `gpt-4o-mini`). Supports both OpenAI models (e.g., `gpt-4o`) and Google Gemini models (e.g., `gemini-2.0-flash`).
+- `-m, --model`: Model for exploration (default: `gpt-4o-mini`). Supports both OpenAI models (e.g., `gpt-4o`) and Google Gemini models (e.g., `gemini-2.0-flash`). **Recommended**: Use a more powerful model (e.g., `gpt-4o`) for better exploration quality.
+- `-pm, --profile-model`: Model for profile generation (default: same as exploration model). Supports both OpenAI models (e.g., `gpt-4o`) and Google Gemini models (e.g., `gemini-2.0-flash`). **Recommended**: Use a cheaper model (e.g., `gpt-4o-mini`) for cost optimization.
 - `-o, --output`: Output directory for generated files (default: `output`).
 - `-v` or `-vv`: Verbosity level, none will show key information, `-v` will show the conversation and `-vv` will show be debug information.
 - `-gfs`, `--graph-font-size`: Font size for the graph.
@@ -166,6 +167,12 @@ TRACER -t ada-uam -n 8 -s 12 -o generated_profiles/ada-uam -m gpt-4o-mini
 
 # Using Gemini models
 TRACER -t taskyto -n 10 -s 5 -o generated_profiles/taskyto -m gemini-2.0-flash
+
+# Using different models for exploration and profile generation (recommended)
+TRACER -t ada-uam -n 8 -s 12 -m gpt-4o -pm gpt-4o-mini -o generated_profiles/ada-uam
+
+# Mix different model providers (explore with OpenAI, generate profiles with Gemini)
+TRACER -t taskyto -m gpt-4o -pm gemini-2.0-flash -o generated_profiles/taskyto
 ```
 
 ## Development & Contributing

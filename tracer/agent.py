@@ -513,17 +513,21 @@ class ChatbotExplorationAgent:
         return remaining_nodes
 
     def run_analysis(
-        self, exploration_results: dict[str, Any], *, nested_forward: bool = False
+        self, exploration_results: dict[str, Any], *, nested_forward: bool = False, profile_model: str | None = None
     ) -> dict[str, list[Any]]:
         """Runs the LangGraph analysis pipeline using pre-compiled graphs.
 
         Args:
             exploration_results: Results from the exploration phase
             nested_forward: Whether to use nested forward() chaining in variable definitions
+            profile_model: Model to use for profile generation (defaults to exploration model)
 
         Returns:
             Results from the analysis phase
         """
+        # Use profile_model if provided, otherwise fall back to exploration model
+        model_for_profiles = profile_model or self.llm.model_name
+
         conversation_count = len(exploration_results.get("conversation_sessions", []))
         functionality_count = len(exploration_results.get("root_nodes_dict", {}))
         logger.debug(
@@ -531,6 +535,7 @@ class ChatbotExplorationAgent:
             conversation_count,
             functionality_count,
         )
+        logger.debug("Using model '%s' for exploration and '%s' for profiles", self.llm.model_name, model_for_profiles)
 
         # Deduplicate functionalities before analysis
         root_nodes_dict = exploration_results.get("root_nodes_dict", {})
@@ -590,6 +595,7 @@ class ChatbotExplorationAgent:
             fallback_message=exploration_results.get("fallback_message", ""),
             workflow_structure=None,
             nested_forward=nested_forward,
+            model=self.llm.model_name,
         )
 
         # Run Structure Inference
@@ -619,6 +625,7 @@ class ChatbotExplorationAgent:
         ]
         profile_initial_state["conversation_goals"] = []
         profile_initial_state["built_profiles"] = []
+        profile_initial_state["model"] = model_for_profiles
 
         # Run Profile Generation
         logger.debug("Creating analysis thread for profile generation")
