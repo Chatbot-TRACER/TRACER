@@ -14,6 +14,7 @@ from openai import AuthenticationError
 from tracer.constants import MIN_NODES_FOR_DEDUPLICATION
 
 try:
+    from google.auth.exceptions import DefaultCredentialsError, RefreshError
     from langchain_google_genai import ChatGoogleGenerativeAI
 
     GEMINI_AVAILABLE = True
@@ -35,7 +36,7 @@ from tracer.conversation.session import (
 from tracer.schemas.functionality_node_model import FunctionalityNode
 from tracer.utils.logging_utils import get_logger
 from tracer.utils.token_tracker_callback import TokenUsageTracker
-from tracer.utils.tracer_error import TracerError
+from tracer.utils.tracer_error import LLMError
 
 from .graphs.profile_graph import build_profile_generation_graph
 from .graphs.structure_graph import build_structure_graph
@@ -88,7 +89,7 @@ class ChatbotExplorationAgent:
 
         Raises:
             ImportError: If trying to use Gemini/OpenAI models but the required package is not installed.
-            ValueError: If the model name format is not recognized.
+            LLMError: If authentication or API-related errors occur during initialization.
         """
         llm: BaseChatModel
 
@@ -100,7 +101,17 @@ class ChatbotExplorationAgent:
                 raise ImportError(gemini_error_msg)
 
             logger.info("Initializing Gemini model: %s", model_name)
-            llm = ChatGoogleGenerativeAI(model=model_name, callbacks=[self.token_tracker])
+
+            try:
+                llm = ChatGoogleGenerativeAI(model=model_name, callbacks=[self.token_tracker])
+            except (DefaultCredentialsError, RefreshError) as e:
+                logger.exception("Gemini authentication failed. Please check your API key or credentials.")
+                msg = "Gemini authentication failed."
+                raise LLMError(msg) from e
+            except Exception as e:
+                logger.exception("Failed to initialize Gemini model")
+                msg = f"Failed to initialize Gemini model '{model_name}'."
+                raise LLMError(msg) from e
 
             try:
                 logger.debug("Performing health check on Gemini model...")
@@ -108,11 +119,11 @@ class ChatbotExplorationAgent:
             except PermissionDenied as e:
                 logger.exception("Gemini API key is invalid or lacks permissions. Please check your credentials.")
                 msg = "Gemini authentication failed."
-                raise TracerError(msg) from e
+                raise LLMError(msg) from e
             except Exception as e:
                 logger.exception("Failed to verify connection to Gemini")
                 msg = "Gemini health check failed."
-                raise TracerError(msg) from e
+                raise LLMError(msg) from e
 
         # Handle OpenAI models
         else:
@@ -125,7 +136,7 @@ class ChatbotExplorationAgent:
             except AuthenticationError as e:
                 logger.exception("OpenAI API key is invalid or has expired. Please check your credentials.")
                 msg = "OpenAI authentication failed."
-                raise TracerError(msg) from e
+                raise LLMError(msg) from e
             except ImportError as e:
                 openai_error_msg = (
                     "To use OpenAI models, please install the required package: pip install langchain-openai openai"
@@ -137,7 +148,7 @@ class ChatbotExplorationAgent:
                     f"Error initializing OpenAI model '{model_name}'. Please check your OpenAI API key and model name."
                 )
                 logger.exception("OpenAI initialization failed")
-                raise RuntimeError(error_msg) from e
+                raise LLMError(error_msg) from e
 
         return llm
 

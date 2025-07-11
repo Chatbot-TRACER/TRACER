@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.13] - 2025-07-11
+
+### Fixed
+- **LLM Error Handling**: Authentication and credential errors during LLM (OpenAI/Gemini) initialization are now correctly caught and raised as `LLMError`. This ensures that issues such as missing or invalid API keys, or lack of budget, are reported as LLM errors and can be handled appropriately by downstream consumers (e.g., web frontends).
+
+### Changed
+- **Exception Exposure for Web Integration**: All custom exception classes (`LLMError`, `ConnectorError`, etc.) are now re-exported in `tracer/__init__.py`. This allows web applications and other consumers to import and handle these exceptions directly from the `tracer` package, simplifying integration and error handling in external tools.
+
 ## [0.2.12] - 2025-07-10
 
 ### Fixed
