@@ -61,7 +61,15 @@ def parse_arguments() -> Namespace:
         "--model",
         type=str,
         default=default_model,
-        help=f"Model to use (default: {default_model}). Can be OpenAI models like 'gpt-4o' or Gemini models like 'gemini-2.0-flash'",
+        help=f"Model to use for exploration (default: {default_model}). Can be OpenAI models like 'gpt-4o' or Gemini models like 'gemini-2.0-flash'",
+    )
+
+    parser.add_argument(
+        "-pm",
+        "--profile-model",
+        type=str,
+        default=None,
+        help="Model to use for profile generation (default: same as exploration model). Can be OpenAI models like 'gpt-4o' or Gemini models like 'gemini-2.0-flash'",
     )
 
     parser.add_argument(

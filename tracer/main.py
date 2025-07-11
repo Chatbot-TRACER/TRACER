@@ -176,17 +176,22 @@ def _run_exploration_phase(
 
 
 def _run_analysis_phase(
-    agent: ChatbotExplorationAgent, exploration_results: dict[str, Any], *, nested_forward: bool = False
+    agent: ChatbotExplorationAgent,
+    exploration_results: dict[str, Any],
+    *,
+    nested_forward: bool = False,
+    profile_model: str | None = None,
 ) -> dict[str, Any]:
-    """Runs the analysis phase using the agent and exploration results.
+    """Runs the analysis phase (structure inference and profile generation).
 
     Args:
-        agent (ChatbotExplorationAgent): The initialized agent.
-        exploration_results (Dict[str, Any]): The results from the exploration phase.
-        nested_forward (bool): Whether to use nested forward() chaining in variable definitions.
+        agent: The ChatbotExplorationAgent instance to use for analysis.
+        exploration_results: Results from the exploration phase.
+        nested_forward: Whether to use nested forward() chaining in variable definitions.
+        profile_model: Model to use for profile generation (defaults to exploration model).
 
     Returns:
-        Dict[str, Any]: The results generated during the analysis phase.
+        Analysis results containing discovered functionalities and built profiles.
 
     Raises:
         TracerError: If a critical error occurs during analysis.
@@ -198,7 +203,9 @@ def _run_analysis_phase(
     # Mark the beginning of analysis phase for token tracking
     agent.token_tracker.mark_analysis_phase()
 
-    results = agent.run_analysis(exploration_results=exploration_results, nested_forward=nested_forward)
+    results = agent.run_analysis(
+        exploration_results=exploration_results, nested_forward=nested_forward, profile_model=profile_model
+    )
 
     # Log token usage for analysis phase only
     logger.info("\n=== Token Usage in Analysis Phase ===")
@@ -260,12 +267,15 @@ def _generate_reports(results: ExecutionResults, config: ReportConfig) -> None:
 
 def _log_configuration_summary(args: Namespace) -> None:
     """Logs the configuration summary."""
+    profile_model = args.profile_model or args.model
+
     logger.verbose("\n=== Chatbot Explorer Configuration ===")
     logger.verbose("Chatbot Technology:\t%s", args.technology)
     logger.verbose("Chatbot URL:\t\t%s", args.url)
     logger.verbose("Exploration sessions:\t%d", args.sessions)
     logger.verbose("Max turns per session:\t%d", args.turns)
-    logger.verbose("Using model:\t\t%s", args.model)
+    logger.verbose("Exploration model:\t%s", args.model)
+    logger.verbose("Profile model:\t\t%s", profile_model)
     logger.verbose("Output directory:\t%s", args.output)
     logger.verbose("Graph font size:\t\t%d", args.graph_font_size)
     logger.verbose("Compact graph:\t\t%s", "Yes" if args.compact else "No")
@@ -337,7 +347,12 @@ def _run_tracer() -> None:
 
     # Execute phases
     exploration_results = _run_exploration_phase(agent, the_chatbot, args.sessions, args.turns)
-    analysis_results = _run_analysis_phase(agent, exploration_results, nested_forward=args.nested_forward)
+
+    # Use profile_model if specified, otherwise use the same model as exploration
+    profile_model = args.profile_model or args.model
+    analysis_results = _run_analysis_phase(
+        agent, exploration_results, nested_forward=args.nested_forward, profile_model=profile_model
+    )
 
     # Calculate execution time and prepare results
     app_end_time = time.monotonic()
