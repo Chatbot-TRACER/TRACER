@@ -125,4 +125,10 @@ def parse_arguments() -> Namespace:
         help="List the available parameters for a specific chatbot technology and exit",
     )
 
+    parser.add_argument(
+        "--list-connectors",
+        action="store_true",
+        help="List all available chatbot connector technologies and exit",
+    )
+
     return parser.parse_args()

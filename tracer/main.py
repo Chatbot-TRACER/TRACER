@@ -94,6 +94,38 @@ def _setup_configuration() -> Namespace:
             sys.exit(1)
         sys.exit(0)
 
+    # Handle list-connectors option
+    if args.list_connectors:
+        try:
+            available_types = ChatbotFactory.get_available_types()
+            registered_connectors = ChatbotFactory.get_registered_connectors()
+            
+            print("\nAvailable Chatbot Connector Technologies:")
+            print("=" * 50)
+            
+            if not available_types:
+                print("No chatbot connectors are currently registered.")
+            else:
+                for connector_type in sorted(available_types):
+                    description = registered_connectors.get(connector_type, {}).get('description', 'No description available')
+                    print(f"  • {connector_type}")
+                    print(f"    Description: {description}")
+                    print(f"    Use: --technology {connector_type}")
+                    print(f"    Parameters: --list-connector-params {connector_type}")
+                    print()
+                
+                print(f"Total: {len(available_types)} connector(s) available")
+                print("\nUsage:")
+                print("  To see parameters for a specific connector:")
+                print("    --list-connector-params <technology>")
+                print("  To use a connector:")
+                print("    --technology <technology> --connector-params <params>")
+            
+        except Exception as e:
+            print(f"Error retrieving connector information: {e}")
+            sys.exit(1)
+        sys.exit(0)
+
     valid_technologies = ChatbotFactory.get_available_types()
 
     if args.technology not in valid_technologies:

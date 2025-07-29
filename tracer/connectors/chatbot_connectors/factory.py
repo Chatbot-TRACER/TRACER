@@ -58,6 +58,21 @@ class ChatbotFactory:
         return list(cls._chatbot_registrations.keys())
 
     @classmethod
+    def get_registered_connectors(cls) -> dict[str, dict[str, Any]]:
+        """Get information about all registered chatbot connectors.
+
+        Returns:
+            Dictionary with connector names as keys and their metadata as values
+        """
+        return {
+            name: {
+                "description": registration.description,
+                "chatbot_class": registration.chatbot_class.__name__,
+            }
+            for name, registration in cls._chatbot_registrations.items()
+        }
+
+    @classmethod
     def create_chatbot(cls, chatbot_type: str, **kwargs: Any) -> Chatbot:
         """Create a chatbot instance using registered factory method.
 
