@@ -1,5 +1,6 @@
 """Main program entry point for the Chatbot Explorer."""
 
+import json
 import sys
 import time
 from argparse import Namespace
@@ -7,9 +8,13 @@ from pathlib import Path
 from typing import Any
 
 import requests
+from chatbot_connectors import Chatbot, ChatbotFactory
 
 from tracer.agent import ChatbotExplorationAgent
-from tracer.connectors.chatbot_connectors import Chatbot, ChatbotFactory
+from tracer.connectors.chatbot_adapter import (
+    get_available_chatbot_types,
+    get_chatbot_parameters,
+)
 from tracer.reporting import (
     ExecutionResults,
     GraphRenderOptions,
@@ -31,6 +36,89 @@ from tracer.utils.tracer_error import (
 logger = get_logger()
 
 
+def _handle_list_connector_params(technology: str) -> None:
+    """Handle the --list-connector-params option."""
+    try:
+        params = get_chatbot_parameters(technology)
+        print(f"\nParameters for '{technology}' chatbot:")
+        print("-" * 50)
+        for param in params:
+            print(f"  - Name: {param.name}")
+            print(f"    Type: {param.type}")
+            print(f"    Required: {param.required}")
+            if param.default is not None:
+                print(f"    Default: {param.default}")
+            print(f"    Description: {param.description}")
+            print()
+
+        _print_parameter_examples(params)
+
+    except ValueError as e:
+        available_types = get_available_chatbot_types()
+        print(f"Error: {e}")
+        print(f"Available chatbot types: {', '.join(available_types)}")
+        sys.exit(1)
+    except (ImportError, AttributeError) as e:
+        print(f"Error retrieving parameters: {e}")
+        sys.exit(1)
+    sys.exit(0)
+
+
+def _print_parameter_examples(params: list) -> None:
+    """Print usage examples for connector parameters."""
+    print("Example usage:")
+    example_params = {}
+    for param in params:
+        if param.required:
+            if param.name == "base_url":
+                example_params[param.name] = "http://localhost"
+            elif param.name == "port":
+                example_params[param.name] = 8080
+            else:
+                example_params[param.name] = f"<{param.name}>"
+
+    if example_params:
+        json_example = json.dumps(example_params, indent=2)
+        kv_example = ",".join([f"{k}={v}" for k, v in example_params.items()])
+        print(f"  JSON format: --connector-params '{json_example.replace(chr(10), '')}'")
+        print(f'  Key=Value format: --connector-params "{kv_example}"')
+
+
+def _handle_list_connectors() -> None:
+    """Handle the --list-connectors option."""
+    try:
+        available_types = ChatbotFactory.get_available_types()
+        registered_connectors = ChatbotFactory.get_registered_connectors()
+
+        print("\nAvailable Chatbot Connector Technologies:")
+        print("=" * 50)
+
+        if not available_types:
+            print("No chatbot connectors are currently registered.")
+        else:
+            for connector_type in sorted(available_types):
+                description = registered_connectors.get(connector_type, {}).get(
+                    "description", "No description available"
+                )
+                print(f"  • {connector_type}")
+                print(f"    Description: {description}")
+                print(f"    Use: --technology {connector_type}")
+                print(f"    Parameters: --list-connector-params {connector_type}")
+                print()
+
+            print(f"Total: {len(available_types)} connector(s) available")
+            print("\nUsage:")
+            print("  To see parameters for a specific connector:")
+            print("    --list-connector-params <technology>")
+            print("  To use a connector:")
+            print("    --technology <technology> --connector-params <params>")
+
+    except (ImportError, AttributeError) as e:
+        print(f"Error retrieving connector information: {e}")
+        sys.exit(1)
+    sys.exit(0)
+
+
 def _setup_configuration() -> Namespace:
     """Parses command line arguments, validates config, and creates output dir.
 
@@ -50,81 +138,11 @@ def _setup_configuration() -> Namespace:
 
     # Handle list-connector-params option
     if args.list_connector_params:
-        try:
-            technology = args.list_connector_params
-            params = ChatbotFactory.get_chatbot_parameters(technology)
-            print(f"\nParameters for '{technology}' chatbot:")
-            print("-" * 50)
-            for param in params:
-                required_str = "Required" if param.required else "Optional"
-                default_str = f" (default: {param.default})" if param.default is not None else ""
-                print(f"  - Name: {param.name}")
-                print(f"    Type: {param.type}")
-                print(f"    Required: {param.required}")
-                if param.default is not None:
-                    print(f"    Default: {param.default}")
-                print(f"    Description: {param.description}")
-                print()
-            
-            print("Example usage:")
-            example_params = {}
-            for param in params:
-                if param.required:
-                    if param.name == "base_url":
-                        example_params[param.name] = "http://localhost"
-                    elif param.name == "port":
-                        example_params[param.name] = 8080
-                    else:
-                        example_params[param.name] = f"<{param.name}>"
-            
-            if example_params:
-                import json
-                json_example = json.dumps(example_params, indent=2)
-                kv_example = ",".join([f"{k}={v}" for k, v in example_params.items()])
-                print(f"  JSON format: --connector-params '{json_example.replace(chr(10), '')}'")
-                print(f"  Key=Value format: --connector-params \"{kv_example}\"")
-                
-        except ValueError as e:
-            available_types = ChatbotFactory.get_available_types()
-            print(f"Error: {e}")
-            print(f"Available chatbot types: {', '.join(available_types)}")
-            sys.exit(1)
-        except Exception as e:
-            print(f"Error retrieving parameters: {e}")
-            sys.exit(1)
-        sys.exit(0)
+        _handle_list_connector_params(args.list_connector_params)
 
     # Handle list-connectors option
     if args.list_connectors:
-        try:
-            available_types = ChatbotFactory.get_available_types()
-            registered_connectors = ChatbotFactory.get_registered_connectors()
-            
-            print("\nAvailable Chatbot Connector Technologies:")
-            print("=" * 50)
-            
-            if not available_types:
-                print("No chatbot connectors are currently registered.")
-            else:
-                for connector_type in sorted(available_types):
-                    description = registered_connectors.get(connector_type, {}).get('description', 'No description available')
-                    print(f"  • {connector_type}")
-                    print(f"    Description: {description}")
-                    print(f"    Use: --technology {connector_type}")
-                    print(f"    Parameters: --list-connector-params {connector_type}")
-                    print()
-                
-                print(f"Total: {len(available_types)} connector(s) available")
-                print("\nUsage:")
-                print("  To see parameters for a specific connector:")
-                print("    --list-connector-params <technology>")
-                print("  To use a connector:")
-                print("    --technology <technology> --connector-params <params>")
-            
-        except Exception as e:
-            print(f"Error retrieving connector information: {e}")
-            sys.exit(1)
-        sys.exit(0)
+        _handle_list_connectors()
 
     valid_technologies = ChatbotFactory.get_available_types()
 
@@ -172,48 +190,47 @@ def _initialize_agent(model_name: str) -> ChatbotExplorationAgent:
 
 def _parse_connector_params(connector_params_str: str | None) -> dict[str, Any]:
     """Parse connector parameters from string input.
-    
+
     Args:
         connector_params_str: JSON string or key=value pairs
-        
+
     Returns:
         Dictionary of connector parameters
-        
+
     Raises:
         TracerError: If parameter parsing fails
     """
     params = {}
-    
+
     if connector_params_str:
         try:
             # Try to parse as JSON first
-            if connector_params_str.strip().startswith('{'):
-                import json
+            if connector_params_str.strip().startswith("{"):
                 params = json.loads(connector_params_str)
             else:
                 # Parse as key=value pairs
-                for pair in connector_params_str.split(','):
-                    if '=' not in pair:
+                for pair in connector_params_str.split(","):
+                    if "=" not in pair:
                         continue
-                    key, value = pair.split('=', 1)
+                    key, value = pair.split("=", 1)
                     key = key.strip()
                     value = value.strip()
-                    
+
                     # Try to convert to appropriate types
-                    if value.lower() in ('true', 'false'):
-                        params[key] = value.lower() == 'true'
+                    if value.lower() in ("true", "false"):
+                        params[key] = value.lower() == "true"
                     elif value.isdigit():
                         params[key] = int(value)
-                    elif value.replace('.', '').isdigit():
+                    elif value.replace(".", "").isdigit():
                         params[key] = float(value)
                     else:
                         params[key] = value
-                        
+
         except (json.JSONDecodeError, ValueError) as e:
-            logger.error("Failed to parse connector parameters: %s", connector_params_str)
+            logger.exception("Failed to parse connector parameters: %s", connector_params_str)
             msg = f"Invalid connector parameters format: {e}"
             raise TracerError(msg) from e
-    
+
     return params
 
 
@@ -231,16 +248,13 @@ def _instantiate_connector(technology: str, connector_params: dict[str, Any]) ->
         ConnectorError: If the connector fails health check or has connectivity issues.
     """
     logger.info("Instantiating connector for technology: %s", technology)
-    
+
     if connector_params:
         logger.debug("Using connector parameters: %s", connector_params)
 
     try:
         # Create the chatbot using the factory with provided parameters
-        chatbot = ChatbotFactory.create_chatbot(
-            chatbot_type=technology,
-            **connector_params
-        )
+        chatbot = ChatbotFactory.create_chatbot(chatbot_type=technology, **connector_params)
 
         # Perform health check
         logger.info("Performing health check for chatbot connector...")
@@ -256,7 +270,7 @@ def _instantiate_connector(technology: str, connector_params: dict[str, Any]) ->
 
     except (TypeError, KeyError) as e:
         logger.exception("Invalid parameters for chatbot technology '%s'", technology)
-        
+
         # Try to get parameter info to help the user
         try:
             required_params = ChatbotFactory.get_chatbot_parameters(technology)
@@ -265,12 +279,14 @@ def _instantiate_connector(technology: str, connector_params: dict[str, Any]) ->
                 required_str = "Required" if param.required else "Optional"
                 default_str = f" (default: {param.default})" if param.default is not None else ""
                 param_info.append(f"  - {param.name} ({param.type}): {required_str}{default_str}")
-            
-            logger.error("Expected parameters for '%s':\n%s", technology, "\n".join(param_info))
-            logger.error("Use --list-connector-params %s to see detailed parameter information and examples", technology)
-        except Exception:
-            logger.error("Use --list-connector-params %s to see required parameters", technology)
-            
+
+            logger.exception("Expected parameters for '%s':\n%s", technology, "\n".join(param_info))
+            logger.exception(
+                "Use --list-connector-params %s to see detailed parameter information and examples", technology
+            )
+        except (ImportError, AttributeError):
+            logger.exception("Use --list-connector-params %s to see required parameters", technology)
+
         if not connector_params:
             msg = f"No connector parameters provided for '{technology}'. Use --connector-params to specify required parameters or --list-connector-params {technology} for help."
         else:
@@ -420,13 +436,13 @@ def _log_configuration_summary(args: Namespace) -> None:
 
     logger.verbose("\n=== Chatbot Explorer Configuration ===")
     logger.verbose("Chatbot Technology:\t%s", args.technology)
-    
+
     # Show connector parameters
     if args.connector_params:
         logger.verbose("Connector Parameters:\t%s", args.connector_params)
     else:
         logger.verbose("Connector Parameters:\tNone (using defaults)")
-    
+
     logger.verbose("Exploration sessions:\t%d", args.sessions)
     logger.verbose("Max turns per session:\t%d", args.turns)
     logger.verbose("Exploration model:\t%s", args.model)
@@ -498,7 +514,7 @@ def _run_tracer() -> None:
 
     # Initialize components
     agent = _initialize_agent(args.model)
-    
+
     # Parse connector parameters
     connector_params = _parse_connector_params(args.connector_params)
     the_chatbot = _instantiate_connector(args.technology, connector_params)

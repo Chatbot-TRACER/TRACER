@@ -176,11 +176,24 @@ wheels = [
 ]
 
 [[package]]
+name = "chatbot-connectors"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a7/c2/0ad43428ea5f7309c0e577d323b0a678954df605550b942ddf85f8be56a8/chatbot_connectors-0.1.0.tar.gz", hash = "sha256:d646faccd6de8bad20a94801cb056075b88d70a2adceef899358fb59487e3567", size = 67060, upload-time = "2025-07-29T15:25:54.108Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7c/e0/c80d0ec7162f1929fec19cccb552bb7449f47d840f8b32071faafe9b85a4/chatbot_connectors-0.1.0-py3-none-any.whl", hash = "sha256:26f931a26d1258460ce81a7c3b2c8f8fa7b792342b4f340447b657ccec3724f5", size = 14713, upload-time = "2025-07-29T15:25:52.869Z" },
+]
+
+[[package]]
 name = "chatbot-tracer"
 version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "bs4" },
+    { name = "chatbot-connectors" },
     { name = "colorama" },
     { name = "google-generativeai" },
     { name = "graphviz" },
@@ -204,6 +217,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "bs4", specifier = ">=0.0.2" },
+    { name = "chatbot-connectors", specifier = ">=0.1.0" },
     { name = "colorama", specifier = ">=0.4.6" },
     { name = "google-generativeai", specifier = ">=0.8.5" },
     { name = "graphviz", specifier = ">=0.20.3" },

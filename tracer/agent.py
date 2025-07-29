@@ -21,11 +21,12 @@ try:
 except ImportError:
     GEMINI_AVAILABLE = False
 
+from chatbot_connectors import Chatbot
+
 from tracer.analysis.functionality_refinement import (
     _process_node_group_for_merge,
     is_duplicate_functionality,
 )
-from tracer.connectors.chatbot_connectors import Chatbot
 from tracer.conversation.fallback_detection import extract_fallback_message
 from tracer.conversation.language_detection import extract_supported_languages
 from tracer.conversation.session import (

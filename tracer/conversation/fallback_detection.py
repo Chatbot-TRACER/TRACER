@@ -2,9 +2,9 @@
 
 import re
 
+from chatbot_connectors import Chatbot
 from langchain_core.language_models import BaseLanguageModel
 
-from tracer.connectors.chatbot_connectors import Chatbot
 from tracer.prompts.fallback_detection_prompts import (
     get_fallback_identification_prompt,
     get_semantic_fallback_check_prompt,
