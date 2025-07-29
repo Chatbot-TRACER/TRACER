@@ -7,6 +7,7 @@ from tracer.connectors.chatbot_connectors.core import (
     Chatbot,
     ChatbotConfig,
     EndpointConfig,
+    Parameter,
     Payload,
     RequestMethod,
     ResponseProcessor,
@@ -36,15 +37,35 @@ class TaskytoConfig(ChatbotConfig):
 class ChatbotTaskyto(Chatbot):
     """Connector for the Taskyto chatbot API."""
 
-    def __init__(self, base_url: str, timeout: int = 20) -> None:
+    def __init__(self, base_url: str, port: int = 5000, timeout: int = 20) -> None:
         """Initialize the Taskyto chatbot connector.
 
         Args:
             base_url: The base URL for the Taskyto API.
+            port: The port for the Taskyto API.
             timeout: Request timeout in seconds.
         """
-        config = TaskytoConfig(base_url=base_url, timeout=timeout)
+        config = TaskytoConfig(base_url=f"{base_url}:{port}", timeout=timeout)
         super().__init__(config)
+
+    @classmethod
+    def get_chatbot_parameters(cls) -> list[Parameter]:
+        """Return the parameters required to initialize this chatbot."""
+        return [
+            Parameter(
+                name="base_url",
+                type="string",
+                required=True,
+                description="The base URL of the Taskyto server.",
+            ),
+            Parameter(
+                name="port",
+                type="integer",
+                required=False,
+                description="The port of the Taskyto server.",
+                default=5000,
+            ),
+        ]
 
     def get_endpoints(self) -> dict[str, EndpointConfig]:
         """Return endpoint configurations for Taskyto chatbot."""

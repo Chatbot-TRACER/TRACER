@@ -4,7 +4,7 @@ import json
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any
+from typing import Any, Literal
 from urllib.parse import urljoin
 
 import requests
@@ -22,6 +22,17 @@ logger = get_logger()
 ChatbotResponse = tuple[bool, str | None]
 Headers = dict[str, str]
 Payload = dict[str, Any]
+
+
+@dataclass
+class Parameter:
+    """A parameter for a chatbot connector."""
+
+    name: str
+    type: Literal["string", "integer", "boolean"]
+    required: bool
+    description: str
+    default: Any = None
 
 
 class RequestMethod(Enum):
@@ -108,6 +119,11 @@ class Chatbot(ABC):
         self.session = requests.Session()
         self.conversation_id: str | None = None
         self._setup_session()
+
+    @classmethod
+    @abstractmethod
+    def get_chatbot_parameters(cls) -> list[Parameter]:
+        """Return the parameters required to initialize this chatbot."""
 
     def _setup_session(self) -> None:
         """Set up the requests session with default headers."""

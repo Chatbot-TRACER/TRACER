@@ -10,7 +10,6 @@ def parse_arguments() -> Namespace:
 
     default_sessions = 3
     default_turns = 8
-    default_url = "http://localhost:5000"
     default_model = "gpt-4o-mini"
     default_output_dir = "output"
     default_technology = "taskyto"
@@ -49,11 +48,13 @@ def parse_arguments() -> Namespace:
     )
 
     parser.add_argument(
-        "-u",
-        "--url",
+        "-cp",
+        "--connector-params",
         type=str,
-        default=default_url,
-        help=f"Chatbot URL to explore (default: {default_url})",
+        default=None,
+        help='Connector parameters as JSON string or key=value pairs separated by commas. '
+             'Examples: \'{"base_url": "http://localhost", "port": 8080}\' or '
+             '"base_url=http://localhost,port=8080". Use --list-connector-params <technology> to see required parameters for each connector.',
     )
 
     parser.add_argument(
@@ -115,6 +116,13 @@ def parse_arguments() -> Namespace:
         "--nested-forward",
         action="store_true",
         help="Make forward() functions nested in a chain to create more exhaustive profiles",
+    )
+
+    parser.add_argument(
+        "--list-connector-params",
+        type=str,
+        metavar="TECHNOLOGY",
+        help="List the available parameters for a specific chatbot technology and exit",
     )
 
     return parser.parse_args()

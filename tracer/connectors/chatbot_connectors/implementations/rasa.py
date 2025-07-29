@@ -8,6 +8,7 @@ from tracer.connectors.chatbot_connectors.core import (
     Chatbot,
     ChatbotConfig,
     EndpointConfig,
+    Parameter,
     Payload,
     RequestMethod,
     ResponseProcessor,
@@ -79,7 +80,27 @@ class RasaChatbot(Chatbot):
         super().__init__(config)
         self.rasa_config = config
 
+    @classmethod
+    def get_chatbot_parameters(cls) -> list[Parameter]:
+        """Return the parameters required to initialize this chatbot."""
+        return [
+            Parameter(
+                name="base_url",
+                type="string",
+                required=True,
+                description="The base URL of the RASA server.",
+            ),
+            Parameter(
+                name="sender_id",
+                type="string",
+                required=False,
+                description="A unique identifier for the conversation sender.",
+                default="user",
+            ),
+        ]
+
     def get_endpoints(self) -> dict[str, EndpointConfig]:
+
         """Return endpoint configurations for RASA chatbot."""
         return {
             "send_message": EndpointConfig(

@@ -2,18 +2,17 @@
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import Any, ClassVar
 
-from tracer.connectors.chatbot_connectors.core import Chatbot
+from tracer.connectors.chatbot_connectors.core import Chatbot, Parameter
 
 
 @dataclass
 class ChatbotRegistration:
     """Registration metadata for a chatbot type."""
 
-    chatbot_class: type
+    chatbot_class: type[Chatbot]
     factory_method: Callable[..., Chatbot]
-    requires_url: bool = True
     description: str = ""
 
 
@@ -26,10 +25,9 @@ class ChatbotFactory:
     def register_chatbot(
         cls,
         name: str,
-        chatbot_class: type,
+        chatbot_class: type[Chatbot],
         *,
         factory_method: Callable[..., Chatbot] | None = None,
-        requires_url: bool = True,
         description: str = "",
     ) -> None:
         """Register a new chatbot type with its instantiation metadata.
@@ -38,7 +36,6 @@ class ChatbotFactory:
             name: Name identifier for the chatbot
             chatbot_class: The chatbot class
             factory_method: Custom factory method, defaults to direct instantiation
-            requires_url: Whether this chatbot requires a URL parameter
             description: Description of the chatbot
         """
         if factory_method is None:
@@ -47,7 +44,6 @@ class ChatbotFactory:
         registration = ChatbotRegistration(
             chatbot_class=chatbot_class,
             factory_method=factory_method,
-            requires_url=requires_url,
             description=description,
         )
         cls._chatbot_registrations[name] = registration
@@ -62,77 +58,61 @@ class ChatbotFactory:
         return list(cls._chatbot_registrations.keys())
 
     @classmethod
-    def create_chatbot(cls, chatbot_type: str, base_url: str | None = None, **kwargs: str | int | bool) -> Chatbot:
+    def create_chatbot(cls, chatbot_type: str, **kwargs: Any) -> Chatbot:
         """Create a chatbot instance using registered factory method.
 
         Args:
             chatbot_type: Type of chatbot to create
-            base_url: Base URL for the chatbot API (if required)
-            **kwargs: Additional arguments to pass to the factory method
+            **kwargs: Arguments to pass to the factory method
 
         Returns:
             Chatbot instance
 
         Raises:
-            ValueError: If chatbot type is not registered or required URL is missing
+            ValueError: If chatbot type is not registered or required parameters are missing
         """
-        if chatbot_type not in cls._chatbot_registrations:
-            available = ", ".join(cls._chatbot_registrations.keys())
-            error_msg = f"Unknown chatbot type: {chatbot_type}. Available: {available}"
-            raise ValueError(error_msg)
+        registration = cls._get_registration(chatbot_type)
+        cls._validate_parameters(chatbot_type, kwargs)
 
-        registration = cls._chatbot_registrations[chatbot_type]
-
-        # Check if URL is required but not provided
-        if registration.requires_url and base_url is None:
-            error_msg = f"Chatbot type '{chatbot_type}' requires a base_url parameter"
-            raise ValueError(error_msg)
-
-        # Call the factory method with appropriate parameters
         try:
-            if registration.requires_url:
-                return registration.factory_method(base_url=base_url, **kwargs)
             return registration.factory_method(**kwargs)
         except TypeError as e:
             error_msg = f"Failed to create chatbot '{chatbot_type}': {e}"
             raise ValueError(error_msg) from e
 
     @classmethod
-    def get_chatbot_class(cls, chatbot_type: str) -> type:
-        """Get the chatbot class for a given type.
+    def get_chatbot_parameters(cls, chatbot_type: str) -> list[Parameter]:
+        """Get the parameters required for a given chatbot type.
 
         Args:
-            chatbot_type: Type of chatbot to get class for
+            chatbot_type: The type of chatbot
 
         Returns:
-            The chatbot class
-
-        Raises:
-            ValueError: If chatbot type is not registered
+            A list of Parameter objects
         """
-        if chatbot_type not in cls._chatbot_registrations:
-            available = ", ".join(cls._chatbot_registrations.keys())
-            error_msg = f"Unknown chatbot type: {chatbot_type}. Available: {available}"
-            raise ValueError(error_msg)
-
-        return cls._chatbot_registrations[chatbot_type].chatbot_class
+        registration = cls._get_registration(chatbot_type)
+        return registration.chatbot_class.get_chatbot_parameters()
 
     @classmethod
-    def requires_url(cls, chatbot_type: str) -> bool:
-        """Check if a chatbot type requires a URL parameter.
-
-        Args:
-            chatbot_type: Type of chatbot to check
-
-        Returns:
-            True if the chatbot requires a URL parameter
-
-        Raises:
-            ValueError: If chatbot type is not registered
-        """
+    def _get_registration(cls, chatbot_type: str) -> ChatbotRegistration:
+        """Get registration for a chatbot type, raising ValueError if not found."""
         if chatbot_type not in cls._chatbot_registrations:
             available = ", ".join(cls._chatbot_registrations.keys())
             error_msg = f"Unknown chatbot type: {chatbot_type}. Available: {available}"
             raise ValueError(error_msg)
+        return cls._chatbot_registrations[chatbot_type]
 
-        return cls._chatbot_registrations[chatbot_type].requires_url
+    @classmethod
+    def _validate_parameters(cls, chatbot_type: str, provided_args: dict[str, Any]) -> None:
+        """Validate provided arguments against the chatbot's required parameters."""
+        required_params = cls.get_chatbot_parameters(chatbot_type)
+
+        missing_params = [
+            param.name
+            for param in required_params
+            if param.required and param.name not in provided_args
+        ]
+
+        if missing_params:
+            error_msg = f"Missing required parameters for '{chatbot_type}': {', '.join(missing_params)}"
+            raise ValueError(error_msg)
