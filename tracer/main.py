@@ -217,8 +217,11 @@ def _parse_connector_params(connector_params_str: str | None) -> dict[str, Any]:
                         params[key] = value.lower() == "true"
                     elif value.isdigit():
                         params[key] = int(value)
-                    elif value.replace(".", "").isdigit():
-                        params[key] = float(value)
+                    else:
+                        try:
+                            params[key] = float(value)
+                        except ValueError:
+                            params[key] = value
                     else:
                         params[key] = value
 
