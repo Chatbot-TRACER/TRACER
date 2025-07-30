@@ -1,7 +1,6 @@
 """CLI utility functions for handling command-line operations."""
 
 import json
-import sys
 from typing import Any
 
 from chatbot_connectors import ChatbotFactory
@@ -16,6 +15,9 @@ def handle_list_connector_params(technology: str) -> None:
 
     Args:
         technology: The chatbot technology to show parameters for
+
+    Raises:
+        ValueError: If the technology is invalid or parameters cannot be retrieved
     """
     try:
         params = ChatbotFactory.get_chatbot_parameters(technology)
@@ -34,13 +36,11 @@ def handle_list_connector_params(technology: str) -> None:
 
     except ValueError as e:
         available_types = ChatbotFactory.get_available_types()
-        print(f"Error: {e}")
-        print(f"Available chatbot types: {', '.join(available_types)}")
-        sys.exit(1)
+        msg = f"Error: {e}. Available chatbot types: {', '.join(available_types)}"
+        raise ValueError(msg) from e
     except (ImportError, AttributeError) as e:
-        print(f"Error retrieving parameters: {e}")
-        sys.exit(1)
-    sys.exit(0)
+        msg = f"Error retrieving parameters: {e}"
+        raise RuntimeError(msg) from e
 
 
 def print_parameter_examples(params: list) -> None:
@@ -69,7 +69,11 @@ def print_parameter_examples(params: list) -> None:
 
 
 def handle_list_connectors() -> None:
-    """Handle the --list-connectors option."""
+    """Handle the --list-connectors option.
+
+    Raises:
+        RuntimeError: If connector information cannot be retrieved
+    """
     try:
         available_types = ChatbotFactory.get_available_types()
         registered_connectors = ChatbotFactory.get_registered_connectors()
@@ -98,9 +102,8 @@ def handle_list_connectors() -> None:
             print("    --technology <technology> --connector-params <params>")
 
     except (ImportError, AttributeError) as e:
-        print(f"Error retrieving connector information: {e}")
-        sys.exit(1)
-    sys.exit(0)
+        msg = f"Error retrieving connector information: {e}"
+        raise RuntimeError(msg) from e
 
 
 def parse_connector_params(connector_params_str: str | None) -> dict[str, Any]:

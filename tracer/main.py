@@ -61,11 +61,21 @@ def _setup_configuration() -> Namespace:
 
     # Handle list-connector-params option
     if args.list_connector_params:
-        handle_list_connector_params(args.list_connector_params)
+        try:
+            handle_list_connector_params(args.list_connector_params)
+            sys.exit(0)
+        except (ValueError, RuntimeError):
+            logger.exception("Failed to list connector parameters")
+            sys.exit(1)
 
     # Handle list-connectors option
     if args.list_connectors:
-        handle_list_connectors()
+        try:
+            handle_list_connectors()
+            sys.exit(0)
+        except RuntimeError:
+            logger.exception("Failed to list connectors")
+            sys.exit(1)
 
     valid_technologies = ChatbotFactory.get_available_types()
 
@@ -183,57 +193,6 @@ def _run_analysis_phase(
     logger.info(str(agent.token_tracker))
 
     return results
-
-
-def _generate_reports(results: ExecutionResults, config: ReportConfig) -> None:
-    """Saves generated profiles, writes the final report, and generates the workflow graph image.
-
-    Args:
-        results (ExecutionResults): Container with all execution results.
-        config (ReportConfig): Configuration for report generation.
-    """
-    built_profiles = results.analysis_results.get("built_profiles", [])
-    functionality_dicts = results.analysis_results.get("discovered_functionalities", {})
-    supported_languages = results.exploration_results.get("supported_languages", ["N/A"])
-    fallback_message = results.exploration_results.get("fallback_message", "N/A")
-
-    logger.info("\n--------------------------------")
-    logger.info("---   Final Report Summary   ---")
-    logger.info("--------------------------------\n")
-
-    save_profiles(built_profiles, config.output_dir)
-
-    report_data = ReportData(
-        structured_functionalities=functionality_dicts,
-        supported_languages=supported_languages,
-        fallback_message=fallback_message,
-        token_usage=results.token_usage,
-    )
-
-    write_report(config.output_dir, report_data)
-
-    if functionality_dicts:
-        graph_output_base = Path(config.output_dir) / "workflow_graph"
-        try:
-            # Determine which formats to export
-            formats = ["pdf", "png", "svg"] if config.graph_format == "all" else [config.graph_format]
-
-            # Export graphs in the specified format(s)
-            for fmt in formats:
-                options = GraphRenderOptions(
-                    fmt=fmt,
-                    graph_font_size=config.graph_font_size,
-                    dpi=300,
-                    compact=config.compact,
-                    top_down=config.top_down,
-                )
-                export_graph(functionality_dicts, str(graph_output_base), options)
-        except Exception as e:
-            logger.exception("Failed to generate workflow graph image")
-            msg = "Failed to generate workflow graph image."
-            raise TracerError(msg) from e
-    else:
-        logger.info("--- Skipping workflow graph image (no functionalities discovered) ---")
 
 
 def _generate_reports(results: ExecutionResults, config: ReportConfig) -> None:
