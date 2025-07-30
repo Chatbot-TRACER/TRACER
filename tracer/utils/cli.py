@@ -52,9 +52,9 @@ def parse_arguments() -> Namespace:
         "--connector-params",
         type=str,
         default=None,
-        help='Connector parameters as JSON string or key=value pairs separated by commas. '
-             'Examples: \'{"base_url": "http://localhost", "port": 8080}\' or '
-             '"base_url=http://localhost,port=8080". Use --list-connector-params <technology> to see required parameters for each connector.',
+        help="Connector parameters as JSON string or key=value pairs separated by commas. "
+        'Examples: \'{"base_url": "http://localhost", "port": 8080}\' or '
+        '"base_url=http://localhost,port=8080". Use --list-connector-params <technology> to see required parameters for each connector.',
     )
 
     parser.add_argument(
