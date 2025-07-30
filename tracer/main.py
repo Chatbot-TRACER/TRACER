@@ -11,10 +11,6 @@ import requests
 from chatbot_connectors import Chatbot, ChatbotFactory
 
 from tracer.agent import ChatbotExplorationAgent
-from tracer.connectors.chatbot_adapter import (
-    get_available_chatbot_types,
-    get_chatbot_parameters,
-)
 from tracer.reporting import (
     ExecutionResults,
     GraphRenderOptions,
@@ -39,7 +35,7 @@ logger = get_logger()
 def _handle_list_connector_params(technology: str) -> None:
     """Handle the --list-connector-params option."""
     try:
-        params = get_chatbot_parameters(technology)
+        params = ChatbotFactory.get_chatbot_parameters(technology)
         print(f"\nParameters for '{technology}' chatbot:")
         print("-" * 50)
         for param in params:
@@ -54,7 +50,7 @@ def _handle_list_connector_params(technology: str) -> None:
         _print_parameter_examples(params)
 
     except ValueError as e:
-        available_types = get_available_chatbot_types()
+        available_types = ChatbotFactory.get_available_types()
         print(f"Error: {e}")
         print(f"Available chatbot types: {', '.join(available_types)}")
         sys.exit(1)
