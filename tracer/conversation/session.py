@@ -4,6 +4,7 @@ import enum
 import secrets
 from typing import TypedDict
 
+from chatbot_connectors import Chatbot
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 
@@ -14,7 +15,6 @@ from tracer.analysis.functionality_refinement import (
     merge_similar_functionalities,
     validate_parent_child_relationship,
 )
-from tracer.connectors.chatbot_connectors import Chatbot
 from tracer.constants import (
     CONTEXT_MESSAGES_COUNT,
     MIN_CORRECTED_MESSAGE_LENGTH,

@@ -7,9 +7,9 @@ from pathlib import Path
 from typing import Any
 
 import requests
+from chatbot_connectors import Chatbot, ChatbotFactory
 
 from tracer.agent import ChatbotExplorationAgent
-from tracer.connectors.chatbot_connectors import Chatbot, ChatbotFactory
 from tracer.reporting import (
     ExecutionResults,
     GraphRenderOptions,
@@ -20,7 +20,18 @@ from tracer.reporting import (
     write_report,
 )
 from tracer.utils.cli import parse_arguments
+from tracer.utils.cli_utils import (
+    handle_list_connector_params,
+    handle_list_connectors,
+    parse_connector_params,
+)
+from tracer.utils.connector_utils import instantiate_connector
 from tracer.utils.logging_utils import get_logger, setup_logging
+from tracer.utils.reporting_utils import (
+    format_duration,
+    log_configuration_summary,
+    log_token_usage_summary,
+)
 from tracer.utils.tracer_error import (
     ConnectorError,
     GraphvizNotInstalledError,
@@ -32,13 +43,13 @@ logger = get_logger()
 
 
 def _setup_configuration() -> Namespace:
-    """Parses command line arguments, validates config, and creates output dir.
+    """Parse command line arguments, validate config, and create output dir.
 
     Returns:
-        Namespace: The parsed and validated command line arguments.
+        The parsed and validated command line arguments
 
     Raises:
-        TracerError: If the specified technology is invalid.
+        TracerError: If the specified technology is invalid
     """
     # Set up basic logging with default verbosity first
     setup_logging(0)  # Default to INFO level
@@ -47,6 +58,24 @@ def _setup_configuration() -> Namespace:
 
     if args.verbose > 0:
         setup_logging(args.verbose)
+
+    # Handle list-connector-params option
+    if args.list_connector_params:
+        try:
+            handle_list_connector_params(args.list_connector_params)
+            sys.exit(0)
+        except (ValueError, RuntimeError):
+            logger.exception("Failed to list connector parameters")
+            sys.exit(1)
+
+    # Handle list-connectors option
+    if args.list_connectors:
+        try:
+            handle_list_connectors()
+            sys.exit(0)
+        except RuntimeError:
+            logger.exception("Failed to list connectors")
+            sys.exit(1)
 
     valid_technologies = ChatbotFactory.get_available_types()
 
@@ -90,54 +119,6 @@ def _initialize_agent(model_name: str) -> ChatbotExplorationAgent:
     else:
         logger.info("Agent initialized successfully.")
         return agent
-
-
-def _instantiate_connector(technology: str, url: str) -> Chatbot:
-    """Instantiates the appropriate chatbot connector based on the specified technology.
-
-    Args:
-        technology (str): The name of the chatbot technology platform.
-        url (str): The URL of the chatbot endpoint.
-
-    Returns:
-        Chatbot: An instance of the appropriate connector class.
-
-    Raises:
-        ConnectorError: If the connector fails health check or has connectivity issues.
-    """
-    logger.info("Instantiating connector for technology: %s", technology)
-
-    try:
-        # Use the factory to check if URL is required and create the chatbot
-        if ChatbotFactory.requires_url(technology):
-            logger.info("Creating chatbot '%s' with base URL: %s", technology, url)
-            chatbot = ChatbotFactory.create_chatbot(technology, base_url=url)
-        else:
-            logger.info("Creating chatbot '%s' without URL (pre-configured)", technology)
-            chatbot = ChatbotFactory.create_chatbot(technology)
-
-        # Perform health check
-        logger.info("Performing health check for chatbot connector...")
-        chatbot.health_check()
-        logger.info("Chatbot connector health check passed")
-
-    except ValueError as e:
-        logger.exception("Failed to instantiate connector for technology '%s'", technology)
-        available_types = ChatbotFactory.get_available_types()
-        logger.exception("Available chatbot types: %s", ", ".join(available_types))
-        msg = f"Failed to instantiate connector for '{technology}'."
-        raise ConnectorError(msg) from e
-
-    except ConnectorError:
-        logger.exception("Connector health check failed for technology '%s'", technology)
-        raise  # Re-raise the original ConnectorError to be caught by main
-
-    except Exception as e:
-        logger.exception("Unexpected error instantiating connector for technology '%s'", technology)
-        msg = f"Unexpected error instantiating connector for '{technology}'."
-        raise ConnectorError(msg) from e
-    else:
-        return chatbot
 
 
 def _run_exploration_phase(
@@ -215,11 +196,11 @@ def _run_analysis_phase(
 
 
 def _generate_reports(results: ExecutionResults, config: ReportConfig) -> None:
-    """Saves generated profiles, writes the final report, and generates the workflow graph image.
+    """Save generated profiles, write the final report, and generate the workflow graph image.
 
     Args:
-        results (ExecutionResults): Container with all execution results.
-        config (ReportConfig): Configuration for report generation.
+        results: Container with all execution results
+        config: Configuration for report generation
     """
     built_profiles = results.analysis_results.get("built_profiles", [])
     functionality_dicts = results.analysis_results.get("discovered_functionalities", {})
@@ -265,85 +246,20 @@ def _generate_reports(results: ExecutionResults, config: ReportConfig) -> None:
         logger.info("--- Skipping workflow graph image (no functionalities discovered) ---")
 
 
-def _log_configuration_summary(args: Namespace) -> None:
-    """Logs the configuration summary."""
-    profile_model = args.profile_model or args.model
-
-    logger.verbose("\n=== Chatbot Explorer Configuration ===")
-    logger.verbose("Chatbot Technology:\t%s", args.technology)
-    logger.verbose("Chatbot URL:\t\t%s", args.url)
-    logger.verbose("Exploration sessions:\t%d", args.sessions)
-    logger.verbose("Max turns per session:\t%d", args.turns)
-    logger.verbose("Exploration model:\t%s", args.model)
-    logger.verbose("Profile model:\t\t%s", profile_model)
-    logger.verbose("Output directory:\t%s", args.output)
-    logger.verbose("Graph font size:\t\t%d", args.graph_font_size)
-    logger.verbose("Compact graph:\t\t%s", "Yes" if args.compact else "No")
-    logger.verbose("Graph orientation:\t%s", "Top-Down" if args.top_down else "Left-Right")
-    logger.verbose("Graph format:\t\t%s", args.graph_format)
-    logger.verbose("Nested forward chains:\t%s", "Yes" if args.nested_forward else "No")
-    logger.verbose("======================================\n")
-
-
-def _log_token_usage_summary(token_usage: dict[str, Any]) -> None:
-    """Logs the final token usage summary."""
-    exploration_data = token_usage.get("exploration_phase", {})
-    analysis_data = token_usage.get("analysis_phase", {})
-
-    logger.info("\n=== Token Usage Summary ===")
-
-    logger.info("Exploration Phase:")
-    logger.info("  Prompt tokens:     %s", f"{exploration_data.get('prompt_tokens', 0):,}")
-    logger.info("  Completion tokens: %s", f"{exploration_data.get('completion_tokens', 0):,}")
-    logger.info("  Total tokens:      %s", f"{exploration_data.get('total_tokens', 0):,}")
-    logger.info("  Estimated cost:    $%.4f USD", exploration_data.get("estimated_cost", 0))
-
-    logger.info("\nAnalysis Phase:")
-    logger.info("  Prompt tokens:     %s", f"{analysis_data.get('prompt_tokens', 0):,}")
-    logger.info("  Completion tokens: %s", f"{analysis_data.get('completion_tokens', 0):,}")
-    logger.info("  Total tokens:      %s", f"{analysis_data.get('total_tokens', 0):,}")
-    logger.info("  Estimated cost:    $%.4f USD", analysis_data.get("estimated_cost", 0))
-
-    logger.info("\nTotal Consumption:")
-    logger.info("  Total LLM calls:   %d", token_usage["total_llm_calls"])
-    logger.info("  Successful calls:  %d", token_usage["successful_llm_calls"])
-    logger.info("  Failed calls:      %d", token_usage["failed_llm_calls"])
-    logger.info("  Prompt tokens:     %s", f"{token_usage['total_prompt_tokens']:,}")
-    logger.info("  Completion tokens: %s", f"{token_usage['total_completion_tokens']:,}")
-    logger.info("  Total tokens:      %s", f"{token_usage['total_tokens_consumed']:,}")
-    logger.info("  Estimated cost:    $%.4f USD", token_usage.get("estimated_cost", 0))
-
-    if token_usage.get("models_used"):
-        logger.info("\nModels used: %s", ", ".join(token_usage["models_used"]))
-
-    if (
-        "total_application_execution_time" in token_usage
-        and isinstance(token_usage["total_application_execution_time"], dict)
-        and "formatted" in token_usage["total_application_execution_time"]
-    ):
-        logger.info("Total execution time: %s (HH:MM:SS)", token_usage["total_application_execution_time"]["formatted"])
-
-
-def _format_duration(seconds: float) -> str:
-    """Formats a duration in seconds into HH:MM:SS string."""
-    seconds = int(seconds)
-    hours = seconds // 3600
-    minutes = (seconds % 3600) // 60
-    secs = seconds % 60
-    return f"{hours:02d}:{minutes:02d}:{secs:02d}"
-
-
 def _run_tracer() -> None:
     """Coordinates the setup, execution, and reporting for the Chatbot Explorer."""
     app_start_time = time.monotonic()
 
     # Setup and configuration
     args = _setup_configuration()
-    _log_configuration_summary(args)
+    log_configuration_summary(args)
 
     # Initialize components
     agent = _initialize_agent(args.model)
-    the_chatbot = _instantiate_connector(args.technology, args.url)
+
+    # Parse connector parameters
+    connector_params = parse_connector_params(args.connector_params)
+    the_chatbot = instantiate_connector(args.technology, connector_params)
 
     # Execute phases
     exploration_results = _run_exploration_phase(agent, the_chatbot, args.sessions, args.turns)
@@ -357,7 +273,7 @@ def _run_tracer() -> None:
     # Calculate execution time and prepare results
     app_end_time = time.monotonic()
     total_app_duration_seconds = app_end_time - app_start_time
-    formatted_app_duration = _format_duration(total_app_duration_seconds)
+    formatted_app_duration = format_duration(total_app_duration_seconds)
 
     token_usage = agent.token_tracker.get_summary()
     token_usage["total_application_execution_time"] = {
@@ -377,7 +293,7 @@ def _run_tracer() -> None:
     _generate_reports(results, config)
 
     # Final logging and cleanup
-    _log_token_usage_summary(token_usage)
+    log_token_usage_summary(token_usage)
 
     logger.info("\n---------------------------------")
     logger.info("--- Chatbot Explorer Finished ---")

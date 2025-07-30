@@ -1,0 +1,21 @@
+name: "Metro Madrid"
+base_url: "https://kdcaapi.metromadrid.es"
+send_message:
+  path: "/api/KDCA/WidgetMessage"
+  method: "POST"
+  headers:
+    Content-Type: "application/json"
+    Origin: "https://www.metromadrid.es"
+    Referer: "https://www.metromadrid.es/"
+    User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0"
+  payload_template:
+    idProject: "Mzpv0w4t71t"
+    idClient: "0"
+    data:
+      type: "text"
+      content: "{user_msg}"
+      buttonId: null
+      user:
+        nickname: "visitor22842"
+        session: "abbda0f6-2197-4787-9d7d-c5107491f7a1"
+response_path: "messages.0.content"

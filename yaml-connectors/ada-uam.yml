@@ -1,0 +1,18 @@
+name: "Ada UAM"
+base_url: "https://api.1millionbot.com"
+send_message:
+  path: "/api/public/messages"
+  method: "POST"
+  headers:
+    Content-Type: "application/json"
+    Authorization: "60a3bee2e3987316fed3218f"
+  payload_template:
+    conversation: "682ce1ce271ce860cffde0fd"
+    sender_type: "User"
+    sender: "682ce1cefe831160cee700ed"
+    bot: "60a3be81f9a6b98f7659a6f9"
+    language: "es"
+    url: "https://www.uam.es/uam/tecnologias-informacion/servicios-ti/acceso-remoto-red"
+    message:
+      text: "{user_msg}"
+response_path: "response.0.text"
