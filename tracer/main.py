@@ -76,7 +76,7 @@ def _print_parameter_examples(params: list) -> None:
     if example_params:
         json_example = json.dumps(example_params, indent=2)
         kv_example = ",".join([f"{k}={v}" for k, v in example_params.items()])
-        print(f"  JSON format: --connector-params '{json_example.replace(chr(10), '')}'")
+        print(f"  JSON format: --connector-params '{json_example.replace('\n', '')}'")
         print(f'  Key=Value format: --connector-params "{kv_example}"')
 
 
