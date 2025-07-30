@@ -1,6 +1,5 @@
 """Main program entry point for the Chatbot Explorer."""
 
-import json
 import sys
 import time
 from argparse import Namespace
@@ -21,7 +20,18 @@ from tracer.reporting import (
     write_report,
 )
 from tracer.utils.cli import parse_arguments
+from tracer.utils.cli_utils import (
+    handle_list_connector_params,
+    handle_list_connectors,
+    parse_connector_params,
+)
+from tracer.utils.connector_utils import instantiate_connector
 from tracer.utils.logging_utils import get_logger, setup_logging
+from tracer.utils.reporting_utils import (
+    format_duration,
+    log_configuration_summary,
+    log_token_usage_summary,
+)
 from tracer.utils.tracer_error import (
     ConnectorError,
     GraphvizNotInstalledError,
@@ -32,97 +42,14 @@ from tracer.utils.tracer_error import (
 logger = get_logger()
 
 
-def _handle_list_connector_params(technology: str) -> None:
-    """Handle the --list-connector-params option."""
-    try:
-        params = ChatbotFactory.get_chatbot_parameters(technology)
-        print(f"\nParameters for '{technology}' chatbot:")
-        print("-" * 50)
-        for param in params:
-            print(f"  - Name: {param.name}")
-            print(f"    Type: {param.type}")
-            print(f"    Required: {param.required}")
-            if param.default is not None:
-                print(f"    Default: {param.default}")
-            print(f"    Description: {param.description}")
-            print()
-
-        _print_parameter_examples(params)
-
-    except ValueError as e:
-        available_types = ChatbotFactory.get_available_types()
-        print(f"Error: {e}")
-        print(f"Available chatbot types: {', '.join(available_types)}")
-        sys.exit(1)
-    except (ImportError, AttributeError) as e:
-        print(f"Error retrieving parameters: {e}")
-        sys.exit(1)
-    sys.exit(0)
-
-
-def _print_parameter_examples(params: list) -> None:
-    """Print usage examples for connector parameters."""
-    print("Example usage:")
-    example_params = {}
-    for param in params:
-        if param.required:
-            if param.name == "base_url":
-                example_params[param.name] = "http://localhost"
-            elif param.name == "port":
-                example_params[param.name] = 8080
-            else:
-                example_params[param.name] = f"<{param.name}>"
-
-    if example_params:
-        json_example = json.dumps(example_params, indent=2)
-        kv_example = ",".join([f"{k}={v}" for k, v in example_params.items()])
-        print(f"  JSON format: --connector-params '{json_example.replace('\n', '')}'")
-        print(f'  Key=Value format: --connector-params "{kv_example}"')
-
-
-def _handle_list_connectors() -> None:
-    """Handle the --list-connectors option."""
-    try:
-        available_types = ChatbotFactory.get_available_types()
-        registered_connectors = ChatbotFactory.get_registered_connectors()
-
-        print("\nAvailable Chatbot Connector Technologies:")
-        print("=" * 50)
-
-        if not available_types:
-            print("No chatbot connectors are currently registered.")
-        else:
-            for connector_type in sorted(available_types):
-                description = registered_connectors.get(connector_type, {}).get(
-                    "description", "No description available"
-                )
-                print(f"  • {connector_type}")
-                print(f"    Description: {description}")
-                print(f"    Use: --technology {connector_type}")
-                print(f"    Parameters: --list-connector-params {connector_type}")
-                print()
-
-            print(f"Total: {len(available_types)} connector(s) available")
-            print("\nUsage:")
-            print("  To see parameters for a specific connector:")
-            print("    --list-connector-params <technology>")
-            print("  To use a connector:")
-            print("    --technology <technology> --connector-params <params>")
-
-    except (ImportError, AttributeError) as e:
-        print(f"Error retrieving connector information: {e}")
-        sys.exit(1)
-    sys.exit(0)
-
-
 def _setup_configuration() -> Namespace:
-    """Parses command line arguments, validates config, and creates output dir.
+    """Parse command line arguments, validate config, and create output dir.
 
     Returns:
-        Namespace: The parsed and validated command line arguments.
+        The parsed and validated command line arguments
 
     Raises:
-        TracerError: If the specified technology is invalid.
+        TracerError: If the specified technology is invalid
     """
     # Set up basic logging with default verbosity first
     setup_logging(0)  # Default to INFO level
@@ -134,11 +61,11 @@ def _setup_configuration() -> Namespace:
 
     # Handle list-connector-params option
     if args.list_connector_params:
-        _handle_list_connector_params(args.list_connector_params)
+        handle_list_connector_params(args.list_connector_params)
 
     # Handle list-connectors option
     if args.list_connectors:
-        _handle_list_connectors()
+        handle_list_connectors()
 
     valid_technologies = ChatbotFactory.get_available_types()
 
@@ -182,126 +109,6 @@ def _initialize_agent(model_name: str) -> ChatbotExplorationAgent:
     else:
         logger.info("Agent initialized successfully.")
         return agent
-
-
-def _parse_connector_params(connector_params_str: str | None) -> dict[str, Any]:
-    """Parse connector parameters from string input.
-
-    Args:
-        connector_params_str: JSON string or key=value pairs
-
-    Returns:
-        Dictionary of connector parameters
-
-    Raises:
-        TracerError: If parameter parsing fails
-    """
-    params = {}
-
-    if connector_params_str:
-        try:
-            # Try to parse as JSON first
-            if connector_params_str.strip().startswith("{"):
-                params = json.loads(connector_params_str)
-            else:
-                # Parse as key=value pairs
-                for pair in connector_params_str.split(","):
-                    if "=" not in pair:
-                        continue
-                    key, value = pair.split("=", 1)
-                    key = key.strip()
-                    value = value.strip()
-
-                    # Try to convert to appropriate types
-                    if value.lower() in ("true", "false"):
-                        params[key] = value.lower() == "true"
-                    elif value.isdigit():
-                        params[key] = int(value)
-                    else:
-                        try:
-                            params[key] = float(value)
-                        except ValueError:
-                            params[key] = value
-                    else:
-                        params[key] = value
-
-        except (json.JSONDecodeError, ValueError) as e:
-            logger.exception("Failed to parse connector parameters: %s", connector_params_str)
-            msg = f"Invalid connector parameters format: {e}"
-            raise TracerError(msg) from e
-
-    return params
-
-
-def _instantiate_connector(technology: str, connector_params: dict[str, Any]) -> Chatbot:
-    """Instantiates the appropriate chatbot connector based on the specified technology.
-
-    Args:
-        technology (str): The name of the chatbot technology platform.
-        connector_params (dict): Dictionary of parameters for the connector.
-
-    Returns:
-        Chatbot: An instance of the appropriate connector class.
-
-    Raises:
-        ConnectorError: If the connector fails health check or has connectivity issues.
-    """
-    logger.info("Instantiating connector for technology: %s", technology)
-
-    if connector_params:
-        logger.debug("Using connector parameters: %s", connector_params)
-
-    try:
-        # Create the chatbot using the factory with provided parameters
-        chatbot = ChatbotFactory.create_chatbot(chatbot_type=technology, **connector_params)
-
-        # Perform health check
-        logger.info("Performing health check for chatbot connector...")
-        chatbot.health_check()
-        logger.info("Chatbot connector health check passed")
-
-    except ValueError as e:
-        logger.exception("Failed to instantiate connector for technology '%s'", technology)
-        available_types = ChatbotFactory.get_available_types()
-        logger.exception("Available chatbot types: %s", ", ".join(available_types))
-        msg = f"Failed to instantiate connector for '{technology}'."
-        raise ConnectorError(msg) from e
-
-    except (TypeError, KeyError) as e:
-        logger.exception("Invalid parameters for chatbot technology '%s'", technology)
-
-        # Try to get parameter info to help the user
-        try:
-            required_params = ChatbotFactory.get_chatbot_parameters(technology)
-            param_info = []
-            for param in required_params:
-                required_str = "Required" if param.required else "Optional"
-                default_str = f" (default: {param.default})" if param.default is not None else ""
-                param_info.append(f"  - {param.name} ({param.type}): {required_str}{default_str}")
-
-            logger.exception("Expected parameters for '%s':\n%s", technology, "\n".join(param_info))
-            logger.exception(
-                "Use --list-connector-params %s to see detailed parameter information and examples", technology
-            )
-        except (ImportError, AttributeError):
-            logger.exception("Use --list-connector-params %s to see required parameters", technology)
-
-        if not connector_params:
-            msg = f"No connector parameters provided for '{technology}'. Use --connector-params to specify required parameters or --list-connector-params {technology} for help."
-        else:
-            msg = f"Invalid parameters for chatbot '{technology}'. Check the connector parameters format."
-        raise ConnectorError(msg) from e
-
-    except ConnectorError:
-        logger.exception("Connector health check failed for technology '%s'", technology)
-        raise  # Re-raise the original ConnectorError to be caught by main
-
-    except Exception as e:
-        logger.exception("Unexpected error instantiating connector for technology '%s'", technology)
-        msg = f"Unexpected error instantiating connector for '{technology}'."
-        raise ConnectorError(msg) from e
-    else:
-        return chatbot
 
 
 def _run_exploration_phase(
@@ -429,78 +236,55 @@ def _generate_reports(results: ExecutionResults, config: ReportConfig) -> None:
         logger.info("--- Skipping workflow graph image (no functionalities discovered) ---")
 
 
-def _log_configuration_summary(args: Namespace) -> None:
-    """Logs the configuration summary."""
-    profile_model = args.profile_model or args.model
+def _generate_reports(results: ExecutionResults, config: ReportConfig) -> None:
+    """Save generated profiles, write the final report, and generate the workflow graph image.
 
-    logger.verbose("\n=== Chatbot Explorer Configuration ===")
-    logger.verbose("Chatbot Technology:\t%s", args.technology)
+    Args:
+        results: Container with all execution results
+        config: Configuration for report generation
+    """
+    built_profiles = results.analysis_results.get("built_profiles", [])
+    functionality_dicts = results.analysis_results.get("discovered_functionalities", {})
+    supported_languages = results.exploration_results.get("supported_languages", ["N/A"])
+    fallback_message = results.exploration_results.get("fallback_message", "N/A")
 
-    # Show connector parameters
-    if args.connector_params:
-        logger.verbose("Connector Parameters:\t%s", args.connector_params)
+    logger.info("\n--------------------------------")
+    logger.info("---   Final Report Summary   ---")
+    logger.info("--------------------------------\n")
+
+    save_profiles(built_profiles, config.output_dir)
+
+    report_data = ReportData(
+        structured_functionalities=functionality_dicts,
+        supported_languages=supported_languages,
+        fallback_message=fallback_message,
+        token_usage=results.token_usage,
+    )
+
+    write_report(config.output_dir, report_data)
+
+    if functionality_dicts:
+        graph_output_base = Path(config.output_dir) / "workflow_graph"
+        try:
+            # Determine which formats to export
+            formats = ["pdf", "png", "svg"] if config.graph_format == "all" else [config.graph_format]
+
+            # Export graphs in the specified format(s)
+            for fmt in formats:
+                options = GraphRenderOptions(
+                    fmt=fmt,
+                    graph_font_size=config.graph_font_size,
+                    dpi=300,
+                    compact=config.compact,
+                    top_down=config.top_down,
+                )
+                export_graph(functionality_dicts, str(graph_output_base), options)
+        except Exception as e:
+            logger.exception("Failed to generate workflow graph image")
+            msg = "Failed to generate workflow graph image."
+            raise TracerError(msg) from e
     else:
-        logger.verbose("Connector Parameters:\tNone (using defaults)")
-
-    logger.verbose("Exploration sessions:\t%d", args.sessions)
-    logger.verbose("Max turns per session:\t%d", args.turns)
-    logger.verbose("Exploration model:\t%s", args.model)
-    logger.verbose("Profile model:\t\t%s", profile_model)
-    logger.verbose("Output directory:\t%s", args.output)
-    logger.verbose("Graph font size:\t\t%d", args.graph_font_size)
-    logger.verbose("Compact graph:\t\t%s", "Yes" if args.compact else "No")
-    logger.verbose("Graph orientation:\t%s", "Top-Down" if args.top_down else "Left-Right")
-    logger.verbose("Graph format:\t\t%s", args.graph_format)
-    logger.verbose("Nested forward chains:\t%s", "Yes" if args.nested_forward else "No")
-    logger.verbose("======================================\n")
-
-
-def _log_token_usage_summary(token_usage: dict[str, Any]) -> None:
-    """Logs the final token usage summary."""
-    exploration_data = token_usage.get("exploration_phase", {})
-    analysis_data = token_usage.get("analysis_phase", {})
-
-    logger.info("\n=== Token Usage Summary ===")
-
-    logger.info("Exploration Phase:")
-    logger.info("  Prompt tokens:     %s", f"{exploration_data.get('prompt_tokens', 0):,}")
-    logger.info("  Completion tokens: %s", f"{exploration_data.get('completion_tokens', 0):,}")
-    logger.info("  Total tokens:      %s", f"{exploration_data.get('total_tokens', 0):,}")
-    logger.info("  Estimated cost:    $%.4f USD", exploration_data.get("estimated_cost", 0))
-
-    logger.info("\nAnalysis Phase:")
-    logger.info("  Prompt tokens:     %s", f"{analysis_data.get('prompt_tokens', 0):,}")
-    logger.info("  Completion tokens: %s", f"{analysis_data.get('completion_tokens', 0):,}")
-    logger.info("  Total tokens:      %s", f"{analysis_data.get('total_tokens', 0):,}")
-    logger.info("  Estimated cost:    $%.4f USD", analysis_data.get("estimated_cost", 0))
-
-    logger.info("\nTotal Consumption:")
-    logger.info("  Total LLM calls:   %d", token_usage["total_llm_calls"])
-    logger.info("  Successful calls:  %d", token_usage["successful_llm_calls"])
-    logger.info("  Failed calls:      %d", token_usage["failed_llm_calls"])
-    logger.info("  Prompt tokens:     %s", f"{token_usage['total_prompt_tokens']:,}")
-    logger.info("  Completion tokens: %s", f"{token_usage['total_completion_tokens']:,}")
-    logger.info("  Total tokens:      %s", f"{token_usage['total_tokens_consumed']:,}")
-    logger.info("  Estimated cost:    $%.4f USD", token_usage.get("estimated_cost", 0))
-
-    if token_usage.get("models_used"):
-        logger.info("\nModels used: %s", ", ".join(token_usage["models_used"]))
-
-    if (
-        "total_application_execution_time" in token_usage
-        and isinstance(token_usage["total_application_execution_time"], dict)
-        and "formatted" in token_usage["total_application_execution_time"]
-    ):
-        logger.info("Total execution time: %s (HH:MM:SS)", token_usage["total_application_execution_time"]["formatted"])
-
-
-def _format_duration(seconds: float) -> str:
-    """Formats a duration in seconds into HH:MM:SS string."""
-    seconds = int(seconds)
-    hours = seconds // 3600
-    minutes = (seconds % 3600) // 60
-    secs = seconds % 60
-    return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+        logger.info("--- Skipping workflow graph image (no functionalities discovered) ---")
 
 
 def _run_tracer() -> None:
@@ -509,14 +293,14 @@ def _run_tracer() -> None:
 
     # Setup and configuration
     args = _setup_configuration()
-    _log_configuration_summary(args)
+    log_configuration_summary(args)
 
     # Initialize components
     agent = _initialize_agent(args.model)
 
     # Parse connector parameters
-    connector_params = _parse_connector_params(args.connector_params)
-    the_chatbot = _instantiate_connector(args.technology, connector_params)
+    connector_params = parse_connector_params(args.connector_params)
+    the_chatbot = instantiate_connector(args.technology, connector_params)
 
     # Execute phases
     exploration_results = _run_exploration_phase(agent, the_chatbot, args.sessions, args.turns)
@@ -530,7 +314,7 @@ def _run_tracer() -> None:
     # Calculate execution time and prepare results
     app_end_time = time.monotonic()
     total_app_duration_seconds = app_end_time - app_start_time
-    formatted_app_duration = _format_duration(total_app_duration_seconds)
+    formatted_app_duration = format_duration(total_app_duration_seconds)
 
     token_usage = agent.token_tracker.get_summary()
     token_usage["total_application_execution_time"] = {
@@ -550,7 +334,7 @@ def _run_tracer() -> None:
     _generate_reports(results, config)
 
     # Final logging and cleanup
-    _log_token_usage_summary(token_usage)
+    log_token_usage_summary(token_usage)
 
     logger.info("\n---------------------------------")
     logger.info("--- Chatbot Explorer Finished ---")
