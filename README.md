@@ -126,8 +126,8 @@ All arguments are optional.
 
 - `-s, --sessions`: Number of exploration sessions (default: 3).
 - `-n, --turns`: Maximum turns per session (default: 8).
-- `-t, --technology`: Chatbot technology connector to use (default: `taskyto`). See available technologies below.
-- `-u, --url`: Chatbot URL (default: `http://localhost:5000`). Only necessary for technologies like `taskyto` that require an explicit endpoint. Others may have the URL embedded in their connector.
+- `-t, --technology`: Chatbot connector to use (default: `taskyto`). Use `--list-connectors` to see available options.
+- `--connector-params`: Parameters for the chatbot connector. Use `--list-connector-params <connector>` to see required parameters. Format: JSON string or key=value pairs.
 - `-m, --model`: Model for exploration (default: `gpt-4o-mini`). Supports both OpenAI models (e.g., `gpt-4o`) and Google Gemini models (e.g., `gemini-2.0-flash`). **Recommended**: Use a more powerful model (e.g., `gpt-4o`) for better exploration quality.
 - `-pm, --profile-model`: Model for profile generation (default: same as exploration model). Supports both OpenAI models (e.g., `gpt-4o`) and Google Gemini models (e.g., `gemini-2.0-flash`). **Recommended**: Use a cheaper model (e.g., `gpt-4o-mini`) for cost optimization.
 - `-o, --output`: Output directory for generated files (default: `output`).
@@ -137,12 +137,26 @@ All arguments are optional.
 - `-td`, `--top-down`: Top-down layout for the graph.
 - `--graph-format`: Export format for the graph (choices: pdf, png, svg, all). Default is pdf. Use 'all' to export in all formats.
 - `-nf`, `--nested-forward`: All the variables will be nested, creates more exhaustive profiles but also the number of conversations grows exponentially.
+
+**Help Options:**
+
+- `--list-connectors`: List available chatbot connectors.
+- `--list-connector-params`: Show required parameters for a specific connector.
 - `-h, --help`: Show help message and exit.
 
-### Supported Chatbot Technologies
+### Chatbot Connectors
 
-- `taskyto`: Custom chatbot framework (requires self-hosting and initialization).
-- `ada-uam`: MillionBot instance for Universidad Autónoma de Madrid (UAM).
+TRACER uses the [chatbot-connectors](https://github.com/Chatbot-TRACER/chatbot-connectors) library to connect to different chatbot platforms.
+
+To see available connectors:
+```bash
+TRACER --list-connectors
+```
+
+To see required parameters for a specific connector:
+```bash
+TRACER --list-connector-params <connector-name>
+```
 
 ### Environment Variables
 
@@ -162,17 +176,29 @@ All arguments are optional.
 ### Example Commands
 
 ```bash
-# Using OpenAI models
-TRACER -t ada-uam -n 8 -s 12 -o generated_profiles/ada-uam -m gpt-4o-mini
+# List available connectors
+TRACER --list-connectors
 
-# Using Gemini models
-TRACER -t taskyto -n 10 -s 5 -o generated_profiles/taskyto -m gemini-2.0-flash
+# Check parameters for a specific connector
+TRACER --list-connector-params taskyto
 
-# Using different models for exploration and profile generation (recommended)
-TRACER -t ada-uam -n 8 -s 12 -m gpt-4o -pm gpt-4o-mini -o generated_profiles/ada-uam
+# Basic usage with Taskyto connector
+TRACER -t taskyto --connector-params "base_url=http://localhost"
 
-# Mix different model providers (explore with OpenAI, generate profiles with Gemini)
-TRACER -t taskyto -m gpt-4o -pm gemini-2.0-flash -o generated_profiles/taskyto
+# Using JSON format for connector parameters
+TRACER -t taskyto --connector-params '{"base_url": "http://localhost", "port": 5000}'
+
+# Using custom YAML connector
+TRACER -t custom --connector-params "config_path=./my-chatbot-config.yml"
+
+# Full example with all options
+TRACER -t taskyto --connector-params "base_url=http://localhost" -n 8 -s 12 -m gpt-4o -pm gpt-4o-mini -o generated_profiles/taskyto
+
+# Using different models for exploration and profile generation
+TRACER -t millionbot --connector-params "bot_id=your-bot-id" -m gpt-4o -pm gpt-4o-mini
+
+# Mix different model providers
+TRACER -t custom --connector-params "config_path=./config.yml" -m gpt-4o -pm gemini-2.0-flash
 ```
 
 ## Development & Contributing
