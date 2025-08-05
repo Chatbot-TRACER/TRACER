@@ -72,6 +72,7 @@ class ChatbotExplorationAgent:
         Args:
             model_name (str): The name of the model to use (OpenAI or Gemini).
         """
+        self.model_name = model_name  # Store model name as instance variable
         self.token_tracker = TokenUsageTracker()  # Initialize token tracker
         self.llm = self._initialize_llm(model_name)
         self.memory = MemorySaver()
@@ -527,7 +528,7 @@ class ChatbotExplorationAgent:
             Results from the analysis phase
         """
         # Use profile_model if provided, otherwise fall back to exploration model
-        model_for_profiles = profile_model or self.llm.model_name
+        model_for_profiles = profile_model or self.model_name
 
         conversation_count = len(exploration_results.get("conversation_sessions", []))
         functionality_count = len(exploration_results.get("root_nodes_dict", {}))
@@ -536,7 +537,7 @@ class ChatbotExplorationAgent:
             conversation_count,
             functionality_count,
         )
-        logger.debug("Using model '%s' for exploration and '%s' for profiles", self.llm.model_name, model_for_profiles)
+        logger.debug("Using model '%s' for exploration and '%s' for profiles", self.model_name, model_for_profiles)
 
         # Deduplicate functionalities before analysis
         root_nodes_dict = exploration_results.get("root_nodes_dict", {})
@@ -596,7 +597,7 @@ class ChatbotExplorationAgent:
             fallback_message=exploration_results.get("fallback_message", ""),
             workflow_structure=None,
             nested_forward=nested_forward,
-            model=self.llm.model_name,
+            model=self.model_name,
         )
 
         # Run Structure Inference
