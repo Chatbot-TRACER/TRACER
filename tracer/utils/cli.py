@@ -3,6 +3,8 @@
 import argparse
 from argparse import Namespace
 
+from chatbot_connectors.cli import parse_connector_params
+
 
 def parse_arguments() -> Namespace:
     """Parse command line arguments."""
@@ -50,7 +52,7 @@ def parse_arguments() -> Namespace:
     parser.add_argument(
         "-cp",
         "--connector-params",
-        type=str,
+        type=parse_connector_params,
         default=None,
         help="Connector parameters as JSON string or key=value pairs separated by commas. "
         'Examples: \'{"base_url": "http://localhost", "port": 8080}\' or '
