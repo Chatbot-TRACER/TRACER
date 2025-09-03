@@ -8,6 +8,10 @@ from typing import Any
 
 import requests
 from chatbot_connectors import Chatbot, ChatbotFactory
+from chatbot_connectors.cli import (
+    handle_list_connector_params,
+    handle_list_connectors,
+)
 
 from tracer.agent import ChatbotExplorationAgent
 from tracer.reporting import (
@@ -20,11 +24,6 @@ from tracer.reporting import (
     write_report,
 )
 from tracer.utils.cli import parse_arguments
-from tracer.utils.cli_utils import (
-    handle_list_connector_params,
-    handle_list_connectors,
-    parse_connector_params,
-)
 from tracer.utils.connector_utils import instantiate_connector
 from tracer.utils.logging_utils import get_logger, setup_logging
 from tracer.utils.reporting_utils import (
@@ -257,9 +256,7 @@ def _run_tracer() -> None:
     # Initialize components
     agent = _initialize_agent(args.model)
 
-    # Parse connector parameters
-    connector_params = parse_connector_params(args.connector_params)
-    the_chatbot = instantiate_connector(args.technology, connector_params)
+    the_chatbot = instantiate_connector(args.technology, args.connector_params)
 
     # Execute phases
     exploration_results = _run_exploration_phase(agent, the_chatbot, args.sessions, args.turns)
