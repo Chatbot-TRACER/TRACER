@@ -127,7 +127,13 @@ All arguments are optional.
 - `-s, --sessions`: Number of exploration sessions (default: 3).
 - `-n, --turns`: Maximum turns per session (default: 8).
 - `-t, --technology`: Chatbot connector to use (default: `taskyto`). Use `--list-connectors` to see available options.
-- `--connector-params`: Parameters for the chatbot connector. Use `--list-connector-params <connector>` to see required parameters. Format: JSON string or key=value pairs.
+- `-cp, --connector-params`: Parameters for the chatbot connector. Use `--list-connector-params <connector>` to see required parameters. Format: JSON string or key=value pairs. Examples:
+  ```bash
+  tracer -t taskyto -cp '{"base_url":"http://localhost", "port":5000}'
+  ```
+  ```bash
+  tracer -t taskyto -cp "base_url=http://localhost, port=5000"
+  ```
 - `-m, --model`: Model for exploration (default: `gpt-4o-mini`). Supports both OpenAI models (e.g., `gpt-4o`) and Google Gemini models (e.g., `gemini-2.0-flash`). **Recommended**: Use a more powerful model (e.g., `gpt-4o`) for better exploration quality.
 - `-pm, --profile-model`: Model for profile generation (default: same as exploration model). Supports both OpenAI models (e.g., `gpt-4o`) and Google Gemini models (e.g., `gemini-2.0-flash`). **Recommended**: Use a cheaper model (e.g., `gpt-4o-mini`) for cost optimization.
 - `-o, --output`: Output directory for generated files (default: `output`).
