@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.13'",
@@ -177,20 +177,20 @@ wheels = [
 
 [[package]]
 name = "chatbot-connectors"
-version = "0.5.0"
+version = "0.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyyaml" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/20/a5/b6643e508ccf6bd3d998057e41b722cf0897bf7b351957ae0e325b3c489d/chatbot_connectors-0.5.0.tar.gz", hash = "sha256:8a2f5ccb0f4cd6eb9b241f513cdbf6281410ba24091c7f1c9897246b74720b76", size = 41974, upload-time = "2025-10-13T11:29:13.323Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/27/eb/906883692f6da8ad56e7cfba80018af2efde7699d1c8408a708de8270d55/chatbot_connectors-0.5.1.tar.gz", hash = "sha256:8b310295361df90af34093eaf518aea0852709abefa6c7d53e18fab7ff08b253", size = 41946, upload-time = "2025-10-15T09:49:22.156Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ba/b2/21a2829446b6c76f68ed0b660cb9f595512ad6fc5e108d95793962352ffe/chatbot_connectors-0.5.0-py3-none-any.whl", hash = "sha256:7bafcea7df7e3b7701e1ffba385474c85affa6c1e1b8f2bb74de5b8589992018", size = 27854, upload-time = "2025-10-13T11:29:11.714Z" },
+    { url = "https://files.pythonhosted.org/packages/08/9b/cb6b702629b1abaa656ff7d333c620e73461c98c1e40243305340a61ea96/chatbot_connectors-0.5.1-py3-none-any.whl", hash = "sha256:0d92a9925013871215c7a7eaf2c8b91519ad8f742bb05f9da19dea3ec3192227", size = 27761, upload-time = "2025-10-15T09:49:21.252Z" },
 ]
 
 [[package]]
 name = "chatbot-tracer"
-version = "0.5.0"
+version = "0.5.1"
 source = { editable = "." }
 dependencies = [
     { name = "bs4" },
@@ -218,7 +218,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "bs4", specifier = ">=0.0.2" },
-    { name = "chatbot-connectors", specifier = "==0.5.0" },
+    { name = "chatbot-connectors", specifier = "==0.5.1" },
     { name = "colorama", specifier = ">=0.4.6" },
     { name = "google-generativeai", specifier = ">=0.8.5" },
     { name = "graphviz", specifier = ">=0.20.3" },
