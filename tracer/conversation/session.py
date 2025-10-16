@@ -2,11 +2,16 @@
 
 import enum
 import secrets
+from time import sleep
 from typing import TypedDict
 
 from chatbot_connectors import Chatbot
+from chatbot_connectors.exceptions import (
+    ConnectorConnectionError as ChatbotConnectorConnectionError,
+)
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
+from requests.exceptions import RequestException
 
 from tracer.analysis.functionality_extraction import extract_functionality_nodes
 from tracer.analysis.functionality_refinement import (
@@ -16,6 +21,8 @@ from tracer.analysis.functionality_refinement import (
     validate_parent_child_relationship,
 )
 from tracer.constants import (
+    CHATBOT_MAX_RETRIES,
+    CHATBOT_RETRY_BACKOFF_SECONDS,
     CONTEXT_MESSAGES_COUNT,
     MIN_CORRECTED_MESSAGE_LENGTH,
     MIN_EXPLORER_RESPONSE_LENGTH,
@@ -44,6 +51,7 @@ from .fallback_detection import (
 logger = get_logger()
 
 MAX_LOG_MESSAGE_LENGTH = 500
+CHATBOT_COMMUNICATION_ERROR_PLACEHOLDER = "[Chatbot communication error]"
 
 
 class ExplorationGraphState(TypedDict):
@@ -104,6 +112,76 @@ class InteractionOutcome(enum.Enum):
     COMM_ERROR = 1
     FALLBACK_DETECTED = 2
     RETRY_FAILED = 3
+
+
+def _reset_conversation_if_possible(the_chatbot: Chatbot) -> None:
+    """Attempt to reset the chatbot conversation before retrying a message send.
+
+    Args:
+        the_chatbot: Chatbot connector that maintains the conversation state.
+    """
+    try:
+        reset_result = the_chatbot.create_new_conversation()
+    except AttributeError:
+        logger.debug("Chatbot connector does not support conversation reset; skipping.")
+    except Exception:
+        logger.exception("Unexpected error while resetting chatbot conversation before retry.")
+    else:
+        if reset_result:
+            logger.debug("Successfully reset chatbot conversation before retrying request.")
+        else:
+            logger.warning("Chatbot conversation reset attempt returned False; proceeding with retry anyway.")
+
+
+def _send_message_with_resilience(
+    the_chatbot: Chatbot,
+    message: str,
+    *,
+    max_attempts: int = CHATBOT_MAX_RETRIES,
+) -> tuple[bool, str | None]:
+    """Send *message* to *the_chatbot*, retrying on transient connection issues.
+
+    Args:
+        the_chatbot: Chatbot connector used to send the message.
+        message: Message content to deliver.
+        max_attempts: Maximum number of attempts before giving up.
+
+    Returns:
+        Tuple with the connector success flag and the chatbot response (if any).
+    """
+    last_exception: Exception | None = None
+
+    for attempt_index in range(1, max_attempts + 1):
+        try:
+            return the_chatbot.execute_with_input(message)
+        except (ChatbotConnectorConnectionError, TimeoutError, ConnectionError, RequestException) as exc:
+            last_exception = exc
+            logger.warning(
+                "Chatbot request attempt %d/%d failed: %s",
+                attempt_index,
+                max_attempts,
+                exc,
+            )
+
+            if attempt_index < max_attempts:
+                _reset_conversation_if_possible(the_chatbot)
+                sleep_duration = CHATBOT_RETRY_BACKOFF_SECONDS * attempt_index
+                if sleep_duration > 0:
+                    sleep(sleep_duration)
+            continue
+        except Exception as exc:
+            last_exception = exc
+            logger.exception("Unexpected error while communicating with chatbot.")
+            break
+
+    if last_exception is not None:
+        logger.error(
+            "Giving up on chatbot message after %d attempts due to: %s",
+            max_attempts,
+            last_exception,
+        )
+
+    return False, None
 
 
 def _generate_initial_question(
@@ -540,10 +618,10 @@ def _handle_chatbot_interaction(
 ) -> tuple[InteractionOutcome, str]:
     """Interacts with the chatbot, handles retries on fallback/error, and returns outcome."""
     logger.debug("Sending message to chatbot")
-    is_ok, chatbot_message = the_chatbot.execute_with_input(explorer_message)
+    is_ok, chatbot_message = _send_message_with_resilience(the_chatbot, explorer_message)
 
-    if not is_ok:
-        return InteractionOutcome.COMM_ERROR, "[Chatbot communication error]"
+    if not is_ok or chatbot_message is None:
+        return InteractionOutcome.COMM_ERROR, CHATBOT_COMMUNICATION_ERROR_PLACEHOLDER
 
     # Clean HTML if present in the response
     cleaned_chatbot_message = clean_html_response(chatbot_message)
@@ -588,9 +666,12 @@ def _handle_chatbot_interaction(
         logger.exception("Error rephrasing message. Retrying with original.")
 
     logger.debug("Sending retry message to chatbot")
-    is_ok_retry, chatbot_message_retry = the_chatbot.execute_with_input(rephrased_message_or_original)
+    is_ok_retry, chatbot_message_retry = _send_message_with_resilience(
+        the_chatbot,
+        rephrased_message_or_original,
+    )
 
-    if is_ok_retry:
+    if is_ok_retry and chatbot_message_retry is not None:
         # Clean HTML in retry response if present
         cleaned_retry_message = clean_html_response(chatbot_message_retry)
         chatbot_message_retry = cleaned_retry_message
@@ -898,10 +979,10 @@ def run_exploration_session(
     logger.verbose("Explorer: %s", initial_question)
 
     logger.debug("Sending initial question to chatbot")
-    is_ok, chatbot_message = the_chatbot.execute_with_input(initial_question)
+    is_ok, chatbot_message = _send_message_with_resilience(the_chatbot, initial_question)
 
     turn_count = 0
-    if not is_ok:
+    if not is_ok or chatbot_message is None:
         logger.error("Error communicating with chatbot on initial message. Ending session.")
         conversation_history_lc.append(AIMessage(content=initial_question))
         conversation_history_lc.append(HumanMessage(content="[Chatbot communication error on initial message]"))
