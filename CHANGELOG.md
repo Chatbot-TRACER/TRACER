@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.7.0 - 2025-10-23
 
-- Migrated from manually implementing the LLM initialization to useing `init-chat-model`.
+- Migrated from manually implementing the LLM initialization to using `init-chat-model`.
 
 ## 0.5.0 - 2025-10-13
 
