@@ -3,26 +3,24 @@
 -e .
 annotated-types==0.7.0
     # via pydantic
-anyio==4.9.0
+anyio==4.11.0
     # via
     #   httpx
     #   openai
-beautifulsoup4==4.13.4
+beautifulsoup4==4.14.2
     # via bs4
 bs4==0.0.2
     # via chatbot-tracer
-cachetools==5.5.2
+cachetools==6.2.1
     # via google-auth
-certifi==2025.4.26
+certifi==2025.10.5
     # via
     #   httpcore
     #   httpx
     #   requests
-cffi==1.17.1 ; platform_python_implementation == 'PyPy'
-    # via zstandard
 cfgv==3.4.0
     # via pre-commit
-charset-normalizer==3.4.2
+charset-normalizer==3.4.4
     # via requests
 chatbot-connectors==0.5.2
     # via chatbot-tracer
@@ -30,24 +28,29 @@ colorama==0.4.6
     # via
     #   chatbot-tracer
     #   tqdm
-distlib==0.3.9
+distlib==0.4.0
     # via virtualenv
 distro==1.9.0
     # via openai
-filelock==3.18.0
+filelock==3.20.0
     # via virtualenv
 filetype==1.2.0
     # via langchain-google-genai
 google-ai-generativelanguage==0.6.15
     # via google-generativeai
-google-api-core==2.24.2
+google-api-core==2.25.2 ; python_full_version >= '3.14'
     # via
     #   google-ai-generativelanguage
     #   google-api-python-client
     #   google-generativeai
-google-api-python-client==2.169.0
+google-api-core==2.27.0 ; python_full_version < '3.14'
+    # via
+    #   google-ai-generativelanguage
+    #   google-api-python-client
+    #   google-generativeai
+google-api-python-client==2.185.0
     # via google-generativeai
-google-auth==2.40.1
+google-auth==2.41.1
     # via
     #   google-ai-generativelanguage
     #   google-api-core
@@ -60,23 +63,23 @@ google-generativeai==0.8.5
     # via
     #   chatbot-tracer
     #   langchain-google-genai
-googleapis-common-protos==1.70.0
+googleapis-common-protos==1.71.0
     # via
     #   google-api-core
     #   grpcio-status
-graphviz==0.20.3
+graphviz==0.21
     # via chatbot-tracer
-grpcio==1.71.0
+grpcio==1.76.0
     # via
     #   google-api-core
     #   grpcio-status
-grpcio-status==1.71.0
+grpcio-status==1.71.2
     # via google-api-core
 h11==0.16.0
     # via httpcore
 httpcore==1.0.9
     # via httpx
-httplib2==0.22.0
+httplib2==0.31.0
     # via
     #   google-api-python-client
     #   google-auth-httplib2
@@ -85,20 +88,20 @@ httpx==0.28.1
     #   langgraph-sdk
     #   langsmith
     #   openai
-identify==2.6.12
+identify==2.6.15
     # via pre-commit
-idna==3.10
+idna==3.11
     # via
     #   anyio
     #   httpx
     #   requests
-jiter==0.9.0
+jiter==0.11.1
     # via openai
 jsonpatch==1.33
     # via langchain-core
 jsonpointer==3.0.0
     # via jsonpatch
-langchain-core==0.3.60
+langchain-core==0.3.79
     # via
     #   chatbot-tracer
     #   langchain-google-genai
@@ -108,42 +111,42 @@ langchain-core==0.3.60
     #   langgraph-prebuilt
 langchain-google-genai==2.0.10
     # via chatbot-tracer
-langchain-openai==0.3.17
+langchain-openai==0.3.35
     # via chatbot-tracer
-langgraph==0.4.5
+langgraph==1.0.1
     # via chatbot-tracer
-langgraph-checkpoint==2.0.26
+langgraph-checkpoint==3.0.0
     # via
     #   langgraph
     #   langgraph-prebuilt
-langgraph-prebuilt==0.1.8 ; python_full_version < '4'
+langgraph-prebuilt==1.0.1
     # via langgraph
-langgraph-sdk==0.1.69 ; python_full_version < '4'
+langgraph-sdk==0.2.9
     # via langgraph
-langsmith==0.3.42
+langsmith==0.4.37
     # via langchain-core
 nodeenv==1.9.1
     # via pre-commit
-openai==1.78.1
+openai==2.6.0
     # via langchain-openai
-orjson==3.10.18 ; python_full_version < '4' or platform_python_implementation != 'PyPy'
+orjson==3.11.3
     # via
     #   langgraph-sdk
     #   langsmith
-ormsgpack==1.9.1
+ormsgpack==1.11.0
     # via langgraph-checkpoint
-packaging==24.2
+packaging==25.0
     # via
     #   langchain-core
     #   langsmith
-platformdirs==4.3.8
+platformdirs==4.5.0
     # via virtualenv
-pre-commit==4.2.0
+pre-commit==4.3.0
 proto-plus==1.26.1
     # via
     #   google-ai-generativelanguage
     #   google-api-core
-protobuf==5.29.4
+protobuf==5.29.5
     # via
     #   google-ai-generativelanguage
     #   google-api-core
@@ -157,9 +160,7 @@ pyasn1==0.6.1
     #   rsa
 pyasn1-modules==0.4.2
     # via google-auth
-pycparser==2.22 ; platform_python_implementation == 'PyPy'
-    # via cffi
-pydantic==2.11.4
+pydantic==2.12.3
     # via
     #   google-generativeai
     #   langchain-core
@@ -167,18 +168,18 @@ pydantic==2.11.4
     #   langgraph
     #   langsmith
     #   openai
-pydantic-core==2.33.2
+pydantic-core==2.41.4
     # via pydantic
-pyparsing==3.2.3
+pyparsing==3.2.5
     # via httplib2
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via
     #   chatbot-connectors
     #   langchain-core
     #   pre-commit
-regex==2024.11.6
+regex==2025.10.23
     # via tiktoken
-requests==2.32.3
+requests==2.32.5
     # via
     #   chatbot-connectors
     #   google-api-core
@@ -189,40 +190,41 @@ requests-toolbelt==1.0.0
     # via langsmith
 rsa==4.9.1
     # via google-auth
-ruff==0.11.13
+ruff==0.14.1
 sniffio==1.3.1
     # via
     #   anyio
     #   openai
-soupsieve==2.7
+soupsieve==2.8
     # via beautifulsoup4
 tenacity==9.1.2
     # via langchain-core
-tiktoken==0.9.0
+tiktoken==0.12.0
     # via langchain-openai
 tqdm==4.67.1
     # via
     #   google-generativeai
     #   openai
-typing-extensions==4.13.2
+typing-extensions==4.15.0
     # via
     #   anyio
     #   beautifulsoup4
     #   google-generativeai
+    #   grpcio
     #   langchain-core
     #   openai
     #   pydantic
     #   pydantic-core
     #   typing-inspection
-typing-inspection==0.4.0
+typing-inspection==0.4.2
     # via pydantic
-uritemplate==4.1.1
+uritemplate==4.2.0
     # via google-api-python-client
-urllib3==2.4.0
+urllib3==2.5.0
     # via requests
-virtualenv==20.31.2
+virtualenv==20.35.3
     # via pre-commit
-xxhash==3.5.0
+xxhash==3.6.0
     # via langgraph
-zstandard==0.23.0
+zstandard==0.25.0
     # via langsmith
