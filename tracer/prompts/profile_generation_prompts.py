@@ -296,11 +296,11 @@ def get_profile_goals_prompt(
         temp_name = assigned_func_names_or_descs_for_prompt[assigned_functionality_rich_strings.index(rich_string)]
         profile_func_identifiers.append(temp_name)
 
-    param_details_for_prompt, found_params_for_profile = _build_parameter_details(
+    param_details_for_prompt, _found_params_for_profile = _build_parameter_details(
         all_structured_functionalities, profile_func_identifiers
     )
 
-    output_as_param_info, found_output_as_param = _build_output_info(all_structured_functionalities)
+    output_as_param_info, _found_output_as_param = _build_output_info(all_structured_functionalities)
 
     return f"""
 You are crafting a sequence of user goals for a specific test profile. These goals should guide a user simulator to test the assigned chatbot functionalities thoroughly, including their parameters and how they connect.

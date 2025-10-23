@@ -5,28 +5,16 @@ import uuid
 from typing import Any, TypedDict
 
 import requests
-from google.api_core.exceptions import PermissionDenied
-from langchain_core.language_models import BaseChatModel
-from langchain_openai import ChatOpenAI
-from langgraph.checkpoint.memory import MemorySaver
-from openai import AuthenticationError
-
-from tracer.constants import MIN_NODES_FOR_DEDUPLICATION
-
-try:
-    from google.auth.exceptions import DefaultCredentialsError, RefreshError
-    from langchain_google_genai import ChatGoogleGenerativeAI
-
-    GEMINI_AVAILABLE = True
-except ImportError:
-    GEMINI_AVAILABLE = False
-
 from chatbot_connectors import Chatbot
+from langchain.chat_models import init_chat_model
+from langchain_core.language_models import BaseChatModel
+from langgraph.checkpoint.memory import MemorySaver
 
 from tracer.analysis.functionality_refinement import (
     _process_node_group_for_merge,
     is_duplicate_functionality,
 )
+from tracer.constants import MIN_NODES_FOR_DEDUPLICATION
 from tracer.conversation.fallback_detection import extract_fallback_message
 from tracer.conversation.language_detection import extract_supported_languages
 from tracer.conversation.session import (
@@ -93,64 +81,40 @@ class ChatbotExplorationAgent:
             ImportError: If trying to use Gemini/OpenAI models but the required package is not installed.
             LLMError: If authentication or API-related errors occur during initialization.
         """
-        llm: BaseChatModel
+        # We do this because if not we get Vertex AI instead of Gemini
+        provider_prefixed = (
+            model_name
+            if ":" in model_name
+            else (f"google_genai:{model_name}" if model_name.lower().startswith("gemini") else model_name)
+        )
 
-        # Check if this is a Gemini model
-        if model_name.lower().startswith("gemini"):
-            if not GEMINI_AVAILABLE:
-                gemini_error_msg = "To use Gemini models, please install the required package: pip install langchain-google-genai google-generativeai"
-                logger.exception("Gemini support not available")
-                raise ImportError(gemini_error_msg)
+        try:
+            llm = init_chat_model(
+                provider_prefixed,
+                callbacks=[self.token_tracker],
+                timeout=60,
+                max_retries=3,
+            )
+        except ImportError as e:
+            # Guide the user to install the right integration package
+            hint = (
+                "For OpenAI: pip install langchain-openai openai\n"
+                "For Gemini API: pip install langchain-google-genai google-generativeai\n"
+            )
+            msg = f"Missing provider integration for '{provider_prefixed}'.\n{hint}"
+            raise ImportError(msg) from e
+        except Exception as e:
+            logger.exception("Failed to initialize chat model")
+            msg = f"Failed to initialize model '{provider_prefixed}'."
+            raise LLMError(msg) from e
 
-            logger.info("Initializing Gemini model: %s", model_name)
-
-            try:
-                llm = ChatGoogleGenerativeAI(model=model_name, callbacks=[self.token_tracker])
-            except (DefaultCredentialsError, RefreshError) as e:
-                logger.exception("Gemini authentication failed. Please check your API key or credentials.")
-                msg = "Gemini authentication failed."
-                raise LLMError(msg) from e
-            except Exception as e:
-                logger.exception("Failed to initialize Gemini model")
-                msg = f"Failed to initialize Gemini model '{model_name}'."
-                raise LLMError(msg) from e
-
-            try:
-                logger.debug("Performing health check on Gemini model...")
-                llm.invoke("test")
-            except PermissionDenied as e:
-                logger.exception("Gemini API key is invalid or lacks permissions. Please check your credentials.")
-                msg = "Gemini authentication failed."
-                raise LLMError(msg) from e
-            except Exception as e:
-                logger.exception("Failed to verify connection to Gemini")
-                msg = "Gemini health check failed."
-                raise LLMError(msg) from e
-
-        # Handle OpenAI models
-        else:
-            try:
-                logger.info("Initializing OpenAI model: %s", model_name)
-                llm = ChatOpenAI(model=model_name, callbacks=[self.token_tracker], request_timeout=60)
-
-                logger.debug("Performing health check on OpenAI model...")
-                llm.invoke("test")
-            except AuthenticationError as e:
-                logger.exception("OpenAI API key is invalid or has expired. Please check your credentials.")
-                msg = "OpenAI authentication failed."
-                raise LLMError(msg) from e
-            except ImportError as e:
-                openai_error_msg = (
-                    "To use OpenAI models, please install the required package: pip install langchain-openai openai"
-                )
-                logger.exception("OpenAI support not available")
-                raise ImportError(openai_error_msg) from e
-            except Exception as e:
-                error_msg = (
-                    f"Error initializing OpenAI model '{model_name}'. Please check your OpenAI API key and model name."
-                )
-                logger.exception("OpenAI initialization failed")
-                raise LLMError(error_msg) from e
+        # Try the API works
+        try:
+            _ = llm.invoke("ping")
+        except Exception as e:
+            logger.exception("Health check failed")
+            msg = f"Health check failed for '{provider_prefixed}'."
+            raise LLMError(msg) from e
 
         return llm
 
@@ -298,7 +262,7 @@ class ChatbotExplorationAgent:
 
         while session_num < params["max_sessions"]:
             # Determine which node to explore next
-            explore_node, session_type = self._select_next_node(current_graph_state, session_num)
+            explore_node, _session_type = self._select_next_node(current_graph_state, session_num)
 
             # Skip already explored nodes
             if explore_node and explore_node.name in current_graph_state["explored_nodes"]:
