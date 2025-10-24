@@ -17,6 +17,7 @@ from tracer.analysis.functionality_refinement import (
 from tracer.constants import MIN_NODES_FOR_DEDUPLICATION
 from tracer.conversation.fallback_detection import extract_fallback_message
 from tracer.conversation.language_detection import extract_supported_languages
+from tracer.conversation.rate_limiter import enforce_chatbot_rate_limit
 from tracer.conversation.session import (
     ExplorationGraphState,
     ExplorationSessionConfig,
@@ -195,6 +196,7 @@ class ChatbotExplorationAgent:
         logger.debug("Sending initial language probe message: '%s'", initial_probe_query)
 
         try:
+            enforce_chatbot_rate_limit()
             is_ok, probe_response = chatbot_connector.execute_with_input(initial_probe_query)
             supported_languages = ["English"]  # Default
 

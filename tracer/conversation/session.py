@@ -27,6 +27,7 @@ from tracer.constants import (
     MIN_CORRECTED_MESSAGE_LENGTH,
     MIN_EXPLORER_RESPONSE_LENGTH,
 )
+from tracer.conversation.rate_limiter import enforce_chatbot_rate_limit
 from tracer.prompts.session_prompts import (
     explorer_checker_prompt,
     get_correction_prompt,
@@ -152,6 +153,7 @@ def _send_message_with_resilience(
     last_exception: Exception | None = None
 
     for attempt_index in range(1, max_attempts + 1):
+        enforce_chatbot_rate_limit()
         try:
             return the_chatbot.execute_with_input(message)
         except (ChatbotConnectorConnectionError, TimeoutError, ConnectionError, RequestException) as exc:

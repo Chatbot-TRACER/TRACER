@@ -5,6 +5,7 @@ import re
 from chatbot_connectors import Chatbot
 from langchain_core.language_models import BaseLanguageModel
 
+from tracer.conversation.rate_limiter import enforce_chatbot_rate_limit
 from tracer.prompts.fallback_detection_prompts import (
     get_fallback_identification_prompt,
     get_semantic_fallback_check_prompt,
@@ -42,6 +43,7 @@ def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> st
     for i, query in enumerate(confusing_queries):
         logger.verbose("Sending confusing query %d...", i + 1)
         try:
+            enforce_chatbot_rate_limit()
             is_ok, response = the_chatbot.execute_with_input(query)
 
             if is_ok:
