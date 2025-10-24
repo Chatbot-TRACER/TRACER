@@ -919,12 +919,18 @@ def _run_conversation_loop(
     initial_history: list[BaseMessage],
     *,
     previous_chatbot_message: str | None,
-) -> tuple[list[BaseMessage], int, str | None]:
-    """Runs the main conversation loop for a single session."""
+) -> tuple[list[BaseMessage], int, str | None, bool]:
+    """Runs the main conversation loop for a single session.
+
+    Returns:
+        tuple[list[BaseMessage], int, str | None, bool]: Updated conversation history, number of turns taken,
+            the last chatbot message, and whether any issues occurred.
+    """
     conversation_history_lc = initial_history[:]  # Work on a copy
     consecutive_failures = 0
     force_topic_change_next_turn = False
     turn_count = 1  # Start at 1 because the initial exchange is already in history
+    loop_had_issue = False
 
     # Extract context components for easier access
     llm = context["llm"]
@@ -982,6 +988,8 @@ def _run_conversation_loop(
             fallback_message,
             previous_chatbot_message=previous_chatbot_message,
         )
+        if outcome == InteractionOutcome.COMM_ERROR:
+            loop_had_issue = True
 
         # 5. Update History with chatbot's response
         conversation_history_lc.append(HumanMessage(content=final_chatbot_message))
@@ -1008,12 +1016,49 @@ def _run_conversation_loop(
         # 8. Increment Turn Count
         turn_count += 1
 
-    return conversation_history_lc, turn_count, previous_chatbot_message
+    return conversation_history_lc, turn_count, previous_chatbot_message, loop_had_issue
+
+
+def _start_session_conversation(
+    conversation_history_lc: list[BaseMessage],
+    *,
+    current_node: FunctionalityNode | None,
+    primary_language: str,
+    llm: BaseLanguageModel,
+    the_chatbot: Chatbot,
+) -> tuple[list[BaseMessage], int, str | None, bool]:
+    """Handle the initial exchange with the chatbot and return session state."""
+    initial_question = _generate_initial_question(current_node, primary_language, llm)
+    logger.debug("Initial question: %s", initial_question)
+    logger.verbose("Explorer: %s", initial_question)
+
+    logger.debug("Sending initial question to chatbot")
+    is_ok, chatbot_message = _send_message_with_resilience(the_chatbot, initial_question)
+
+    if not is_ok or chatbot_message is None:
+        logger.error("Error communicating with chatbot on initial message. Ending session.")
+        conversation_history_lc.append(AIMessage(content=initial_question))
+        conversation_history_lc.append(HumanMessage(content="[Chatbot communication error on initial message]"))
+        return conversation_history_lc, 0, None, True
+
+    original_message = chatbot_message
+    chatbot_message = clean_html_response(chatbot_message)
+
+    logger.debug("RAW message: %s", original_message)
+    logger.verbose(
+        "Chatbot: %s",
+        chatbot_message[:MAX_LOG_MESSAGE_LENGTH] + ("..." if len(chatbot_message) > MAX_LOG_MESSAGE_LENGTH else ""),
+    )
+
+    conversation_history_lc.append(AIMessage(content=initial_question))
+    conversation_history_lc.append(HumanMessage(content=chatbot_message))
+
+    return conversation_history_lc, 1, chatbot_message, False
 
 
 def run_exploration_session(
     config: ExplorationSessionConfig,
-) -> tuple[list[dict[str, str]], ExplorationGraphState]:
+) -> tuple[list[dict[str, str]], ExplorationGraphState, dict[str, bool]]:
     """Runs one chat session to explore the chatbot's capabilities based on the provided configuration.
 
     Args:
@@ -1030,6 +1075,7 @@ def run_exploration_session(
             - ExplorationGraphState: The updated state of the exploration graph after
               analyzing the session's conversation and potentially adding or modifying
               functionality nodes.
+            - dict[str, bool]: Session metadata (e.g., whether issues occurred).
     """
     # Extract parameters from the config object
     session_num = config["session_num"]
@@ -1041,6 +1087,8 @@ def run_exploration_session(
     current_node = config["current_node"]
     graph_state = config["graph_state"]
     supported_languages = config["supported_languages"]
+    session_had_issue = False
+    previous_chatbot_message: str | None = None
 
     # Log clear session start marker with basic info
     if current_node:
@@ -1069,54 +1117,29 @@ def run_exploration_session(
     exploration_prompt = get_explorer_system_prompt(session_focus, language_instruction, max_turns)
     conversation_history_lc: list[BaseMessage] = [SystemMessage(content=exploration_prompt)]
 
-    # --- Initial Exchange ---
-    initial_question = _generate_initial_question(current_node, primary_language, llm)
-    logger.debug("Initial question: %s", initial_question)
+    conversation_history_lc, turn_count, previous_chatbot_message, initial_issue = _start_session_conversation(
+        conversation_history_lc,
+        current_node=current_node,
+        primary_language=primary_language,
+        llm=llm,
+        the_chatbot=the_chatbot,
+    )
+    session_had_issue = session_had_issue or initial_issue
 
-    # Log the explorer's first message for better visibility
-    logger.verbose("Explorer: %s", initial_question)
-
-    logger.debug("Sending initial question to chatbot")
-    is_ok, chatbot_message = _send_message_with_resilience(the_chatbot, initial_question)
-
-    turn_count = 0
-    if not is_ok or chatbot_message is None:
-        logger.error("Error communicating with chatbot on initial message. Ending session.")
-        conversation_history_lc.append(AIMessage(content=initial_question))
-        conversation_history_lc.append(HumanMessage(content="[Chatbot communication error on initial message]"))
-    else:
-        # Clean HTML if present in the response
-        original_message = chatbot_message  # Store for debugging if needed
-        chatbot_message = clean_html_response(chatbot_message)
-
-        # Log debug
-        logger.debug("RAW message: %s", original_message)
-
-        # Log the chatbot's first response for better visibility
-        logger.verbose(
-            "Chatbot: %s",
-            chatbot_message[:MAX_LOG_MESSAGE_LENGTH] + ("..." if len(chatbot_message) > MAX_LOG_MESSAGE_LENGTH else ""),
+    # --- Conversation Loop ---
+    if turn_count > 0 and turn_count < max_turns:
+        loop_context: ConversationContext = {
+            "llm": llm,
+            "the_chatbot": the_chatbot,
+            "fallback_message": fallback_message,
+        }
+        conversation_history_lc, turn_count, previous_chatbot_message, loop_had_issue = _run_conversation_loop(
+            max_turns=max_turns,
+            context=loop_context,
+            initial_history=conversation_history_lc,
+            previous_chatbot_message=previous_chatbot_message,
         )
-
-        conversation_history_lc.append(AIMessage(content=initial_question))
-        conversation_history_lc.append(HumanMessage(content=chatbot_message))
-        turn_count = 1
-        previous_chatbot_message = chatbot_message
-
-        # --- Conversation Loop ---
-        if turn_count < max_turns:
-            # Create context dictionary for the loop
-            loop_context: ConversationContext = {
-                "llm": llm,
-                "the_chatbot": the_chatbot,
-                "fallback_message": fallback_message,
-            }
-            conversation_history_lc, turn_count, previous_chatbot_message = _run_conversation_loop(
-                max_turns=max_turns,
-                context=loop_context,  # Pass context object
-                initial_history=conversation_history_lc,
-                previous_chatbot_message=previous_chatbot_message,
-            )
+        session_had_issue = session_had_issue or loop_had_issue
 
     # --- Post-Session Analysis ---
     conversation_history_dict, updated_graph_state = _analyze_session_and_update_nodes(
@@ -1129,4 +1152,6 @@ def run_exploration_session(
     # Session completion summary
     logger.info("\n=== Session %d/%d complete: %d exchanges ===\n", session_num + 1, max_sessions, turn_count)
 
-    return conversation_history_dict, updated_graph_state
+    session_summary = {"had_issue": session_had_issue}
+
+    return conversation_history_dict, updated_graph_state, session_summary

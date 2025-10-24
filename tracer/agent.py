@@ -2,6 +2,8 @@
 
 import pprint
 import uuid
+from random import SystemRandom
+from time import sleep
 from typing import Any, TypedDict
 
 import requests
@@ -14,7 +16,13 @@ from tracer.analysis.functionality_refinement import (
     _process_node_group_for_merge,
     is_duplicate_functionality,
 )
-from tracer.constants import MIN_NODES_FOR_DEDUPLICATION
+from tracer.constants import (
+    CHATBOT_SESSION_COOLDOWN_BASE_SECONDS,
+    CHATBOT_SESSION_COOLDOWN_JITTER_SECONDS,
+    CHATBOT_SESSION_ISSUE_COOLDOWN_BASE_SECONDS,
+    CHATBOT_SESSION_ISSUE_COOLDOWN_JITTER_SECONDS,
+    MIN_NODES_FOR_DEDUPLICATION,
+)
 from tracer.conversation.fallback_detection import extract_fallback_message
 from tracer.conversation.language_detection import extract_supported_languages
 from tracer.conversation.rate_limiter import apply_human_like_delay, enforce_chatbot_rate_limit
@@ -262,8 +270,11 @@ class ChatbotExplorationAgent:
 
         session_num = 0
         logger.info("\n=== Beginning Exploration Sessions ===")
+        issue_cooldown_level = 0
+        cooldown_rng = SystemRandom()
 
-        while session_num < params["max_sessions"]:
+        max_sessions = params["max_sessions"]
+        while session_num < max_sessions:
             # Determine which node to explore next
             explore_node, _session_type = self._select_next_node(current_graph_state, session_num)
 
@@ -276,7 +287,7 @@ class ChatbotExplorationAgent:
             # Configure and run a single session
             session_params: SessionParams = {
                 "session_num": session_num,
-                "max_sessions": params["max_sessions"],
+                "max_sessions": max_sessions,
                 "max_turns": params["max_turns"],
             }
 
@@ -289,39 +300,102 @@ class ChatbotExplorationAgent:
                 current_graph_state,
             )
 
-            logger.debug("Running exploration session %d", session_num + 1)
-            conversation_history, updated_graph_state = run_exploration_session(
-                config=session_config,
+            conversation_history, current_graph_state, session_summary = self._execute_session(
+                session_config,
+                session_num,
             )
 
             conversation_sessions.append(conversation_history)
-            logger.debug(
-                "Session %d completed, conversation history captured (%d turns)",
-                session_num + 1,
-                len(conversation_history),
-            )
-
-            current_graph_state = updated_graph_state
+            session_had_issue = session_summary.get("had_issue", False)
+            if session_had_issue:
+                issue_cooldown_level += 1
             session_num += 1
 
-            logger.debug("Current graph state updated after session %d:", session_num)
-            logger.debug("  Root nodes (%d):", len(updated_graph_state["root_nodes"]))
-            for root_node in updated_graph_state["root_nodes"]:
-                for line in root_node.to_detailed_string(indent_level=0).splitlines():
-                    logger.debug("    %s", line)
-            logger.debug("  Pending nodes (%d):", len(updated_graph_state["pending_nodes"]))
-            for node in updated_graph_state["pending_nodes"]:
-                logger.debug("    - %s", node)
-            logger.debug(
-                "  Explored nodes (%d): %s",
-                len(updated_graph_state["explored_nodes"]),
-                sorted(updated_graph_state["explored_nodes"]),
+            self._log_graph_state(session_num, current_graph_state)
+            self._apply_session_cooldown(
+                issue_cooldown_level=issue_cooldown_level,
+                session_num=session_num,
+                max_sessions=max_sessions,
+                rng=cooldown_rng,
             )
 
         # Display summary information
         self._print_exploration_summary(session_num, current_graph_state)
 
         return conversation_sessions, current_graph_state
+
+    def _execute_session(
+        self,
+        session_config: ExplorationSessionConfig,
+        session_index: int,
+    ) -> tuple[list[dict[str, str]], ExplorationGraphState, dict[str, bool]]:
+        logger.debug("Running exploration session %d", session_index + 1)
+        conversation_history, updated_graph_state, session_summary = run_exploration_session(
+            config=session_config,
+        )
+        logger.debug(
+            "Session %d completed, conversation history captured (%d turns)",
+            session_index + 1,
+            len(conversation_history),
+        )
+        return conversation_history, updated_graph_state, session_summary
+
+    def _log_graph_state(self, session_index: int, graph_state: ExplorationGraphState) -> None:
+        logger.debug("Current graph state updated after session %d:", session_index)
+        logger.debug("  Root nodes (%d):", len(graph_state["root_nodes"]))
+        for root_node in graph_state["root_nodes"]:
+            for line in root_node.to_detailed_string(indent_level=0).splitlines():
+                logger.debug("    %s", line)
+        logger.debug("  Pending nodes (%d):", len(graph_state["pending_nodes"]))
+        for node in graph_state["pending_nodes"]:
+            logger.debug("    - %s", node)
+        logger.debug(
+            "  Explored nodes (%d): %s",
+            len(graph_state["explored_nodes"]),
+            sorted(graph_state["explored_nodes"]),
+        )
+
+    def _apply_session_cooldown(
+        self,
+        *,
+        issue_cooldown_level: int,
+        session_num: int,
+        max_sessions: int,
+        rng: SystemRandom,
+    ) -> None:
+        if session_num >= max_sessions:
+            return
+
+        if issue_cooldown_level > 0:
+            base_delay = CHATBOT_SESSION_ISSUE_COOLDOWN_BASE_SECONDS * (2 ** (issue_cooldown_level - 1))
+            jitter = rng.uniform(
+                -CHATBOT_SESSION_ISSUE_COOLDOWN_JITTER_SECONDS,
+                CHATBOT_SESSION_ISSUE_COOLDOWN_JITTER_SECONDS,
+            )
+        else:
+            base_delay = CHATBOT_SESSION_COOLDOWN_BASE_SECONDS
+            jitter = rng.uniform(
+                -CHATBOT_SESSION_COOLDOWN_JITTER_SECONDS,
+                CHATBOT_SESSION_COOLDOWN_JITTER_SECONDS,
+            )
+
+        cooldown_seconds = max(0.0, base_delay + jitter)
+        if cooldown_seconds <= 0:
+            return
+
+        if issue_cooldown_level > 0:
+            logger.debug(
+                "Waiting %.1f seconds before next session due to detected issues (level %d).",
+                cooldown_seconds,
+                issue_cooldown_level,
+            )
+        else:
+            logger.debug(
+                "Waiting %.1f seconds before next session to avoid rapid-fire probing.",
+                cooldown_seconds,
+            )
+
+        sleep(cooldown_seconds)
 
     def _select_next_node(self, graph_state: ExplorationGraphState, session_num: int) -> tuple[Any, str]:
         """Select the next node to explore."""
