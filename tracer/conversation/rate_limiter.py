@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import random
+from random import SystemRandom
 from threading import Lock
 from time import monotonic, sleep
 
@@ -19,11 +19,13 @@ class TokenBucket:
     """Thread-safe token bucket to throttle chatbot traffic."""
 
     def __init__(self, capacity: float, refill_rate_per_second: float) -> None:
+        """Initialize a token bucket with *capacity* and *refill_rate_per_second*."""
         self.capacity = capacity
         self.refill_rate_per_second = refill_rate_per_second
         self._tokens = 0.0  # start empty to avoid initial burst
         self._last_refill_ts = monotonic()
         self._lock = Lock()
+        self._rng = SystemRandom()
 
     def _refill_locked(self) -> None:
         now = monotonic()
@@ -50,7 +52,7 @@ class TokenBucket:
                 wait_time = tokens_needed / self.refill_rate_per_second
 
             jitter_ceiling = min(wait_time, 0.5)
-            jitter = random.random() * jitter_ceiling if jitter_ceiling > 0 else 0.0
+            jitter = self._rng.random() * jitter_ceiling if jitter_ceiling > 0 else 0.0
             sleep_time = max(wait_time + jitter, 0.05)
             sleep(sleep_time)
             total_sleep += sleep_time
