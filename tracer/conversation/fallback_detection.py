@@ -5,6 +5,7 @@ import re
 from chatbot_connectors import Chatbot
 from langchain_core.language_models import BaseLanguageModel
 
+from tracer.conversation.rate_limiter import apply_human_like_delay, enforce_chatbot_rate_limit
 from tracer.prompts.fallback_detection_prompts import (
     get_fallback_identification_prompt,
     get_semantic_fallback_check_prompt,
@@ -39,9 +40,12 @@ def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> st
     responses: list[str] = []
 
     # Send confusing queries and get responses
+    previous_response: str | None = None
     for i, query in enumerate(confusing_queries):
         logger.verbose("Sending confusing query %d...", i + 1)
         try:
+            apply_human_like_delay(query, previous_received_message=previous_response)
+            enforce_chatbot_rate_limit()
             is_ok, response = the_chatbot.execute_with_input(query)
 
             if is_ok:
@@ -49,6 +53,7 @@ def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> st
                 response = clean_html_response(response)
                 logger.debug("Cleaned response: %s", response)
                 responses.append(response)
+                previous_response = response
         except (TimeoutError, ConnectionError):
             logger.exception("Error communicating with chatbot during fallback detection")
 

@@ -2,6 +2,8 @@
 
 import enum
 import secrets
+from http import HTTPStatus
+from random import SystemRandom
 from time import sleep
 from typing import TypedDict
 
@@ -22,11 +24,13 @@ from tracer.analysis.functionality_refinement import (
 )
 from tracer.constants import (
     CHATBOT_MAX_RETRIES,
+    CHATBOT_RETRY_BACKOFF_MAX_SECONDS,
     CHATBOT_RETRY_BACKOFF_SECONDS,
     CONTEXT_MESSAGES_COUNT,
     MIN_CORRECTED_MESSAGE_LENGTH,
     MIN_EXPLORER_RESPONSE_LENGTH,
 )
+from tracer.conversation.rate_limiter import apply_human_like_delay, enforce_chatbot_rate_limit
 from tracer.prompts.session_prompts import (
     explorer_checker_prompt,
     get_correction_prompt,
@@ -52,6 +56,90 @@ logger = get_logger()
 
 MAX_LOG_MESSAGE_LENGTH = 500
 CHATBOT_COMMUNICATION_ERROR_PLACEHOLDER = "[Chatbot communication error]"
+_retry_backoff_rng = SystemRandom()
+HTTP_STATUS_TOO_MANY_REQUESTS = HTTPStatus.TOO_MANY_REQUESTS.value
+HTTP_STATUS_SERVER_ERROR_MIN = HTTPStatus.INTERNAL_SERVER_ERROR.value
+HTTP_STATUS_SERVER_ERROR_MAX_EXCLUSIVE = HTTP_STATUS_SERVER_ERROR_MIN + 100
+
+
+def _is_transient_http_status(status_code: int | None) -> bool:
+    """Return True if *status_code* represents a retryable HTTP condition."""
+    if status_code is None:
+        return True  # Network-level failure, treat as transient
+    if status_code == HTTP_STATUS_TOO_MANY_REQUESTS:
+        return True
+    return HTTP_STATUS_SERVER_ERROR_MIN <= status_code < HTTP_STATUS_SERVER_ERROR_MAX_EXCLUSIVE
+
+
+def _sleep_with_exponential_backoff(attempt_index: int, max_attempts: int) -> None:
+    """Sleep using exponential backoff with jitter before the next retry."""
+    base_delay = max(CHATBOT_RETRY_BACKOFF_SECONDS, 0.0)
+    if base_delay <= 0:
+        return
+
+    exponential_delay = min(
+        CHATBOT_RETRY_BACKOFF_MAX_SECONDS,
+        base_delay * (2 ** (attempt_index - 1)),
+    )
+    jitter_factor = 0.5 + _retry_backoff_rng.random() * 0.5  # 0.5x - 1.0x
+    sleep_duration = max(exponential_delay * jitter_factor, 0.05)
+    logger.debug(
+        "Waiting %.2fs before retrying chatbot request (attempt %d of %d).",
+        sleep_duration,
+        attempt_index + 1,
+        max_attempts,
+    )
+    sleep(sleep_duration)
+
+
+def _should_retry_after_exception(
+    exc: Exception,
+    attempt_index: int,
+    max_attempts: int,
+) -> bool:
+    """Log *exc* and decide whether a retry should be attempted."""
+    if isinstance(exc, ChatbotConnectorConnectionError):
+        logger.warning(
+            "Chatbot request attempt %d/%d failed: %s",
+            attempt_index,
+            max_attempts,
+            exc,
+        )
+        return True
+
+    if isinstance(exc, (TimeoutError, ConnectionError)):
+        logger.warning(
+            "Chatbot request attempt %d/%d failed due to network issue: %s",
+            attempt_index,
+            max_attempts,
+            exc,
+        )
+        return True
+
+    if isinstance(exc, RequestException):
+        status_code = getattr(getattr(exc, "response", None), "status_code", None)
+        status_display = f" (HTTP {status_code})" if status_code is not None else ""
+        if _is_transient_http_status(status_code):
+            logger.warning(
+                "Chatbot request attempt %d/%d failed with transient HTTP error%s: %s",
+                attempt_index,
+                max_attempts,
+                status_display,
+                exc,
+            )
+            return True
+
+        logger.exception(
+            "Chatbot request attempt %d/%d failed with non-retryable HTTP error%s: %s",
+            attempt_index,
+            max_attempts,
+            status_display,
+            exc,
+        )
+        return False
+
+    logger.exception("Unexpected error while communicating with chatbot.")
+    return False
 
 
 class ExplorationGraphState(TypedDict):
@@ -138,6 +226,7 @@ def _send_message_with_resilience(
     message: str,
     *,
     max_attempts: int = CHATBOT_MAX_RETRIES,
+    previous_message: str | None = None,
 ) -> tuple[bool, str | None]:
     """Send *message* to *the_chatbot*, retrying on transient connection issues.
 
@@ -145,6 +234,7 @@ def _send_message_with_resilience(
         the_chatbot: Chatbot connector used to send the message.
         message: Message content to deliver.
         max_attempts: Maximum number of attempts before giving up.
+        previous_message: The chatbot's previous response, used to simulate reading delay.
 
     Returns:
         Tuple with the connector success flag and the chatbot response (if any).
@@ -152,27 +242,21 @@ def _send_message_with_resilience(
     last_exception: Exception | None = None
 
     for attempt_index in range(1, max_attempts + 1):
+        apply_human_like_delay(
+            message,
+            include_thinking_delay=attempt_index == 1,
+            previous_received_message=previous_message if attempt_index == 1 else None,
+        )
+        enforce_chatbot_rate_limit()
         try:
             return the_chatbot.execute_with_input(message)
         except (ChatbotConnectorConnectionError, TimeoutError, ConnectionError, RequestException) as exc:
             last_exception = exc
-            logger.warning(
-                "Chatbot request attempt %d/%d failed: %s",
-                attempt_index,
-                max_attempts,
-                exc,
-            )
-
-            if attempt_index < max_attempts:
-                _reset_conversation_if_possible(the_chatbot)
-                sleep_duration = CHATBOT_RETRY_BACKOFF_SECONDS * attempt_index
-                if sleep_duration > 0:
-                    sleep(sleep_duration)
-            continue
-        except Exception as exc:
-            last_exception = exc
-            logger.exception("Unexpected error while communicating with chatbot.")
-            break
+            should_retry = _should_retry_after_exception(exc, attempt_index, max_attempts)
+            if not should_retry or attempt_index >= max_attempts:
+                break
+            _reset_conversation_if_possible(the_chatbot)
+            _sleep_with_exponential_backoff(attempt_index, max_attempts)
 
     if last_exception is not None:
         logger.error(
@@ -615,10 +699,16 @@ def _handle_chatbot_interaction(
     the_chatbot: Chatbot,
     llm: BaseLanguageModel,
     fallback_message: str | None,
+    *,
+    previous_chatbot_message: str | None,
 ) -> tuple[InteractionOutcome, str]:
     """Interacts with the chatbot, handles retries on fallback/error, and returns outcome."""
     logger.debug("Sending message to chatbot")
-    is_ok, chatbot_message = _send_message_with_resilience(the_chatbot, explorer_message)
+    is_ok, chatbot_message = _send_message_with_resilience(
+        the_chatbot,
+        explorer_message,
+        previous_message=previous_chatbot_message,
+    )
 
     if not is_ok or chatbot_message is None:
         return InteractionOutcome.COMM_ERROR, CHATBOT_COMMUNICATION_ERROR_PLACEHOLDER
@@ -669,6 +759,7 @@ def _handle_chatbot_interaction(
     is_ok_retry, chatbot_message_retry = _send_message_with_resilience(
         the_chatbot,
         rephrased_message_or_original,
+        previous_message=previous_chatbot_message,
     )
 
     if is_ok_retry and chatbot_message_retry is not None:
@@ -826,12 +917,20 @@ def _run_conversation_loop(
     max_turns: int,
     context: ConversationContext,
     initial_history: list[BaseMessage],
-) -> tuple[list[BaseMessage], int]:
-    """Runs the main conversation loop for a single session."""
+    *,
+    previous_chatbot_message: str | None,
+) -> tuple[list[BaseMessage], int, str | None, bool]:
+    """Runs the main conversation loop for a single session.
+
+    Returns:
+        tuple[list[BaseMessage], int, str | None, bool]: Updated conversation history, number of turns taken,
+            the last chatbot message, and whether any issues occurred.
+    """
     conversation_history_lc = initial_history[:]  # Work on a copy
     consecutive_failures = 0
     force_topic_change_next_turn = False
     turn_count = 1  # Start at 1 because the initial exchange is already in history
+    loop_had_issue = False
 
     # Extract context components for easier access
     llm = context["llm"]
@@ -883,11 +982,18 @@ def _run_conversation_loop(
 
         # 4. Interact with Chatbot (with retry logic)
         outcome, final_chatbot_message = _handle_chatbot_interaction(
-            explorer_response_content, the_chatbot, llm, fallback_message
+            explorer_response_content,
+            the_chatbot,
+            llm,
+            fallback_message,
+            previous_chatbot_message=previous_chatbot_message,
         )
+        if outcome == InteractionOutcome.COMM_ERROR:
+            loop_had_issue = True
 
         # 5. Update History with chatbot's response
         conversation_history_lc.append(HumanMessage(content=final_chatbot_message))
+        previous_chatbot_message = final_chatbot_message
         logger.verbose(
             "Chatbot: %s",
             final_chatbot_message[:MAX_LOG_MESSAGE_LENGTH]
@@ -910,12 +1016,49 @@ def _run_conversation_loop(
         # 8. Increment Turn Count
         turn_count += 1
 
-    return conversation_history_lc, turn_count
+    return conversation_history_lc, turn_count, previous_chatbot_message, loop_had_issue
+
+
+def _start_session_conversation(
+    conversation_history_lc: list[BaseMessage],
+    *,
+    current_node: FunctionalityNode | None,
+    primary_language: str,
+    llm: BaseLanguageModel,
+    the_chatbot: Chatbot,
+) -> tuple[list[BaseMessage], int, str | None, bool]:
+    """Handle the initial exchange with the chatbot and return session state."""
+    initial_question = _generate_initial_question(current_node, primary_language, llm)
+    logger.debug("Initial question: %s", initial_question)
+    logger.verbose("Explorer: %s", initial_question)
+
+    logger.debug("Sending initial question to chatbot")
+    is_ok, chatbot_message = _send_message_with_resilience(the_chatbot, initial_question)
+
+    if not is_ok or chatbot_message is None:
+        logger.error("Error communicating with chatbot on initial message. Ending session.")
+        conversation_history_lc.append(AIMessage(content=initial_question))
+        conversation_history_lc.append(HumanMessage(content="[Chatbot communication error on initial message]"))
+        return conversation_history_lc, 0, None, True
+
+    original_message = chatbot_message
+    chatbot_message = clean_html_response(chatbot_message)
+
+    logger.debug("RAW message: %s", original_message)
+    logger.verbose(
+        "Chatbot: %s",
+        chatbot_message[:MAX_LOG_MESSAGE_LENGTH] + ("..." if len(chatbot_message) > MAX_LOG_MESSAGE_LENGTH else ""),
+    )
+
+    conversation_history_lc.append(AIMessage(content=initial_question))
+    conversation_history_lc.append(HumanMessage(content=chatbot_message))
+
+    return conversation_history_lc, 1, chatbot_message, False
 
 
 def run_exploration_session(
     config: ExplorationSessionConfig,
-) -> tuple[list[dict[str, str]], ExplorationGraphState]:
+) -> tuple[list[dict[str, str]], ExplorationGraphState, dict[str, bool]]:
     """Runs one chat session to explore the chatbot's capabilities based on the provided configuration.
 
     Args:
@@ -932,6 +1075,7 @@ def run_exploration_session(
             - ExplorationGraphState: The updated state of the exploration graph after
               analyzing the session's conversation and potentially adding or modifying
               functionality nodes.
+            - dict[str, bool]: Session metadata (e.g., whether issues occurred).
     """
     # Extract parameters from the config object
     session_num = config["session_num"]
@@ -943,6 +1087,8 @@ def run_exploration_session(
     current_node = config["current_node"]
     graph_state = config["graph_state"]
     supported_languages = config["supported_languages"]
+    session_had_issue = False
+    previous_chatbot_message: str | None = None
 
     # Log clear session start marker with basic info
     if current_node:
@@ -971,52 +1117,29 @@ def run_exploration_session(
     exploration_prompt = get_explorer_system_prompt(session_focus, language_instruction, max_turns)
     conversation_history_lc: list[BaseMessage] = [SystemMessage(content=exploration_prompt)]
 
-    # --- Initial Exchange ---
-    initial_question = _generate_initial_question(current_node, primary_language, llm)
-    logger.debug("Initial question: %s", initial_question)
+    conversation_history_lc, turn_count, previous_chatbot_message, initial_issue = _start_session_conversation(
+        conversation_history_lc,
+        current_node=current_node,
+        primary_language=primary_language,
+        llm=llm,
+        the_chatbot=the_chatbot,
+    )
+    session_had_issue = session_had_issue or initial_issue
 
-    # Log the explorer's first message for better visibility
-    logger.verbose("Explorer: %s", initial_question)
-
-    logger.debug("Sending initial question to chatbot")
-    is_ok, chatbot_message = _send_message_with_resilience(the_chatbot, initial_question)
-
-    turn_count = 0
-    if not is_ok or chatbot_message is None:
-        logger.error("Error communicating with chatbot on initial message. Ending session.")
-        conversation_history_lc.append(AIMessage(content=initial_question))
-        conversation_history_lc.append(HumanMessage(content="[Chatbot communication error on initial message]"))
-    else:
-        # Clean HTML if present in the response
-        original_message = chatbot_message  # Store for debugging if needed
-        chatbot_message = clean_html_response(chatbot_message)
-
-        # Log debug
-        logger.debug("RAW message: %s", original_message)
-
-        # Log the chatbot's first response for better visibility
-        logger.verbose(
-            "Chatbot: %s",
-            chatbot_message[:MAX_LOG_MESSAGE_LENGTH] + ("..." if len(chatbot_message) > MAX_LOG_MESSAGE_LENGTH else ""),
+    # --- Conversation Loop ---
+    if turn_count > 0 and turn_count < max_turns:
+        loop_context: ConversationContext = {
+            "llm": llm,
+            "the_chatbot": the_chatbot,
+            "fallback_message": fallback_message,
+        }
+        conversation_history_lc, turn_count, previous_chatbot_message, loop_had_issue = _run_conversation_loop(
+            max_turns=max_turns,
+            context=loop_context,
+            initial_history=conversation_history_lc,
+            previous_chatbot_message=previous_chatbot_message,
         )
-
-        conversation_history_lc.append(AIMessage(content=initial_question))
-        conversation_history_lc.append(HumanMessage(content=chatbot_message))
-        turn_count = 1
-
-        # --- Conversation Loop ---
-        if turn_count < max_turns:
-            # Create context dictionary for the loop
-            loop_context: ConversationContext = {
-                "llm": llm,
-                "the_chatbot": the_chatbot,
-                "fallback_message": fallback_message,
-            }
-            conversation_history_lc, turn_count = _run_conversation_loop(
-                max_turns=max_turns,
-                context=loop_context,  # Pass context object
-                initial_history=conversation_history_lc,
-            )
+        session_had_issue = session_had_issue or loop_had_issue
 
     # --- Post-Session Analysis ---
     conversation_history_dict, updated_graph_state = _analyze_session_and_update_nodes(
@@ -1029,4 +1152,6 @@ def run_exploration_session(
     # Session completion summary
     logger.info("\n=== Session %d/%d complete: %d exchanges ===\n", session_num + 1, max_sessions, turn_count)
 
-    return conversation_history_dict, updated_graph_state
+    session_summary = {"had_issue": session_had_issue}
+
+    return conversation_history_dict, updated_graph_state, session_summary
