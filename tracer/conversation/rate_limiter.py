@@ -7,8 +7,12 @@ from threading import Lock
 from time import monotonic, sleep
 
 from tracer.constants import (
+    CHATBOT_MIN_INTER_MESSAGE_GAP_SECONDS,
+    CHATBOT_READING_DELAY_PER_CHARACTER_SECONDS,
     CHATBOT_TOKEN_BUCKET_CAPACITY,
     CHATBOT_TOKEN_BUCKET_REFILL_RATE_PER_SECOND,
+    CHATBOT_TYPING_DELAY_JITTER_SECONDS,
+    CHATBOT_TYPING_DELAY_PER_CHARACTER_SECONDS,
 )
 from tracer.utils.logging_utils import get_logger
 
@@ -68,6 +72,9 @@ if CHATBOT_TOKEN_BUCKET_CAPACITY > 0 and CHATBOT_TOKEN_BUCKET_REFILL_RATE_PER_SE
     )
 
 
+_human_delay_rng = SystemRandom()
+
+
 def enforce_chatbot_rate_limit(tokens: float = 1.0) -> float:
     """Block until the chatbot rate limit allows another request. Returns time slept."""
     if GLOBAL_CHATBOT_TOKEN_BUCKET is None:
@@ -77,3 +84,26 @@ def enforce_chatbot_rate_limit(tokens: float = 1.0) -> float:
     if waited > 0:
         logger.debug("Throttled chatbot request by %.2fs to respect rate limits.", waited)
     return waited
+
+
+def apply_human_like_delay(
+    message: str,
+    *,
+    include_thinking_delay: bool = True,
+    previous_received_message: str | None = None,
+) -> float:
+    """Mimic human typing before sending *message* by enforcing a contextual delay."""
+    text = message if isinstance(message, str) else str(message)
+    base_gap = max(CHATBOT_MIN_INTER_MESSAGE_GAP_SECONDS, 0.0)
+    typing_delay = len(text) * CHATBOT_TYPING_DELAY_PER_CHARACTER_SECONDS if include_thinking_delay else 0.0
+    reading_delay = (
+        len(previous_received_message) * CHATBOT_READING_DELAY_PER_CHARACTER_SECONDS
+        if include_thinking_delay and previous_received_message
+        else 0.0
+    )
+    jitter = _human_delay_rng.uniform(-CHATBOT_TYPING_DELAY_JITTER_SECONDS, CHATBOT_TYPING_DELAY_JITTER_SECONDS)
+    wait_time = max(base_gap, base_gap + typing_delay + reading_delay + jitter)
+    if wait_time > 0:
+        sleep(wait_time)
+        logger.debug("Simulated human-like delay of %.2fs before sending chatbot message.", wait_time)
+    return wait_time

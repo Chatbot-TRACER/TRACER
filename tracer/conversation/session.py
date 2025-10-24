@@ -30,7 +30,7 @@ from tracer.constants import (
     MIN_CORRECTED_MESSAGE_LENGTH,
     MIN_EXPLORER_RESPONSE_LENGTH,
 )
-from tracer.conversation.rate_limiter import enforce_chatbot_rate_limit
+from tracer.conversation.rate_limiter import apply_human_like_delay, enforce_chatbot_rate_limit
 from tracer.prompts.session_prompts import (
     explorer_checker_prompt,
     get_correction_prompt,
@@ -226,6 +226,7 @@ def _send_message_with_resilience(
     message: str,
     *,
     max_attempts: int = CHATBOT_MAX_RETRIES,
+    previous_message: str | None = None,
 ) -> tuple[bool, str | None]:
     """Send *message* to *the_chatbot*, retrying on transient connection issues.
 
@@ -233,6 +234,7 @@ def _send_message_with_resilience(
         the_chatbot: Chatbot connector used to send the message.
         message: Message content to deliver.
         max_attempts: Maximum number of attempts before giving up.
+        previous_message: The chatbot's previous response, used to simulate reading delay.
 
     Returns:
         Tuple with the connector success flag and the chatbot response (if any).
@@ -240,6 +242,11 @@ def _send_message_with_resilience(
     last_exception: Exception | None = None
 
     for attempt_index in range(1, max_attempts + 1):
+        apply_human_like_delay(
+            message,
+            include_thinking_delay=attempt_index == 1,
+            previous_received_message=previous_message if attempt_index == 1 else None,
+        )
         enforce_chatbot_rate_limit()
         try:
             return the_chatbot.execute_with_input(message)
@@ -692,10 +699,16 @@ def _handle_chatbot_interaction(
     the_chatbot: Chatbot,
     llm: BaseLanguageModel,
     fallback_message: str | None,
+    *,
+    previous_chatbot_message: str | None,
 ) -> tuple[InteractionOutcome, str]:
     """Interacts with the chatbot, handles retries on fallback/error, and returns outcome."""
     logger.debug("Sending message to chatbot")
-    is_ok, chatbot_message = _send_message_with_resilience(the_chatbot, explorer_message)
+    is_ok, chatbot_message = _send_message_with_resilience(
+        the_chatbot,
+        explorer_message,
+        previous_message=previous_chatbot_message,
+    )
 
     if not is_ok or chatbot_message is None:
         return InteractionOutcome.COMM_ERROR, CHATBOT_COMMUNICATION_ERROR_PLACEHOLDER
@@ -746,6 +759,7 @@ def _handle_chatbot_interaction(
     is_ok_retry, chatbot_message_retry = _send_message_with_resilience(
         the_chatbot,
         rephrased_message_or_original,
+        previous_message=previous_chatbot_message,
     )
 
     if is_ok_retry and chatbot_message_retry is not None:
@@ -903,7 +917,9 @@ def _run_conversation_loop(
     max_turns: int,
     context: ConversationContext,
     initial_history: list[BaseMessage],
-) -> tuple[list[BaseMessage], int]:
+    *,
+    previous_chatbot_message: str | None,
+) -> tuple[list[BaseMessage], int, str | None]:
     """Runs the main conversation loop for a single session."""
     conversation_history_lc = initial_history[:]  # Work on a copy
     consecutive_failures = 0
@@ -960,11 +976,16 @@ def _run_conversation_loop(
 
         # 4. Interact with Chatbot (with retry logic)
         outcome, final_chatbot_message = _handle_chatbot_interaction(
-            explorer_response_content, the_chatbot, llm, fallback_message
+            explorer_response_content,
+            the_chatbot,
+            llm,
+            fallback_message,
+            previous_chatbot_message=previous_chatbot_message,
         )
 
         # 5. Update History with chatbot's response
         conversation_history_lc.append(HumanMessage(content=final_chatbot_message))
+        previous_chatbot_message = final_chatbot_message
         logger.verbose(
             "Chatbot: %s",
             final_chatbot_message[:MAX_LOG_MESSAGE_LENGTH]
@@ -987,7 +1008,7 @@ def _run_conversation_loop(
         # 8. Increment Turn Count
         turn_count += 1
 
-    return conversation_history_lc, turn_count
+    return conversation_history_lc, turn_count, previous_chatbot_message
 
 
 def run_exploration_session(
@@ -1080,6 +1101,7 @@ def run_exploration_session(
         conversation_history_lc.append(AIMessage(content=initial_question))
         conversation_history_lc.append(HumanMessage(content=chatbot_message))
         turn_count = 1
+        previous_chatbot_message = chatbot_message
 
         # --- Conversation Loop ---
         if turn_count < max_turns:
@@ -1089,10 +1111,11 @@ def run_exploration_session(
                 "the_chatbot": the_chatbot,
                 "fallback_message": fallback_message,
             }
-            conversation_history_lc, turn_count = _run_conversation_loop(
+            conversation_history_lc, turn_count, previous_chatbot_message = _run_conversation_loop(
                 max_turns=max_turns,
                 context=loop_context,  # Pass context object
                 initial_history=conversation_history_lc,
+                previous_chatbot_message=previous_chatbot_message,
             )
 
     # --- Post-Session Analysis ---
