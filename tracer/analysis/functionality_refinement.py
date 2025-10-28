@@ -5,7 +5,6 @@ import re
 
 from langchain_core.language_models import BaseLanguageModel
 
-from tracer.constants import LLM_REQUEST_TIMEOUT_SECONDS
 from tracer.prompts.functionality_refinement_prompts import (
     get_consolidate_outputs_prompt,
     get_consolidate_parameters_prompt,
@@ -87,7 +86,7 @@ def _perform_llm_duplicate_check(
     )
 
     logger.debug("Checking if '%s' is semantically equivalent to any existing node", node_to_check.name)
-    response = llm.invoke(duplicate_check_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
+    response = llm.invoke(duplicate_check_prompt)
     result_content = response.content.strip().upper()
     logger.debug("LLM duplicate check response: %s", result_content[:100])
 
@@ -187,7 +186,7 @@ def validate_parent_child_relationship(
         child_node=child_node,
     )
 
-    validation_response = llm.invoke(validation_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
+    validation_response = llm.invoke(validation_prompt)
     result = validation_response.content.strip().upper()
 
     is_valid = result.startswith("VALID")
@@ -271,7 +270,7 @@ def _consolidate_parameters_with_llm(
         len(all_params),
     )
 
-    raw_response = llm.invoke(param_consolidation_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS).content
+    raw_response = llm.invoke(param_consolidation_prompt).content
     logger.debug("LLM response for parameter consolidation (raw): %s", raw_response)
 
     extracted_json_str = _extract_json_from_response(raw_response, "parameter")
@@ -362,7 +361,7 @@ def _consolidate_outputs_with_llm(
     consolidation_prompt = get_consolidate_outputs_prompt(output_details)
     logger.debug("Consolidating outputs for merged node '%s' using LLM. Input outputs: %s", node_name, output_details)
 
-    raw_response = llm.invoke(consolidation_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS).content
+    raw_response = llm.invoke(consolidation_prompt).content
     logger.debug("LLM response for output consolidation (raw): %s", raw_response)
 
     extracted_json_str = _extract_json_from_response(raw_response, "output")
@@ -464,7 +463,7 @@ def _process_node_group_for_merge(group: list[FunctionalityNode], llm: BaseLangu
     logger.debug("Evaluating potential merge of %d nodes: %s", len(group), ", ".join(node_names))
 
     merge_prompt = get_merge_prompt(group=group)
-    merge_response = llm.invoke(merge_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
+    merge_response = llm.invoke(merge_prompt)
     content = merge_response.content.strip()
     logger.debug("Merge response content: '%s'", content)
 

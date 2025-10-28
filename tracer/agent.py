@@ -121,7 +121,7 @@ class ChatbotExplorationAgent:
 
         # Try the API works
         try:
-            _ = llm.invoke("ping", request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
+            _ = llm.invoke("ping")
         except Exception as e:
             logger.exception("Health check failed")
             msg = f"Health check failed for '{provider_prefixed}'."
