@@ -4,7 +4,6 @@ import re
 
 from langchain_core.language_models import BaseLanguageModel
 
-from tracer.constants import LLM_REQUEST_TIMEOUT_SECONDS
 from tracer.conversation.conversation_utils import format_conversation
 from tracer.prompts.functionality_extraction_prompts import (
     get_functionality_extraction_prompt,
@@ -235,7 +234,7 @@ def extract_functionality_nodes(
         context=context, formatted_conversation=formatted_conversation
     )
     logger.debug("Invoking LLM for functionality extraction")
-    response = llm.invoke(extraction_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
+    response = llm.invoke(extraction_prompt)
     content = response.content.strip()
 
     logger.debug("--- Raw LLM Response for Functionality Extraction ---")

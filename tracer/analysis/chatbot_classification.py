@@ -4,7 +4,6 @@ from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
-from tracer.constants import LLM_REQUEST_TIMEOUT_SECONDS
 from tracer.conversation.conversation_utils import format_conversation
 from tracer.prompts.classification_prompts import get_classification_prompt
 from tracer.utils.logging_utils import get_logger
@@ -79,7 +78,7 @@ def classify_chatbot_type(
     try:
         # Ask the LLM for classification
         logger.debug("Invoking LLM for chatbot classification")
-        response = llm.invoke(classification_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
+        response = llm.invoke(classification_prompt)
         classification = response.content.strip().lower()
 
         if classification in ["transactional", "informational"]:

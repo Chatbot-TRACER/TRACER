@@ -2,7 +2,6 @@
 
 from langchain_core.language_models import BaseLanguageModel
 
-from tracer.constants import LLM_REQUEST_TIMEOUT_SECONDS
 from tracer.prompts.language_detection_prompts import get_language_detection_prompt
 
 
@@ -18,7 +17,7 @@ def extract_supported_languages(chatbot_response: str, llm: BaseLanguageModel) -
     """
     language_prompt = get_language_detection_prompt(chatbot_response)
 
-    language_result = llm.invoke(language_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
+    language_result = llm.invoke(language_prompt)
     languages = language_result.content.strip()
 
     # Clean up the LLM response

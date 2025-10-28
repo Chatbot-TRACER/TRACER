@@ -6,7 +6,7 @@ from typing import Any
 import yaml
 from langchain_core.language_models import BaseLanguageModel
 
-from tracer.constants import AVAILABLE_PERSONALITIES, LLM_REQUEST_TIMEOUT_SECONDS, VARIABLE_PATTERN
+from tracer.constants import AVAILABLE_PERSONALITIES, VARIABLE_PATTERN
 from tracer.prompts.profile_builder_prompts import get_yaml_fix_prompt
 from tracer.scripts.validation_script import YamlValidator
 from tracer.utils.logging_utils import get_logger
@@ -217,7 +217,7 @@ def validate_and_fix_profile(
 
     try:
         # Ask LLM to fix it
-        fixed_yaml_response = llm.invoke(fix_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
+        fixed_yaml_response = llm.invoke(fix_prompt)
         fixed_yaml_str = fixed_yaml_response.content
 
         # Extract and parse the fixed YAML
