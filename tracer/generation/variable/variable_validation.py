@@ -2,7 +2,6 @@
 
 from langchain_core.language_models import BaseLanguageModel
 
-from tracer.constants import LLM_REQUEST_TIMEOUT_SECONDS
 from tracer.prompts.variable_definition_prompts import get_variable_semantic_validation_prompt
 from tracer.utils.logging_utils import get_logger
 
@@ -67,7 +66,7 @@ def _validate_with_llm(variable_name: str, clean_options: list[str], llm: BaseLa
     prompt = get_variable_semantic_validation_prompt(variable_name, sample_options)
 
     try:
-        response = llm.invoke(prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS).content.strip()
+        response = llm.invoke(prompt).content.strip()
         final_answer = _parse_validation_response(response, variable_name)
 
         is_valid = final_answer == "yes"

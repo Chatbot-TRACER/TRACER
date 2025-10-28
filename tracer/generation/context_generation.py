@@ -4,7 +4,6 @@ from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
-from tracer.constants import LLM_REQUEST_TIMEOUT_SECONDS
 from tracer.prompts.context_generation_prompts import get_context_prompt
 from tracer.utils.logging_utils import get_logger
 
@@ -67,7 +66,7 @@ def _generate_context_for_profile(
         language_instruction=language_instruction,
     )
 
-    llm_response_obj = llm.invoke(context_prompt_str, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
+    llm_response_obj = llm.invoke(context_prompt_str)
     context_content = _extract_llm_content(llm_response_obj)
     context_entries = _parse_context_entries(context_content)
 
