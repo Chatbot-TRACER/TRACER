@@ -5,6 +5,7 @@ from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
+from tracer.constants import LLM_REQUEST_TIMEOUT_SECONDS
 from tracer.prompts.output_generation_prompts import get_outputs_prompt
 from tracer.utils.logging_utils import get_logger
 
@@ -112,7 +113,7 @@ def generate_outputs(
 
         logger.debug("Output Generation Prompt for Profile '%s':\n%s", profile_name, outputs_prompt)
 
-        outputs_response = llm.invoke(outputs_prompt)
+        outputs_response = llm.invoke(outputs_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
         response_content = ""
         if hasattr(outputs_response, "content"):
             response_content = outputs_response.content.strip()

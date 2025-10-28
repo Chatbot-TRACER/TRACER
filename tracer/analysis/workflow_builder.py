@@ -7,7 +7,7 @@ from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
-from tracer.constants import MIN_PRINTABLE_ASCII_CODE
+from tracer.constants import LLM_REQUEST_TIMEOUT_SECONDS, MIN_PRINTABLE_ASCII_CODE
 from tracer.conversation.conversation_utils import format_conversation
 from tracer.prompts.workflow_prompts import (
     create_informational_prompt,
@@ -223,7 +223,7 @@ def build_workflow_structure(
 
     try:
         logger.debug("Invoking LLM to generate workflow structure")
-        response = llm.invoke(structuring_prompt)
+        response = llm.invoke(structuring_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
         response_content = response.content
 
         json_str = extract_json_from_response(response_content)

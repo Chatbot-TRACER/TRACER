@@ -8,6 +8,9 @@ VARIABLE_PATTERN = re.compile(r"{{([^}]+)}}")
 # List truncation threshold for data preview
 LIST_TRUNCATION_THRESHOLD = 3
 
+# Default timeout for language model API calls (in seconds)
+LLM_REQUEST_TIMEOUT_SECONDS = 120
+
 # Variable type pattern definitions supporting English and Spanish
 VARIABLE_PATTERNS = {
     "date": ["date", "fecha"],
