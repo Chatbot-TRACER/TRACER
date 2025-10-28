@@ -5,6 +5,7 @@ from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
+from tracer.constants import LLM_REQUEST_TIMEOUT_SECONDS
 from tracer.prompts.variable_definition_prompts import get_variable_to_datasource_matching_prompt
 from tracer.utils.logging_utils import get_logger
 
@@ -57,7 +58,7 @@ def _match_single_variable_to_data_sources(
     )
     logger.debug("LLM Matching Prompt for %s:\n%s", variable_name, prompt)
 
-    response_content = llm.invoke(prompt).content.strip()
+    response_content = llm.invoke(prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS).content.strip()
     logger.debug("LLM Matching Response Content for %s:\n%s", variable_name, response_content)
 
     return _parse_matching_response(response_content, variable_name, potential_data_sources, llm)

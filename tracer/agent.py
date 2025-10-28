@@ -21,6 +21,7 @@ from tracer.constants import (
     CHATBOT_SESSION_COOLDOWN_JITTER_SECONDS,
     CHATBOT_SESSION_ISSUE_COOLDOWN_BASE_SECONDS,
     CHATBOT_SESSION_ISSUE_COOLDOWN_JITTER_SECONDS,
+    LLM_REQUEST_TIMEOUT_SECONDS,
     MIN_NODES_FOR_DEDUPLICATION,
 )
 from tracer.conversation.fallback_detection import extract_fallback_message
@@ -101,7 +102,8 @@ class ChatbotExplorationAgent:
             llm = init_chat_model(
                 provider_prefixed,
                 callbacks=[self.token_tracker],
-                timeout=60,
+                timeout=LLM_REQUEST_TIMEOUT_SECONDS,
+                request_timeout=LLM_REQUEST_TIMEOUT_SECONDS,
                 max_retries=3,
             )
         except ImportError as e:
@@ -119,7 +121,7 @@ class ChatbotExplorationAgent:
 
         # Try the API works
         try:
-            _ = llm.invoke("ping")
+            _ = llm.invoke("ping", request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
         except Exception as e:
             logger.exception("Health check failed")
             msg = f"Health check failed for '{provider_prefixed}'."

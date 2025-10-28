@@ -5,6 +5,7 @@ import re
 from chatbot_connectors import Chatbot
 from langchain_core.language_models import BaseLanguageModel
 
+from tracer.constants import LLM_REQUEST_TIMEOUT_SECONDS
 from tracer.conversation.rate_limiter import apply_human_like_delay, enforce_chatbot_rate_limit
 from tracer.prompts.fallback_detection_prompts import (
     get_fallback_identification_prompt,
@@ -63,7 +64,7 @@ def extract_fallback_message(the_chatbot: Chatbot, llm: BaseLanguageModel) -> st
         analysis_prompt = get_fallback_identification_prompt(responses)
 
         try:
-            fallback_result = llm.invoke(analysis_prompt)
+            fallback_result = llm.invoke(analysis_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
             fallback = fallback_result.content
 
             # Clean up the fallback message
@@ -102,7 +103,7 @@ def is_semantically_fallback(response: str, fallback: str, llm: BaseLanguageMode
     prompt = get_semantic_fallback_check_prompt(response, fallback)
 
     try:
-        llm_decision = llm.invoke(prompt)
+        llm_decision = llm.invoke(prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
         decision_text = llm_decision.content.strip().upper()
 
         is_fallback = decision_text.startswith("YES")

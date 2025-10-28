@@ -6,7 +6,7 @@ from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
-from tracer.constants import VARIABLE_PATTERNS
+from tracer.constants import LLM_REQUEST_TIMEOUT_SECONDS, VARIABLE_PATTERNS
 from tracer.prompts.variable_smart_defaults_prompts import (
     get_date_variable_prompt,
     get_generic_variable_prompt,
@@ -57,7 +57,7 @@ def generate_smart_default_options(
 
     try:
         logger.info("Generating smart default options for '%s' in %s", variable_name, language)
-        response = llm.invoke(prompt)
+        response = llm.invoke(prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
         options_list = _extract_options_from_response(response.content, variable_name)
 
         if not options_list:

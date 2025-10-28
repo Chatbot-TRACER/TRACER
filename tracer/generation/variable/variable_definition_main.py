@@ -5,7 +5,7 @@ from typing import Any
 
 from langchain_core.language_models import BaseLanguageModel
 
-from tracer.constants import VARIABLE_PATTERN
+from tracer.constants import LLM_REQUEST_TIMEOUT_SECONDS, VARIABLE_PATTERN
 from tracer.prompts.variable_definition_prompts import (
     get_clean_and_suggest_negative_option_prompt,
 )
@@ -217,7 +217,9 @@ def _process_pre_extracted_options(
         language=primary_language,
     )
 
-    response_content = llm.invoke(clean_and_negative_prompt).content.strip()
+    response_content = llm.invoke(
+        clean_and_negative_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS
+    ).content.strip()
     logger.debug("  LLM response for cleaning '%s': %s", variable_name, response_content)
 
     cleaned_options, invalid_option = _parse_cleaning_response(response_content)

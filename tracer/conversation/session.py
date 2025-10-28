@@ -27,6 +27,7 @@ from tracer.constants import (
     CHATBOT_RETRY_BACKOFF_MAX_SECONDS,
     CHATBOT_RETRY_BACKOFF_SECONDS,
     CONTEXT_MESSAGES_COUNT,
+    LLM_REQUEST_TIMEOUT_SECONDS,
     MIN_CORRECTED_MESSAGE_LENGTH,
     MIN_EXPLORER_RESPONSE_LENGTH,
 )
@@ -276,7 +277,7 @@ def _generate_initial_question(
     if current_node:
         # Ask about the specific node
         question_prompt = get_initial_question_prompt(current_node, primary_language)
-        question_response = llm.invoke(question_prompt)
+        question_response = llm.invoke(question_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
         initial_question = question_response.content.strip().strip("\"'")
     else:
         # Ask a general question for the first session
@@ -292,7 +293,11 @@ def _generate_initial_question(
         if lang_lower != "english":
             try:
                 translation_prompt = get_translation_prompt(greeting_en, primary_language)
-                translated_greeting = llm.invoke(translation_prompt).content.strip().strip("\"'")
+                translated_greeting = (
+                    llm.invoke(translation_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
+                    .content.strip()
+                    .strip("\"'")
+                )
                 # Check if translation looks okay
                 if translated_greeting and len(translated_greeting.split()) > 1:
                     initial_question = translated_greeting
@@ -687,7 +692,7 @@ def _get_explorer_next_message(
             messages_for_llm_this_turn = [*messages_for_llm, reminder_message]
 
         logger.debug("Getting next explorer message from LLM")
-        llm_response = llm.invoke(messages_for_llm_this_turn)
+        llm_response = llm.invoke(messages_for_llm_this_turn, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
         return llm_response.content.strip()
     except (ValueError, RuntimeError):
         logger.exception("Error getting response from Explorer AI LLM. Ending session.")
@@ -740,7 +745,7 @@ def _handle_chatbot_interaction(
     rephrase_prompt = get_rephrase_prompt(explorer_message)
     rephrased_message_or_original = explorer_message  # Default to original
     try:
-        rephrased_response = llm.invoke(rephrase_prompt)
+        rephrased_response = llm.invoke(rephrase_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
         rephrased_message = rephrased_response.content.strip().strip("\"'")
         if rephrased_message and rephrased_message != explorer_message:
             logger.debug("Rephrased original message")
@@ -835,7 +840,7 @@ def _check_explorer_impersonation(
                 HumanMessage(content=explorer_response_content),
             ]
 
-            check_result = llm.invoke(check_prompt)
+            check_result = llm.invoke(check_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
             is_chatbot_like = "YES" in check_result.content.upper() and "NO" not in check_result.content.upper()
 
             if is_chatbot_like:
@@ -855,7 +860,7 @@ def _check_explorer_impersonation(
                     ),
                 ]
 
-                fixed_response = llm.invoke(correction_prompt)
+                fixed_response = llm.invoke(correction_prompt, request_timeout=LLM_REQUEST_TIMEOUT_SECONDS)
                 corrected_message = fixed_response.content.strip()
 
                 if (
