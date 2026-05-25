@@ -150,7 +150,7 @@ class YamlValidator:
             "long phrases",
             "change your mind",
             "make spelling mistakes",
-            "single question",
+            "single questions",
             "all questions",
             "default",
         ]

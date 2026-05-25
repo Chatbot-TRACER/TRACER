@@ -524,7 +524,7 @@ def _process_single_profile(profile: dict[str, Any], profile_index: int, total_p
     )
 
     goal_style = {"steps": goal_limit}
-    interaction_styles = ["single question"]
+    interaction_styles = ["single questions"]
 
     conversation_params = {
         "number": number_value,
@@ -538,7 +538,7 @@ def _process_single_profile(profile: dict[str, Any], profile_index: int, total_p
 
     if variables:
         logger.debug(
-            "Parameters: number=%s (from %d variables), cost=%.2f, goal=steps %d, styles: single question",
+            "Parameters: number=%s (from %d variables), cost=%.2f, goal=steps %d, styles: single questions",
             number_value,
             len(variables),
             max_cost,
@@ -546,7 +546,7 @@ def _process_single_profile(profile: dict[str, Any], profile_index: int, total_p
         )
     else:
         logger.debug(
-            "Parameters: number=%s (no variables), cost=%.2f, goal=steps %d, styles: single question",
+            "Parameters: number=%s (no variables), cost=%.2f, goal=steps %d, styles: single questions",
             number_value,
             max_cost,
             goal_limit,
